@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>2&nbsp; Linear Maps and Matrices – FIN700: Mathematics for PhD Finance</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../notes/sections/linear-algebra/decompositions.html" rel="next">
+<link href="../../../notes/sections/linear-algebra/vectors.html" rel="prev">
+<script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-9e3e5b9121e68b3f077afb32f2c64d95.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/sections/linear-algebra/vectors.html">Linear Algebra</a></li><li class="breadcrumb-item"><a href="../../../notes/sections/linear-algebra/linear-maps.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Linear Maps and Matrices</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../../../">FIN700: Mathematics for PhD Finance</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/MingyangZhang1995/FIN700-Math" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Linear Algebra</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/linear-algebra/vectors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Vectors and Vector Spaces</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/linear-algebra/linear-maps.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Linear Maps and Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/linear-algebra/decompositions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Calculus and Projection</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Probability Theory</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/probability/probability-space.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Probability Spaces and Random Variables</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/probability/expectation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Distributions, Expectation, and Dependence</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/probability/common-distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Common Probability Distributions</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Machine Learning</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/machine-learning/introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">introduction.html</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-la-linear-maps" id="toc-sec-la-linear-maps" class="nav-link active" data-scroll-target="#sec-la-linear-maps"><span class="header-section-number">2.1</span> Linear maps and their matrices</a></li>
+  <li><a href="#sec-la-matrix-multiplication" id="toc-sec-la-matrix-multiplication" class="nav-link" data-scroll-target="#sec-la-matrix-multiplication"><span class="header-section-number">2.2</span> Matrix multiplication</a></li>
+  <li><a href="#sec-la-regression" id="toc-sec-la-regression" class="nav-link" data-scroll-target="#sec-la-regression"><span class="header-section-number">2.3</span> Linear regression in matrix form</a></li>
+  <li><a href="#sec-la-inverse" id="toc-sec-la-inverse" class="nav-link" data-scroll-target="#sec-la-inverse"><span class="header-section-number">2.4</span> Inverting a map</a></li>
+  <li><a href="#sec-la-rank" id="toc-sec-la-rank" class="nav-link" data-scroll-target="#sec-la-rank"><span class="header-section-number">2.5</span> Rank</a></li>
+  <li><a href="#sec-la-determinants" id="toc-sec-la-determinants" class="nav-link" data-scroll-target="#sec-la-determinants"><span class="header-section-number">2.6</span> Determinant</a></li>
+  <li><a href="#sec-la-eigenvalues" id="toc-sec-la-eigenvalues" class="nav-link" data-scroll-target="#sec-la-eigenvalues"><span class="header-section-number">2.7</span> Eigenvalues and eigenvectors</a>
+  <ul class="collapse">
+  <li><a href="#sec-la-diagonalization" id="toc-sec-la-diagonalization" class="nav-link" data-scroll-target="#sec-la-diagonalization">Diagonalization</a></li>
+  <li><a href="#sec-la-symmetric" id="toc-sec-la-symmetric" class="nav-link" data-scroll-target="#sec-la-symmetric">Symmetric matrices</a></li>
+  <li><a href="#sec-la-quadratic-forms" id="toc-sec-la-quadratic-forms" class="nav-link" data-scroll-target="#sec-la-quadratic-forms">Quadratic forms and positive definiteness</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/sections/linear-algebra/vectors.html">Linear Algebra</a></li><li class="breadcrumb-item"><a href="../../../notes/sections/linear-algebra/linear-maps.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Linear Maps and Matrices</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-la-maps" class="quarto-section-identifier"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Linear Maps and Matrices</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a href="vectors.html" class="quarto-xref"><span>Chapter 1</span></a> built the spaces; this chapter studies the maps between them. The only maps worth studying in linear algebra are those that respect the two operations a vector space is built on — addition and scaling. A <strong>linear map</strong> is a function <span class="math inline">\(T : \mathbb{R}^n \to \mathbb{R}^m\)</span> that preserves linear combinations: <span id="eq-linearity"><span class="math display">\[
+T(\alpha \boldsymbol{u} + \beta \boldsymbol{v}) = \alpha\, T(\boldsymbol{u}) + \beta\, T(\boldsymbol{v})
+\qquad \text{for all } \boldsymbol{u}, \boldsymbol{v} \in \mathbb{R}^n,\ \alpha, \beta \in \mathbb{R}.
+\tag{2.1}\]</span></span> Equivalently, whatever linear combination you build in the source space, <span class="math inline">\(T\)</span> builds the same combination of the images in the target space.</p>
+<section id="sec-la-linear-maps" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="sec-la-linear-maps"><span class="header-section-number">2.1</span> Linear maps and their matrices</h2>
+<p><a href="#eq-linearity" class="quarto-xref">Equation&nbsp;<span>2.1</span></a> has a powerful consequence: a linear map is completely determined by what it does to a basis. Write any <span class="math inline">\(\boldsymbol{x} \in \mathbb{R}^n\)</span> in the standard basis as <span class="math inline">\(\boldsymbol{x} = x_1 \boldsymbol{e}_1 + \cdots + x_n \boldsymbol{e}_n\)</span>. Applying <span class="math inline">\(T\)</span> and using <a href="#eq-linearity" class="quarto-xref">Equation&nbsp;<span>2.1</span></a> repeatedly, <span id="eq-map-on-basis"><span class="math display">\[
+T(\boldsymbol{x}) = x_1\, T(\boldsymbol{e}_1) + x_2\, T(\boldsymbol{e}_2) + \cdots + x_n\, T(\boldsymbol{e}_n).
+\tag{2.2}\]</span></span> Once we know the <span class="math inline">\(n\)</span> image vectors <span class="math inline">\(T(\boldsymbol{e}_1), \dots, T(\boldsymbol{e}_n)\)</span>, we know <span class="math inline">\(T\)</span> on every input. So recording those images is recording the map. Stacking them as the columns of an array gives a matrix.</p>
+<div id="def-matrix" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 2.1</strong></span> The <strong>matrix</strong> of a linear map <span class="math inline">\(T : \mathbb{R}^n \to \mathbb{R}^m\)</span> is the <span class="math inline">\(m \times n\)</span> array whose <span class="math inline">\(j\)</span>-th column is the image of the <span class="math inline">\(j\)</span>-th standard basis vector, <span class="math display">\[
+\boldsymbol{A} = \begin{bmatrix} \big| &amp; &amp; \big| \\ \boldsymbol{a}_1 &amp; \cdots &amp; \boldsymbol{a}_n \\ \big| &amp; &amp; \big| \end{bmatrix} = \begin{bmatrix} \big| &amp; &amp; \big| \\ T(\boldsymbol{e}_1) &amp; \cdots &amp; T(\boldsymbol{e}_n) \\ \big| &amp; &amp; \big| \end{bmatrix}.
+\]</span></p>
+</div>
+<p>Using the notation, <a href="#eq-map-on-basis" class="quarto-xref">Equation&nbsp;<span>2.2</span></a> becomes the definition of the <strong>matrix–vector product</strong>: <span class="math inline">\(T(\boldsymbol{x}) = \boldsymbol{A}\boldsymbol{x}\)</span> is the linear combination of the columns of <span class="math inline">\(\boldsymbol{A}\)</span> weighted by the components of <span class="math inline">\(\boldsymbol{x}\)</span>, <span id="eq-column-picture"><span class="math display">\[
+\boldsymbol{A}\boldsymbol{x} = x_1 \boldsymbol{a}_1 + x_2 \boldsymbol{a}_2 + \cdots + x_n \boldsymbol{a}_n, \quad \boldsymbol{a}_j = \boldsymbol{A}\boldsymbol{e}_j.
+\tag{2.3}\]</span></span> The figure below shows the two columns of a <span class="math inline">\(2\times 2\)</span> matrix as the landing spots of <span class="math inline">\(\boldsymbol{e}_1\)</span> and <span class="math inline">\(\boldsymbol{e}_2\)</span>, with the unit square carried along.</p>
+<div id="8de81fc8" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> np.array([[<span class="fl">1.0</span>, <span class="fl">0.5</span>],</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>              [<span class="fl">0.25</span>, <span class="fl">1.0</span>]])</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>square <span class="op">=</span> np.array([[<span class="dv">0</span>, <span class="dv">0</span>], [<span class="dv">1</span>, <span class="dv">0</span>], [<span class="dv">1</span>, <span class="dv">1</span>], [<span class="dv">0</span>, <span class="dv">1</span>], [<span class="dv">0</span>, <span class="dv">0</span>]]).T</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> A <span class="op">@</span> square</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="fl">4.5</span>, <span class="fl">4.5</span>))</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>ax.plot(<span class="op">*</span>square, color<span class="op">=</span><span class="st">"0.8"</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>ax.fill(<span class="op">*</span>image, color<span class="op">=</span><span class="st">"tab:blue"</span>, alpha<span class="op">=</span><span class="fl">0.2</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>ax.plot(<span class="op">*</span>image, color<span class="op">=</span><span class="st">"tab:blue"</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># original basis (grey) and its image (columns of A)</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>ax.quiver(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, angles<span class="op">=</span><span class="st">"xy"</span>, scale_units<span class="op">=</span><span class="st">"xy"</span>, scale<span class="op">=</span><span class="dv">1</span>, color<span class="op">=</span><span class="st">"0.6"</span>)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>ax.quiver(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, angles<span class="op">=</span><span class="st">"xy"</span>, scale_units<span class="op">=</span><span class="st">"xy"</span>, scale<span class="op">=</span><span class="dv">1</span>, color<span class="op">=</span><span class="st">"0.6"</span>)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>ax.quiver(<span class="dv">0</span>, <span class="dv">0</span>, A[<span class="dv">0</span>, <span class="dv">0</span>], A[<span class="dv">1</span>, <span class="dv">0</span>], angles<span class="op">=</span><span class="st">"xy"</span>, scale_units<span class="op">=</span><span class="st">"xy"</span>, scale<span class="op">=</span><span class="dv">1</span>, color<span class="op">=</span><span class="st">"tab:red"</span>)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>ax.quiver(<span class="dv">0</span>, <span class="dv">0</span>, A[<span class="dv">0</span>, <span class="dv">1</span>], A[<span class="dv">1</span>, <span class="dv">1</span>], angles<span class="op">=</span><span class="st">"xy"</span>, scale_units<span class="op">=</span><span class="st">"xy"</span>, scale<span class="op">=</span><span class="dv">1</span>, color<span class="op">=</span><span class="st">"tab:green"</span>)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>ax.text(A[<span class="dv">0</span>, <span class="dv">0</span>], A[<span class="dv">1</span>, <span class="dv">0</span>] <span class="op">-</span> <span class="fl">0.13</span>, <span class="vs">r"</span><span class="dv">$\b</span><span class="vs">oldsymbol{A}</span><span class="dv">\b</span><span class="vs">oldsymbol{e}_1</span><span class="dv">$</span><span class="vs">"</span>, color<span class="op">=</span><span class="st">"tab:red"</span>)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>ax.text(A[<span class="dv">0</span>, <span class="dv">1</span>] <span class="op">-</span> <span class="fl">0.15</span>, A[<span class="dv">1</span>, <span class="dv">1</span>] <span class="op">+</span> <span class="fl">0.05</span>, <span class="vs">r"</span><span class="dv">$\b</span><span class="vs">oldsymbol{A}</span><span class="dv">\b</span><span class="vs">oldsymbol{e}_2</span><span class="dv">$</span><span class="vs">"</span>, color<span class="op">=</span><span class="st">"tab:green"</span>)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>ax.set_aspect(<span class="st">"equal"</span>)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>ax.set_xlim(<span class="op">-</span><span class="fl">0.4</span>, <span class="fl">1.8</span>)</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="op">-</span><span class="fl">0.4</span>, <span class="fl">1.8</span>)</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>ax.axhline(<span class="dv">0</span>, color<span class="op">=</span><span class="st">"0.9"</span>, lw<span class="op">=</span><span class="fl">0.5</span>, zorder<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>ax.axvline(<span class="dv">0</span>, color<span class="op">=</span><span class="st">"0.9"</span>, lw<span class="op">=</span><span class="fl">0.5</span>, zorder<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>ax.set_xticks([])</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>ax.set_yticks([])</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="linear-maps_files/figure-html/cell-2-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="352" height="352"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Two subsets attached to any linear map describe its reach and its collapse. The <strong>image</strong> of <span class="math inline">\(T\)</span> is the set of outputs it can produce, <span class="math inline">\(\{\boldsymbol{A}\boldsymbol{x} : \boldsymbol{x} \in \mathbb{R}^n\}\)</span>; this is exactly the span (<a href="vectors.html#def-span" class="quarto-xref">Definition&nbsp;<span>1.4</span></a>) of the columns of <span class="math inline">\(\boldsymbol{A}\)</span>. The <strong>kernel</strong> is the set of inputs sent to zero, <span class="math inline">\(\{\boldsymbol{x} : \boldsymbol{A}\boldsymbol{x} = \boldsymbol{0}\}\)</span>.</p>
+<div id="def-transpose" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 2.2</strong></span> The <strong>transpose</strong> of a matrix <span class="math inline">\(\boldsymbol{A}\)</span> is the matrix <span class="math inline">\(\boldsymbol{A}^{\top}\)</span> whose rows are the columns of <span class="math inline">\(\boldsymbol{A}\)</span>. <span class="math display">\[
+\boldsymbol{A}^{\top} =
+\begin{bmatrix}
+--  &amp; \boldsymbol{a}_1^{\top} &amp; --  \\
+  &amp; \vdots &amp;  \\
+--  &amp; \boldsymbol{a}_n^{\top} &amp; --
+\end{bmatrix}
+\]</span></p>
+</div>
+<div id="exm-factor-loadings" class="theorem example">
+<p><span class="theorem-title"><strong>Example 2.1</strong></span> In finance, a <strong>factor model</strong> writes each asset’s return as a linear response to <span class="math inline">\(k\)</span> common factors <span class="math inline">\(\boldsymbol{f}_t\)</span>. With <span class="math inline">\(n\)</span> assets and <span class="math inline">\(k\)</span> factors, <span class="math display">\[
+\boldsymbol{r}_t = \boldsymbol{\alpha} + \boldsymbol{B}\boldsymbol{f}_t + \boldsymbol{\varepsilon}_t,
+\]</span> where <span class="math inline">\(\boldsymbol{f}_t \in \mathbb{R}^k\)</span> collects the factor realizations, <span class="math inline">\(\boldsymbol{\varepsilon}_t\)</span> is idiosyncratic noise, the <span class="math inline">\(n \times k\)</span> matrix <span class="math inline">\(\boldsymbol{B}\)</span> of <strong>factor loadings</strong> is the linear map from factor space to asset returns, <span class="math inline">\(\boldsymbol{\alpha}\)</span> is abnormal returns. In the CAPM there is a single factor (<span class="math inline">\(k = 1\)</span>) and <span class="math inline">\(\boldsymbol{B}\)</span> is the column of market betas.</p>
+</div>
+<p>To see a linear map, watch what it does to a shape. We use an asymmetric letter “F” — asymmetric so that a rotation looks different from a reflection — and overlay the reference copy (grey) on the transformed copy (blue). The red and green arrows are the columns of the matrix, i.e.&nbsp;the images <span class="math inline">\(\boldsymbol{A}\boldsymbol{e}_1\)</span> and <span class="math inline">\(\boldsymbol{A}\boldsymbol{e}_2\)</span>; by <a href="#eq-column-picture" class="quarto-xref">Equation&nbsp;<span>2.3</span></a> they alone determine where every other point goes.</p>
+<p><strong>Scaling</strong>: stretches along <span class="math inline">\(\boldsymbol{e}_1\)</span> and compresses along <span class="math inline">\(\boldsymbol{e}_2\)</span>. <span class="math display">\[
+\begin{bmatrix} 1.6 &amp; 0 \\ 0 &amp; 0.6 \end{bmatrix}
+\]</span></p>
+<div id="edffc6ae" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># An asymmetric "F", scaled to roughly unit size.</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>F <span class="op">=</span> np.array([</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">0</span>, <span class="dv">0</span>], [<span class="dv">0</span>, <span class="dv">3</span>], [<span class="dv">2</span>, <span class="dv">3</span>], [<span class="dv">2</span>, <span class="fl">2.4</span>], [<span class="fl">0.8</span>, <span class="fl">2.4</span>], [<span class="fl">0.8</span>, <span class="fl">1.8</span>],</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    [<span class="fl">1.6</span>, <span class="fl">1.8</span>], [<span class="fl">1.6</span>, <span class="fl">1.2</span>], [<span class="fl">0.8</span>, <span class="fl">1.2</span>], [<span class="fl">0.8</span>, <span class="dv">0</span>], [<span class="dv">0</span>, <span class="dv">0</span>],</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>]).T <span class="op">/</span> <span class="fl">3.0</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> show(ax, A, title):</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    ax.plot(<span class="op">*</span>F, color<span class="op">=</span><span class="st">"0.8"</span>, lw<span class="op">=</span><span class="dv">1</span>)                 <span class="co"># reference</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    G <span class="op">=</span> A <span class="op">@</span> F</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    ax.fill(<span class="op">*</span>G, color<span class="op">=</span><span class="st">"tab:blue"</span>, alpha<span class="op">=</span><span class="fl">0.25</span>)      <span class="co"># transformed</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    ax.plot(<span class="op">*</span>G, color<span class="op">=</span><span class="st">"tab:blue"</span>, lw<span class="op">=</span><span class="fl">1.5</span>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    ax.quiver(<span class="dv">0</span>, <span class="dv">0</span>, A[<span class="dv">0</span>, <span class="dv">0</span>], A[<span class="dv">1</span>, <span class="dv">0</span>], angles<span class="op">=</span><span class="st">"xy"</span>, scale_units<span class="op">=</span><span class="st">"xy"</span>, scale<span class="op">=</span><span class="dv">1</span>, color<span class="op">=</span><span class="st">"tab:red"</span>)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    ax.quiver(<span class="dv">0</span>, <span class="dv">0</span>, A[<span class="dv">0</span>, <span class="dv">1</span>], A[<span class="dv">1</span>, <span class="dv">1</span>], angles<span class="op">=</span><span class="st">"xy"</span>, scale_units<span class="op">=</span><span class="st">"xy"</span>, scale<span class="op">=</span><span class="dv">1</span>, color<span class="op">=</span><span class="st">"tab:green"</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    ax.set_title(title, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    ax.set_aspect(<span class="st">"equal"</span>)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    ax.set_xlim(<span class="op">-</span><span class="fl">1.8</span>, <span class="fl">1.8</span>)</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    ax.set_ylim(<span class="op">-</span><span class="fl">1.8</span>, <span class="fl">1.8</span>)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    ax.axhline(<span class="dv">0</span>, color<span class="op">=</span><span class="st">"0.9"</span>, lw<span class="op">=</span><span class="fl">0.5</span>, zorder<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    ax.axvline(<span class="dv">0</span>, color<span class="op">=</span><span class="st">"0.9"</span>, lw<span class="op">=</span><span class="fl">0.5</span>, zorder<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    ax.set_xticks([])</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    ax.set_yticks([])</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">3</span>, <span class="dv">3</span>))</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>show(ax, np.array([[<span class="fl">1.6</span>, <span class="dv">0</span>], [<span class="dv">0</span>, <span class="fl">0.6</span>]]), <span class="st">"Scaling"</span>)</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="linear-maps_files/figure-html/cell-3-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="241" height="259"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Rotation</strong>: turns the plane by <span class="math inline">\(\theta\)</span>; its columns are the rotated basis vectors and stay perpendicular and unit-length. <span class="math display">\[
+\begin{bmatrix} \cos\theta &amp; -\sin\theta \\ \sin\theta &amp; \cos\theta \end{bmatrix}
+\]</span></p>
+<div id="2ffceed4" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">3</span>, <span class="dv">3</span>))</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>theta <span class="op">=</span> np.pi <span class="op">/</span> <span class="dv">6</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>show(ax, np.array([[np.cos(theta), <span class="op">-</span>np.sin(theta)],</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>               [np.sin(theta),  np.cos(theta)]]), <span class="vs">r"Rotation </span><span class="dv">$</span><span class="vs">30</span><span class="dv">^</span><span class="er">\</span><span class="vs">circ</span><span class="dv">$</span><span class="vs">"</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="linear-maps_files/figure-html/cell-4-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="241" height="259"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Shear</strong>: skews or “slants” the coordinate space while preserving the area or volume of the object. <span class="math display">\[
+\begin{bmatrix} 1 &amp; 0.8 \\ 0 &amp; 1 \end{bmatrix}
+\]</span></p>
+<div id="d06f7f38" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">3</span>, <span class="dv">3</span>))</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>show(ax, np.array([[<span class="dv">1</span>, <span class="fl">0.8</span>], [<span class="dv">0</span>, <span class="dv">1</span>]]), <span class="vs">r"Shear"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="linear-maps_files/figure-html/cell-5-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="241" height="259"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Reflection</strong>: flips the plane across the horizontal axis; the “F” comes back mirror-imaged. <span class="math display">\[
+\begin{bmatrix} 1 &amp; 0 \\ 0 &amp; -1 \end{bmatrix}
+\]</span></p>
+<div id="0816e344" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">3</span>, <span class="dv">3</span>))</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>show(ax, np.array([[<span class="dv">1</span>, <span class="dv">0</span>], [<span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>]]), <span class="vs">r"Reflection"</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="linear-maps_files/figure-html/cell-6-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="241" height="259"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Projection</strong>: flattens the whole plane onto the horizontal axis. Its second column is <span class="math inline">\(\boldsymbol{0}\)</span>: the map sends <span class="math inline">\(\boldsymbol{e}_2\)</span> to the origin, so the vertical direction is exactly the kernel. The image is one-dimensional — a line — and the “F” loses a dimension. <span class="math display">\[
+\begin{bmatrix} 1 &amp; 0 \\ 0 &amp; 0 \end{bmatrix}
+\]</span></p>
+<div id="2b05fc6d" class="cell" data-execution_count="6">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">3</span>, <span class="dv">3</span>))</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>show(ax, np.array([[<span class="dv">1</span>, <span class="dv">0</span>], [<span class="dv">0</span>, <span class="dv">0</span>]]), <span class="vs">r"Projection"</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="linear-maps_files/figure-html/cell-7-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="241" height="259"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Two observations carry forward. First, the columns are the entire content of the map: read them off and you can reconstruct every panel. Second, the transformation rescales area. The unit square of area <span class="math inline">\(1\)</span> becomes a parallelogram whose area is the <strong>determinant</strong> of the matrix — <span class="math inline">\(0.96\)</span> for the scaling, <span class="math inline">\(1\)</span> for the rotation and shear (they preserve area), and <span class="math inline">\(0\)</span> for the projection, which has collapsed area to nothing. The reflection has <em>signed</em> area <span class="math inline">\(-1\)</span>: the minus sign records the flip in orientation. We develop the determinant properly in <a href="#sec-la-determinants" class="quarto-xref"><span>Section 2.6</span></a>; for now it is enough to see it as the area-scaling factor built into the picture.</p>
+</section>
+<section id="sec-la-matrix-multiplication" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="sec-la-matrix-multiplication"><span class="header-section-number">2.2</span> Matrix multiplication</h2>
+<p>What happens if we apply one linear map and then another? Suppose <span class="math inline">\(\boldsymbol{B}\)</span> is the matrix of a map <span class="math inline">\(\mathbb{R}^n \to \mathbb{R}^p\)</span> and <span class="math inline">\(\boldsymbol{A}\)</span> the matrix of a map <span class="math inline">\(\mathbb{R}^p \to \mathbb{R}^m\)</span>. Feeding <span class="math inline">\(\boldsymbol{x}\)</span> through <span class="math inline">\(\boldsymbol{B}\)</span> first and then <span class="math inline">\(\boldsymbol{A}\)</span> produces <span class="math inline">\(\boldsymbol{A}(\boldsymbol{B}\boldsymbol{x})\)</span>. However, can we composite the two maps into a single matrix that does both in one step? The answer is yes, and that is where matrix multiplication comes from.</p>
+<p>We want a composite map <span class="math inline">\(\mathbb{R}^n \to \mathbb{R}^m\)</span> that does both in one step. Therefore, the definition of matrix multiplication <span class="math inline">\(\boldsymbol{A}\boldsymbol{B}\)</span> should satisfy: <span id="eq-product-composition"><span class="math display">\[
+(\boldsymbol{A}\boldsymbol{B})\,\boldsymbol{x} = \boldsymbol{A}(\boldsymbol{B}\boldsymbol{x})
+\qquad \text{for all } \boldsymbol{x}.
+\tag{2.4}\]</span></span> Consider the following two 2D matrices: <span class="math display">\[
+\boldsymbol{A} = \begin{bmatrix} a_{11} &amp; a_{12} \\ a_{21} &amp; a_{22} \end{bmatrix}, \qquad
+\boldsymbol{B} = \begin{bmatrix} b_{11} &amp; b_{12} \\ b_{21} &amp; b_{22} \end{bmatrix}
+\]</span> If we transform a vector <span class="math inline">\(\boldsymbol{x} = [x_1, x_2]^\top\)</span> first by <span class="math inline">\(\boldsymbol{B}\)</span> and then by <span class="math inline">\(\boldsymbol{A}\)</span> using matrix-vector multiplication, the result is <span class="math display">\[
+\begin{align*}
+\boldsymbol{A}(\boldsymbol{B}\boldsymbol{x})
+&amp;= \begin{bmatrix} a_{11} &amp; a_{12} \\ a_{21} &amp; a_{22} \end{bmatrix} \begin{bmatrix} b_{11} &amp; b_{12} \\ b_{21} &amp; b_{22} \end{bmatrix} \begin{bmatrix} x_1 \\ x_2 \end{bmatrix} \\
+&amp;= \begin{bmatrix} a_{11} &amp; a_{12} \\ a_{21} &amp; a_{22} \end{bmatrix} \begin{bmatrix} b_{11} x_1 + b_{12} x_2 \\ b_{21} x_1 + b_{22} x_2 \end{bmatrix} \\
+&amp;= \begin{bmatrix} a_{11}(b_{11} x_1 + b_{12} x_2) + a_{12}(b_{21} x_1 + b_{22} x_2) \\ a_{21}(b_{11} x_1 + b_{12} x_2) + a_{22}(b_{21} x_1 + b_{22} x_2) \end{bmatrix} \\
+&amp;= \underbrace{\begin{bmatrix} (a_{11} b_{11} + a_{12} b_{21}) &amp; (a_{11} b_{12} + a_{12} b_{22}) \\ (a_{21} b_{11} + a_{22} b_{21}) &amp; (a_{21} b_{12} + a_{22} b_{22}) \end{bmatrix}}_{\boldsymbol{A}\boldsymbol{B}} \begin{bmatrix} x_1 \\ x_2 \end{bmatrix}
+\end{align*}
+\]</span> This example shows the intuition of the familiar matrix multiplication rule: <span id="eq-product-entries"><span class="math display">\[
+(\boldsymbol{A}\boldsymbol{B})_{ij} = \sum_{k=1}^{p} A_{ik} B_{kj}.
+\tag{2.5}\]</span></span></p>
+<div id="def-matrix-product" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 2.3</strong></span> For <span class="math inline">\(\boldsymbol{A}\)</span> of size <span class="math inline">\(m \times p\)</span> and <span class="math inline">\(\boldsymbol{B}\)</span> of size <span class="math inline">\(p \times n\)</span>, the <strong>product</strong> <span class="math inline">\(\boldsymbol{A}\boldsymbol{B}\)</span> is the <span class="math inline">\(m \times n\)</span> matrix with entries <a href="#eq-product-entries" class="quarto-xref">Equation&nbsp;<span>2.5</span></a>. It is defined only when the number of columns of <span class="math inline">\(\boldsymbol{A}\)</span> equals the number of rows of <span class="math inline">\(\boldsymbol{B}\)</span> — the target space of <span class="math inline">\(\boldsymbol{B}\)</span> must be the source space of <span class="math inline">\(\boldsymbol{A}\)</span> for the composition to make sense.</p>
+</div>
+<p>Because <span class="math inline">\(\boldsymbol{A}\boldsymbol{B}\)</span> means “<span class="math inline">\(\boldsymbol{B}\)</span> first, then <span class="math inline">\(\boldsymbol{A}\)</span>,” swapping the order generally changes the result. The picture makes this vivid: shearing and then rotating is not the same as rotating and then shearing.</p>
+<div id="331ec325" class="cell" data-execution_count="7">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>theta <span class="op">=</span> np.pi <span class="op">/</span> <span class="dv">6</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> np.array([[np.cos(theta), <span class="op">-</span>np.sin(theta)],   <span class="co"># rotation</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>              [np.sin(theta),  np.cos(theta)]])</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>B <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="fl">0.8</span>], [<span class="dv">0</span>, <span class="dv">1</span>]])                 <span class="co"># shear</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>I <span class="op">=</span> np.eye(<span class="dv">2</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>show(axes[<span class="dv">0</span>, <span class="dv">0</span>], I,     <span class="st">"start"</span>)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>show(axes[<span class="dv">0</span>, <span class="dv">1</span>], B,     <span class="vs">r"after </span><span class="dv">$\b</span><span class="vs">oldsymbol{B}</span><span class="dv">$</span><span class="vs"> </span><span class="kw">(</span><span class="vs">shear</span><span class="kw">)</span><span class="vs">"</span>)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>show(axes[<span class="dv">0</span>, <span class="dv">2</span>], A <span class="op">@</span> B, <span class="vs">r"then </span><span class="dv">$\b</span><span class="vs">oldsymbol{A}</span><span class="dv">$</span><span class="vs">: </span><span class="dv">$\b</span><span class="vs">oldsymbol{A}</span><span class="dv">\b</span><span class="vs">oldsymbol{B}</span><span class="dv">$</span><span class="vs">"</span>)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>show(axes[<span class="dv">1</span>, <span class="dv">0</span>], I,     <span class="st">"start"</span>)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>show(axes[<span class="dv">1</span>, <span class="dv">1</span>], A,     <span class="vs">r"after </span><span class="dv">$\b</span><span class="vs">oldsymbol{A}</span><span class="dv">$</span><span class="vs"> </span><span class="kw">(</span><span class="vs">rotate</span><span class="kw">)</span><span class="vs">"</span>)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>show(axes[<span class="dv">1</span>, <span class="dv">2</span>], B <span class="op">@</span> A, <span class="vs">r"then </span><span class="dv">$\b</span><span class="vs">oldsymbol{B}</span><span class="dv">$</span><span class="vs">: </span><span class="dv">$\b</span><span class="vs">oldsymbol{B}</span><span class="dv">\b</span><span class="vs">oldsymbol{A}</span><span class="dv">$</span><span class="vs">"</span>)</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="linear-maps_files/figure-html/cell-8-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="836" height="568"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The two bottom-right frames are genuinely different shapes, so <span class="math inline">\(\boldsymbol{A}\boldsymbol{B} \neq \boldsymbol{B}\boldsymbol{A}\)</span>. Matrix multiplication is <strong>not commutative</strong> — a fact that is mysterious as a rule about number arrays but obvious as a statement about composing motions. A handful of other properties, by contrast, <em>do</em> hold, and each is transparent from <a href="#eq-product-composition" class="quarto-xref">Equation&nbsp;<span>2.4</span></a>:</p>
+<ul>
+<li><strong>Associative</strong>: <span class="math inline">\((\boldsymbol{A}\boldsymbol{B})\boldsymbol{C} = \boldsymbol{A}(\boldsymbol{B}\boldsymbol{C})\)</span></li>
+<li><strong>Distributive</strong>: <span class="math inline">\(\boldsymbol{A}(\boldsymbol{B} + \boldsymbol{C}) = \boldsymbol{A}\boldsymbol{B} + \boldsymbol{A}\boldsymbol{C}\)</span> and <span class="math inline">\((\boldsymbol{A} + \boldsymbol{B})\boldsymbol{C} = \boldsymbol{A}\boldsymbol{C} + \boldsymbol{B}\boldsymbol{C}\)</span>.</li>
+<li><strong>Transpose</strong>: <span class="math inline">\((\boldsymbol{A}\boldsymbol{B})^\top = \boldsymbol{B}^\top \boldsymbol{A}^\top\)</span>.</li>
+</ul>
+</section>
+<section id="sec-la-regression" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="sec-la-regression"><span class="header-section-number">2.3</span> Linear regression in matrix form</h2>
+<p>Linear regression models an outcome as a linear function of some predictors plus an error. For a single observation <span class="math inline">\(i\)</span>, with <span class="math inline">\(p\)</span> predictors <span class="math inline">\(x_{i1}, \dots, x_{ip}\)</span>, <span class="math display">\[
+y_i = \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} + \varepsilon_i .
+\]</span> Usually the first predictor is held fixed at <span class="math inline">\(x_{i1} = 1\)</span>, so that <span class="math inline">\(\beta_1\)</span> is the <strong>intercept</strong>. The right-hand side is a linear combination of the coefficients <span class="math inline">\(\beta_1, \dots, \beta_p\)</span> — exactly the object matrices were built to express. Writing the predictors as a row and the coefficients as a column, the systematic part is an inner product, <span class="math display">\[
+\beta_1 x_{i1} + \cdots + \beta_p x_{ip}
+= \begin{bmatrix} x_{i1} &amp; \cdots &amp; x_{ip} \end{bmatrix}
+\begin{bmatrix} \beta_1 \\ \vdots \\ \beta_p \end{bmatrix} .
+\]</span></p>
+<p>Now stack all <span class="math inline">\(n\)</span> observations. Collect the outcomes into a vector <span class="math inline">\(\boldsymbol{y} \in \mathbb{R}^n\)</span>, the coefficients into <span class="math inline">\(\boldsymbol{\beta} \in \mathbb{R}^p\)</span>, the errors into <span class="math inline">\(\boldsymbol{\varepsilon} \in \mathbb{R}^n\)</span>, and the predictors into the <span class="math inline">\(n \times p\)</span> <strong>design matrix</strong> <span class="math inline">\(\boldsymbol{X}\)</span>, whose <span class="math inline">\(i\)</span>-th row is observation <span class="math inline">\(i\)</span> and whose <span class="math inline">\(j\)</span>-th column is predictor <span class="math inline">\(j\)</span> across all observations: <span class="math display">\[
+\underbrace{\begin{bmatrix} y_1 \\ y_2 \\ \vdots \\ y_n \end{bmatrix}}_{\boldsymbol{y}}
+=
+\underbrace{\begin{bmatrix}
+x_{11} &amp; x_{12} &amp; \cdots &amp; x_{1p} \\
+x_{21} &amp; x_{22} &amp; \cdots &amp; x_{2p} \\
+\vdots &amp; \vdots &amp; &amp; \vdots \\
+x_{n1} &amp; x_{n2} &amp; \cdots &amp; x_{np}
+\end{bmatrix}}_{\boldsymbol{X}}
+\underbrace{\begin{bmatrix} \beta_1 \\ \beta_2 \\ \vdots \\ \beta_p \end{bmatrix}}_{\boldsymbol{\beta}}
++
+\underbrace{\begin{bmatrix} \varepsilon_1 \\ \varepsilon_2 \\ \vdots \\ \varepsilon_n \end{bmatrix}}_{\boldsymbol{\varepsilon}} .
+\]</span> The <span class="math inline">\(n\)</span> scalar equations collapse into a single matrix equation, <span id="eq-regression"><span class="math display">\[
+\boldsymbol{y} = \boldsymbol{X}\boldsymbol{\beta} + \boldsymbol{\varepsilon} .
+\tag{2.6}\]</span></span> Read through the column picture of <a href="#eq-column-picture" class="quarto-xref">Equation&nbsp;<span>2.3</span></a>, the fitted part <span class="math inline">\(\boldsymbol{X}\boldsymbol{\beta}\)</span> is a linear combination of the columns of <span class="math inline">\(\boldsymbol{X}\)</span> — the predictors — weighted by the coefficients <span class="math inline">\(\boldsymbol{\beta}\)</span>. Regression asks for the <span class="math inline">\(\boldsymbol{\beta}\)</span> that makes this combination reproduce <span class="math inline">\(\boldsymbol{y}\)</span> as closely as possible. Because there are typically far more observations than predictors (<span class="math inline">\(n \gg p\)</span>), no <span class="math inline">\(\boldsymbol{\beta}\)</span> hits <span class="math inline">\(\boldsymbol{y}\)</span> exactly, and the error <span class="math inline">\(\boldsymbol{\varepsilon}\)</span> is what is left over. How to choose the best <span class="math inline">\(\boldsymbol{\beta}\)</span> — the method of least squares — waits until we have the tools of <a href="decompositions.html#sec-la-least-squares" class="quarto-xref"><span>Section 3.3</span></a>; for now the point is only that the whole dataset lives in the compact form <a href="#eq-regression" class="quarto-xref">Equation&nbsp;<span>2.6</span></a>.</p>
+</section>
+<section id="sec-la-inverse" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="sec-la-inverse"><span class="header-section-number">2.4</span> Inverting a map</h2>
+<p>Matrix-vector multiplication asks the question: given an input <span class="math inline">\(\boldsymbol{x} \in \mathbb{R}^n\)</span> and a map <span class="math inline">\(\boldsymbol{A} \in \mathbb{R}^{n\times n}\)</span>, what is the output <span class="math inline">\(\boldsymbol{A}\boldsymbol{x}\)</span>? The opposite question is just as natural: given an output <span class="math inline">\(\boldsymbol{y} \in \mathbb{R}^n\)</span> and a map <span class="math inline">\(\boldsymbol{A} \in \mathbb{R}^{n\times n}\)</span>, what input <span class="math inline">\(\boldsymbol{x} \in \mathbb{R}^n\)</span> produced it? In other words, can we run a map backward, recovering the input from the output? Intuitively, recovering is possible only when the map throws no information away. If two different inputs land on the same output, no rule could send that output back to both. For example, for two vectors <span class="math inline">\(\boldsymbol{x}_1 = [1, 1]^\top\)</span> and <span class="math inline">\(\boldsymbol{x}_2 = [1, 2]^\top\)</span>, and a projection matrix <span class="math display">\[
+\boldsymbol{A} = \begin{bmatrix} 1 &amp; 0 \\ 0 &amp; 0 \end{bmatrix}
+\]</span> <span class="math inline">\(\boldsymbol{A}\boldsymbol{x}_1 = \boldsymbol{A}\boldsymbol{x}_2 = [1, 0]^\top\)</span>. If we only see the output <span class="math inline">\([1, 0]^\top\)</span>, we cannot tell whether the input was <span class="math inline">\(\boldsymbol{x}_1\)</span> or <span class="math inline">\(\boldsymbol{x}_2\)</span>. We can see that, the second component of the input does not matter: the map has collapsed the vertical direction to zero, and that information is lost. The map cannot be reversed. Formally, a map that can be recovered is called <strong>invertible</strong>. To summarize the intuition: a linear map is invertible if and only if it does not lose information.</p>
+<div id="def-inverse" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 2.4</strong></span> A square matrix <span class="math inline">\(\boldsymbol{A}\)</span> of size <span class="math inline">\(n \times n\)</span> is <strong>invertible</strong> (or <strong>nonsingular</strong>) if there is a matrix <span class="math inline">\(\boldsymbol{A}^{-1}\)</span>, its <strong>inverse</strong>, with <span class="math display">\[
+\boldsymbol{A}^{-1}\boldsymbol{A} = \boldsymbol{A}\boldsymbol{A}^{-1} = \boldsymbol{I}.
+\]</span> A square matrix with no inverse is called <strong>singular</strong>.</p>
+</div>
+<div id="exm-invertible-maps" class="theorem example">
+<p><span class="theorem-title"><strong>Example 2.2</strong></span> Proof: If the square matrix <span class="math inline">\(\boldsymbol{A}\)</span> is invertible, and <span class="math inline">\(\boldsymbol{A}\boldsymbol{x}_1 = \boldsymbol{A}\boldsymbol{x}_2\)</span>, then <span class="math inline">\(\boldsymbol{x}_1 = \boldsymbol{x}_2\)</span>.</p>
+<p>Since <span class="math inline">\(\boldsymbol{A}\)</span> is invertible, multiply both sides on the left by <span class="math inline">\(\boldsymbol{A}^{-1}\)</span>: <span class="math display">\[
+\boldsymbol{A}^{-1}\boldsymbol{A}\boldsymbol{x}_1 =\boldsymbol{A}^{-1}\boldsymbol{A}\boldsymbol{x}_2.
+\]</span> Using <span class="math inline">\(\boldsymbol{A}^{-1}\boldsymbol{A}=\boldsymbol{I}\)</span>, we get <span class="math display">\[
+\boldsymbol{I}\boldsymbol{x}_1 =\boldsymbol{I}\boldsymbol{x}_2 \Rightarrow \boldsymbol{x}_1=\boldsymbol{x}_2.
+\]</span></p>
+</div>
+<p>One might ask why we restrict the definition of invertibility to square matrices. This question goes back to the geometric intuition of a linear map: we want the map to be a bijection between the input and output spaces, meaning it must be both one-to-one and onto:</p>
+<ul>
+<li>one-to-one: different inputs give different outputs;</li>
+<li>onto: every possible output is reachable.</li>
+</ul>
+<p>Let’s look at the following two examples of non-square matrices to see why non-square matrices cannot have both properties at once.</p>
+<div id="exm-tall-matrices" class="theorem example">
+<p><span class="theorem-title"><strong>Example 2.3</strong></span> Tall matrix: one-to-one but not onto</p>
+<p>Take the <span class="math inline">\(3\times 2\)</span> matrix <span class="math display">\[
+\boldsymbol{A}=
+\begin{bmatrix}
+1 &amp; 0\\
+0 &amp; 1\\
+0 &amp; 0
+\end{bmatrix}.
+\]</span> For an input <span class="math display">\[
+\boldsymbol{x}=
+\begin{bmatrix}
+a\\
+b
+\end{bmatrix},
+\]</span> we get <span class="math display">\[
+\boldsymbol{A}\boldsymbol{x}=
+\begin{bmatrix}
+a\\
+b\\
+0
+\end{bmatrix}.
+\]</span> It is one-to-one because if <span class="math inline">\(\boldsymbol{A}\boldsymbol{x}_1=\boldsymbol{A}\boldsymbol{x}_2\)</span>, then the first two coordinates must match, so <span class="math inline">\(\boldsymbol{x}_1=\boldsymbol{x}_2\)</span>.</p>
+<p>But it is not onto because not every vector in <span class="math inline">\(\mathbb{R}^3\)</span> can be reached. For example, <span class="math display">\[
+\begin{bmatrix}
+0\\
+0\\
+1
+\end{bmatrix}
+\]</span> is impossible to produce, because every output of <span class="math inline">\(\boldsymbol{A}\)</span> has third coordinate equal to <span class="math inline">\(0\)</span>. So this tall matrix preserves the input information, but its outputs only fill a plane in <span class="math inline">\(\mathbb{R}^3\)</span>, not all of <span class="math inline">\(\mathbb{R}^3\)</span>.</p>
+</div>
+<div id="exm-wide-matrices" class="theorem example">
+<p><span class="theorem-title"><strong>Example 2.4</strong></span> Wide matrix: onto but not one-to-one</p>
+<p>Take the <span class="math inline">\(2\times 3\)</span> matrix <span class="math display">\[
+\boldsymbol{B}=
+\begin{bmatrix}
+1 &amp; 0 &amp; 0\\
+0 &amp; 1 &amp; 0
+\end{bmatrix}.
+\]</span> For an input <span class="math display">\[
+\boldsymbol{x}=
+\begin{bmatrix}
+a\\
+b\\
+c
+\end{bmatrix},
+\]</span> we get <span class="math display">\[
+\boldsymbol{B}\boldsymbol{x}=
+\begin{bmatrix}
+a\\
+b
+\end{bmatrix}.
+\]</span> So <span class="math inline">\(\boldsymbol{B}\)</span> simply drops the third coordinate. It is onto because every vector in <span class="math inline">\(\mathbb{R}^2\)</span> can be reached. For example, if we want <span class="math display">\[
+\begin{bmatrix}
+u\\
+v
+\end{bmatrix},
+\]</span> we can choose <span class="math display">\[
+\boldsymbol{x}=
+\begin{bmatrix}
+u\\
+v\\
+0
+\end{bmatrix},
+\Rightarrow
+\boldsymbol{B}\boldsymbol{x}=
+\begin{bmatrix}
+u\\
+v
+\end{bmatrix}.
+\]</span> But it is not one-to-one because different inputs can give the same output. For example, <span class="math display">\[
+\boldsymbol{x}_1=
+\begin{bmatrix}
+1\\
+2\\
+0
+\end{bmatrix},
+\qquad
+\boldsymbol{x}_2=
+\begin{bmatrix}
+1\\
+2\\
+5
+\end{bmatrix}.
+\]</span> Then <span class="math display">\[
+\boldsymbol{B}\boldsymbol{x}_1=
+\begin{bmatrix}
+1\\
+2
+\end{bmatrix}
+\quad \text{and} \quad
+\boldsymbol{B}\boldsymbol{x}_2=
+\begin{bmatrix}
+1\\
+2
+\end{bmatrix}.
+\]</span> So <span class="math inline">\(\boldsymbol{B}\boldsymbol{x}_1=\boldsymbol{B}\boldsymbol{x}_2\)</span> even though <span class="math inline">\(\boldsymbol{x}_1\neq \boldsymbol{x}_2\)</span>. The wide matrix loses information because it forgets the third coordinate.</p>
+</div>
+<p>Another way to think about invertibility is the kernel. Intuitively, the kernel tells you whether the linear map loses information. Recall, for a linear map <span class="math inline">\(\boldsymbol{A}\)</span>, the kernel is <span class="math display">\[
+\ker \boldsymbol{A} = \{\boldsymbol{x}: \boldsymbol{A}\boldsymbol{x}=\boldsymbol{0}\}.
+\]</span> So if <span class="math display">\[
+\ker \boldsymbol{A}={\boldsymbol{0}},
+\]</span> that means the only vector that gets crushed to zero is the zero vector itself. Mathematically, <span class="math inline">\(\boldsymbol{A}\boldsymbol{x}_1=\boldsymbol{A}\boldsymbol{x}_2\)</span> if and only if <span class="math inline">\(\boldsymbol{A}\boldsymbol{x}_1-\boldsymbol{A}\boldsymbol{x}_2=\boldsymbol{0}\)</span>, i.e., <span class="math display">\[
+\boldsymbol{A}(\boldsymbol{x}_1-\boldsymbol{x}_2)=\boldsymbol{0}.
+\]</span> So the difference <span class="math inline">\(\boldsymbol{x}_1-\boldsymbol{x}_2\)</span> is in the kernel. A good geometric intuition is: If <span class="math inline">\(\ker \boldsymbol{A}\)</span> contains a nonzero vector, then <span class="math inline">\(\boldsymbol{A}\)</span> flattens some direction to zero. Information is lost, so you cannot reverse it. If <span class="math inline">\(\ker \boldsymbol{A}={\boldsymbol{0}}\)</span>, no direction is flattened. The transformation may rotate, stretch, shear, or reflect space, but it does not collapse it. Therefore it can be reversed.</p>
+<p>The <strong>projection</strong> panel from the gallery is the cautionary picture: it flattened the plane onto a line, sending the entire vertical direction to <span class="math inline">\(\boldsymbol{0}\)</span>. Once the height is gone, nothing can restore it; the projection is singular. Collapsing a dimension and losing invertibility are the same event. For a square map the converse holds too — a trivial kernel is enough to guarantee an inverse — so <span class="math display">\[
+\boldsymbol{A} \text{ invertible} \quad\iff\quad \ker\boldsymbol{A} = \{\boldsymbol{0}\},
+\]</span> invertible exactly when the map collapses nothing.</p>
+<p>Two properties are worth recording, both transparent from the “reverse” reading:</p>
+<ul>
+<li><strong>Reverse order</strong>: <span class="math inline">\((\boldsymbol{A}\boldsymbol{B})^{-1} = \boldsymbol{B}^{-1}\boldsymbol{A}^{-1}\)</span>. To reverse “<span class="math inline">\(\boldsymbol{B}\)</span> then <span class="math inline">\(\boldsymbol{A}\)</span>”, we need to undo <span class="math inline">\(\boldsymbol{A}\)</span> first, then <span class="math inline">\(\boldsymbol{B}\)</span> — the reverse order, like taking off a coat before the shirt you put on first.</li>
+<li><strong>Transpose</strong>: <span class="math inline">\((\boldsymbol{A}^\top)^{-1} = (\boldsymbol{A}^{-1})^\top\)</span>.</li>
+</ul>
+</section>
+<section id="sec-la-rank" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="sec-la-rank"><span class="header-section-number">2.5</span> Rank</h2>
+<p>Invertibility is all-or-nothing: a map either loses information or it does not. <strong>Rank</strong> measures how much information survives.</p>
+<div id="def-rank" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 2.5</strong></span> The <strong>rank</strong> of <span class="math inline">\(\boldsymbol{A}\)</span> is the number of linearly independent columns of <span class="math inline">\(\boldsymbol{A}\)</span>.</p>
+</div>
+<p>Recall from <a href="#sec-la-linear-maps" class="quarto-xref"><span>Section 2.1</span></a> that the image of <span class="math inline">\(\boldsymbol{A}\)</span> is the span of its columns. The rank counts how many of those columns are genuinely independent — how many independent directions the outputs actually fill. A redundant column, being a linear combination of the others (<a href="vectors.html#def-linear-independence" class="quarto-xref">Definition&nbsp;<span>1.5</span></a>), adds nothing new to the image and does not raise the rank.</p>
+<p>A matrix with <span class="math inline">\(n\)</span> columns has rank at most <span class="math inline">\(n\)</span> (and at most its number of rows). When the rank reaches this ceiling — every column linearly independent — the matrix has <strong>full rank</strong>; otherwise it is <strong>rank-deficient</strong>, and the map has squashed some directions together. The projection panel has rank <span class="math inline">\(1\)</span>: its second column is the zero vector, so only one independent direction — the first column — survives.</p>
+<p>Rank and kernel count the same collapse from opposite sides. Each input direction the map does not flatten becomes an independent direction of the image; each direction it flattens lands in the kernel. So for a matrix with <span class="math inline">\(n\)</span> columns, the independent directions it flattens and its rank always add up to <span class="math inline">\(n\)</span>. For a square <span class="math inline">\(n \times n\)</span> matrix, every column is independent (full rank) exactly when nothing is flattened (trivial kernel), extending the earlier equivalence to <span class="math display">\[
+\boldsymbol{A} \text{ invertible} \quad\iff\quad \ker\boldsymbol{A} = \{\boldsymbol{0}\} \quad\iff\quad \operatorname{rank}\boldsymbol{A} = n.
+\]</span></p>
+<div id="exm-multicollinearity-rank" class="theorem example">
+<p><span class="theorem-title"><strong>Example 2.5</strong></span> Perfect multicollinearity (<a href="vectors.html#exm-multicollinearity" class="quarto-xref">Example&nbsp;<span>1.1</span></a>) is exactly rank deficiency. With <span class="math inline">\(\boldsymbol{X}\)</span> an <span class="math inline">\(N \times k\)</span> matrix of <span class="math inline">\(k\)</span> exogeous variables, the OLS estimator needs <span class="math inline">\(\boldsymbol{X}^\top\boldsymbol{X}\)</span> to be invertible, which holds iff <span class="math inline">\(\operatorname{rank}\boldsymbol{X} = k\)</span> — the exogeous variables are linearly independent. If one exogeous variable is a linear combination of the others (e.g.&nbsp;a redundant dummy), then <span class="math inline">\(\operatorname{rank}\boldsymbol{X} &lt; k\)</span>, <span class="math inline">\(\boldsymbol{X}^\top\boldsymbol{X}\)</span> is singular, and the coefficients are <strong>not identified</strong>: infinitely many <span class="math inline">\(\hat{\boldsymbol{\beta}}\)</span> produce an identical fit, differing by a vector in the kernel. Rank is the precise measure of how many genuinely independent exogeous variables the data carry.</p>
+</div>
+<div id="exm-multicollinearity-rank-proof" class="theorem example">
+<p><span class="theorem-title"><strong>Example 2.6</strong></span> Proof: If <span class="math inline">\(\boldsymbol{X}\in \mathbb{R}^{N \times k}\)</span> has rank smaller than <span class="math inline">\(k\)</span>, then <span class="math inline">\(\boldsymbol{X}^\top\boldsymbol{X}\)</span> is singular.</p>
+<p>Because <span class="math inline">\(\boldsymbol{X}\in \mathbb{R}^{N\times k}\)</span> has rank smaller than <span class="math inline">\(k\)</span>, its columns are linearly dependent.Therefore, there exists a nonzero vector <span class="math inline">\(\boldsymbol{v}\in \mathbb{R}^k\)</span> with <span class="math inline">\(\boldsymbol{v}\neq \boldsymbol{0}\)</span>, such that <span class="math display">\[
+\boldsymbol{X}\boldsymbol{v}=\boldsymbol{0}.
+\]</span> Now multiply both sides by <span class="math inline">\(\boldsymbol{X}^\top\)</span>: <span class="math display">\[
+\boldsymbol{X}^\top\boldsymbol{X}\boldsymbol{v}=\boldsymbol{0}.
+\]</span> Therefore, <span class="math inline">\(\ker(\boldsymbol{X}^\top\boldsymbol{X})\neq {\boldsymbol{0}}\)</span>. <span class="math inline">\(\boldsymbol{X}^\top\boldsymbol{X}\)</span> is singular.</p>
+</div>
+</section>
+<section id="sec-la-determinants" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="sec-la-determinants"><span class="header-section-number">2.6</span> Determinant</h2>
+<p>Look back at the gallery of linear maps. The scaling panel stretched the plane, the rotation and shear panels preserved area, the reflection flipped orientation, and the projection crushed area to zero. Each map has a single number that summarizes its effect on area: the <strong>determinant</strong>.</p>
+<p>Here, we skip the complicated definition of the determinant and instead give a geometric reading. The determinant is the signed factor by which a linear map scales volume. In two dimensions, “volume” is area; in three dimensions, it is volume; in higher dimensions, it is hypervolume. The determinant is positive if the map preserves orientation and negative if it flips orientation.</p>
+<p>In two dimensions “volume” is area, and for a <span class="math inline">\(2 \times 2\)</span> matrix the determinant has the closed form <span class="math display">\[
+\det\begin{bmatrix} a &amp; b \\ c &amp; d \end{bmatrix} = ad - bc,
+\]</span> the signed area of the parallelogram spanned by the two columns.</p>
+<div id="exm-determinant-2d" class="theorem example">
+<p><span class="theorem-title"><strong>Example 2.7</strong></span> &nbsp;</p>
+<div id="c6ffa05a" class="cell" data-execution_count="8">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> np.array([[<span class="fl">2.0</span>, <span class="fl">1.0</span>],</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>              [<span class="fl">0.5</span>, <span class="fl">1.5</span>]])</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>square <span class="op">=</span> np.array([[<span class="dv">0</span>, <span class="dv">0</span>], [<span class="dv">1</span>, <span class="dv">0</span>], [<span class="dv">1</span>, <span class="dv">1</span>], [<span class="dv">0</span>, <span class="dv">1</span>], [<span class="dv">0</span>, <span class="dv">0</span>]]).T</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> A <span class="op">@</span> square</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>det <span class="op">=</span> np.linalg.det(A)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="fl">4.5</span>, <span class="fl">4.5</span>))</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>ax.fill(<span class="op">*</span>square, color<span class="op">=</span><span class="st">"0.85"</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>ax.fill(<span class="op">*</span>image, color<span class="op">=</span><span class="st">"tab:blue"</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>ax.quiver(<span class="dv">0</span>, <span class="dv">0</span>, A[<span class="dv">0</span>, <span class="dv">0</span>], A[<span class="dv">1</span>, <span class="dv">0</span>], angles<span class="op">=</span><span class="st">"xy"</span>, scale_units<span class="op">=</span><span class="st">"xy"</span>, scale<span class="op">=</span><span class="dv">1</span>, color<span class="op">=</span><span class="st">"tab:red"</span>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>ax.quiver(<span class="dv">0</span>, <span class="dv">0</span>, A[<span class="dv">0</span>, <span class="dv">1</span>], A[<span class="dv">1</span>, <span class="dv">1</span>], angles<span class="op">=</span><span class="st">"xy"</span>, scale_units<span class="op">=</span><span class="st">"xy"</span>, scale<span class="op">=</span><span class="dv">1</span>, color<span class="op">=</span><span class="st">"tab:green"</span>)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>ax.text(<span class="fl">1.35</span>, <span class="fl">0.9</span>, <span class="vs">r"area </span><span class="dv">$</span><span class="vs">=</span><span class="dv">\d</span><span class="vs">et</span><span class="dv">\b</span><span class="vs">oldsymbol{A}="</span> <span class="op">+</span> <span class="bu">str</span>(det) <span class="op">+</span> <span class="st">"$"</span>)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>ax.set_aspect(<span class="st">"equal"</span>)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>ax.set_xlim(<span class="op">-</span><span class="fl">0.4</span>, <span class="fl">3.3</span>)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="op">-</span><span class="fl">0.4</span>, <span class="fl">2.2</span>)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>ax.axhline(<span class="dv">0</span>, color<span class="op">=</span><span class="st">"0.9"</span>, lw<span class="op">=</span><span class="fl">0.5</span>, zorder<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>ax.axvline(<span class="dv">0</span>, color<span class="op">=</span><span class="st">"0.9"</span>, lw<span class="op">=</span><span class="fl">0.5</span>, zorder<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>ax.set_xticks([])</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>ax.set_yticks([])</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="linear-maps_files/figure-html/cell-9-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="354" height="254"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Let’s check the formula. Denote the red vector by <span class="math inline">\(\boldsymbol{v}_1 = [2, 0.5]^\top\)</span> and the green vector by <span class="math inline">\(\boldsymbol{v}_2 = [1, 1.5]^\top\)</span>. The area of the parallelogram is the base times the height. The base is the length of <span class="math inline">\(\boldsymbol{v}_1\)</span>, and the height is the length of the component of <span class="math inline">\(\boldsymbol{v}_2\)</span> perpendicular to <span class="math inline">\(\boldsymbol{v}_1\)</span>. The determinant formula gives <span class="math display">\[
+\boldsymbol{A} = \begin{bmatrix} 2 &amp; 1 \\ 0.5 &amp; 1.5 \end{bmatrix} \implies \det\boldsymbol{A} = 2\times 1.5 - 1\times 0.5 = 2.5.
+\]</span> Let’s compute the area geometrically. The length of the red line is <span class="math inline">\(\sqrt{2^2 + 0.5^2} = \sqrt{4 + 0.25} = \sqrt{4.25}\)</span>. Using the projection theorem, the height vector of the parallelogram is <span class="math display">\[
+\boldsymbol{v}_2 - \frac{\langle\boldsymbol{v}_1, \boldsymbol{v}_2\rangle}{\langle\boldsymbol{v}_1, \boldsymbol{v}_1\rangle} \boldsymbol{v}_1 =
+\begin{bmatrix}
+1 \\ 1.5
+\end{bmatrix}
+-
+\frac{1\times 2 + 1.5\times 0.5}{2^2 + 0.5^2} \begin{bmatrix}
+2 \\ 0.5
+\end{bmatrix} =
+\begin{bmatrix}
+-\frac{5}{17} \\ \frac{20}{17}
+\end{bmatrix}.
+\]</span> The length of this vector is <span class="math inline">\(\sqrt{(-5/17)^2 + (20/17)^2} = \frac{5}{\sqrt{17}}\)</span>. Therefore the area of the parallelogram is <span class="math inline">\(\sqrt{4.25}\times \frac{5}{\sqrt{17}} = 2.5\)</span>, exactly the determinant.</p>
+</div>
+<div id="exm-determinant-rotation" class="theorem example">
+<p><span class="theorem-title"><strong>Example 2.8</strong></span> Let’s check the determinant of a rotation matrix. For a rotation by <span class="math inline">\(\theta\)</span>, <span class="math display">\[
+\boldsymbol{A} = \begin{bmatrix} \cos\theta &amp; -\sin\theta \\ \sin\theta &amp; \cos\theta \end{bmatrix}
+\]</span> As we saw in the gallery, a rotation preserves area, so we expect <span class="math inline">\(\det\boldsymbol{A} = 1\)</span>. Let’s compute: <span class="math display">\[
+\det\boldsymbol{A} = \cos\theta\cdot\cos\theta - (-\sin\theta)\cdot\sin\theta = \cos^2\theta + \sin^2\theta = 1.
+\]</span></p>
+</div>
+<div id="exm-determinant-reflection" class="theorem example">
+<p><span class="theorem-title"><strong>Example 2.9</strong></span> Let’s check the determinant of a reflection matrix. For a reflection across the horizontal axis, <span class="math display">\[
+\boldsymbol{A} = \begin{bmatrix} 1 &amp; 0 \\ 0 &amp; -1 \end{bmatrix}
+\]</span> As we saw in the gallery, a reflection preserves area but flips orientation, so we expect <span class="math inline">\(\det\boldsymbol{A} = -1\)</span>. Let’s compute: <span class="math display">\[
+\det\boldsymbol{A} = 1\cdot(-1) - 0\cdot 0 = -1.
+\]</span></p>
+</div>
+<p>The geometric reading makes the key properties self-evident:</p>
+<ul>
+<li><span class="math inline">\(\det\boldsymbol{I} = 1\)</span> — the identity moves nothing.</li>
+<li><span class="math inline">\(\det(\boldsymbol{A}\boldsymbol{B}) = \det\boldsymbol{A}\,\det\boldsymbol{B}\)</span> — composed maps multiply their volume factors.</li>
+<li><span class="math inline">\(\det(\boldsymbol{A}^{-1}) = 1/\det\boldsymbol{A}\)</span> — reverse scales by the reciprocal.</li>
+<li><span class="math inline">\(\det(\boldsymbol{A}^\top) = \det\boldsymbol{A}\)</span>.</li>
+</ul>
+<p>In the projection panel, the matrix <span class="math display">\[
+\boldsymbol{A} = \begin{bmatrix} 1 &amp; 0 \\ 0 &amp; 0 \end{bmatrix}
+\]</span> flattens the plane to a line, i.e., area is crushed to zero. Therefore, the determinant is zero. In general, a square matrix is invertible exactly when its determinant is nonzero. The four equivalent conditions are summarized in the following theorem.</p>
+<div id="thm-invertibility" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 2.1</strong></span> For a square <span class="math inline">\(n \times n\)</span> matrix <span class="math inline">\(\boldsymbol{A}\)</span>, the following are equivalent:</p>
+<ol type="1">
+<li><span class="math inline">\(\boldsymbol{A}\)</span> is invertible;</li>
+<li><span class="math inline">\(\ker\boldsymbol{A} = \{\boldsymbol{0}\}\)</span>;</li>
+<li><span class="math inline">\(\operatorname{rank}\boldsymbol{A} = n\)</span>;</li>
+<li><span class="math inline">\(\det\boldsymbol{A} \neq 0\)</span>.</li>
+</ol>
+</div>
+</section>
+<section id="sec-la-eigenvalues" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="sec-la-eigenvalues"><span class="header-section-number">2.7</span> Eigenvalues and eigenvectors</h2>
+<p>Most directions are turned by a linear map. A few special directions are only stretched, and those directions are the key to understanding what the map does.</p>
+<div id="def-eigen" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 2.6</strong></span> A nonzero vector <span class="math inline">\(\boldsymbol{v}\)</span> is an <strong>eigenvector</strong> of a square matrix <span class="math inline">\(\boldsymbol{A}\)</span> if <span class="math display">\[
+\boldsymbol{A}\boldsymbol{v} = \lambda\boldsymbol{v}
+\]</span> for some scalar <span class="math inline">\(\lambda\)</span>, the associated <strong>eigenvalue</strong>. The map leaves the direction of <span class="math inline">\(\boldsymbol{v}\)</span> unchanged, merely scaling it by <span class="math inline">\(\lambda\)</span> (reversing it if <span class="math inline">\(\lambda &lt; 0\)</span>).</p>
+</div>
+<p>The gallery panels show the idea at a glance. A scaling <span class="math inline">\(\begin{bmatrix} a &amp; 0 \\ 0 &amp; b \end{bmatrix}\)</span> has the coordinate axes <span class="math inline">\(\boldsymbol{e}_1, \boldsymbol{e}_2\)</span> as eigenvectors, with eigenvalues <span class="math inline">\(a, b\)</span>: the axes are exactly the directions it does not turn. A shear fixes the horizontal axis (eigenvalue <span class="math inline">\(1\)</span>) and turns everything else. A <strong>rotation</strong> turns <em>every</em> direction, so it has no real eigenvectors at all (but complex ones).</p>
+<p>To find them, rewrite the defining equation as <span class="math inline">\((\boldsymbol{A} - \lambda\boldsymbol{I})\boldsymbol{v} = \boldsymbol{0}\)</span>. To satisfy this equation, at least one of the following must hold: either <span class="math inline">\(\boldsymbol{v} = \boldsymbol{0}\)</span>, or the matrix <span class="math inline">\(\boldsymbol{A} - \lambda\boldsymbol{I}\)</span> is singular. Therefore, By <a href="#thm-invertibility" class="quarto-xref">Theorem&nbsp;<span>2.1</span></a>, for nonzero <span class="math inline">\(\boldsymbol{v}\)</span> to exist, we must have <span id="eq-characteristic"><span class="math display">\[
+\det(\boldsymbol{A} - \lambda\boldsymbol{I}) = 0,
+\tag{2.7}\]</span></span> the <strong>characteristic equation</strong>. Its roots are the eigenvalues.</p>
+<p>The figure shows a symmetric matrix acting on the unit circle. A generic vector is rotated toward the long axis, but the two eigenvectors (grey) keep their directions, stretched by their eigenvalues (red); the circle becomes an ellipse whose axes are exactly the eigen-directions.</p>
+<div id="81039a9c" class="cell" data-execution_count="9">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> np.array([[<span class="fl">2.0</span>, <span class="fl">0.8</span>],</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>              [<span class="fl">0.8</span>, <span class="fl">1.2</span>]])</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>vals, vecs <span class="op">=</span> np.linalg.eigh(A)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">2</span> <span class="op">*</span> np.pi, <span class="dv">200</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>circle <span class="op">=</span> np.array([np.cos(t), np.sin(t)])</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>ellipse <span class="op">=</span> A <span class="op">@</span> circle</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">5</span>))</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>ax.plot(<span class="op">*</span>circle, color<span class="op">=</span><span class="st">"0.8"</span>, lw<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>ax.plot(<span class="op">*</span>ellipse, color<span class="op">=</span><span class="st">"tab:blue"</span>, lw<span class="op">=</span><span class="fl">1.5</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> lam, v <span class="kw">in</span> <span class="bu">zip</span>(vals, vecs.T):</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    ax.quiver(<span class="dv">0</span>, <span class="dv">0</span>, lam <span class="op">*</span> v[<span class="dv">0</span>], lam <span class="op">*</span> v[<span class="dv">1</span>], angles<span class="op">=</span><span class="st">"xy"</span>, scale_units<span class="op">=</span><span class="st">"xy"</span>, scale<span class="op">=</span><span class="dv">1</span>, color<span class="op">=</span><span class="st">"tab:red"</span>)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    ax.quiver(<span class="dv">0</span>, <span class="dv">0</span>, v[<span class="dv">0</span>], v[<span class="dv">1</span>], angles<span class="op">=</span><span class="st">"xy"</span>, scale_units<span class="op">=</span><span class="st">"xy"</span>, scale<span class="op">=</span><span class="dv">1</span>, color<span class="op">=</span><span class="st">"0.5"</span>)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>ax.set_aspect(<span class="st">"equal"</span>)</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>lim <span class="op">=</span> <span class="fl">2.6</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>ax.set_xlim(<span class="op">-</span>lim, lim)</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="op">-</span>lim, lim)</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>ax.axhline(<span class="dv">0</span>, color<span class="op">=</span><span class="st">"0.9"</span>, lw<span class="op">=</span><span class="fl">0.5</span>, zorder<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>ax.axvline(<span class="dv">0</span>, color<span class="op">=</span><span class="st">"0.9"</span>, lw<span class="op">=</span><span class="fl">0.5</span>, zorder<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>ax.set_xticks([])</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>ax.set_yticks([])</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="linear-maps_files/figure-html/cell-10-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="389" height="389"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="exm-eigenvectors" class="theorem example">
+<p><span class="theorem-title"><strong>Example 2.10</strong></span> Proof: Eigenvectors are linearly independent if the corresponding eigenvalues are distinct.</p>
+<p>Suppose <span class="math inline">\(\boldsymbol{v}_1\)</span> and <span class="math inline">\(\boldsymbol{v}_2\)</span> are two eigenvectors of <span class="math inline">\(\boldsymbol{A}\)</span> with distinct eigenvalues <span class="math inline">\(\lambda_1\)</span> and <span class="math inline">\(\lambda_2\)</span>. Suppose there is a linear combination that sums to zero: <span id="eq-eigenvectors-linear-combination"><span class="math display">\[
+\alpha_1 \boldsymbol{v}_1 + \alpha_2 \boldsymbol{v}_2 = \boldsymbol{0}.
+\tag{2.8}\]</span></span> we need to show that <span class="math inline">\(\alpha_1 = \alpha_2 = 0\)</span> is the only solution.</p>
+<p>Multiply <span class="math inline">\(\boldsymbol{A}\)</span> to both sides of <a href="#eq-eigenvectors-linear-combination" class="quarto-xref">Equation&nbsp;<span>2.8</span></a>: <span class="math display">\[
+\alpha_1 \boldsymbol{A}\boldsymbol{v}_1 + \alpha_2 \boldsymbol{A}\boldsymbol{v}_2 = \alpha_1 \lambda_1 \boldsymbol{v}_1 + \alpha_2 \lambda_2 \boldsymbol{v}_2 = \boldsymbol{0}
+\]</span></p>
+<p>Multiply <span class="math inline">\(\lambda_1\)</span> to both sides of <a href="#eq-eigenvectors-linear-combination" class="quarto-xref">Equation&nbsp;<span>2.8</span></a>: <span class="math display">\[
+\alpha_1 \lambda_1 \boldsymbol{v}_1 + \alpha_2 \lambda_1 \boldsymbol{v}_2 = \boldsymbol{0}.
+\]</span></p>
+<p>Subtract the second equation from the first: <span class="math display">\[
+\alpha_2 (\lambda_2 - \lambda_1) \boldsymbol{v}_2 = \boldsymbol{0}.
+\]</span> Since <span class="math inline">\(\lambda_2 \neq \lambda_1\)</span> and <span class="math inline">\(\boldsymbol{v}_2 \neq \boldsymbol{0}\)</span>, we must have <span class="math inline">\(\alpha_2 = 0\)</span>. Plugging this back into <a href="#eq-eigenvectors-linear-combination" class="quarto-xref">Equation&nbsp;<span>2.8</span></a> gives <span class="math inline">\(\alpha_1 \boldsymbol{v}_1 = \boldsymbol{0}\)</span>, so <span class="math inline">\(\alpha_1 = 0\)</span>. Therefore, the only solution is <span class="math inline">\(\alpha_1 = \alpha_2 = 0\)</span>, and the eigenvectors are linearly independent.</p>
+</div>
+<div id="exm-zero-eigenvalue" class="theorem example">
+<p><span class="theorem-title"><strong>Example 2.11</strong></span> Proof: A singular matrix will always have at least one eigenvalue equal to zero.</p>
+<p>Since <span class="math inline">\(\boldsymbol{A}\)</span> is singular, it is not invertible, so by <a href="#thm-invertibility" class="quarto-xref">Theorem&nbsp;<span>2.1</span></a>, <span class="math inline">\(\ker(\boldsymbol{A})\neq {\boldsymbol{0}}\)</span>. In other words, there is some nonzero vector <span class="math inline">\(\boldsymbol{x}\)</span> such that <span class="math inline">\(\boldsymbol{A}\boldsymbol{x} = \boldsymbol{0}\)</span>. This can be rewritten as <span class="math display">\[
+\boldsymbol{A}\boldsymbol{x}=0\boldsymbol{x}
+\]</span> which matches the definition of an eigenvalue: <span class="math display">\[
+\boldsymbol{A}\boldsymbol{x}=\lambda \boldsymbol{x},
+\]</span> where <span class="math inline">\(\boldsymbol{x}\neq \boldsymbol{0}\)</span>. Therefore, <span class="math inline">\(\lambda=0\)</span> is an eigenvalue of <span class="math inline">\(\boldsymbol{A}\)</span>.</p>
+</div>
+<section id="sec-la-diagonalization" class="level3">
+<h3 class="anchored" data-anchor-id="sec-la-diagonalization">Diagonalization</h3>
+<p>Suppose an <span class="math inline">\(n \times n\)</span> matrix <span class="math inline">\(\boldsymbol{A}\)</span> has <span class="math inline">\(n\)</span> linearly independent eigenvectors. Place them as the columns of <span class="math inline">\(\boldsymbol{P}\)</span> and their eigenvalues on the diagonal of <span class="math inline">\(\boldsymbol{D}\)</span>. Then <span id="eq-diagonalization"><span class="math display">\[
+\boldsymbol{A} = \boldsymbol{P}\boldsymbol{D}\boldsymbol{P}^{-1} =
+\begin{bmatrix}
+| &amp; | &amp; &amp; | \\
+\boldsymbol{v}_1 &amp; \boldsymbol{v}_2 &amp; \cdots &amp; \boldsymbol{v}_n \\
+| &amp; | &amp; &amp; |
+\end{bmatrix}
+\begin{bmatrix}
+\lambda_1 &amp; 0 &amp; \cdots &amp; 0 \\
+0 &amp; \lambda_2 &amp; \cdots &amp; 0 \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+0 &amp; 0 &amp; \cdots &amp; \lambda_n
+\end{bmatrix}
+\begin{bmatrix}
+| &amp; | &amp; &amp; | \\
+\boldsymbol{v}_1 &amp; \boldsymbol{v}_2 &amp; \cdots
+&amp; \boldsymbol{v}_n \\
+| &amp; | &amp; &amp; |
+\end{bmatrix}^{-1}.
+\tag{2.9}\]</span></span> Read right to left, this says: <span class="math inline">\(\boldsymbol{P}^{-1}\)</span> rewrites a vector in the eigenvector basis, <span class="math inline">\(\boldsymbol{D}\)</span> scales along each eigen-axis, and <span class="math inline">\(\boldsymbol{P}\)</span> translates back. The figure traces the “F” through the three steps for our symmetric <span class="math inline">\(\boldsymbol{A}\)</span>, whose eigenvectors are orthogonal. Watch the two eigen-axes (red, green): <span class="math inline">\(\boldsymbol{P}^{-1}\)</span> swings them onto the coordinate axes, <span class="math inline">\(\boldsymbol{D}\)</span> stretches each by its eigenvalue, and <span class="math inline">\(\boldsymbol{P}\)</span> swings them back — the net effect on the “F” being exactly <span class="math inline">\(\boldsymbol{A}\)</span>.</p>
+<div id="ddc01043" class="cell" data-execution_count="10">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> np.array([[<span class="fl">2.0</span>, <span class="fl">0.8</span>],</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>              [<span class="fl">0.8</span>, <span class="fl">1.2</span>]])</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>vals, vecs <span class="op">=</span> np.linalg.eigh(A)   <span class="co"># columns of vecs: orthonormal eigenvectors</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>P <span class="op">=</span> vecs</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>D <span class="op">=</span> np.diag(vals)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>Pinv <span class="op">=</span> P.T                       <span class="co"># orthogonal, so the inverse is the transpose</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>stages <span class="op">=</span> [</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    (np.eye(<span class="dv">2</span>),    <span class="st">"start"</span>),</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    (Pinv,         <span class="vs">r"</span><span class="dv">$\b</span><span class="vs">oldsymbol{P}</span><span class="dv">^</span><span class="vs">{-1}</span><span class="dv">$</span><span class="vs">: to eigenbasis"</span>),</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    (D <span class="op">@</span> Pinv,     <span class="vs">r"</span><span class="dv">$\b</span><span class="vs">oldsymbol{D}</span><span class="dv">$</span><span class="vs">: scale axes"</span>),</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    (P <span class="op">@</span> D <span class="op">@</span> Pinv, <span class="vs">r"</span><span class="dv">$\b</span><span class="vs">oldsymbol{P}</span><span class="dv">$</span><span class="vs">: back </span><span class="dv">$</span><span class="vs">=</span><span class="dv">\b</span><span class="vs">oldsymbol{A}</span><span class="dv">$</span><span class="vs">"</span>),</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">4</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="fl">3.2</span>))</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, (M, title) <span class="kw">in</span> <span class="bu">zip</span>(axes, stages):</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    ax.plot(<span class="op">*</span>(M <span class="op">@</span> F), color<span class="op">=</span><span class="st">"0.8"</span>, lw<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    ax.fill(<span class="op">*</span>(M <span class="op">@</span> F), color<span class="op">=</span><span class="st">"tab:blue"</span>, alpha<span class="op">=</span><span class="fl">0.15</span>)</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> v, color <span class="kw">in</span> <span class="bu">zip</span>(vecs.T, [<span class="st">"tab:red"</span>, <span class="st">"tab:green"</span>]):</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>        w <span class="op">=</span> M <span class="op">@</span> v</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>        ax.quiver(<span class="dv">0</span>, <span class="dv">0</span>, w[<span class="dv">0</span>], w[<span class="dv">1</span>], angles<span class="op">=</span><span class="st">"xy"</span>, scale_units<span class="op">=</span><span class="st">"xy"</span>, scale<span class="op">=</span><span class="dv">1</span>, color<span class="op">=</span>color)</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>    ax.set_title(title, fontsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>    ax.set_aspect(<span class="st">"equal"</span>)</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>    ax.set_xlim(<span class="op">-</span><span class="fl">3.2</span>, <span class="fl">3.2</span>)</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>    ax.set_ylim(<span class="op">-</span><span class="fl">3.2</span>, <span class="fl">3.2</span>)</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>    ax.axhline(<span class="dv">0</span>, color<span class="op">=</span><span class="st">"0.9"</span>, lw<span class="op">=</span><span class="fl">0.5</span>, zorder<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>    ax.axvline(<span class="dv">0</span>, color<span class="op">=</span><span class="st">"0.9"</span>, lw<span class="op">=</span><span class="fl">0.5</span>, zorder<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>    ax.set_xticks([])</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>    ax.set_yticks([])</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="linear-maps_files/figure-html/cell-11-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="1142" height="309"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Diagonalization also makes repeated application easy — <span class="math inline">\(\boldsymbol{A}^k = \boldsymbol{P}\boldsymbol{D}^k\boldsymbol{P}^{-1}\)</span>, and <span class="math inline">\(\boldsymbol{D}^k\)</span> merely raises each eigenvalue to the <span class="math inline">\(k\)</span>. For a system that evolves by <span class="math inline">\(\boldsymbol{x}_{t+1} = \boldsymbol{A}\boldsymbol{x}_t\)</span> — a vector autoregression, or a Markov chain over states — the eigenvalues govern the dynamics: the system is stable when every <span class="math inline">\(|\lambda| &lt; 1\)</span> and explosive if any <span class="math inline">\(|\lambda| &gt; 1\)</span>.</p>
+<div id="exm-prod-of-eigenvalues" class="theorem example">
+<p><span class="theorem-title"><strong>Example 2.12</strong></span> Proof: The product of the eigenvalues of a square matrix is equal to its determinant. <span class="math display">\[
+\det(\boldsymbol{A}) = \det(\boldsymbol{P}\boldsymbol{D}\boldsymbol{P}^{-1})=\det(\boldsymbol{P})\det(\boldsymbol{D})det(\boldsymbol{P}^{-1})=\det(\boldsymbol{D})=\prod_{i=1}^{n}\lambda_i.
+\]</span></p>
+</div>
+</section>
+<section id="sec-la-symmetric" class="level3">
+<h3 class="anchored" data-anchor-id="sec-la-symmetric">Symmetric matrices</h3>
+<p>If <span class="math inline">\(\boldsymbol{A} = \boldsymbol{A}^\top\)</span>, then <span class="math inline">\(\boldsymbol{A}\)</span> is a symmetric matrix.</p>
+<div id="thm-spectral" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 2.2 (Spectral theorem)</strong></span> A real symmetric matrix has only real eigenvalues and a full set of mutually orthogonal eigenvectors. It can therefore be diagonalized by an orthogonal matrix <span class="math inline">\(\boldsymbol{Q}\)</span> (orthonormal columns, <span class="math inline">\(\boldsymbol{Q}^{-1} = \boldsymbol{Q}^\top\)</span>): <span class="math display">\[
+\boldsymbol{A} = \boldsymbol{Q}\boldsymbol{\Lambda}\boldsymbol{Q}^\top.
+\]</span></p>
+</div>
+<p>We already showed that eigenvectors are linearly independent (orthogonal) if the corresponding eigenvalues are distinct. However, real symmetric matrices can have repeated eigenvalues. The spectral theorem guarantees that even in this case, we can choose the eigenvectors to be orthogonal. Let’s see an example. Consider the symmetric matrix <span class="math display">\[
+\boldsymbol{A}=
+\begin{pmatrix}
+2&amp;0&amp;0\\
+0&amp;2&amp;0\\
+0&amp;0&amp;3
+\end{pmatrix}.
+\]</span> This is real symmetric. Its eigenvalues are <span class="math inline">\(2,2,3\)</span> (i.e., <span class="math inline">\(2\)</span> is repeated). For <span class="math inline">\(\lambda=2\)</span>, the eigenvectors satisfy <span class="math inline">\(\boldsymbol{A}\boldsymbol{x} = 2\boldsymbol{x}\)</span>. Let <span class="math display">\[
+\boldsymbol{x}=
+\begin{pmatrix}
+a\\
+b\\
+c
+\end{pmatrix}.
+\]</span> Then <span class="math display">\[
+\boldsymbol{A}\boldsymbol{x}=
+\begin{pmatrix}
+2a\\
+2b\\
+3c
+\end{pmatrix},
+\qquad
+2\boldsymbol{x}=
+\begin{pmatrix}
+2a\\
+2b\\
+2c
+\end{pmatrix}.
+\]</span> First, we need <span class="math inline">\(3c=2c\)</span>, which implies <span class="math inline">\(c=0\)</span>. Then <span class="math inline">\(2a=2a\)</span> and <span class="math inline">\(2b=2b\)</span> are automatically satisfied. Therefore, for <span class="math inline">\(\lambda=2\)</span>, the eigenvectors can be any vector of the form <span class="math display">\[
+\begin{pmatrix}
+a\\
+b\\
+0
+\end{pmatrix},
+\]</span> which is a plane in <span class="math inline">\(\mathbb{R}^3\)</span>. Now here are two eigenvectors for <span class="math inline">\(\lambda=2\)</span>: <span class="math display">\[
+\boldsymbol{v}_1=
+\begin{pmatrix}
+1\\
+0\\
+0
+\end{pmatrix},
+\qquad
+\boldsymbol{v}_2=
+\begin{pmatrix}
+1\\
+1\\
+0
+\end{pmatrix}.
+\]</span> Both are eigenvectors corresponding to <span class="math inline">\(\lambda=2\)</span>, but they are not orthogonal, since <span class="math inline">\(\langle\boldsymbol{v}_1, \boldsymbol{v}_2\rangle = 1 \neq 0\)</span>. So repeated-eigenvalue eigenvectors are not automatically orthogonal. But we can instead choose these two eigenvectors for <span class="math inline">\(\lambda=2\)</span>: <span class="math display">\[
+\boldsymbol{q}_1=
+\begin{pmatrix}
+1\\
+0\\
+0
+\end{pmatrix},
+\qquad
+\boldsymbol{q}_2=
+\begin{pmatrix}
+0\\
+1\\
+0
+\end{pmatrix}.
+\]</span> They are both still eigenvectors for <span class="math inline">\(\lambda=2\)</span>, and now they are orthogonal.</p>
+</section>
+<section id="sec-la-quadratic-forms" class="level3">
+<h3 class="anchored" data-anchor-id="sec-la-quadratic-forms">Quadratic forms and positive definiteness</h3>
+<p>Another worth noting definition related to symmetric matrices is the quadratic form. The <strong>quadratic form</strong> of matrix <span class="math inline">\(\boldsymbol{A}\)</span> is the scalar function <span class="math display">\[
+q_{\boldsymbol{A}}(\boldsymbol{x}) = \boldsymbol{x}^\top\boldsymbol{A}\boldsymbol{x}.
+\]</span> Even though the quadratic form is defined for any matrix, it is particularly important for symmetric matrices. Any quadratic form can be rewritten as a symmetric quadratic form. Consider the case of quadratic forms in three dimensions (<span class="math inline">\(x, y, z\)</span>). The matrix <span class="math inline">\(\boldsymbol{A}\)</span> has the form <span class="math display">\[
+\boldsymbol{A}=
+\begin{bmatrix}
+a&amp;b&amp;c\\
+d&amp;e&amp;f\\
+g&amp;h&amp;k
+\end{bmatrix}
+\]</span> <span class="math display">\[
+q_{\boldsymbol{A}}=ax^{2}+ey^{2}+kz^{2}+(b+d)xy+(c+g)xz+(f+h)yz
+\]</span> The matrix <span class="math inline">\(\boldsymbol{B}\)</span> has the form <span class="math display">\[
+\boldsymbol{B}=
+\begin{bmatrix}
+a&amp;\frac {b+d}{2}&amp;\frac {c+g}{2}\\
+\frac {b+d}{2}&amp;e&amp;\frac {f+h}{2}\\
+\frac {c+g}{2}&amp;\frac {f+h}{2}&amp;k
+\end{bmatrix}
+\]</span> <span class="math display">\[
+q_{\boldsymbol{B}}=ax^{2}+ey^{2}+kz^{2}+(b+d)xy+(c+g)xz+(f+h)yz
+\]</span> So, two different matrices define the same quadratic form if and only if they have the same elements on the diagonal and the same values for the sums b + d, c + g and f + h. In particular, the quadratic form <span class="math inline">\(q_{\boldsymbol{A}}\)</span> is defined by a unique symmetric matrix.</p>
+<div id="def-positive-definite" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 2.7</strong></span> A symmetric matrix <span class="math inline">\(\boldsymbol{A}\)</span> is</p>
+<ul>
+<li><strong>positive semidefinite</strong> if <span class="math inline">\(\boldsymbol{x}^\top\boldsymbol{A}\boldsymbol{x} \ge 0\)</span> for every <span class="math inline">\(\boldsymbol{x}\)</span>;</li>
+<li><strong>positive definite</strong> if <span class="math inline">\(\boldsymbol{x}^\top\boldsymbol{A}\boldsymbol{x} &gt; 0\)</span> for every <span class="math inline">\(\boldsymbol{x} \neq \boldsymbol{0}\)</span>.</li>
+</ul>
+</div>
+<p>Whether a symmetric matrix is positive (semi)definite is decided entirely by the sign of its eigenvalues.</p>
+<div id="thm-pd-eigenvalues" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 2.3 (Rayleigh quotient theorem)</strong></span> Let <span class="math inline">\(\boldsymbol{A}\)</span> be a symmetric matrix with eigenvalues <span class="math inline">\(\lambda_1, \dots, \lambda_n\)</span>, then for any <span class="math inline">\(\boldsymbol{x} \neq \boldsymbol{0}\)</span> with <span class="math inline">\(\langle\boldsymbol{x}, \boldsymbol{x}\rangle = 1\)</span>, <span class="math display">\[
+\max \{\lambda_1, \dots, \lambda_n\} = \max_{\boldsymbol{x}} \boldsymbol{x}^\top\boldsymbol{A}\boldsymbol{x}, \quad \text{and} \quad
+\min \{\lambda_1, \dots, \lambda_n\} = \min_{\boldsymbol{x}} \boldsymbol{x}^\top\boldsymbol{A}\boldsymbol{x}\
+\]</span> More generally, for any <span class="math inline">\(\boldsymbol{x} \neq \boldsymbol{0}\)</span>, <span class="math display">\[
+\max \{\lambda_1, \dots, \lambda_n\} = \max_{\boldsymbol{x}} \frac{\boldsymbol{x}^\top\boldsymbol{A}\boldsymbol{x}}{\boldsymbol{x}^\top\boldsymbol{x}}, \quad \text{and} \quad
+\min \{\lambda_1, \dots, \lambda_n\} = \min_{\boldsymbol{x}} \frac{\boldsymbol{x}^\top\boldsymbol{A}\boldsymbol{x}}{\boldsymbol{x}^\top\boldsymbol{x}}.
+\]</span></p>
+</div>
+<p>The above theorem implies that a symmetric matrix <span class="math inline">\(\boldsymbol{A}\)</span>:</p>
+<ul>
+<li><span class="math inline">\(\boldsymbol{A}\)</span> is positive semidefinite <span class="math inline">\(\iff\)</span> every <span class="math inline">\(\lambda_i \ge 0\)</span>;</li>
+<li><span class="math inline">\(\boldsymbol{A}\)</span> is positive definite <span class="math inline">\(\iff\)</span> every <span class="math inline">\(\lambda_i &gt; 0\)</span>.</li>
+</ul>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>By the spectral theorem (<a href="#thm-spectral" class="quarto-xref">Theorem&nbsp;<span>2.2</span></a>), <span class="math inline">\(\boldsymbol{A} = \boldsymbol{Q}\boldsymbol{\Lambda}\boldsymbol{Q}^\top\)</span>, where <span class="math inline">\(\boldsymbol{Q}\)</span> is orthogonal (its columns <span class="math inline">\(\boldsymbol{q}_1, \dots, \boldsymbol{q}_n\)</span> are orthonormal eigenvectors) and <span class="math inline">\(\boldsymbol{\Lambda} = \operatorname{diag}(\lambda_1, \dots, \lambda_n)\)</span>. As <span class="math inline">\(\boldsymbol{q}_1, \dots, \boldsymbol{q}_n\)</span> are orthonormal, any vector <span class="math inline">\(\boldsymbol{x} \in \mathbb{R}^n\)</span> can be expressed as a linear combination of them, i.e., <span class="math inline">\(\boldsymbol{x} = \boldsymbol{Q}\boldsymbol{c}\)</span> for some <span class="math inline">\(\boldsymbol{c} \in \mathbb{R}^n\)</span>. Then <span class="math display">\[
+\boldsymbol{x}^\top\boldsymbol{A}\boldsymbol{x} = (\boldsymbol{Q}\boldsymbol{c})^\top\boldsymbol{A}(\boldsymbol{Q}\boldsymbol{c}) = \boldsymbol{c}^\top\boldsymbol{Q}^\top\boldsymbol{Q}\boldsymbol{\Lambda}\boldsymbol{Q}^\top\boldsymbol{Q}\boldsymbol{c} = \boldsymbol{c}^\top\boldsymbol{\Lambda}\boldsymbol{c}
+\]</span> <span class="math display">\[
+\frac{\boldsymbol{x}^\top\boldsymbol{A}\boldsymbol{x}}{\boldsymbol{x}^\top\boldsymbol{x}} = \frac{\boldsymbol{c}^\top\boldsymbol{\Lambda}\boldsymbol{c}}{(\boldsymbol{Q}\boldsymbol{c})^\top(\boldsymbol{Q}\boldsymbol{c})} = \frac{\boldsymbol{c}^\top\boldsymbol{\Lambda}\boldsymbol{c}}{\boldsymbol{c}^\top\boldsymbol{c}} = \frac{\boldsymbol{c}^\top\boldsymbol{\Lambda}\boldsymbol{c}}{\lVert\boldsymbol{c}\rVert^2}
+\]</span> Denote <span class="math inline">\(\boldsymbol{u} = \boldsymbol{c}/\lVert\boldsymbol{c}\rVert\)</span>, then <span class="math inline">\(\lVert\boldsymbol{u}\rVert = 1\)</span> and <span class="math display">\[
+\frac{\boldsymbol{x}^\top\boldsymbol{A}\boldsymbol{x}}{\boldsymbol{x}^\top\boldsymbol{x}} = \boldsymbol{u}^\top\boldsymbol{\Lambda}\boldsymbol{u} = \sum_{i=1}^{n} \lambda_i u_i^2
+\]</span> The last expression is a convex combination of the eigenvalues <span class="math inline">\(\lambda_1, \dots, \lambda_n\)</span>, and therefore it is bounded by the minimum and maximum eigenvalues. The bounds are attained when <span class="math inline">\(\boldsymbol{x}\)</span> is the eigenvector corresponding to the minimum or maximum eigenvalue. <span class="math display">\[
+\frac{\boldsymbol{x_{\max}}^\top\boldsymbol{A}\boldsymbol{x_{\max}}}{\boldsymbol{x_{\max}}^\top\boldsymbol{x_{\max}}} =  
+\frac{\boldsymbol{x_{\max}}^\top\lambda_{\max}\boldsymbol{x_{\max}}}{\boldsymbol{x_{\max}}^\top\boldsymbol{x_{\max}}} = \lambda_{\max}
+\]</span></p>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../../notes/sections/linear-algebra/vectors.html" class="pagination-link" aria-label="Vectors and Vector Spaces">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Vectors and Vector Spaces</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../../notes/sections/linear-algebra/decompositions.html" class="pagination-link" aria-label="Matrix Calculus and Projection">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Calculus and Projection</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

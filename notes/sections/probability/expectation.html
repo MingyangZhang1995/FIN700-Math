@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>5&nbsp; Distributions, Expectation, and Dependence – FIN700: Mathematics for PhD Finance</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../notes/sections/probability/common-distributions.html" rel="next">
+<link href="../../../notes/sections/probability/probability-space.html" rel="prev">
+<script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-9e3e5b9121e68b3f077afb32f2c64d95.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/sections/probability/probability-space.html">Probability Theory</a></li><li class="breadcrumb-item"><a href="../../../notes/sections/probability/expectation.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Distributions, Expectation, and Dependence</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../../../">FIN700: Mathematics for PhD Finance</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/MingyangZhang1995/FIN700-Math" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Linear Algebra</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/linear-algebra/vectors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Vectors and Vector Spaces</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/linear-algebra/linear-maps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Linear Maps and Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/linear-algebra/decompositions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Calculus and Projection</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Probability Theory</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/probability/probability-space.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Probability Spaces and Random Variables</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/probability/expectation.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Distributions, Expectation, and Dependence</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/probability/common-distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Common Probability Distributions</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Machine Learning</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/machine-learning/introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">introduction.html</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-pr-distributions-joint" id="toc-sec-pr-distributions-joint" class="nav-link active" data-scroll-target="#sec-pr-distributions-joint"><span class="header-section-number">5.1</span> Joint, marginal, and conditional distributions</a>
+  <ul class="collapse">
+  <li><a href="#marginal-distribution" id="toc-marginal-distribution" class="nav-link" data-scroll-target="#marginal-distribution">Marginal distribution</a></li>
+  <li><a href="#independence" id="toc-independence" class="nav-link" data-scroll-target="#independence">Independence</a></li>
+  </ul></li>
+  <li><a href="#sec-pr-moments" id="toc-sec-pr-moments" class="nav-link" data-scroll-target="#sec-pr-moments"><span class="header-section-number">5.2</span> Moments</a></li>
+  <li><a href="#sec-pr-conditional-expectation" id="toc-sec-pr-conditional-expectation" class="nav-link" data-scroll-target="#sec-pr-conditional-expectation"><span class="header-section-number">5.3</span> Conditional expectation</a></li>
+  <li><a href="#sec-pr-mean-variance" id="toc-sec-pr-mean-variance" class="nav-link" data-scroll-target="#sec-pr-mean-variance"><span class="header-section-number">5.4</span> Mean variance portfolio theory</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/sections/probability/probability-space.html">Probability Theory</a></li><li class="breadcrumb-item"><a href="../../../notes/sections/probability/expectation.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Distributions, Expectation, and Dependence</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-pr-expectation" class="quarto-section-identifier"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Distributions, Expectation, and Dependence</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a href="probability-space.html" class="quarto-xref"><span>Chapter 4</span></a> built the law of a <strong>single</strong> random variable — its distribution <span class="math inline">\(\mu_X\)</span>, its CDF, its mass or density. Finance, though, is never about one quantity in isolation: a portfolio holds many assets, a factor model relates a stock to the market, a risk report asks how losses in one book move with another. We therefore need the joint behavior of several random variables at once, and the summaries — expectation, variance, covariance — that compress it into usable numbers. This chapter develops both, in that order: first the distributions, then the moments read off them.</p>
+<section id="sec-pr-distributions-joint" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="sec-pr-distributions-joint"><span class="header-section-number">5.1</span> Joint, marginal, and conditional distributions</h2>
+<p>Fix two random variables <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> on the same probability space <span class="math inline">\((\Omega, \mathcal{F}, \mathbb{P})\)</span>. Because they are defined on the same <span class="math inline">\(\Omega\)</span>, each outcome <span class="math inline">\(\omega\)</span> produces a <em>pair</em> <span class="math inline">\((X(\omega), Y(\omega))\)</span>, a point in the plane <span class="math inline">\(\mathbb{R}^2\)</span>. The pair <span class="math inline">\((X, Y)\)</span> is a <strong>random vector</strong>, and its distribution lives on <span class="math inline">\(\mathbb{R}^2\)</span>. To be clear, <span class="math inline">\(\Omega\)</span> is not necessarily one-dimensional: it could be two-dimensional too. For example, <span class="math inline">\(\Omega\)</span> could be the unit square <span class="math inline">\([0,1]^2\)</span>, with <span class="math inline">\(\omega = (\omega_1, \omega_2)\)</span>, and we could define <span class="math inline">\(X(\omega) = \omega_1\)</span> and <span class="math inline">\(Y(\omega) = \omega_2\)</span>.</p>
+<p>The joint distribution answers every question about <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> <em>together</em>: the probability that they land in any region of the plane.</p>
+<div id="def-joint-distribution" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 5.1</strong></span> The <strong>joint CDF</strong> of <span class="math inline">\((X, Y)\)</span> is <span class="math display">\[
+F(x, y) = \mathbb{P}(X \le x,\ Y \le y).
+\]</span> The pair is <strong>jointly discrete</strong> if it takes values in a countable set, described by the <strong>joint PMF</strong> <span class="math display">\[
+p(x, y) = \mathbb{P}(X = x,\ Y = y), \qquad \sum_{x}\sum_{y} p(x,y) = 1,
+\]</span> and <strong>jointly continuous</strong> if there is a <strong>joint PDF</strong> <span class="math inline">\(f(x,y) \ge 0\)</span> with <span class="math display">\[
+\mathbb{P}\big((X,Y) \in A\big) = \iint_{A} f(x,y)\, dx\, dy, \qquad \iint_{\mathbb{R}^2} f = 1 .
+\]</span></p>
+</div>
+<section id="marginal-distribution" class="level3">
+<h3 class="anchored" data-anchor-id="marginal-distribution">Marginal distribution</h3>
+<p>Sometimes we hold the joint distribution but care about only one variable. Recovering its distribution means summing over the other.</p>
+<div id="def-marginal-distribution" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 5.2</strong></span> The <strong>marginal</strong> distribution of <span class="math inline">\(X\)</span> is obtained by summing or integrating the joint over all values of <span class="math inline">\(Y\)</span>: <span class="math display">\[
+p_X(x) = \sum_{y} p(x, y) \quad\text{(discrete)}, \qquad
+f_X(x) = \int_{-\infty}^{\infty} f(x, y)\, dy \quad\text{(continuous)},
+\]</span> and symmetrically for <span class="math inline">\(Y\)</span>.</p>
+</div>
+<div id="exm-marginal-distribution-discrete" class="theorem example">
+<p><span class="theorem-title"><strong>Example 5.1</strong></span> The table below shows a joint PMF of two discrete random variables <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>. The four inner cells are the joint probabilities <span class="math inline">\(p(x, y)\)</span>; the rightmost column and bottom row are the marginals <span class="math inline">\(p_Y(y)\)</span> and <span class="math inline">\(p_X(x)\)</span>, obtained by summing each row and column. The total probability is <span class="math inline">\(1\)</span>.</p>
+<div id="744b8e69" class="cell" data-fig-height="4.8" data-fig-width="7" data-execution_count="1">
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="expectation_files/figure-html/cell-2-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="643" height="539"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<p>However, by looking at the table, one may also ask the following question: Given that <span class="math inline">\(X = x_1\)</span>, what is the probability that <span class="math inline">\(Y = y_1\)</span>? This is the <strong>conditional</strong> distribution of <span class="math inline">\(Y\)</span> given <span class="math inline">\(X = x_1\)</span>, which is obtained by slicing the joint PMF at <span class="math inline">\(X = x_1\)</span> and renormalizing so that the slice sums to one. Therefore, intuitively, given <span class="math inline">\(X = x_1\)</span>, the conditional probability of <span class="math inline">\(Y = y_1\)</span> is <span class="math inline">\(4/32\)</span> divided by <span class="math inline">\(16/32\)</span>, equal to <span class="math inline">\(1/4\)</span>. We can formalize this as follows.</p>
+<div id="def-conditional-distribution" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 5.3</strong></span> For <span class="math inline">\(x\)</span> with <span class="math inline">\(p_X(x) &gt; 0\)</span> (discrete) or <span class="math inline">\(f_X(x) &gt; 0\)</span> (continuous), the <strong>conditional</strong> distribution of <span class="math inline">\(Y\)</span> given <span class="math inline">\(X = x\)</span> is <span class="math display">\[
+p_{Y \mid X}(y \mid x) = \frac{p(x, y)}{p_X(x)}, \qquad
+f_{Y \mid X}(y \mid x) = \frac{f(x, y)}{f_X(x)} .
+\]</span></p>
+</div>
+<p>You can also see the above definition from <a href="probability-space.html#def-conditional-probability" class="quarto-xref">Definition&nbsp;<span>4.4</span></a>. In discrete cases, set <span class="math display">\[
+A=\{\omega\in\Omega:Y(\omega)=y\},\qquad B=\{\omega\in\Omega:X(\omega)=x\},
+\]</span> <span class="math display">\[
+A\cap B=\{\omega\in\Omega:X(\omega)=x,Y(\omega)=y\}.
+\]</span> Then <span class="math display">\[
+\mathbb{P}(A\mid B)=\frac{\mathbb{P}(A\cap B)}{\mathbb{P}(B)}=\frac{\mathbb{P}(X=x,Y=y)}{\mathbb{P}(X=x)}=\frac{p(x,y)}{p_X(x)}=p_{Y\mid X}(y\mid x).
+\]</span> The continuous case is similar, but a bit more subtle, so we skip the details. Reading the identity backward gives the decomposition we lean on constantly, <span id="eq-joint-factorization"><span class="math display">\[
+f(x, y) = f_{Y \mid X}(y \mid x)\, f_X(x),
+\tag{5.1}\]</span></span> “joint = conditional <span class="math inline">\(\times\)</span> marginal.”</p>
+</section>
+<section id="independence" class="level3">
+<h3 class="anchored" data-anchor-id="independence">Independence</h3>
+<p>The extreme case is when conditioning changes nothing — learning <span class="math inline">\(X\)</span> tells us nothing about <span class="math inline">\(Y\)</span>.</p>
+<div id="def-independence-rv" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 5.4</strong></span> <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are <strong>independent</strong> if the joint factors into the marginals, <span class="math display">\[
+f(x, y) = f_X(x)\, f_Y(y) \qquad\text{for all } x, y,
+\]</span> or equivalently, <span class="math display">\[
+f_{Y \mid X}(y \mid x) = f_Y(y)
+\]</span></p>
+</div>
+<p>Similarly, one can see the definition of independence from <a href="probability-space.html#def-independence" class="quarto-xref">Definition&nbsp;<span>4.5</span></a>. Again, the discrete case is straightforward: <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are independent if and only if for all <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>, <span class="math display">\[
+\mathbb{P}(X=x,Y=y)=\mathbb{P}(X=x)\,\mathbb{P}(Y=y), \quad\text{or equivalently,}\quad \mathbb{P}(Y=y\mid X=x)=\mathbb{P}(Y=y).
+\]</span></p>
+<p>The figure below takes a jointly normal <span class="math inline">\((X, Y)\)</span> with correlation <span class="math inline">\(0.7\)</span>: the left panel shows the joint density with a slice at <span class="math inline">\(X = x_0\)</span>, and the right panel shows that the conditional <span class="math inline">\(f_{Y\mid X=x_0}\)</span> is shifted (toward positive <span class="math inline">\(Y\)</span>, since the two are positively related) and narrower (conditioning removes uncertainty) than the marginal <span class="math inline">\(f_Y\)</span>.</p>
+<div id="f8e6f3b7" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> stats</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>rho, x0 <span class="op">=</span> <span class="fl">0.7</span>, <span class="fl">1.2</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>Sigma <span class="op">=</span> np.array([[<span class="fl">1.0</span>, rho], [rho, <span class="fl">1.0</span>]])</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>rv <span class="op">=</span> stats.multivariate_normal(mean<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">0</span>], cov<span class="op">=</span>Sigma)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">240</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>XX, YY <span class="op">=</span> np.meshgrid(g, g)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>Z <span class="op">=</span> rv.pdf(np.dstack([XX, YY]))</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>fig, (axL, axR) <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># left: joint density with the conditioning slice X = x0</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>axL.contour(XX, YY, Z, levels<span class="op">=</span><span class="dv">6</span>, cmap<span class="op">=</span><span class="st">"Blues"</span>)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>axL.axvline(x0, color<span class="op">=</span><span class="st">"tab:red"</span>, ls<span class="op">=</span><span class="st">"--"</span>, lw<span class="op">=</span><span class="fl">1.5</span>)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>axL.text(x0 <span class="op">+</span> <span class="fl">0.1</span>, <span class="op">-</span><span class="fl">2.6</span>, <span class="vs">r"</span><span class="dv">$</span><span class="vs">X=x_0</span><span class="dv">$</span><span class="vs">"</span>, color<span class="op">=</span><span class="st">"tab:red"</span>)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>axL.set_xlabel(<span class="vs">r"</span><span class="dv">$</span><span class="vs">X</span><span class="dv">$</span><span class="vs">"</span>)<span class="op">;</span> axL.set_ylabel(<span class="vs">r"</span><span class="dv">$</span><span class="vs">Y</span><span class="dv">$</span><span class="vs">"</span>)<span class="op">;</span> axL.set_aspect(<span class="st">"equal"</span>)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>axL.set_title(<span class="st">"joint density and a slice"</span>)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co"># right: marginal of Y vs conditional of Y given X = x0</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">300</span>)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>axR.plot(y, stats.norm.pdf(y), color<span class="op">=</span><span class="st">"0.5"</span>, lw<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="vs">r"marginal </span><span class="dv">$</span><span class="vs">f_Y</span><span class="dv">$</span><span class="vs">"</span>)</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>cond_mean, cond_sd <span class="op">=</span> rho <span class="op">*</span> x0, np.sqrt(<span class="dv">1</span> <span class="op">-</span> rho<span class="op">**</span><span class="dv">2</span>)</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>axR.plot(y, stats.norm.pdf(y, cond_mean, cond_sd), color<span class="op">=</span><span class="st">"tab:red"</span>, lw<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>         label<span class="op">=</span><span class="vs">r"conditional </span><span class="dv">$</span><span class="vs">f_{Y</span><span class="dv">\m</span><span class="vs">id X=x_0}</span><span class="dv">$</span><span class="vs">"</span>)</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>axR.set_xlabel(<span class="vs">r"</span><span class="dv">$</span><span class="vs">Y</span><span class="dv">$</span><span class="vs">"</span>)<span class="op">;</span> axR.set_yticks([])</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>axR.legend(fontsize<span class="op">=</span><span class="dv">9</span>)<span class="op">;</span> axR.set_title(<span class="st">"marginal vs. conditional"</span>)</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="expectation_files/figure-html/cell-3-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="892" height="374"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-pr-moments" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="sec-pr-moments"><span class="header-section-number">5.2</span> Moments</h2>
+<div id="def-expectation" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 5.5</strong></span> The <strong>expectation</strong> of <span class="math inline">\(X\)</span> is its probability-weighted average value, <span class="math display">\[
+\mathbb{E}[X] = \sum_x x\, p_X(x) \quad\text{(discrete)}, \qquad
+\mathbb{E}[X] = \int_{-\infty}^\infty x\, f_X(x)\, dx \quad\text{(continuous)} .
+\]</span></p>
+</div>
+<p>Formally, expectation is a single object — the Lebesgue integral <span class="math inline">\(\int_\Omega X(\omega)\, d\mathbb{P}(\omega)\)</span> — that the two formulas above specialize; the integral itself is beyond the math camp and unnecessary for computation.</p>
+<p>Below are some properties of expectation that we will use constantly:</p>
+<ol type="1">
+<li>Linearity: For any random variables <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> and constants <span class="math inline">\(a\)</span>, <span class="math inline">\(b\)</span>, and <span class="math inline">\(c\)</span>, <span class="math display">\[
+\mathbb{E}[aX + bY + c] = a\,\mathbb{E}[X] + b\,\mathbb{E}[Y] + c.
+\]</span> Similarly, for a random vector <span class="math inline">\(\boldsymbol{X} = [X_1, \dots, X_k]^\top\)</span> and a constant vector <span class="math inline">\(\boldsymbol{w} = [w_1, \dots, w_k]^\top\)</span>, <span class="math display">\[
+\mathbb{E}[\boldsymbol{w}^\top \boldsymbol{X}] = \mathbb{E}[\sum_{i=1}^k w_i\, X_i] = \sum_{i=1}^k w_i\, \mathbb{E}[X_i]
+= \boldsymbol{w}^\top \mathbb{E}[\boldsymbol{X}].
+\]</span> For a constant matrix <span class="math inline">\({\boldsymbol{A} = \begin{bmatrix} -- &amp; \boldsymbol{a}_{1}^\top &amp; -- \\ \vdots &amp; \vdots &amp; \vdots \\
+-- &amp; \boldsymbol{a}_{k}^\top &amp; --\end{bmatrix}}\)</span> <span class="math display">\[
+\mathbb{E}[\boldsymbol{A}\boldsymbol{X}] = \mathbb{E}
+\begin{bmatrix}
+\boldsymbol{a}_1^\top \boldsymbol{X} \\
+\vdots \\
+\boldsymbol{a}_k^\top \boldsymbol{X}
+\end{bmatrix}
+= \boldsymbol{A}\,\mathbb{E}[\boldsymbol{X}].
+\]</span> The linearity of expectation also holds for matrices of random variables: <span class="math display">\[
+\mathbb{E}[\boldsymbol{A}\boldsymbol{X}\boldsymbol{X}^\top\boldsymbol{B}] = \boldsymbol{A}\,\mathbb{E}[\boldsymbol{X}\boldsymbol{X}^\top]\,\boldsymbol{B}.
+\]</span> where <span class="math inline">\(\boldsymbol{A}\)</span> and <span class="math inline">\(\boldsymbol{B}\)</span> are constant matrices of appropriate dimensions, and <span class="math inline">\(\boldsymbol{X}\)</span> is a random vector, so <span class="math inline">\(\boldsymbol{X} \boldsymbol{X}^\top\)</span> is a matrix.</li>
+<li>Law of the unconscious statistician (LOTUS): The expectation of a function <span class="math inline">\(g(X)\)</span> is the average of <span class="math inline">\(g\)</span> under the distribution of <span class="math inline">\(X\)</span>, <span id="eq-lotus"><span class="math display">\[
+\mathbb{E}[g(X)] = \sum_x g(x)\, p_X(x) \quad\text{or}\quad \int_{-\infty}^\infty g(x)\, f_X(x)\, dx,
+\tag{5.2}\]</span></span> and, for a function of two variables against the joint, <span class="math inline">\(\mathbb{E}[g(X,Y)] = \iint g(x,y)\, f(x,y)\, dx\, dy\)</span>.</li>
+</ol>
+<div id="def-variance" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 5.6</strong></span> The <strong>variance</strong> of <span class="math inline">\(X\)</span> is <span class="math display">\[
+\operatorname{Var}(X) = \mathbb{E}\!\big[(X - \mathbb{E}[X])^2\big] = \mathbb{E}[X^2] - (\mathbb{E}[X])^2,
+\]</span> and the <strong>standard deviation</strong> is <span class="math inline">\(\operatorname{std}(X) = \sqrt{\operatorname{Var}(X)}\)</span>, in the same units as <span class="math inline">\(X\)</span>.</p>
+</div>
+<p>Variance is <em>not</em> linear: <span class="math display">\[
+\operatorname{Var}(aX + b) = a^2 \operatorname{Var}(X)
+\]</span> We can check the above by definition: <span class="math display">\[
+\operatorname{Var}(aX + b) = \mathbb{E}[(aX + b)^2] - (\mathbb{E}[aX + b])^2
+= a^2 \mathbb{E}[X^2] + 2ab \mathbb{E}[X] + b^2 - (a\mathbb{E}[X] + b)^2 = a^2 \operatorname{Var}(X) .
+\]</span> We will see that variance can be interpreted as a special case of covariance.</p>
+<div id="def-covariance" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 5.7</strong></span> The <strong>covariance</strong> of <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> is <span class="math display">\[
+\operatorname{Cov}(X, Y) = \mathbb{E}\big[(X - \mathbb{E}[X])(Y - \mathbb{E}[Y])\big] = \mathbb{E}[XY] - \mathbb{E}[X]\,\mathbb{E}[Y] ,
+\]</span></p>
+</div>
+<p>Covariance is positive when the variables tend to be on the same side of their means together, negative when they trade off. Recall, when we introduced the inner product in <a href="../linear-algebra/vectors.html" class="quarto-xref"><span>Chapter 1</span></a>, we mentioned a broader definition. In probability, the inner product is <span class="math inline">\(\langle X, Y \rangle = \mathbb{E}[XY]\)</span>, and covariance is the inner product of the centered variables <span class="math inline">\(X - \mathbb{E}[X]\)</span> and <span class="math inline">\(Y - \mathbb{E}[Y]\)</span>. Geometrically, inner products measure the angle between two vectors, and covariance measures the angle between two random variables. If the angle is acute, the covariance is positive; if obtuse, negative; if perpendicular, zero. The same properties of inner products carry over to <span class="math inline">\(\mathbb{E}[XY]\)</span> and <span class="math inline">\(\operatorname{Cov}(X, Y)\)</span>:</p>
+<ol type="1">
+<li><span class="math inline">\(\operatorname{Cov}(X, Y) = \operatorname{Cov}(Y, X)\)</span>.</li>
+<li><span class="math inline">\(\operatorname{Cov}(aX + bY, Z) = a\,\operatorname{Cov}(X, Z) + b\,\operatorname{Cov}(Y, Z)\)</span>.</li>
+</ol>
+<p>As we mentioned that variance is a special case of covariance, we can see that <span class="math inline">\(\operatorname{Var}(X) = \operatorname{Cov}(X, X)\)</span>. Therefore, using the properties of covariance, we can also see that <span class="math display">\[
+\operatorname{Var}(aX) = \operatorname{Cov}(aX, aX) = a^2 \operatorname{Cov}(X, X) = a^2 \operatorname{Var}(X) .
+\]</span></p>
+<div id="exm-covariance" class="theorem example">
+<p><span class="theorem-title"><strong>Example 5.2</strong></span> Compute <span class="math inline">\(\operatorname{Var}(aX + bY)\)</span>. <span class="math display">\[
+\begin{aligned}
+\operatorname{Var}(aX + bY) &amp;= \operatorname{Cov}(aX + bY, aX + bY) \\
+&amp;= \operatorname{Cov}(aX, aX + bY) + \operatorname{Cov}(bY, aX + bY) \quad \text{by rule 2} \\
+&amp;= \operatorname{Cov}(aX+bY, aX) + \operatorname{Cov}(aX+bY, bY) \quad \text{by rule 1}\\
+&amp;= \operatorname{Cov}(aX, aX) + \operatorname{Cov}(bY, aX) + \operatorname{Cov}(aX, bY) + \operatorname{Cov}(bY, bY) \quad \text{by rule 2}\\
+&amp;= a^2\operatorname{Var}(X) + 2ab\operatorname{Cov}(X, Y) + b^2\operatorname{Var}(Y) .
+\end{aligned}
+\]</span></p>
+</div>
+<div id="exm-covariance-matrix" class="theorem example">
+<p><span class="theorem-title"><strong>Example 5.3</strong></span> Compute <span class="math inline">\(\operatorname{Var}(\sum_{i=1}^N a_i X_i)\)</span>. <span class="math display">\[
+\begin{aligned}
+\operatorname{Var}\Big(\sum_{i=1}^N a_i X_i\Big) &amp;= \operatorname{Cov}\Big(\sum_{i=1}^N a_i X_i, \sum_{j=1}^N a_j X_j\Big) \\
+&amp;= \sum_{i=1}^N \sum_{j=1}^N a_i a_j \operatorname{Cov}(X_i, X_j)
+\end{aligned}
+\]</span></p>
+</div>
+<div id="def-covariance-matrix" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 5.8</strong></span> For a random vector <span class="math inline">\(\boldsymbol{X} = (X_1, \dots, X_k)\)</span> with <span class="math inline">\(\boldsymbol{\mu} = \mathbb{E}[\boldsymbol{X}]\)</span>, the <strong>covariance matrix</strong> is <span class="math display">\[
+\boldsymbol{\Sigma} = \operatorname{Cov}(\boldsymbol{X}) = \mathbb{E}\big[(\boldsymbol{X} - \boldsymbol{\mu})(\boldsymbol{X} - \boldsymbol{\mu})^\top\big],
+\qquad \Sigma_{ij} = \operatorname{Cov}(X_i, X_j) .
+\]</span> Its diagonal holds the variances, its off-diagonal the covariances; it is symmetric.</p>
+</div>
+<div id="thm-cov-psd" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 5.1</strong></span> The covariance matrix <span class="math inline">\(\boldsymbol{\Sigma}\)</span> is positive semidefinite: <span class="math inline">\(\boldsymbol{w}^\top \boldsymbol{\Sigma}\, \boldsymbol{w} \ge 0\)</span> for every <span class="math inline">\(\boldsymbol{w}\)</span>.</p>
+</div>
+<p>The proof is immediate from <a href="#exm-covariance-matrix" class="quarto-xref">Example&nbsp;<span>5.3</span></a>: <span class="math inline">\(\operatorname{Var}(\boldsymbol{w}^\top \boldsymbol{X}) = \boldsymbol{w}^\top \boldsymbol{\Sigma}\, \boldsymbol{w}\)</span>, and variance is nonnegative.</p>
+</section>
+<section id="sec-pr-conditional-expectation" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="sec-pr-conditional-expectation"><span class="header-section-number">5.3</span> Conditional expectation</h2>
+<p>We now combine the two halves of the chapter: the conditional distribution of <a href="#def-conditional-distribution" class="quarto-xref">Definition&nbsp;<span>5.3</span></a> and the expectation of <a href="#def-expectation" class="quarto-xref">Definition&nbsp;<span>5.5</span></a>. Averaging <span class="math inline">\(Y\)</span> under its conditional distribution gives the best forecast of <span class="math inline">\(Y\)</span> once <span class="math inline">\(X\)</span> is known — and it closes the loop with least squares.</p>
+<div id="def-conditional-expectation" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 5.9</strong></span> The <strong>conditional expectation</strong> of <span class="math inline">\(Y\)</span> given <span class="math inline">\(X = x\)</span> averages <span class="math inline">\(Y\)</span> under the conditional distribution, <span class="math display">\[
+\mathbb{E}[Y \mid X = x] = \int y\, f_{Y \mid X}(y \mid x)\, dy .
+\]</span></p>
+</div>
+<p>Note that <span class="math inline">\(\mathbb{E}[Y \mid X = x]\)</span> is not a number but a function of <span class="math inline">\(x\)</span>. It is the best prediction of <span class="math inline">\(Y\)</span> given <span class="math inline">\(X = x\)</span>.</p>
+<p>Letting <span class="math inline">\(x\)</span> vary (remove “<span class="math inline">\(=x\)</span>” from the expression), <span class="math inline">\(\mathbb{E}[Y \mid X]\)</span> is itself a random variable — a function of <span class="math inline">\(X\)</span>. One natural question is: what is the expectation of that random variable? Formally, what is <span class="math display">\[
+\mathbb{E}\big[\mathbb{E}[Y \mid X]\big]
+\]</span> To answer this question, we first need to be clear about the meaning of <span class="math inline">\(\mathbb{E}[Y \mid X]\)</span>. It is a random variable that depends on <span class="math inline">\(X\)</span>, so we should express it as a function of <span class="math inline">\(X\)</span>, and then take the expectation of that function. So, the first step is <span class="math display">\[
+\mathbb{E}_X\big[\mathbb{E}_Y[Y \mid X]\big] = \int \mathbb{E}[Y \mid X = x] f_X(x) dx
+\]</span> where we use subscripts <span class="math inline">\(X\)</span> or <span class="math inline">\(Y\)</span> to remind ourselves that the expectation is taken with respect to the distribution of <span class="math inline">\(X\)</span> or <span class="math inline">\(Y\)</span>, respectively. Then, we plug in the <a href="#def-conditional-expectation" class="quarto-xref">Definition&nbsp;<span>5.9</span></a> to get <span class="math display">\[
+\mathbb{E}_X\big[\mathbb{E}_Y[Y \mid X]\big] = \int  \int y f_{Y \mid X}(y \mid x) dy  f_X(x) dx
+\]</span> Rearranging the order of integration and using the <a href="#def-conditional-distribution" class="quarto-xref">Definition&nbsp;<span>5.3</span></a>, we have <span class="math display">\[
+\mathbb{E}_X\big[\mathbb{E}_Y[Y \mid X]\big] = \int  \int y f_{Y \mid X}(y \mid x) f_X(x) dx dy = \mathbb{E}[Y]
+\]</span> The result is the <strong>law of iterated expectations</strong>.</p>
+<div id="thm-tower" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 5.2 (Law of iterated expectations (tower property))</strong></span> <span class="math display">\[
+\mathbb{E}\big[\mathbb{E}[Y \mid X]\big] = \mathbb{E}[Y] .
+\]</span> More generally, conditioning on less information averages out the more refined conditional: <span class="math inline">\(\mathbb{E}[\mathbb{E}[Y \mid X, Z] \mid X] = \mathbb{E}[Y \mid X]\)</span>.</p>
+</div>
+</section>
+<section id="sec-pr-mean-variance" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="sec-pr-mean-variance"><span class="header-section-number">5.4</span> Mean variance portfolio theory</h2>
+<p>In this section, we apply the machinery of expectation and covariance to portfolio theory. We will derive the mean-variance efficient frontier.</p>
+<p>Suppose we have <span class="math inline">\(N\)</span> assets with expected returns <span class="math inline">\(\boldsymbol{\mu}\)</span> and covariance matrix <span class="math inline">\(\boldsymbol{\Sigma}\)</span>. Because of risk aversion, investors want to maximize expected return but minimize risk. The question is: how do we combine the <span class="math inline">\(N\)</span> assets into a portfolio that achieves the best tradeoff between expected return and risk? In asset pricing, you will see the following optimization problem: for a given level of expected return <span class="math inline">\(\mu_p\)</span>, minimize the portfolio variance. Therefore, we need to answer the following question:</p>
+<ol type="1">
+<li>How to express the portfolio expected return?</li>
+<li>How to express the portfolio variance?</li>
+</ol>
+<p>We use <span class="math inline">\(\boldsymbol{w}\)</span> to denote the portfolio weights, where <span class="math inline">\(w_i\)</span> is the weight of asset <span class="math inline">\(i\)</span> in the portfolio. Then, the portfolio expected return is a linear combination of the individual asset expected returns <span class="math inline">\(\boldsymbol{w}^\top \boldsymbol{\mu}\)</span>. The portfolio variance is a quadratic form of the weights and the covariance matrix <span class="math inline">\(\boldsymbol{w}^\top \boldsymbol{\Sigma} \boldsymbol{w}\)</span>. The optimization problem is therefore <span class="math display">\[
+\begin{aligned}
+\min_{\boldsymbol{w}} \quad &amp; \boldsymbol{w}^\top \boldsymbol{\Sigma} \boldsymbol{w} \\
+\text{s.t.} \quad &amp; \boldsymbol{w}^\top \boldsymbol{\mu} = \mu_p \\
+&amp; \boldsymbol{w}^\top \boldsymbol{1} = 1
+\end{aligned}
+\]</span> where <span class="math inline">\(\boldsymbol{1}\)</span> is a vector of ones. The first constraint ensures that the portfolio has the desired expected return, and the second constraint ensures that the weights sum to one (i.e., the entire wealth is invested).</p>
+<p>We set the Lagrangian for this optimization problem: <span class="math display">\[
+\mathcal{L}(\boldsymbol{w}, \lambda, \gamma) = \boldsymbol{w}^\top \boldsymbol{\Sigma} \boldsymbol{w} - \lambda (\boldsymbol{w}^\top \boldsymbol{\mu} - \mu_p) - \gamma (\boldsymbol{w}^\top \boldsymbol{1} - 1)
+\]</span> Taking the derivative with respect to <span class="math inline">\(\boldsymbol{w}\)</span> (hint: <a href="../linear-algebra/decompositions.html#exm-diff-quadratic" class="quarto-xref">Example&nbsp;<span>3.3</span></a>): <span class="math display">\[
+d\mathcal{L} = 2\boldsymbol{w}^\top \boldsymbol{\Sigma} d\boldsymbol{w} - \lambda \boldsymbol{\mu}^\top d\boldsymbol{w} - \gamma \boldsymbol{1}^\top d\boldsymbol{w}
+\]</span> Setting the derivative to zero gives the first-order condition: <span class="math display">\[
+\boldsymbol{w} = \frac{1}{2} \boldsymbol{\Sigma}^{-1} (\lambda \boldsymbol{\mu} + \gamma \boldsymbol{1})
+\]</span> To solve for <span class="math inline">\(\lambda\)</span> and <span class="math inline">\(\gamma\)</span>, we plug this expression for <span class="math inline">\(\boldsymbol{w}\)</span> into the constraints: <span class="math display">\[
+\begin{cases}
+\boldsymbol{w}^\top \boldsymbol{\mu} &amp;= \mu_p \\
+\boldsymbol{w}^\top \boldsymbol{1} &amp;= 1
+\end{cases}
+\Rightarrow
+\begin{cases}
+\frac{1}{2} (\lambda \boldsymbol{\mu} + \gamma \boldsymbol{1})^\top \boldsymbol{\Sigma}^{-1} \boldsymbol{\mu} &amp;= \mu_p \\
+\frac{1}{2} (\lambda \boldsymbol{\mu} + \gamma \boldsymbol{1})^\top \boldsymbol{\Sigma}^{-1} \boldsymbol{1} &amp;= 1
+\end{cases}
+\]</span> For simplicity, we denote <span class="math display">\[
+\boldsymbol{A} =
+\begin{bmatrix}
+\frac{1}{2}\boldsymbol{\mu}^\top\boldsymbol{\Sigma}^{-1}\boldsymbol{\mu} &amp; \frac{1}{2}\boldsymbol{1}^\top\boldsymbol{\Sigma}^{-1}\boldsymbol{\mu} \\
+\frac{1}{2}\boldsymbol{1}^\top\boldsymbol{\Sigma}^{-1}\boldsymbol{\mu} &amp; \frac{1}{2}\boldsymbol{1}^\top\boldsymbol{\Sigma}^{-1}\boldsymbol{1}
+\end{bmatrix}
+\]</span> Then we can write the above system of equations as a linear system: <span class="math display">\[
+\boldsymbol{A}
+\begin{bmatrix}
+\lambda \\
+\gamma
+\end{bmatrix}=
+\begin{bmatrix}
+\mu_p \\
+1
+\end{bmatrix}
+\Rightarrow
+\begin{bmatrix}
+\lambda \\
+\gamma
+\end{bmatrix} = \boldsymbol{A}^{-1}
+\begin{bmatrix}
+\mu_p \\
+1
+\end{bmatrix}
+\]</span></p>
+<div id="843e741b" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> pyplot <span class="im">as</span> plt</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">0</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="dv">25</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate expected returns and a positive definite covariance matrix.</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Assets with higher exposure to the first factor have higher expected returns.</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>factor_loadings <span class="op">=</span> rng.normal(<span class="fl">0.03</span>, <span class="fl">0.02</span>, size<span class="op">=</span>(N, <span class="dv">3</span>))</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>market_exposure <span class="op">=</span> factor_loadings[:, [<span class="dv">0</span>]]</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>mu <span class="op">=</span> <span class="fl">0.03</span> <span class="op">+</span> market_exposure <span class="op">+</span> rng.normal(<span class="dv">0</span>, <span class="fl">0.01</span>, size<span class="op">=</span>(N, <span class="dv">1</span>))</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>idiosyncratic_var <span class="op">=</span> rng.uniform(<span class="fl">0.03</span>, <span class="fl">0.10</span>, N) <span class="op">**</span> <span class="dv">2</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>Sigma <span class="op">=</span> factor_loadings <span class="op">@</span> factor_loadings.T <span class="op">+</span> np.diag(idiosyncratic_var)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Solve the minimum-variance portfolio for each target return.</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>ones <span class="op">=</span> np.ones((N, <span class="dv">1</span>))</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>Sigma_inv <span class="op">=</span> np.linalg.inv(Sigma)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> <span class="fl">0.5</span> <span class="op">*</span> np.array([</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    [(mu.T <span class="op">@</span> Sigma_inv <span class="op">@</span> mu).item(), (ones.T <span class="op">@</span> Sigma_inv <span class="op">@</span> mu).item()],</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    [(ones.T <span class="op">@</span> Sigma_inv <span class="op">@</span> mu).item(), (ones.T <span class="op">@</span> Sigma_inv <span class="op">@</span> ones).item()],</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>target_returns <span class="op">=</span> np.linspace(mu.<span class="bu">min</span>(), mu.<span class="bu">max</span>() <span class="op">*</span> <span class="fl">1.5</span>, <span class="dv">200</span>)</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>rhs <span class="op">=</span> np.vstack([target_returns, np.ones_like(target_returns)])</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>lambd, gamma <span class="op">=</span> np.linalg.solve(A, rhs)</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>weights <span class="op">=</span> <span class="fl">0.5</span> <span class="op">*</span> Sigma_inv <span class="op">@</span> (mu <span class="op">@</span> lambd.reshape(<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>) <span class="op">+</span> ones <span class="op">@</span> gamma.reshape(<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>))</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>frontier_returns <span class="op">=</span> (mu.T <span class="op">@</span> weights).ravel()</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>frontier_risks <span class="op">=</span> np.sqrt(np.<span class="bu">sum</span>(weights <span class="op">*</span> (Sigma <span class="op">@</span> weights), axis<span class="op">=</span><span class="dv">0</span>))</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="co"># The global minimum-variance portfolio is the leftmost point on the frontier.</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>gmv_index <span class="op">=</span> np.argmin(frontier_risks)</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">5</span>))</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>ax.plot(frontier_risks, frontier_returns, color<span class="op">=</span><span class="st">"black"</span>, lw<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="st">"minimum-variance frontier"</span>)</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>ax.scatter(frontier_risks[gmv_index], frontier_returns[gmv_index], color<span class="op">=</span><span class="st">"tab:red"</span>, zorder<span class="op">=</span><span class="dv">3</span>, label<span class="op">=</span><span class="st">"global minimum variance"</span>)</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>asset_points <span class="op">=</span> ax.scatter(np.sqrt(np.diag(Sigma)), mu.ravel(), alpha<span class="op">=</span><span class="fl">0.5</span>, label<span class="op">=</span><span class="st">"individual assets"</span>, color<span class="op">=</span><span class="st">"tab:red"</span>, lw<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"standard deviation"</span>)</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"expected return"</span>)</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Mean-variance efficient frontier"</span>)</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>ax.legend(fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>ax.grid()</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="expectation_files/figure-html/cell-4-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="607" height="451"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>On the plot, the black curve is the mean-variance efficient frontier, which shows the best possible tradeoff between expected return and risk (standard deviation) for portfolios composed of the <span class="math inline">\(N\)</span> assets. Each point on the curve represents a portfolio that minimizes risk for a given level of expected return. The red point indicates the global minimum-variance portfolio, which has the lowest risk among all possible portfolios. The individual assets are shown as red points, and they generally lie below the efficient frontier, indicating that diversification can lead to better risk-return profiles than investing in individual assets alone.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../../notes/sections/probability/probability-space.html" class="pagination-link" aria-label="Probability Spaces and Random Variables">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Probability Spaces and Random Variables</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../../notes/sections/probability/common-distributions.html" class="pagination-link" aria-label="Common Probability Distributions">
+        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Common Probability Distributions</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

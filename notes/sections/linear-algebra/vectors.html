@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>1&nbsp; Vectors and Vector Spaces – FIN700: Mathematics for PhD Finance</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../notes/sections/linear-algebra/linear-maps.html" rel="next">
+<link href="../../../index.html" rel="prev">
+<script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-9e3e5b9121e68b3f077afb32f2c64d95.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="../../../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../../../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../../../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/sections/linear-algebra/vectors.html">Linear Algebra</a></li><li class="breadcrumb-item"><a href="../../../notes/sections/linear-algebra/vectors.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Vectors and Vector Spaces</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../../../">FIN700: Mathematics for PhD Finance</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/MingyangZhang1995/FIN700-Math" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Linear Algebra</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/linear-algebra/vectors.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Vectors and Vector Spaces</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/linear-algebra/linear-maps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Linear Maps and Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/linear-algebra/decompositions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Matrix Calculus and Projection</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Probability Theory</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/probability/probability-space.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Probability Spaces and Random Variables</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/probability/expectation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Distributions, Expectation, and Dependence</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/probability/common-distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Common Probability Distributions</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Machine Learning</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/machine-learning/introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">introduction.html</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-la-vector-spaces" id="toc-sec-la-vector-spaces" class="nav-link active" data-scroll-target="#sec-la-vector-spaces"><span class="header-section-number">1.1</span> Vector spaces</a></li>
+  <li><a href="#sec-la-vector-operations" id="toc-sec-la-vector-operations" class="nav-link" data-scroll-target="#sec-la-vector-operations"><span class="header-section-number">1.2</span> Vector operations</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/sections/linear-algebra/vectors.html">Linear Algebra</a></li><li class="breadcrumb-item"><a href="../../../notes/sections/linear-algebra/vectors.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Vectors and Vector Spaces</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-la-vectors" class="quarto-section-identifier"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Vectors and Vector Spaces</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Linear algebra is, at its heart, the study of linear maps — functions between spaces that respect addition and scaling. Before we can talk about such maps, however, we need the spaces they act on. That is the job of this chapter: we build up the notion of a <em>vector space</em> .</p>
+<section id="sec-la-vector-spaces" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="sec-la-vector-spaces"><span class="header-section-number">1.1</span> Vector spaces</h2>
+<p>Fix a positive integer <span class="math inline">\(n\)</span>. The set <span class="math inline">\(\mathbb{R}^n = \left\{ \boldsymbol{x} = (x_1, x_2, \dots, x_n) : x_i \in \mathbb{R} \right\}\)</span> is the collection of all ordered lists of <span class="math inline">\(n\)</span> real numbers. We call its elements <strong>vectors</strong> and write them in bold, <span class="math inline">\(\boldsymbol{x}\)</span>, reserving plain italics <span class="math inline">\(x_i\)</span> for the individual <strong>components</strong>. By convention a vector is a <em>column</em>, <span class="math display">\[
+\boldsymbol{x} = \begin{pmatrix} x_1 \\ x_2 \\ \vdots \\ x_n \end{pmatrix},
+\]</span> and we write <span class="math inline">\(\boldsymbol{x}^\top = (x_1, \dots, x_n)\)</span> for the corresponding row when it is convenient to save space on the page.</p>
+<p>Two operations make <span class="math inline">\(\mathbb{R}^n\)</span> more than a bare set. We can add two vectors component-wise, <span class="math display">\[
+\boldsymbol{x} + \boldsymbol{y} = (x_1 + y_1, \dots, x_n + y_n),
+\]</span> and we can scale a vector by a real number <span class="math inline">\(\alpha\)</span> (a <strong>scalar</strong>), <span class="math display">\[
+\alpha \boldsymbol{x} = (\alpha x_1, \dots, \alpha x_n).
+\]</span> Both results are again vectors in <span class="math inline">\(\mathbb{R}^n\)</span>. Combining the two operations gives the single most important construction in the subject.</p>
+<div id="def-linear-combination" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 1.1</strong></span> A <strong>linear combination</strong> of vectors <span class="math inline">\(\boldsymbol{v}_1, \dots, \boldsymbol{v}_k\)</span> is any vector of the form <span class="math display">\[
+\alpha_1 \boldsymbol{v}_1 + \alpha_2 \boldsymbol{v}_2 + \cdots + \alpha_k \boldsymbol{v}_k,
+\qquad \alpha_1, \dots, \alpha_k \in \mathbb{R}.
+\]</span></p>
+</div>
+<p>In finance, a portfolio can be expressed as a linear combination. If <span class="math inline">\(\boldsymbol{r}_1, \dots, \boldsymbol{r}_k\)</span> are the return vectors of <span class="math inline">\(k\)</span> assets and <span class="math inline">\(w_1, \dots, w_k\)</span> are portfolio weights,then <span class="math display">\[
+\boldsymbol{r}_{\text{p}} = w_1 \boldsymbol{r}_1 + \cdots + w_k \boldsymbol{r}_k
+\]</span> is the return vector of the portfolio.</p>
+<div id="def-vector-space" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 1.2</strong></span> A <strong>vector space</strong> (over <span class="math inline">\(\mathbb{R}\)</span>) is a set <span class="math inline">\(V\)</span> on which two binary operations are defined:</p>
+<ol type="1">
+<li><strong>addition</strong>: <span class="math display">\[
+\text{if } \boldsymbol{u}, \boldsymbol{v} \in V \text{, then } \boldsymbol{u} + \boldsymbol{v} \in V
+\]</span></li>
+<li><strong>scalar multiplication</strong>: <span class="math display">\[
+\text{if } \alpha \in \mathbb{R} \text{ and } \boldsymbol{u} \in V \text{, then } \alpha \boldsymbol{u} \in V
+\]</span></li>
+</ol>
+<p>which satisfy the following axioms:</p>
+<ol type="1">
+<li><span class="math inline">\((\boldsymbol{u} + \boldsymbol{v}) + \boldsymbol{w} = \boldsymbol{u} + (\boldsymbol{v} + \boldsymbol{w})\)</span>.</li>
+<li><span class="math inline">\(\boldsymbol{u} + \boldsymbol{v} = \boldsymbol{v} + \boldsymbol{u}\)</span>.</li>
+<li>There exists <span class="math inline">\(\boldsymbol{0} \in V\)</span>, such that <span class="math inline">\(\boldsymbol{v} + \boldsymbol{0} = \boldsymbol{v}\)</span>.</li>
+<li>For all <span class="math inline">\(\boldsymbol{v}\)</span>, there exists <span class="math inline">\(-\boldsymbol{v} \in V\)</span> with <span class="math inline">\(\boldsymbol{v} + (-\boldsymbol{v}) = \boldsymbol{0}\)</span>.</li>
+<li><span class="math inline">\(\alpha(\beta \boldsymbol{v}) = (\alpha\beta)\boldsymbol{v}\)</span>.</li>
+<li><span class="math inline">\(1\,\boldsymbol{v} = \boldsymbol{v}\)</span>.</li>
+<li><span class="math inline">\(\alpha(\boldsymbol{u} + \boldsymbol{v}) = \alpha\boldsymbol{u} + \alpha\boldsymbol{v}\)</span>.</li>
+<li><span class="math inline">\((\alpha + \beta)\boldsymbol{v} = \alpha\boldsymbol{v} + \beta\boldsymbol{v}\)</span>.</li>
+</ol>
+</div>
+<p>The list looks long, but every axiom simply says that addition and scaling behave the way the notation already tempts you to assume. One checks directly that <span class="math inline">\(\mathbb{R}^n\)</span>, with the componentwise operations above, satisfies all eight; it is the prototype we keep in mind. The value of the abstract definition is that it is satisfied by many other sets as well.</p>
+<p>Inside a vector space, the interesting subsets are those that are themselves closed under the two operations — take a linear combination of members and you never leave the subset.</p>
+<div id="def-subspace" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 1.3</strong></span> A subset <span class="math inline">\(W \subseteq V\)</span> is a <strong>subspace</strong> if it is nonempty and closed under addition and scalar multiplication: whenever <span class="math inline">\(\boldsymbol{u}, \boldsymbol{v} \in W\)</span> and <span class="math inline">\(\alpha \in \mathbb{R}\)</span>, both <span class="math inline">\(\boldsymbol{u} + \boldsymbol{v} \in W\)</span> and <span class="math inline">\(\alpha \boldsymbol{u} \in W\)</span>.</p>
+</div>
+<div id="def-span" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 1.4</strong></span> The <strong>span</strong> of <span class="math inline">\(\boldsymbol{v}_1, \dots, \boldsymbol{v}_k\)</span> is the set of all their linear combinations, <span class="math display">\[
+\operatorname{span}(\boldsymbol{v}_1, \dots, \boldsymbol{v}_k)
+  = \{ \alpha_1 \boldsymbol{v}_1 + \cdots + \alpha_k \boldsymbol{v}_k : \alpha_i \in \mathbb{R} \}.
+\]</span> If this set is all of <span class="math inline">\(V\)</span>, we say the vectors <strong>span</strong> <span class="math inline">\(V\)</span>.</p>
+</div>
+<p>Spanning asks whether a list is large enough to reach every vector. The complementary question is whether it is efficient — whether any vector is redundant, expressible through the others.</p>
+<div id="def-linear-independence" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 1.5</strong></span> The vectors <span class="math inline">\(\boldsymbol{v}_1, \dots, \boldsymbol{v}_k\)</span> are <strong>linearly independent</strong> if the only linear combination equal to <span class="math inline">\(\boldsymbol{0}\)</span> is the trivial one: <span class="math display">\[
+\alpha_1 \boldsymbol{v}_1 + \cdots + \alpha_k \boldsymbol{v}_k = \boldsymbol{0}
+\quad\Longrightarrow\quad
+\alpha_1 = \cdots = \alpha_k = 0.
+\]</span> Otherwise they are <strong>linearly dependent</strong>, and some vector among them is a linear combination of the rest.</p>
+</div>
+<p>Independence is exactly what makes representations unique, which is the property we actually care about.</p>
+<div id="exm-multicollinearity" class="theorem example">
+<p><span class="theorem-title"><strong>Example 1.1</strong></span> In linear regression <span class="math inline">\(y=\boldsymbol{X}\beta\)</span>, we always want to avoid <em>perfect multicollinearity</em>, a situation where the exogenous variables <span class="math inline">\(\boldsymbol{X}\)</span> are linearly dependent. For example, if there is a constant in the regression, the maximum number of dummy variables for a <span class="math inline">\(N\)</span>-category variable is <span class="math inline">\(N-1\)</span>. Otherwise, the summation of dummies is equal to 1 (the constant).</p>
+</div>
+<div id="thm-unique-coordinates" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 1.1</strong></span> If <span class="math inline">\(\boldsymbol{v}_1, \dots, \boldsymbol{v}_k\)</span> are linearly independent, then every vector in their span is a linear combination of them in <strong>exactly one</strong> way.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>Suppose some <span class="math inline">\(\boldsymbol{x}\)</span> in the span had two representations, <span class="math display">\[
+\boldsymbol{x} = \sum_i \alpha_i \boldsymbol{v}_i = \sum_i \beta_i \boldsymbol{v}_i.
+\]</span> Subtracting gives <span class="math inline">\(\sum_i (\alpha_i - \beta_i)\boldsymbol{v}_i = \boldsymbol{0}\)</span>. By independence, <span class="math inline">\(\alpha_i = \beta_i\)</span> for all <span class="math inline">\(i\)</span>; the two representations coincide.</p>
+</div>
+<div id="def-basis" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 1.6</strong></span> A <strong>basis</strong> of vector space <span class="math inline">\(V\)</span> is a list of vectors that is linearly independent and spans <span class="math inline">\(V\)</span>.</p>
+</div>
+<div id="exm-standard-basis" class="theorem example">
+<p><span class="theorem-title"><strong>Example 1.2</strong></span> In <span class="math inline">\(\mathbb{R}^n\)</span> the <strong>standard basis</strong> is <span class="math inline">\(\boldsymbol{e}_1, \dots, \boldsymbol{e}_n\)</span>, where <span class="math inline">\(\boldsymbol{e}_i\)</span> has a <span class="math inline">\(1\)</span> in position <span class="math inline">\(i\)</span> and <span class="math inline">\(0\)</span> elsewhere. For example, in <span class="math inline">\(\mathbb{R}^2\)</span>, the standard basis is <span class="math inline">\([1,0]', [0,1]'\)</span>.</p>
+</div>
+<div id="exm-arrow-debreu-securities" class="theorem example">
+<p><span class="theorem-title"><strong>Example 1.3</strong></span> Suppose there are two possible states: good or bad. Security <span class="math inline">\(G\)</span> pays $1 in the good state and $0 in the bad state. Security <span class="math inline">\(B\)</span> pays $1 in the bad state and $0 in the good state. An investor could form any portfolio by trading only <span class="math inline">\(G\)</span> and <span class="math inline">\(B\)</span>.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>graph LR</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  subgraph G ["&amp;nbsp;"]</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  direction LR</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    SG["$$S_G$$"] --&gt; SG1["$$1$$"] </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    SG["$$S_G$$"] --&gt; SG2["$$0$$"] </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  end</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  style G fill:none,stroke:none</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  subgraph B ["&amp;nbsp;"]</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  direction LR</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    SB["$$S_B$$"] --&gt; SB1["$$0$$"] </span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    SB["$$S_B$$"] --&gt; SB2["$$1$$"]</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  end</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  style B fill:none,stroke:none</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  subgraph P ["&amp;nbsp;"]</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  direction LR</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    Po["$$\alpha S_G + \beta S_B$$"] --&gt; Po1["$$\alpha$$"] </span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    Po["$$\alpha S_G + \beta S_B$$"] --&gt; Po2["$$\beta$$"]</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  end</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  style P fill:none,stroke:none</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  %% G B side by side</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  G ~~~ B ~~~ P</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph LR
+  subgraph G ["&amp;nbsp;"]
+  direction LR
+    SG["$$S_G$$"] --&gt; SG1["$$1$$"] 
+    SG["$$S_G$$"] --&gt; SG2["$$0$$"] 
+  end
+  style G fill:none,stroke:none
+
+  subgraph B ["&amp;nbsp;"]
+  direction LR
+    SB["$$S_B$$"] --&gt; SB1["$$0$$"] 
+    SB["$$S_B$$"] --&gt; SB2["$$1$$"]
+  end
+  style B fill:none,stroke:none
+
+  subgraph P ["&amp;nbsp;"]
+  direction LR
+    Po["$$\alpha S_G + \beta S_B$$"] --&gt; Po1["$$\alpha$$"] 
+    Po["$$\alpha S_G + \beta S_B$$"] --&gt; Po2["$$\beta$$"]
+  end
+  style P fill:none,stroke:none
+
+  %% G B side by side
+  G ~~~ B ~~~ P
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>Similarly, suppose there are <span class="math inline">\(N\)</span> possible states, and <span class="math inline">\(N\)</span> securities that pay exactly one unit of value (e.g., $1) at a specific future state of the world. An investor could form any portfolio by trading only these <span class="math inline">\(N\)</span> securities.</p>
+<p>In finance, a security that pays exactly one unit of value at a specific future state of the world is called <strong>Arrow-Debreu security</strong>. Suppose there exits <span class="math inline">\(N\)</span> possible states and <span class="math inline">\(N\)</span> independent Arrow-Debreu securities in the market, then the market is <strong>complete</strong>. If there are less than <span class="math inline">\(N\)</span> independent Arrow-Debreu securities in the market, the market is <strong>incomplete</strong>.</p>
+</div>
+</section>
+<section id="sec-la-vector-operations" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="sec-la-vector-operations"><span class="header-section-number">1.2</span> Vector operations</h2>
+<div id="def-inner-product" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 1.7</strong></span> The <strong>inner product</strong> (or dot product) of <span class="math inline">\(\boldsymbol{x}, \boldsymbol{y} \in \mathbb{R}^n\)</span> is the scalar <span class="math display">\[
+\langle \boldsymbol{x}, \boldsymbol{y} \rangle = \boldsymbol{x}^\top \boldsymbol{y} = \sum_{i=1}^n x_i y_i .
+\]</span></p>
+</div>
+<p>The inner product is</p>
+<ol type="1">
+<li><strong>symmetric</strong>: <span class="math inline">\(\langle \boldsymbol{x}, \boldsymbol{y}\rangle = \langle \boldsymbol{y}, \boldsymbol{x}\rangle\)</span>,</li>
+<li><strong>linear in each argument</strong>: <span class="math inline">\(\langle \alpha\boldsymbol{x} + \beta\boldsymbol{y}, \boldsymbol{z}\rangle = \alpha\langle \boldsymbol{x}, \boldsymbol{z}\rangle + \beta\langle\boldsymbol{y}, \boldsymbol{z}\rangle\)</span></li>
+<li><strong>positive definite</strong>: <span class="math inline">\(\langle \boldsymbol{x}, \boldsymbol{x}\rangle \ge 0\)</span>, with equality only when <span class="math inline">\(\boldsymbol{x} = \boldsymbol{0}\)</span>. Positive definiteness is what lets us define a length.</li>
+</ol>
+<div id="def-norm" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 1.8</strong></span> The <strong>(Euclidean) norm</strong> of <span class="math inline">\(\boldsymbol{x}\)</span> is <span class="math inline">\(\lVert \boldsymbol{x} \rVert = \sqrt{\langle\boldsymbol{x}, \boldsymbol{x}\rangle} = \bigl(\sum_i x_i^2\bigr)^{1/2}\)</span>, and the <strong>distance</strong> between <span class="math inline">\(\boldsymbol{x}\)</span> and <span class="math inline">\(\boldsymbol{y}\)</span> is <span class="math inline">\(\lVert \boldsymbol{x} - \boldsymbol{y}\rVert\)</span>.</p>
+</div>
+<p>Scaling behaves as it should, <span class="math inline">\(\lVert \alpha \boldsymbol{x}\rVert = |\alpha|\,\lVert \boldsymbol{x}\rVert\)</span>, and <span class="math inline">\(\lVert \boldsymbol{x}\rVert = 0\)</span> only for <span class="math inline">\(\boldsymbol{x} = \boldsymbol{0}\)</span>.</p>
+<div id="def-orthogonal" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 1.9</strong></span> Vectors <span class="math inline">\(\boldsymbol{x}\)</span> and <span class="math inline">\(\boldsymbol{y}\)</span> are <strong>orthogonal</strong>, written <span class="math inline">\(\boldsymbol{x} \perp \boldsymbol{y}\)</span>, if <span class="math inline">\(\langle \boldsymbol{x}, \boldsymbol{y}\rangle = 0\)</span>.</p>
+</div>
+<div id="thm-projection-line" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 1.2</strong></span> The <strong>orthogonal projection</strong> of <span class="math inline">\(\boldsymbol{y}\)</span> onto <span class="math inline">\(\operatorname{span}(\boldsymbol{x})\)</span> is <span class="math display">\[
+\operatorname{proj}_{\boldsymbol{x}}(\boldsymbol{y}) = \frac{\langle \boldsymbol{y}, \boldsymbol{x}\rangle}{\langle \boldsymbol{x}, \boldsymbol{x}\rangle}\, \boldsymbol{x}.
+\]</span></p>
+</div>
+<p>Let’s now understand why orthogonal is defined by inner product equal to zero. In the meantime, let’s also show the orthogonal projection theorem.</p>
+<div id="d235006d" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.array([<span class="fl">2.</span>,<span class="fl">1.</span>])</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> np.array([<span class="fl">1.</span>,<span class="fl">2.</span>])</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> np.dot(y, x)<span class="op">/</span>np.dot(x,x)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">5</span>))</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>ax.quiver(<span class="dv">0</span>, <span class="dv">0</span> , x[<span class="dv">0</span>], x[<span class="dv">1</span>], angles<span class="op">=</span><span class="st">"xy"</span>, scale_units<span class="op">=</span><span class="st">"xy"</span>, scale<span class="op">=</span><span class="dv">1</span>, )</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>ax.text(x[<span class="dv">0</span>], x[<span class="dv">1</span>]<span class="op">-</span><span class="fl">0.1</span>, <span class="vs">r"</span><span class="dv">$\b</span><span class="vs">oldsymbol{x}</span><span class="dv">$</span><span class="vs">"</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>ax.quiver(<span class="dv">0</span>, <span class="dv">0</span> , y[<span class="dv">0</span>], y[<span class="dv">1</span>], angles<span class="op">=</span><span class="st">"xy"</span>, scale_units<span class="op">=</span><span class="st">"xy"</span>, scale<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>ax.text(y[<span class="dv">0</span>]<span class="op">-</span><span class="fl">0.1</span>, y[<span class="dv">1</span>], <span class="vs">r"</span><span class="dv">$\b</span><span class="vs">oldsymbol{y}</span><span class="dv">$</span><span class="vs">"</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>ax.quiver(<span class="dv">0</span>, <span class="dv">0</span> , (t<span class="op">*</span>x)[<span class="dv">0</span>], (t<span class="op">*</span>x)[<span class="dv">1</span>], angles<span class="op">=</span><span class="st">"xy"</span>, scale_units<span class="op">=</span><span class="st">"xy"</span>, scale<span class="op">=</span><span class="dv">1</span>, color<span class="op">=</span><span class="st">'tab:red'</span>)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>ax.text((t<span class="op">*</span>x)[<span class="dv">0</span>], (t<span class="op">*</span>x)[<span class="dv">1</span>]<span class="op">-</span><span class="fl">0.1</span>, <span class="vs">r"</span><span class="dv">$</span><span class="vs">t</span><span class="dv">\b</span><span class="vs">oldsymbol{x}</span><span class="dv">$</span><span class="vs">"</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>ax.quiver((t<span class="op">*</span>x)[<span class="dv">0</span>], (t<span class="op">*</span>x)[<span class="dv">1</span>], (y<span class="op">-</span>t<span class="op">*</span>x)[<span class="dv">0</span>], (y<span class="op">-</span>t<span class="op">*</span>x)[<span class="dv">1</span>], angles<span class="op">=</span><span class="st">"xy"</span>, scale_units<span class="op">=</span><span class="st">"xy"</span>, scale<span class="op">=</span><span class="dv">1</span>, color<span class="op">=</span><span class="st">'tab:red'</span>)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>ax.text(y[<span class="dv">0</span>]<span class="op">+</span><span class="fl">0.05</span>, y[<span class="dv">1</span>], <span class="vs">r"</span><span class="dv">$\b</span><span class="vs">oldsymbol{y} - t</span><span class="dv">\b</span><span class="vs">oldsymbol{x}</span><span class="dv">$</span><span class="vs">"</span>)</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>ax.plot([<span class="op">-</span><span class="fl">0.5</span>, <span class="dv">0</span>], [<span class="op">-</span><span class="fl">0.25</span>, <span class="dv">0</span>], linestyle<span class="op">=</span><span class="st">'--'</span>, color<span class="op">=</span><span class="st">'black'</span>)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>ax.plot([<span class="dv">2</span>, <span class="fl">2.5</span>], [<span class="dv">1</span>, <span class="fl">1.25</span>], linestyle<span class="op">=</span><span class="st">'--'</span>, color<span class="op">=</span><span class="st">'black'</span>)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Axes settings</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>ax.set_xlim(<span class="op">-</span><span class="fl">0.5</span>, <span class="fl">2.5</span>)</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="op">-</span><span class="fl">0.5</span>, <span class="fl">2.5</span>)</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>ax.set_axis_off()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="vectors_files/figure-html/cell-2-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="391" height="389"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The projection of <span class="math inline">\(\boldsymbol{y}\)</span> onto <span class="math inline">\(\boldsymbol{x}\)</span> is the point on <span class="math inline">\(\boldsymbol{x}\)</span> that is closest to <span class="math inline">\(\boldsymbol{y}\)</span>. So we want to find <span class="math inline">\(t\)</span> such that <span class="math inline">\(t\boldsymbol{x}\)</span> is closest to <span class="math inline">\(\boldsymbol{y}\)</span>. That means we minimize the norm <span class="math display">\[
+\min_{t} \lVert \boldsymbol{y} - t \boldsymbol{x}\rVert
+\]</span> equivalently, we could minimize <span class="math inline">\(\lVert \boldsymbol{y} - t \boldsymbol{x}\rVert^2\)</span> to make our life easier. Using the definition of norm, one can show that the optimal <span class="math inline">\(t\)</span> is <span class="math display">\[
+t = \frac{\langle\boldsymbol{y},\boldsymbol{x}\rangle}{\langle\boldsymbol{x},\boldsymbol{x}\rangle}
+\]</span> Therefore, the projection of <span class="math inline">\(\boldsymbol{y}\)</span> onto <span class="math inline">\(\boldsymbol{x}\)</span> is <span class="math inline">\(t\boldsymbol{x} = \frac{\langle\boldsymbol{y},\boldsymbol{x}\rangle}{\langle\boldsymbol{x},\boldsymbol{x}\rangle}\boldsymbol{x}\)</span>.</p>
+<p>Now suppose that <span class="math inline">\(\boldsymbol{y}\perp\boldsymbol{x}\)</span>, then the projection <span class="math inline">\(t\boldsymbol{x} = \frac{\langle\boldsymbol{y},\boldsymbol{x}\rangle}{\langle\boldsymbol{x},\boldsymbol{x}\rangle}\boldsymbol{x}= 0\)</span>. Given <span class="math inline">\(\boldsymbol{x}\neq 0\)</span>, we know <span class="math inline">\(\langle\boldsymbol{x},\boldsymbol{x}\rangle &gt; 0\)</span>. Therefore, we have <span class="math inline">\(\langle\boldsymbol{y},\boldsymbol{x}\rangle =0\)</span>.</p>
+<p><strong>Note</strong>: Inner product has a broader definition than <a href="#def-inner-product" class="quarto-xref">Definition&nbsp;<span>1.7</span></a>. For example, for random variable <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>, <span class="math display">\[
+\langle X, Y \rangle = E(XY)
+\]</span> is an inner product. For function <span class="math inline">\(f(x)\)</span> and <span class="math inline">\(g(x)\)</span>, <span class="math display">\[
+\langle f, g \rangle = \int_{a}^{b}f(x)g(x)dx
+\]</span> is an inner product.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../../index.html" class="pagination-link" aria-label="Preface">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Preface</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../../notes/sections/linear-algebra/linear-maps.html" class="pagination-link" aria-label="Linear Maps and Matrices">
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Linear Maps and Matrices</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
