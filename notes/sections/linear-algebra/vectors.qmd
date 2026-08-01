@@ -1,0 +1,232 @@
+# Vectors and Vector Spaces {#sec-la-vectors}
+
+Linear algebra is, at its heart, the study of linear maps — functions between spaces that respect addition and scaling. Before we can talk about such maps, however, we need the spaces they act on. That is the job of this chapter: we build up the notion of a *vector space* .
+
+## Vector spaces {#sec-la-vector-spaces}
+
+Fix a positive integer $n$. The set $\mathbb{R}^n = \left\{ \boldsymbol{x} = (x_1, x_2, \dots, x_n) : x_i \in \mathbb{R} \right\}$ is the collection of all ordered lists of $n$ real numbers. We call its elements **vectors** and write them in bold, $\boldsymbol{x}$, reserving plain italics $x_i$ for the individual **components**. By convention a vector is a *column*,
+$$
+\boldsymbol{x} = \begin{pmatrix} x_1 \\ x_2 \\ \vdots \\ x_n \end{pmatrix},
+$$
+and we write $\boldsymbol{x}^\top = (x_1, \dots, x_n)$ for the corresponding row when it is convenient to save space on the page.
+
+Two operations make $\mathbb{R}^n$ more than a bare set. We can add two vectors component-wise,
+$$
+\boldsymbol{x} + \boldsymbol{y} = (x_1 + y_1, \dots, x_n + y_n),
+$$
+and we can scale a vector by a real number $\alpha$ (a **scalar**),
+$$
+\alpha \boldsymbol{x} = (\alpha x_1, \dots, \alpha x_n).
+$$
+Both results are again vectors in $\mathbb{R}^n$. Combining the two operations gives the single most important construction in the subject.
+
+::: {#def-linear-combination}
+A **linear combination** of vectors $\boldsymbol{v}_1, \dots, \boldsymbol{v}_k$ is any vector of
+the form
+$$
+\alpha_1 \boldsymbol{v}_1 + \alpha_2 \boldsymbol{v}_2 + \cdots + \alpha_k \boldsymbol{v}_k,
+\qquad \alpha_1, \dots, \alpha_k \in \mathbb{R}.
+$$
+:::
+
+In finance, a portfolio can be expressed as a linear combination. If $\boldsymbol{r}_1, \dots, \boldsymbol{r}_k$ are the return vectors of $k$ assets and $w_1, \dots, w_k$ are portfolio weights,then 
+$$
+\boldsymbol{r}_{\text{p}} = w_1 \boldsymbol{r}_1 + \cdots + w_k \boldsymbol{r}_k
+$$
+is the return vector of the portfolio. 
+
+::: {#def-vector-space}
+A **vector space** (over $\mathbb{R}$) is a set $V$ on which two binary operations are defined: 
+
+1. **addition**:
+$$
+\text{if } \boldsymbol{u}, \boldsymbol{v} \in V \text{, then } \boldsymbol{u} + \boldsymbol{v} \in V
+$$
+1. **scalar multiplication**:
+$$
+\text{if } \alpha \in \mathbb{R} \text{ and } \boldsymbol{u} \in V \text{, then } \alpha \boldsymbol{u} \in V
+$$
+
+which satisfy the following axioms:
+
+1. $(\boldsymbol{u} + \boldsymbol{v}) + \boldsymbol{w} = \boldsymbol{u} + (\boldsymbol{v} + \boldsymbol{w})$.
+2. $\boldsymbol{u} + \boldsymbol{v} = \boldsymbol{v} + \boldsymbol{u}$.
+3. There exists $\boldsymbol{0} \in V$, such that $\boldsymbol{v} + \boldsymbol{0} = \boldsymbol{v}$.
+4. For all $\boldsymbol{v}$, there exists $-\boldsymbol{v} \in V$ with $\boldsymbol{v} + (-\boldsymbol{v}) = \boldsymbol{0}$.
+5. $\alpha(\beta \boldsymbol{v}) = (\alpha\beta)\boldsymbol{v}$.
+6. $1\,\boldsymbol{v} = \boldsymbol{v}$.
+7. $\alpha(\boldsymbol{u} + \boldsymbol{v}) = \alpha\boldsymbol{u} + \alpha\boldsymbol{v}$.
+8. $(\alpha + \beta)\boldsymbol{v} = \alpha\boldsymbol{v} + \beta\boldsymbol{v}$.
+:::
+
+The list looks long, but every axiom simply says that addition and scaling behave the way the notation already tempts you to assume. One checks directly that $\mathbb{R}^n$, with the componentwise operations above, satisfies all eight; it
+is the prototype we keep in mind. The value of the abstract definition is that it is satisfied by many other sets as well.
+
+Inside a vector space, the interesting subsets are those that are themselves closed under the two operations — take a linear combination of members and you never leave the subset.
+
+::: {#def-subspace}
+A subset $W \subseteq V$ is a **subspace** if it is nonempty and closed under addition and scalar multiplication: whenever $\boldsymbol{u}, \boldsymbol{v} \in W$ and $\alpha \in \mathbb{R}$, both $\boldsymbol{u} + \boldsymbol{v} \in W$ and $\alpha \boldsymbol{u} \in W$.
+:::
+
+::: {#def-span}
+The **span** of $\boldsymbol{v}_1, \dots, \boldsymbol{v}_k$ is the set of all their linear combinations,
+$$
+\operatorname{span}(\boldsymbol{v}_1, \dots, \boldsymbol{v}_k)
+  = \{ \alpha_1 \boldsymbol{v}_1 + \cdots + \alpha_k \boldsymbol{v}_k : \alpha_i \in \mathbb{R} \}.
+$$
+If this set is all of $V$, we say the vectors **span** $V$.
+:::
+
+Spanning asks whether a list is large enough to reach every vector. The complementary question is whether it is efficient — whether any vector is redundant, expressible through the others.
+
+::: {#def-linear-independence}
+The vectors $\boldsymbol{v}_1, \dots, \boldsymbol{v}_k$ are **linearly independent** if the only linear combination equal to $\boldsymbol{0}$ is the trivial one:
+$$
+\alpha_1 \boldsymbol{v}_1 + \cdots + \alpha_k \boldsymbol{v}_k = \boldsymbol{0}
+\quad\Longrightarrow\quad
+\alpha_1 = \cdots = \alpha_k = 0.
+$$
+Otherwise they are **linearly dependent**, and some vector among them is a linear combination of the rest.
+:::
+
+Independence is exactly what makes representations unique, which is the property we actually care about.
+
+:::{#exm-multicollinearity}
+In linear regression $y=\boldsymbol{X}\beta$, we always want to avoid *perfect multicollinearity*, a situation where the exogenous variables $\boldsymbol{X}$ are linearly dependent. For example, if there is a constant in the regression, the maximum number of dummy variables for a $N$-category variable is $N-1$. Otherwise, the summation of dummies is equal to 1 (the constant).
+:::
+
+::: {#thm-unique-coordinates}
+If $\boldsymbol{v}_1, \dots, \boldsymbol{v}_k$ are linearly independent, then every vector in their span is a linear combination of them in **exactly one** way.
+:::
+::: {.proof}
+Suppose some $\boldsymbol{x}$ in the span had two representations,
+$$
+\boldsymbol{x} = \sum_i \alpha_i \boldsymbol{v}_i = \sum_i \beta_i \boldsymbol{v}_i.
+$$
+Subtracting gives $\sum_i (\alpha_i - \beta_i)\boldsymbol{v}_i = \boldsymbol{0}$. By independence, $\alpha_i = \beta_i$ for all $i$; the two representations coincide.
+:::
+
+::: {#def-basis}
+A **basis** of vector space $V$ is a list of vectors that is linearly independent and spans $V$.
+:::
+
+::: {#exm-standard-basis}
+In $\mathbb{R}^n$ the **standard basis** is $\boldsymbol{e}_1, \dots, \boldsymbol{e}_n$, where $\boldsymbol{e}_i$ has a $1$ in position $i$ and $0$ elsewhere. For example, in $\mathbb{R}^2$, the standard basis is $[1,0]', [0,1]'$.
+:::
+
+::: {#exm-arrow-debreu-securities}
+Suppose there are two possible states: good or bad. Security $G$ pays \$1 in the good state and \$0 in the bad state. Security $B$ pays \$1 in the bad state and \$0 in the good state. An investor could form any portfolio by trading only $G$ and $B$. 
+```{mermaid}
+graph LR
+  subgraph G ["&nbsp;"]
+  direction LR
+    SG["$$S_G$$"] --> SG1["$$1$$"] 
+    SG["$$S_G$$"] --> SG2["$$0$$"] 
+  end
+  style G fill:none,stroke:none
+
+  subgraph B ["&nbsp;"]
+  direction LR
+    SB["$$S_B$$"] --> SB1["$$0$$"] 
+    SB["$$S_B$$"] --> SB2["$$1$$"]
+  end
+  style B fill:none,stroke:none
+
+  subgraph P ["&nbsp;"]
+  direction LR
+    Po["$$\alpha S_G + \beta S_B$$"] --> Po1["$$\alpha$$"] 
+    Po["$$\alpha S_G + \beta S_B$$"] --> Po2["$$\beta$$"]
+  end
+  style P fill:none,stroke:none
+
+  %% G B side by side
+  G ~~~ B ~~~ P
+```
+Similarly, suppose there are $N$ possible states, and $N$ securities that pay exactly one unit of value (e.g., \$1) at a specific future state of the world. An investor could form any portfolio by trading only these $N$ securities.
+
+In finance, a security that pays exactly one unit of value at a specific future state of the world is called **Arrow-Debreu security**. Suppose there exits $N$ possible states and $N$ independent Arrow-Debreu securities in the market, then the market is **complete**. If there are less than $N$ independent Arrow-Debreu securities in the market, the market is **incomplete**.
+:::
+
+## Vector operations {#sec-la-vector-operations}
+
+::: {#def-inner-product}
+The **inner product** (or dot product) of $\boldsymbol{x}, \boldsymbol{y} \in \mathbb{R}^n$ is the scalar
+$$
+\langle \boldsymbol{x}, \boldsymbol{y} \rangle = \boldsymbol{x}^\top \boldsymbol{y} = \sum_{i=1}^n x_i y_i .
+$$
+:::
+The inner product is 
+
+1. **symmetric**: $\langle \boldsymbol{x}, \boldsymbol{y}\rangle = \langle \boldsymbol{y}, \boldsymbol{x}\rangle$, 
+2. **linear in each argument**: $\langle \alpha\boldsymbol{x} + \beta\boldsymbol{y}, \boldsymbol{z}\rangle = \alpha\langle \boldsymbol{x}, \boldsymbol{z}\rangle + \beta\langle\boldsymbol{y}, \boldsymbol{z}\rangle$
+3. **positive definite**: $\langle \boldsymbol{x}, \boldsymbol{x}\rangle \ge 0$, with equality only when $\boldsymbol{x} = \boldsymbol{0}$. Positive definiteness is what lets us define a length.
+
+::: {#def-norm}
+The **(Euclidean) norm** of $\boldsymbol{x}$ is $\lVert \boldsymbol{x} \rVert = \sqrt{\langle\boldsymbol{x}, \boldsymbol{x}\rangle} = \bigl(\sum_i x_i^2\bigr)^{1/2}$, and the **distance** between $\boldsymbol{x}$ and $\boldsymbol{y}$ is $\lVert \boldsymbol{x} - \boldsymbol{y}\rVert$.
+:::
+
+Scaling behaves as it should, $\lVert \alpha \boldsymbol{x}\rVert = |\alpha|\,\lVert \boldsymbol{x}\rVert$, and $\lVert \boldsymbol{x}\rVert = 0$ only for $\boldsymbol{x} = \boldsymbol{0}$.
+
+::: {#def-orthogonal}
+Vectors $\boldsymbol{x}$ and $\boldsymbol{y}$ are **orthogonal**, written $\boldsymbol{x} \perp \boldsymbol{y}$, if $\langle \boldsymbol{x}, \boldsymbol{y}\rangle = 0$.
+:::
+
+::: {#thm-projection-line}
+The **orthogonal projection** of $\boldsymbol{y}$ onto  $\operatorname{span}(\boldsymbol{x})$ is
+$$
+\operatorname{proj}_{\boldsymbol{x}}(\boldsymbol{y}) = \frac{\langle \boldsymbol{y}, \boldsymbol{x}\rangle}{\langle \boldsymbol{x}, \boldsymbol{x}\rangle}\, \boldsymbol{x}.
+$$
+:::
+
+Let's now understand why orthogonal is defined by inner product equal to zero. In the meantime, let's also show the orthogonal projection theorem. 
+```{python}
+#| fig-align: center
+import matplotlib.pyplot as plt
+import numpy as np
+x = np.array([2.,1.])
+y = np.array([1.,2.])
+t = np.dot(y, x)/np.dot(x,x)
+
+fig, ax = plt.subplots(figsize=(5, 5))
+
+ax.quiver(0, 0 , x[0], x[1], angles="xy", scale_units="xy", scale=1, )
+ax.text(x[0], x[1]-0.1, r"$\boldsymbol{x}$")
+
+ax.quiver(0, 0 , y[0], y[1], angles="xy", scale_units="xy", scale=1)
+ax.text(y[0]-0.1, y[1], r"$\boldsymbol{y}$")
+
+ax.quiver(0, 0 , (t*x)[0], (t*x)[1], angles="xy", scale_units="xy", scale=1, color='tab:red')
+ax.text((t*x)[0], (t*x)[1]-0.1, r"$t\boldsymbol{x}$")
+
+ax.quiver((t*x)[0], (t*x)[1], (y-t*x)[0], (y-t*x)[1], angles="xy", scale_units="xy", scale=1, color='tab:red')
+ax.text(y[0]+0.05, y[1], r"$\boldsymbol{y} - t\boldsymbol{x}$")
+
+ax.plot([-0.5, 0], [-0.25, 0], linestyle='--', color='black')
+ax.plot([2, 2.5], [1, 1.25], linestyle='--', color='black')
+
+# Axes settings
+ax.set_xlim(-0.5, 2.5)
+ax.set_ylim(-0.5, 2.5)
+ax.set_axis_off()
+```
+The projection of $\boldsymbol{y}$ onto $\boldsymbol{x}$ is the point on $\boldsymbol{x}$ that is closest to $\boldsymbol{y}$. So we want to find $t$ such that $t\boldsymbol{x}$ is closest to $\boldsymbol{y}$. That means we minimize the norm 
+$$
+\min_{t} \lVert \boldsymbol{y} - t \boldsymbol{x}\rVert
+$$
+equivalently, we could minimize $\lVert \boldsymbol{y} - t \boldsymbol{x}\rVert^2$ to make our life easier. Using the definition of norm, one can show that the optimal $t$ is 
+$$
+t = \frac{\langle\boldsymbol{y},\boldsymbol{x}\rangle}{\langle\boldsymbol{x},\boldsymbol{x}\rangle}
+$$
+Therefore, the projection of $\boldsymbol{y}$ onto $\boldsymbol{x}$ is $t\boldsymbol{x} = \frac{\langle\boldsymbol{y},\boldsymbol{x}\rangle}{\langle\boldsymbol{x},\boldsymbol{x}\rangle}\boldsymbol{x}$. 
+
+Now suppose that $\boldsymbol{y}\perp\boldsymbol{x}$, then the projection $t\boldsymbol{x} = \frac{\langle\boldsymbol{y},\boldsymbol{x}\rangle}{\langle\boldsymbol{x},\boldsymbol{x}\rangle}\boldsymbol{x}= 0$. Given $\boldsymbol{x}\neq 0$, we know $\langle\boldsymbol{x},\boldsymbol{x}\rangle > 0$. Therefore, we have $\langle\boldsymbol{y},\boldsymbol{x}\rangle =0$.
+
+**Note**: Inner product has a broader definition than @def-inner-product. For example, for random variable $X$ and $Y$,
+$$
+\langle X, Y \rangle = E(XY)
+$$ 
+is an inner product. For function $f(x)$ and $g(x)$, 
+$$
+\langle f, g \rangle = \int_{a}^{b}f(x)g(x)dx
+$$ 
+is an inner product. 

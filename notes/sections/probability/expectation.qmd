@@ -1,0 +1,579 @@
+# Distributions, Expectation, and Dependence {#sec-pr-expectation}
+
+@sec-pr-foundations built the law of a **single** random variable — its distribution $\mu_X$, its CDF, its mass or density. Finance, though, is never about one quantity in isolation: a portfolio holds many assets, a factor model relates a stock to the market, a risk report asks how losses in one book move with another. We therefore need the joint behavior of several random variables at once, and the summaries — expectation, variance, covariance — that compress it into usable numbers. This chapter develops both, in that order: first the distributions, then the moments read off them. 
+
+## Joint, marginal, and conditional distributions {#sec-pr-distributions-joint}
+
+Fix two random variables $X$ and $Y$ on the same probability space $(\Omega, \mathcal{F}, \mathbb{P})$. Because they are defined on the same $\Omega$, each outcome $\omega$ produces a *pair* $(X(\omega), Y(\omega))$, a point in the plane $\mathbb{R}^2$. The pair $(X, Y)$ is a **random vector**, and its distribution lives on $\mathbb{R}^2$. To be clear, $\Omega$ is not necessarily one-dimensional: it could be two-dimensional too. For example, $\Omega$ could be the unit square $[0,1]^2$, with $\omega = (\omega_1, \omega_2)$, and we could define $X(\omega) = \omega_1$ and $Y(\omega) = \omega_2$.
+
+The joint distribution answers every question about $X$ and $Y$ *together*: the probability that they land in any region of the plane.
+
+::: {#def-joint-distribution}
+The **joint CDF** of $(X, Y)$ is
+$$
+F(x, y) = \mathbb{P}(X \le x,\ Y \le y).
+$$
+The pair is **jointly discrete** if it takes values in a countable set, described by the **joint PMF**
+$$
+p(x, y) = \mathbb{P}(X = x,\ Y = y), \qquad \sum_{x}\sum_{y} p(x,y) = 1,
+$$
+and **jointly continuous** if there is a **joint PDF** $f(x,y) \ge 0$ with
+$$
+\mathbb{P}\big((X,Y) \in A\big) = \iint_{A} f(x,y)\, dx\, dy, \qquad \iint_{\mathbb{R}^2} f = 1 .
+$$
+:::
+
+### Marginal distribution
+
+Sometimes we hold the joint distribution but care about only one variable. Recovering its distribution means summing over the other.
+
+::: {#def-marginal-distribution}
+The **marginal** distribution of $X$ is obtained by summing or integrating the joint over all values of $Y$:
+$$
+p_X(x) = \sum_{y} p(x, y) \quad\text{(discrete)}, \qquad
+f_X(x) = \int_{-\infty}^{\infty} f(x, y)\, dy \quad\text{(continuous)},
+$$
+and symmetrically for $Y$.
+:::
+
+::: {#exm-marginal-distribution-discrete}
+The table below shows a joint PMF of two discrete random variables $X$ and $Y$. The four inner cells are the joint probabilities $p(x, y)$; the rightmost column and bottom row are the marginals $p_Y(y)$ and $p_X(x)$, obtained by summing each row and column. The total probability is $1$.
+```{python}
+#| echo: false
+#| fig-align: center
+#| fig-width: 7
+#| fig-height: 4.8
+#| out-width: 90%
+
+import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle
+
+# ------------------------------------------------------------
+# Table geometry
+# ------------------------------------------------------------
+column_widths = [0.95, 0.95, 0.95, 0.95, 0.95, 0.95]
+row_heights = [0.95, 0.95, 0.95, 0.95, 0.95]
+
+x_edges = [0]
+for width in column_widths:
+    x_edges.append(x_edges[-1] + width)
+
+y_edges = [0]
+for height in row_heights:
+    y_edges.append(y_edges[-1] + height)
+
+table_width = x_edges[-1]
+table_height = y_edges[-1]
+
+fig, ax = plt.subplots(figsize=(8, 5.5))
+ax.set_xlim(0, table_width)
+ax.set_ylim(table_height, 0)
+ax.set_aspect("equal")
+ax.axis("off")
+
+# ------------------------------------------------------------
+# Appearance
+# ------------------------------------------------------------
+header_color = "#e9ebef"
+body_color = "#f7f7f7"
+edge_color = "#8f969e"
+text_color = "#111111"
+
+# Draw cells
+for row in range(5):
+    for col in range(6):
+        if row == 0 or col == 0 or row == 4 or col == 5:
+            fill = header_color
+        else:
+            fill = body_color
+
+        ax.add_patch(
+            Rectangle(
+                (x_edges[col], y_edges[row]),
+                column_widths[col],
+                row_heights[row],
+                facecolor=fill,
+                edgecolor=edge_color,
+                linewidth=0.9,
+            )
+        )
+
+# Diagonal line in the upper-left cell
+ax.plot(
+    [x_edges[0], x_edges[1]],
+    [y_edges[0], y_edges[1]],
+    color=edge_color,
+    linewidth=1.2,
+)
+
+# Helper function
+def add_text(row, col, text, *, size=12, weight="normal",
+             x_shift=0, y_shift=0):
+    x = (x_edges[col] + x_edges[col + 1]) / 2 + x_shift
+    y = (y_edges[row] + y_edges[row + 1]) / 2 + y_shift
+
+    ax.text(
+        x,
+        y,
+        text,
+        ha="center",
+        va="center",
+        fontsize=size,
+        fontweight=weight,
+        color=text_color,
+    )
+
+# ------------------------------------------------------------
+# Diagonal header
+# ------------------------------------------------------------
+ax.text(
+    x_edges[0] + 0.42 * column_widths[0],
+    y_edges[0] + 0.73 * row_heights[0],
+    r"$Y$",
+    ha="center",
+    va="center",
+    fontsize=12,
+    fontweight="bold",
+)
+
+ax.text(
+    x_edges[0] + 0.82 * column_widths[0],
+    y_edges[0] + 0.28 * row_heights[0],
+    r"$X$",
+    ha="center",
+    va="center",
+    fontsize=12,
+    fontweight="bold",
+)
+
+# Column headers
+headers = [
+    r"$x_1$",
+    r"$x_2$",
+    r"$x_3$",
+    r"$x_4$",
+    r"$p_Y(y)\downarrow$",
+]
+
+for col, label in enumerate(headers, start=1):
+    add_text(0, col, label, size=12, weight="bold")
+
+# Row labels
+row_labels = [
+    r"$y_1$",
+    r"$y_2$",
+    r"$y_3$",
+    r"$p_X(x)\rightarrow$",
+]
+
+for row, label in enumerate(row_labels, start=1):
+    add_text(row, 0, label, size=12, weight="bold")
+
+# ------------------------------------------------------------
+# Cell contents
+# ------------------------------------------------------------
+values = [
+    [
+        r"$\frac{4}{32}$",
+        r"$\frac{2}{32}$",
+        r"$\frac{1}{32}$",
+        r"$\frac{1}{32}$",
+        r"$\mathbf{\frac{8}{32}}$",
+    ],
+    [
+        r"$\frac{3}{32}$",
+        r"$\frac{6}{32}$",
+        r"$\frac{3}{32}$",
+        r"$\frac{3}{32}$",
+        r"$\mathbf{\frac{15}{32}}$",
+    ],
+    [
+        r"$\frac{9}{32}$",
+        r"$0$",
+        r"$0$",
+        r"$0$",
+        r"$\mathbf{\frac{9}{32}}$",
+    ],
+    [
+        r"$\mathbf{\frac{16}{32}}$",
+        r"$\mathbf{\frac{8}{32}}$",
+        r"$\mathbf{\frac{4}{32}}$",
+        r"$\mathbf{\frac{4}{32}}$",
+        r"$\mathbf{\frac{32}{32}}$",
+    ],
+]
+
+for row, row_values in enumerate(values, start=1):
+    for col, value in enumerate(row_values, start=1):
+        add_text(row, col, value, size=16)
+
+plt.tight_layout(pad=0.3)
+plt.show()
+```
+
+:::
+
+However, by looking at the table, one may also ask the following question: Given that $X = x_1$, what is the probability that $Y = y_1$? This is the **conditional** distribution of $Y$ given $X = x_1$, which is obtained by slicing the joint PMF at $X = x_1$ and renormalizing so that the slice sums to one. Therefore, intuitively, given $X = x_1$, the conditional probability of $Y = y_1$ is $4/32$ divided by $16/32$, equal to $1/4$. We can formalize this as follows.
+
+::: {#def-conditional-distribution}
+For $x$ with $p_X(x) > 0$ (discrete) or $f_X(x) > 0$ (continuous), the **conditional** distribution of $Y$ given $X = x$ is
+$$
+p_{Y \mid X}(y \mid x) = \frac{p(x, y)}{p_X(x)}, \qquad
+f_{Y \mid X}(y \mid x) = \frac{f(x, y)}{f_X(x)} .
+$$
+:::
+
+You can also see the above definition from @def-conditional-probability. In discrete cases, set
+$$
+A=\{\omega\in\Omega:Y(\omega)=y\},\qquad B=\{\omega\in\Omega:X(\omega)=x\},
+$$
+$$
+A\cap B=\{\omega\in\Omega:X(\omega)=x,Y(\omega)=y\}.
+$$
+Then 
+$$
+\mathbb{P}(A\mid B)=\frac{\mathbb{P}(A\cap B)}{\mathbb{P}(B)}=\frac{\mathbb{P}(X=x,Y=y)}{\mathbb{P}(X=x)}=\frac{p(x,y)}{p_X(x)}=p_{Y\mid X}(y\mid x).
+$$
+The continuous case is similar, but a bit more subtle, so we skip the details. Reading the identity backward gives the decomposition we lean on constantly,
+$$
+f(x, y) = f_{Y \mid X}(y \mid x)\, f_X(x),
+$$ {#eq-joint-factorization}
+"joint = conditional $\times$ marginal."
+
+### Independence
+
+The extreme case is when conditioning changes nothing — learning $X$ tells us nothing about $Y$.
+
+::: {#def-independence-rv}
+$X$ and $Y$ are **independent** if the joint factors into the marginals,
+$$
+f(x, y) = f_X(x)\, f_Y(y) \qquad\text{for all } x, y,
+$$
+or equivalently,
+$$
+f_{Y \mid X}(y \mid x) = f_Y(y)
+$$
+:::
+
+Similarly, one can see the definition of independence from @def-independence. Again, the discrete case is straightforward: $X$ and $Y$ are independent if and only if for all $x$ and $y$,
+$$
+\mathbb{P}(X=x,Y=y)=\mathbb{P}(X=x)\,\mathbb{P}(Y=y), \quad\text{or equivalently,}\quad \mathbb{P}(Y=y\mid X=x)=\mathbb{P}(Y=y).
+$$
+
+The figure below takes a jointly normal $(X, Y)$ with correlation $0.7$: the left panel shows the joint density with a slice at $X = x_0$, and the right panel shows that the conditional $f_{Y\mid X=x_0}$ is shifted (toward positive $Y$, since the two are positively related) and narrower (conditioning removes uncertainty) than the marginal $f_Y$.
+
+```{python}
+#| fig-align: center
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import stats
+
+rho, x0 = 0.7, 1.2
+Sigma = np.array([[1.0, rho], [rho, 1.0]])
+rv = stats.multivariate_normal(mean=[0, 0], cov=Sigma)
+
+g = np.linspace(-3, 3, 240)
+XX, YY = np.meshgrid(g, g)
+Z = rv.pdf(np.dstack([XX, YY]))
+
+fig, (axL, axR) = plt.subplots(1, 2, figsize=(10, 4))
+
+# left: joint density with the conditioning slice X = x0
+axL.contour(XX, YY, Z, levels=6, cmap="Blues")
+axL.axvline(x0, color="tab:red", ls="--", lw=1.5)
+axL.text(x0 + 0.1, -2.6, r"$X=x_0$", color="tab:red")
+axL.set_xlabel(r"$X$"); axL.set_ylabel(r"$Y$"); axL.set_aspect("equal")
+axL.set_title("joint density and a slice")
+
+# right: marginal of Y vs conditional of Y given X = x0
+y = np.linspace(-3, 3, 300)
+axR.plot(y, stats.norm.pdf(y), color="0.5", lw=2, label=r"marginal $f_Y$")
+cond_mean, cond_sd = rho * x0, np.sqrt(1 - rho**2)
+axR.plot(y, stats.norm.pdf(y, cond_mean, cond_sd), color="tab:red", lw=2,
+         label=r"conditional $f_{Y\mid X=x_0}$")
+axR.set_xlabel(r"$Y$"); axR.set_yticks([])
+axR.legend(fontsize=9); axR.set_title("marginal vs. conditional")
+
+fig.tight_layout()
+plt.show()
+```
+
+## Moments {#sec-pr-moments}
+
+::: {#def-expectation}
+The **expectation** of $X$ is its probability-weighted average value,
+$$
+\mathbb{E}[X] = \sum_x x\, p_X(x) \quad\text{(discrete)}, \qquad
+\mathbb{E}[X] = \int_{-\infty}^\infty x\, f_X(x)\, dx \quad\text{(continuous)} .
+$$
+:::
+
+Formally, expectation is a single object — the Lebesgue integral $\int_\Omega X(\omega)\, d\mathbb{P}(\omega)$ — that the two formulas above specialize; the integral itself is beyond the math camp and unnecessary for computation. 
+
+Below are some properties of expectation that we will use constantly:
+
+
+1. Linearity: For any random variables $X$ and $Y$ and constants $a$, $b$, and $c$,
+$$
+\mathbb{E}[aX + bY + c] = a\,\mathbb{E}[X] + b\,\mathbb{E}[Y] + c.
+$$
+Similarly, for a random vector $\boldsymbol{X} = [X_1, \dots, X_k]^\top$ and a constant vector $\boldsymbol{w} = [w_1, \dots, w_k]^\top$, 
+$$
+\mathbb{E}[\boldsymbol{w}^\top \boldsymbol{X}] = \mathbb{E}[\sum_{i=1}^k w_i\, X_i] = \sum_{i=1}^k w_i\, \mathbb{E}[X_i]
+= \boldsymbol{w}^\top \mathbb{E}[\boldsymbol{X}].
+$$
+For a constant matrix ${\boldsymbol{A} = \begin{bmatrix} -- & \boldsymbol{a}_{1}^\top & -- \\ \vdots & \vdots & \vdots \\
+-- & \boldsymbol{a}_{k}^\top & --\end{bmatrix}}$
+$$
+\mathbb{E}[\boldsymbol{A}\boldsymbol{X}] = \mathbb{E}
+\begin{bmatrix}
+\boldsymbol{a}_1^\top \boldsymbol{X} \\
+\vdots \\
+\boldsymbol{a}_k^\top \boldsymbol{X}
+\end{bmatrix}
+= \boldsymbol{A}\,\mathbb{E}[\boldsymbol{X}].
+$$
+The linearity of expectation also holds for matrices of random variables:
+$$
+\mathbb{E}[\boldsymbol{A}\boldsymbol{X}\boldsymbol{X}^\top\boldsymbol{B}] = \boldsymbol{A}\,\mathbb{E}[\boldsymbol{X}\boldsymbol{X}^\top]\,\boldsymbol{B}.
+$$
+where $\boldsymbol{A}$ and $\boldsymbol{B}$ are constant matrices of appropriate dimensions, and $\boldsymbol{X}$ is a random vector, so $\boldsymbol{X} \boldsymbol{X}^\top$ is a matrix.
+1. Law of the unconscious statistician (LOTUS): The expectation of a function $g(X)$ is the average of $g$ under the distribution of $X$,
+$$
+\mathbb{E}[g(X)] = \sum_x g(x)\, p_X(x) \quad\text{or}\quad \int_{-\infty}^\infty g(x)\, f_X(x)\, dx,
+$$ {#eq-lotus}
+and, for a function of two variables against the joint, $\mathbb{E}[g(X,Y)] = \iint g(x,y)\, f(x,y)\, dx\, dy$. 
+
+::: {#def-variance}
+The **variance** of $X$ is
+$$
+\operatorname{Var}(X) = \mathbb{E}\!\big[(X - \mathbb{E}[X])^2\big] = \mathbb{E}[X^2] - (\mathbb{E}[X])^2,
+$$
+and the **standard deviation** is $\operatorname{std}(X) = \sqrt{\operatorname{Var}(X)}$, in the same units as $X$.
+:::
+
+Variance is *not* linear: 
+$$
+\operatorname{Var}(aX + b) = a^2 \operatorname{Var}(X)
+$$
+We can check the above by definition:
+$$
+\operatorname{Var}(aX + b) = \mathbb{E}[(aX + b)^2] - (\mathbb{E}[aX + b])^2 
+= a^2 \mathbb{E}[X^2] + 2ab \mathbb{E}[X] + b^2 - (a\mathbb{E}[X] + b)^2 = a^2 \operatorname{Var}(X) .
+$$
+We will see that variance can be interpreted as a special case of covariance. 
+
+::: {#def-covariance}
+The **covariance** of $X$ and $Y$ is
+$$
+\operatorname{Cov}(X, Y) = \mathbb{E}\big[(X - \mathbb{E}[X])(Y - \mathbb{E}[Y])\big] = \mathbb{E}[XY] - \mathbb{E}[X]\,\mathbb{E}[Y] ,
+$$
+:::
+
+Covariance is positive when the variables tend to be on the same side of their means together, negative when they trade off. Recall, when we introduced the inner product in @sec-la-vectors, we mentioned a broader definition. In probability, the inner product is $\langle X, Y \rangle = \mathbb{E}[XY]$, and covariance is the inner product of the centered variables $X - \mathbb{E}[X]$ and $Y - \mathbb{E}[Y]$. Geometrically, inner products measure the angle between two vectors, and covariance measures the angle between two random variables. If the angle is acute, the covariance is positive; if obtuse, negative; if perpendicular, zero. The same properties of inner products carry over to $\mathbb{E}[XY]$ and $\operatorname{Cov}(X, Y)$: 
+
+1. $\operatorname{Cov}(X, Y) = \operatorname{Cov}(Y, X)$.
+2. $\operatorname{Cov}(aX + bY, Z) = a\,\operatorname{Cov}(X, Z) + b\,\operatorname{Cov}(Y, Z)$.
+
+As we mentioned that variance is a special case of covariance, we can see that $\operatorname{Var}(X) = \operatorname{Cov}(X, X)$. Therefore, using the properties of covariance, we can also see that
+$$
+\operatorname{Var}(aX) = \operatorname{Cov}(aX, aX) = a^2 \operatorname{Cov}(X, X) = a^2 \operatorname{Var}(X) .
+$$
+
+::: {#exm-covariance}
+Compute $\operatorname{Var}(aX + bY)$.
+$$
+\begin{aligned}
+\operatorname{Var}(aX + bY) &= \operatorname{Cov}(aX + bY, aX + bY) \\
+&= \operatorname{Cov}(aX, aX + bY) + \operatorname{Cov}(bY, aX + bY) \quad \text{by rule 2} \\
+&= \operatorname{Cov}(aX+bY, aX) + \operatorname{Cov}(aX+bY, bY) \quad \text{by rule 1}\\
+&= \operatorname{Cov}(aX, aX) + \operatorname{Cov}(bY, aX) + \operatorname{Cov}(aX, bY) + \operatorname{Cov}(bY, bY) \quad \text{by rule 2}\\
+&= a^2\operatorname{Var}(X) + 2ab\operatorname{Cov}(X, Y) + b^2\operatorname{Var}(Y) .
+\end{aligned}
+$$
+:::
+
+::: {#exm-covariance-matrix}
+Compute $\operatorname{Var}(\sum_{i=1}^N a_i X_i)$.
+$$
+\begin{aligned}
+\operatorname{Var}\Big(\sum_{i=1}^N a_i X_i\Big) &= \operatorname{Cov}\Big(\sum_{i=1}^N a_i X_i, \sum_{j=1}^N a_j X_j\Big) \\
+&= \sum_{i=1}^N \sum_{j=1}^N a_i a_j \operatorname{Cov}(X_i, X_j)
+\end{aligned}
+$$
+:::
+
+::: {#def-covariance-matrix}
+For a random vector $\boldsymbol{X} = (X_1, \dots, X_k)$ with $\boldsymbol{\mu} = \mathbb{E}[\boldsymbol{X}]$, the **covariance matrix** is
+$$
+\boldsymbol{\Sigma} = \operatorname{Cov}(\boldsymbol{X}) = \mathbb{E}\big[(\boldsymbol{X} - \boldsymbol{\mu})(\boldsymbol{X} - \boldsymbol{\mu})^\top\big],
+\qquad \Sigma_{ij} = \operatorname{Cov}(X_i, X_j) .
+$$
+Its diagonal holds the variances, its off-diagonal the covariances; it is symmetric.
+:::
+
+::: {#thm-cov-psd}
+The covariance matrix $\boldsymbol{\Sigma}$ is positive semidefinite: $\boldsymbol{w}^\top \boldsymbol{\Sigma}\, \boldsymbol{w} \ge 0$ for every $\boldsymbol{w}$.
+:::
+
+The proof is immediate from @exm-covariance-matrix: $\operatorname{Var}(\boldsymbol{w}^\top \boldsymbol{X}) = \boldsymbol{w}^\top \boldsymbol{\Sigma}\, \boldsymbol{w}$, and variance is nonnegative. 
+
+## Conditional expectation {#sec-pr-conditional-expectation}
+
+We now combine the two halves of the chapter: the conditional distribution of @def-conditional-distribution and the expectation of @def-expectation. Averaging $Y$ under its conditional distribution gives the best forecast of $Y$ once $X$ is known — and it closes the loop with least squares.
+
+::: {#def-conditional-expectation}
+The **conditional expectation** of $Y$ given $X = x$ averages $Y$ under the conditional distribution,
+$$
+\mathbb{E}[Y \mid X = x] = \int y\, f_{Y \mid X}(y \mid x)\, dy .
+$$
+:::
+Note that $\mathbb{E}[Y \mid X = x]$ is not a number but a function of $x$. It is the best prediction of $Y$ given $X = x$. 
+
+Letting $x$ vary (remove "$=x$" from the expression), $\mathbb{E}[Y \mid X]$ is itself a random variable — a function of $X$. One natural question is: what is the expectation of that random variable? Formally, what is 
+$$
+\mathbb{E}\big[\mathbb{E}[Y \mid X]\big]
+$$
+To answer this question, we first need to be clear about the meaning of $\mathbb{E}[Y \mid X]$. It is a random variable that depends on $X$, so we should express it as a function of $X$, and then take the expectation of that function. So, the first step is 
+$$
+\mathbb{E}_X\big[\mathbb{E}_Y[Y \mid X]\big] = \int \mathbb{E}[Y \mid X = x] f_X(x) dx
+$$
+where we use subscripts $X$ or $Y$ to remind ourselves that the expectation is taken with respect to the distribution of $X$ or $Y$, respectively. Then, we plug in the @def-conditional-expectation to get
+$$
+\mathbb{E}_X\big[\mathbb{E}_Y[Y \mid X]\big] = \int  \int y f_{Y \mid X}(y \mid x) dy  f_X(x) dx
+$$
+Rearranging the order of integration and using the @def-conditional-distribution, we have
+$$
+\mathbb{E}_X\big[\mathbb{E}_Y[Y \mid X]\big] = \int  \int y f_{Y \mid X}(y \mid x) f_X(x) dx dy = \mathbb{E}[Y]
+$$
+The result is the **law of iterated expectations**.
+
+::: {#thm-tower}
+## Law of iterated expectations (tower property)
+$$
+\mathbb{E}\big[\mathbb{E}[Y \mid X]\big] = \mathbb{E}[Y] .
+$$
+More generally, conditioning on less information averages out the more refined conditional: $\mathbb{E}[\mathbb{E}[Y \mid X, Z] \mid X] = \mathbb{E}[Y \mid X]$.
+:::
+
+## Mean variance portfolio theory {#sec-pr-mean-variance}
+In this section, we apply the machinery of expectation and covariance to portfolio theory. We will derive the mean-variance efficient frontier. 
+
+Suppose we have $N$ assets with expected returns $\boldsymbol{\mu}$ and covariance matrix $\boldsymbol{\Sigma}$. Because of risk aversion, investors want to maximize expected return but minimize risk. The question is: how do we combine the $N$ assets into a portfolio that achieves the best tradeoff between expected return and risk? In asset pricing, you will see the following optimization problem: for a given level of expected return $\mu_p$, minimize the portfolio variance. Therefore, we need to answer the following question: 
+
+1. How to express the portfolio expected return?
+2. How to express the portfolio variance?
+
+We use $\boldsymbol{w}$ to denote the portfolio weights, where $w_i$ is the weight of asset $i$ in the portfolio. Then, the portfolio expected return is a linear combination of the individual asset expected returns $\boldsymbol{w}^\top \boldsymbol{\mu}$. The portfolio variance is a quadratic form of the weights and the covariance matrix $\boldsymbol{w}^\top \boldsymbol{\Sigma} \boldsymbol{w}$. The optimization problem is therefore
+$$
+\begin{aligned}
+\min_{\boldsymbol{w}} \quad & \boldsymbol{w}^\top \boldsymbol{\Sigma} \boldsymbol{w} \\
+\text{s.t.} \quad & \boldsymbol{w}^\top \boldsymbol{\mu} = \mu_p \\
+& \boldsymbol{w}^\top \boldsymbol{1} = 1
+\end{aligned}
+$$
+where $\boldsymbol{1}$ is a vector of ones. The first constraint ensures that the portfolio has the desired expected return, and the second constraint ensures that the weights sum to one (i.e., the entire wealth is invested).
+
+We set the Lagrangian for this optimization problem:
+$$
+\mathcal{L}(\boldsymbol{w}, \lambda, \gamma) = \boldsymbol{w}^\top \boldsymbol{\Sigma} \boldsymbol{w} - \lambda (\boldsymbol{w}^\top \boldsymbol{\mu} - \mu_p) - \gamma (\boldsymbol{w}^\top \boldsymbol{1} - 1)
+$$
+Taking the derivative with respect to $\boldsymbol{w}$ (hint: @exm-diff-quadratic):
+$$
+d\mathcal{L} = 2\boldsymbol{w}^\top \boldsymbol{\Sigma} d\boldsymbol{w} - \lambda \boldsymbol{\mu}^\top d\boldsymbol{w} - \gamma \boldsymbol{1}^\top d\boldsymbol{w}
+$$
+Setting the derivative to zero gives the first-order condition:
+$$
+\boldsymbol{w} = \frac{1}{2} \boldsymbol{\Sigma}^{-1} (\lambda \boldsymbol{\mu} + \gamma \boldsymbol{1})
+$$
+To solve for $\lambda$ and $\gamma$, we plug this expression for $\boldsymbol{w}$ into the constraints:
+$$
+\begin{cases}
+\boldsymbol{w}^\top \boldsymbol{\mu} &= \mu_p \\
+\boldsymbol{w}^\top \boldsymbol{1} &= 1
+\end{cases}
+\Rightarrow
+\begin{cases}
+\frac{1}{2} (\lambda \boldsymbol{\mu} + \gamma \boldsymbol{1})^\top \boldsymbol{\Sigma}^{-1} \boldsymbol{\mu} &= \mu_p \\
+\frac{1}{2} (\lambda \boldsymbol{\mu} + \gamma \boldsymbol{1})^\top \boldsymbol{\Sigma}^{-1} \boldsymbol{1} &= 1
+\end{cases}
+$$
+For simplicity, we denote 
+$$
+\boldsymbol{A} = 
+\begin{bmatrix}
+\frac{1}{2}\boldsymbol{\mu}^\top\boldsymbol{\Sigma}^{-1}\boldsymbol{\mu} & \frac{1}{2}\boldsymbol{1}^\top\boldsymbol{\Sigma}^{-1}\boldsymbol{\mu} \\
+\frac{1}{2}\boldsymbol{1}^\top\boldsymbol{\Sigma}^{-1}\boldsymbol{\mu} & \frac{1}{2}\boldsymbol{1}^\top\boldsymbol{\Sigma}^{-1}\boldsymbol{1}
+\end{bmatrix}
+$$
+Then we can write the above system of equations as a linear system:
+$$
+\boldsymbol{A}
+\begin{bmatrix}
+\lambda \\
+\gamma
+\end{bmatrix}=
+\begin{bmatrix}
+\mu_p \\
+1
+\end{bmatrix}
+\Rightarrow
+\begin{bmatrix}
+\lambda \\
+\gamma
+\end{bmatrix} = \boldsymbol{A}^{-1}
+\begin{bmatrix}
+\mu_p \\
+1
+\end{bmatrix}
+$$ 
+```{python}
+#| fig-align: center
+
+import numpy as np
+from matplotlib import pyplot as plt
+
+rng = np.random.default_rng(0)
+N = 25
+
+# Generate expected returns and a positive definite covariance matrix.
+# Assets with higher exposure to the first factor have higher expected returns.
+factor_loadings = rng.normal(0.03, 0.02, size=(N, 3))
+market_exposure = factor_loadings[:, [0]]
+mu = 0.03 + market_exposure + rng.normal(0, 0.01, size=(N, 1))
+idiosyncratic_var = rng.uniform(0.03, 0.10, N) ** 2
+Sigma = factor_loadings @ factor_loadings.T + np.diag(idiosyncratic_var)
+
+# Solve the minimum-variance portfolio for each target return.
+ones = np.ones((N, 1))
+Sigma_inv = np.linalg.inv(Sigma)
+
+A = 0.5 * np.array([
+    [(mu.T @ Sigma_inv @ mu).item(), (ones.T @ Sigma_inv @ mu).item()],
+    [(ones.T @ Sigma_inv @ mu).item(), (ones.T @ Sigma_inv @ ones).item()],
+])
+
+target_returns = np.linspace(mu.min(), mu.max() * 1.5, 200)
+rhs = np.vstack([target_returns, np.ones_like(target_returns)])
+lambd, gamma = np.linalg.solve(A, rhs)
+
+weights = 0.5 * Sigma_inv @ (mu @ lambd.reshape(1, -1) + ones @ gamma.reshape(1, -1))
+frontier_returns = (mu.T @ weights).ravel()
+frontier_risks = np.sqrt(np.sum(weights * (Sigma @ weights), axis=0))
+
+# The global minimum-variance portfolio is the leftmost point on the frontier.
+gmv_index = np.argmin(frontier_risks)
+
+fig, ax = plt.subplots(figsize=(7, 5))
+ax.plot(frontier_risks, frontier_returns, color="black", lw=2, label="minimum-variance frontier")
+ax.scatter(frontier_risks[gmv_index], frontier_returns[gmv_index], color="tab:red", zorder=3, label="global minimum variance")
+asset_points = ax.scatter(np.sqrt(np.diag(Sigma)), mu.ravel(), alpha=0.5, label="individual assets", color="tab:red", lw=0)
+ax.set_xlabel("standard deviation")
+ax.set_ylabel("expected return")
+ax.set_title("Mean-variance efficient frontier")
+ax.legend(fontsize=8)
+ax.grid()
+plt.show()
+```
+
+On the plot, the black curve is the mean-variance efficient frontier, which shows the best possible tradeoff between expected return and risk (standard deviation) for portfolios composed of the $N$ assets. Each point on the curve represents a portfolio that minimizes risk for a given level of expected return. The red point indicates the global minimum-variance portfolio, which has the lowest risk among all possible portfolios. The individual assets are shown as red points, and they generally lie below the efficient frontier, indicating that diversification can lead to better risk-return profiles than investing in individual assets alone.

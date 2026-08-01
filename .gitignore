@@ -1,0 +1,30 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Quarto
+/_output/
+/.quarto/
+**/*.quarto_ipynb*
+**/*_files/
+
+# LaTeX intermediates
+*.fdb_latexmk
+*.fls
+
+# Third-party reference PDFs — not ours to redistribute
+references/
+
+# Course admin
+FIN 700 Syllabus.docx
+
+# OS / Dropbox artifacts
+desktop.ini
+*conflicted copy*

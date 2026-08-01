@@ -1,0 +1,394 @@
+## Common distributions {#sec-pr-distributions}
+
+A handful of distributions recur so often that they deserve names. We group them by type.
+
+**Discrete.**
+
+- **Bernoulli($p$)**: a single yes/no trial, $X \in \{0,1\}$ with $\mathbb{P}(X=1)=p$. The atom of default-vs-survival, up-vs-down.
+- **Binomial($n,p$)**: the number of successes in $n$ independent Bernoulli($p$) trials, $p_X(k) = \binom{n}{k} p^k (1-p)^{n-k}$. A cornerstone of the binomial option-pricing tree.
+- **Poisson($\lambda$)**: counts of rare events in a fixed interval, $p_X(k) = e^{-\lambda}\lambda^k / k!$ for $k = 0, 1, 2, \dots$. The number of jumps, defaults, or trades in a window; it is the count process behind @sec-pr-processes.
+- **Geometric($p$)**: the number of trials until the first success, $p_X(k) = (1-p)^{k-1} p$. The waiting time to the first default.
+
+**Continuous.**
+
+- **Uniform($a,b$)**: constant density $f_X(x) = 1/(b-a)$ on $[a,b]$. Maximal ignorance on an interval; the raw material of simulation.
+- **Exponential($\lambda$)**: $f_X(x) = \lambda e^{-\lambda x}$ for $x \ge 0$. The memoryless waiting time between Poisson events.
+- **Normal($\mu, \sigma^2$)**: the bell curve $f_X(x) = \frac{1}{\sqrt{2\pi}\,\sigma}\exp\!\big(-\frac{(x-\mu)^2}{2\sigma^2}\big)$, with mean $\mu$ and variance $\sigma^2$. Its central role is explained by the Central Limit Theorem (@sec-pr-limits), and it is the workhorse model for log-returns.
+- **Log-normal**: if $\log X \sim \text{Normal}(\mu,\sigma^2)$, then $X$ is log-normal and positive — the natural model for a *price*, which cannot go negative, and the terminal law of geometric Brownian motion (@sec-pr-brownian).
+
+```{python}
+#| fig-align: center
+#| label: fig-distribution-gallery
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import stats
+
+fig, axes = plt.subplots(2, 3, figsize=(11, 6))
+
+# --- discrete ---
+k = np.arange(0, 11)
+axes[0, 0].stem(k, stats.binom.pmf(k, 10, 0.4))
+axes[0, 0].set_title("Binomial$(10,\\,0.4)$")
+
+k = np.arange(0, 11)
+axes[0, 1].stem(k, stats.poisson.pmf(k, 3))
+axes[0, 1].set_title("Poisson$(3)$")
+
+k = np.arange(1, 11)
+axes[0, 2].stem(k, stats.geom.pmf(k, 0.4))
+axes[0, 2].set_title("Geometric$(0.4)$")
+
+# --- continuous ---
+x = np.linspace(-4, 4, 400)
+for mu, sd in [(0, 1), (0, 2), (1, 0.7)]:
+    axes[1, 0].plot(x, stats.norm.pdf(x, mu, sd),
+                    label=f"$\\mu={mu},\\ \\sigma={sd}$")
+axes[1, 0].set_title("Normal"); axes[1, 0].legend(fontsize=7)
+
+x = np.linspace(0, 5, 400)
+for lam in [0.5, 1.0, 2.0]:
+    axes[1, 1].plot(x, stats.expon.pdf(x, scale=1/lam), label=f"$\\lambda={lam}$")
+axes[1, 1].set_title("Exponential"); axes[1, 1].legend(fontsize=7)
+
+x = np.linspace(0, 4, 400)
+for s in [0.4, 0.7, 1.0]:
+    axes[1, 2].plot(x, stats.lognorm.pdf(x, s), label=f"$\\sigma={s}$")
+axes[1, 2].set_title("Log-normal"); axes[1, 2].legend(fontsize=7)
+
+fig.tight_layout()
+plt.show()
+```
+
+The top row shows mass functions (probability sits on the spikes); the bottom row shows densities (probability is area under the curve). These few shapes cover most of the modeling in the course.
+
+
+
+
+
+# The Multivariate Normal and Limit Theorems {#sec-pr-mvn-limits}
+
+Two facts explain why the normal distribution dominates quantitative finance. First, its multivariate form is built entirely from linear algebra — an affine image of independent standard normals — and its conditional means are *exactly* regression lines. Second, the Central Limit Theorem makes it the universal limit of averages, which is why estimators are approximately normal and inference is possible at all. This chapter develops both.
+
+## The multivariate normal {#sec-pr-mvn}
+
+Start from the simplest possible random vector: $\boldsymbol{Z} = (Z_1, \dots, Z_k)$ with independent standard-normal entries, $Z_i \sim \text{Normal}(0,1)$. It has mean $\boldsymbol{0}$ and covariance $\boldsymbol{I}$. Every multivariate normal is an **affine map** of this one — precisely the linear-algebra operation of @sec-la-linear-maps.
+
+::: {#def-mvn}
+A random vector $\boldsymbol{X}$ is **multivariate normal** with mean $\boldsymbol{\mu}$ and covariance $\boldsymbol{\Sigma}$, written $\boldsymbol{X} \sim \mathcal{N}(\boldsymbol{\mu}, \boldsymbol{\Sigma})$, if it can be written
+$$
+\boldsymbol{X} = \boldsymbol{\mu} + \boldsymbol{A}\boldsymbol{Z}, \qquad \boldsymbol{Z} \sim \mathcal{N}(\boldsymbol{0}, \boldsymbol{I}), \quad \boldsymbol{\Sigma} = \boldsymbol{A}\boldsymbol{A}^\top .
+$$
+When $\boldsymbol{\Sigma}$ is invertible, its density is
+$$
+f(\boldsymbol{x}) = (2\pi)^{-k/2} \, |\boldsymbol{\Sigma}|^{-1/2}
+\exp\!\left( -\tfrac{1}{2} (\boldsymbol{x} - \boldsymbol{\mu})^\top \boldsymbol{\Sigma}^{-1} (\boldsymbol{x} - \boldsymbol{\mu}) \right) .
+$$ {#eq-mvn-density}
+:::
+
+Every piece is linear algebra we have already built. The exponent is a **quadratic form** in $\boldsymbol{\Sigma}^{-1}$ (@sec-la-quadratic-forms); its level sets $(\boldsymbol{x}-\boldsymbol{\mu})^\top \boldsymbol{\Sigma}^{-1}(\boldsymbol{x}-\boldsymbol{\mu}) = c$ are the ellipsoids of @sec-la-eigenvalues, with axes along the eigenvectors of $\boldsymbol{\Sigma}$ and half-lengths $\sqrt{\lambda_i}$. The normalizer $|\boldsymbol{\Sigma}|^{-1/2}$ is the determinant — the volume factor of @sec-la-determinants — keeping the total integral at one. The factor $\boldsymbol{A}$ with $\boldsymbol{A}\boldsymbol{A}^\top = \boldsymbol{\Sigma}$ is *any* square root; the **Cholesky factor** (lower-triangular $\boldsymbol{A}$) is the standard choice and is exactly how one simulates correlated returns — the trick already used to generate the correlated cloud in @sec-la-pca.
+
+The multivariate normal has three properties that make it uniquely convenient.
+
+::: {#thm-mvn-properties}
+Let $\boldsymbol{X} \sim \mathcal{N}(\boldsymbol{\mu}, \boldsymbol{\Sigma})$.
+
+1. **Affine maps stay normal.** For any matrix $\boldsymbol{B}$ and vector $\boldsymbol{c}$, $\boldsymbol{B}\boldsymbol{X} + \boldsymbol{c} \sim \mathcal{N}(\boldsymbol{B}\boldsymbol{\mu} + \boldsymbol{c},\ \boldsymbol{B}\boldsymbol{\Sigma}\boldsymbol{B}^\top)$. In particular every portfolio $\boldsymbol{w}^\top \boldsymbol{X}$ is univariate normal.
+2. **Marginals are normal**, read straight off $\boldsymbol{\mu}$ and the diagonal blocks of $\boldsymbol{\Sigma}$.
+3. **Uncorrelated $\Leftrightarrow$ independent.** For jointly normal variables, $\operatorname{Cov}(X_i, X_j) = 0$ makes them independent — the converse to @sec-pr-joint that holds *only* in the normal world.
+:::
+
+Property 1 is why the normal model is closed under portfolio formation: any linear combination of jointly normal returns is again normal, so a portfolio's whole distribution is pinned down by two numbers, its mean and variance — the formal underpinning of mean–variance analysis.
+
+### The conditional distribution *is* the regression line
+
+Partition $\boldsymbol{X} \sim \mathcal{N}(\boldsymbol{\mu}, \boldsymbol{\Sigma})$ into two blocks, $\boldsymbol{X} = (\boldsymbol{X}_1, \boldsymbol{X}_2)$, with means and covariances partitioned to match:
+$$
+\boldsymbol{\mu} = \begin{pmatrix} \boldsymbol{\mu}_1 \\ \boldsymbol{\mu}_2 \end{pmatrix},
+\qquad
+\boldsymbol{\Sigma} = \begin{pmatrix} \boldsymbol{\Sigma}_{11} & \boldsymbol{\Sigma}_{12} \\ \boldsymbol{\Sigma}_{21} & \boldsymbol{\Sigma}_{22} \end{pmatrix} .
+$$
+Then the conditional distribution of $\boldsymbol{X}_1$ given $\boldsymbol{X}_2$ is again normal, with
+$$
+\mathbb{E}[\boldsymbol{X}_1 \mid \boldsymbol{X}_2]
+= \boldsymbol{\mu}_1 + \boldsymbol{\Sigma}_{12}\boldsymbol{\Sigma}_{22}^{-1}(\boldsymbol{X}_2 - \boldsymbol{\mu}_2),
+\qquad
+\operatorname{Cov}(\boldsymbol{X}_1 \mid \boldsymbol{X}_2) = \boldsymbol{\Sigma}_{11} - \boldsymbol{\Sigma}_{12}\boldsymbol{\Sigma}_{22}^{-1}\boldsymbol{\Sigma}_{21} .
+$$ {#eq-mvn-conditional}
+Look at the conditional mean: it is **linear** in $\boldsymbol{X}_2$, with slope $\boldsymbol{\Sigma}_{12}\boldsymbol{\Sigma}_{22}^{-1}$. Compare the least-squares coefficient $\hat{\boldsymbol{\beta}} = (\boldsymbol{X}^\top\boldsymbol{X})^{-1}\boldsymbol{X}^\top\boldsymbol{y}$ from @eq-normal-equations: $\boldsymbol{\Sigma}_{22}^{-1}$ plays the role of $(\boldsymbol{X}^\top\boldsymbol{X})^{-1}$ (the regressor second moment) and $\boldsymbol{\Sigma}_{21}$ the role of $\boldsymbol{X}^\top\boldsymbol{y}$ (the regressor–outcome moment). This is the exact moment at which the three threads tie together: for jointly normal data the best predictor of @thm-ce-projection is *already* linear, so the conditional expectation, the population regression line, and the sample OLS fit are one and the same object. Regression is not an approximation imposed on normal data — it is the conditional mean itself.
+
+```{python}
+#| fig-align: center
+#| label: fig-bivariate-normal
+import numpy as np
+import matplotlib.pyplot as plt
+
+mu = np.array([0.0, 0.0])
+Sigma = np.array([[1.0, 0.8],
+                  [0.8, 1.0]])
+
+# grid for the density contours
+g = np.linspace(-3, 3, 200)
+X1, X2 = np.meshgrid(g, g)
+pos = np.dstack([X1, X2])
+Sinv = np.linalg.inv(Sigma)
+quad = np.einsum("...i,ij,...j->...", pos - mu, Sinv, pos - mu)
+dens = np.exp(-0.5 * quad)
+
+fig, ax = plt.subplots(figsize=(5.5, 5))
+ax.contour(X1, X2, dens, levels=6, cmap="Blues")
+
+# the conditional-mean line E[X1 | X2] = (Sigma_12 / Sigma_22) x2
+slope = Sigma[0, 1] / Sigma[1, 1]
+ax.plot(slope * g, g, color="tab:red", lw=2,
+        label=r"$\mathbb{E}[X_1 \mid X_2]$ (regression line)")
+
+ax.set_xlabel(r"$X_1$"); ax.set_ylabel(r"$X_2$")
+ax.set_aspect("equal"); ax.legend(fontsize=9, loc="upper left")
+plt.show()
+```
+
+The elliptical contours are the level sets of the quadratic form; their tilt is the correlation. The red line through them is the conditional mean @eq-mvn-conditional — the regression line, riding along the ridge of the joint density.
+
+## Convergence and the limit theorems {#sec-pr-limits}
+
+Estimation averages data, and we need to know where averages go as the sample grows. That requires a notion of a random sequence *settling down*.
+
+::: {#def-convergence}
+Let $X_1, X_2, \dots$ be random variables.
+
+- $X_n \to X$ **in probability** if $\mathbb{P}(|X_n - X| > \varepsilon) \to 0$ for every $\varepsilon > 0$: the chance of a non-negligible gap vanishes.
+- $X_n \to X$ **in distribution** if $F_{X_n}(x) \to F_X(x)$ at every continuity point: the *shape* of the distribution settles, even if the variables themselves do not.
+:::
+
+(A stronger mode, almost-sure convergence — the sequence converges for essentially every outcome $\omega$ — sits above convergence in probability; we note it exists and move on.) With these in hand, the two theorems that license all of statistics follow. Let $X_1, \dots, X_n$ be independent draws from a distribution with mean $\mu$ and variance $\sigma^2$, and write $\bar{X}_n = \frac{1}{n}\sum_i X_i$ for the sample mean.
+
+::: {#thm-lln}
+## Law of Large Numbers
+The sample mean converges in probability to the true mean, $\bar{X}_n \to \mu$.
+:::
+::: {.proof}
+The sample mean has $\mathbb{E}[\bar{X}_n] = \mu$ and, by independence, $\operatorname{Var}(\bar{X}_n) = \sigma^2 / n$. Chebyshev's inequality (@thm-markov-chebyshev) then gives
+$$
+\mathbb{P}\big(|\bar{X}_n - \mu| > \varepsilon\big) \le \frac{\sigma^2}{n\,\varepsilon^2} \to 0 .
+$$
+:::
+
+The LLN is why averaging works — sample means, sample variances, and sample covariances converge to their population counterparts, so the covariance matrix estimated from a return panel approaches the true $\boldsymbol{\Sigma}$. But it says nothing about the *error* at finite $n$. That is the Central Limit Theorem's job.
+
+::: {#thm-clt}
+## Central Limit Theorem
+Whatever the underlying distribution (with finite variance $\sigma^2$), the standardized sample mean converges in distribution to a standard normal:
+$$
+\frac{\bar{X}_n - \mu}{\sigma / \sqrt{n}} \ \xrightarrow{\ d\ }\ \mathcal{N}(0, 1) .
+$$
+Equivalently, $\bar{X}_n \approx \mathcal{N}\!\big(\mu,\ \sigma^2/n\big)$ for large $n$.
+:::
+
+The CLT is the reason the normal distribution is unavoidable: sums of many small independent shocks are approximately normal *regardless of the shocks' own shape*. It is the justification for the normal model of aggregated returns, and — applied to estimators, which are themselves averages — it is what makes standard errors, $t$-statistics, and confidence intervals meaningful. The picture below shows it acting on the most un-normal ingredient imaginable, coin flips.
+
+```{python}
+#| fig-align: center
+#| label: fig-clt
+import numpy as np
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(0)
+fig, axes = plt.subplots(1, 3, figsize=(11, 3.2))
+
+for ax, n in zip(axes, [1, 5, 40]):
+    # sample means of n Bernoulli(0.5) draws, repeated many times
+    means = rng.binomial(1, 0.5, size=(20000, n)).mean(axis=1)
+    ax.hist(means, bins=30, density=True, color="0.7", edgecolor="white")
+    # normal approximation from the CLT
+    mu, sd = 0.5, np.sqrt(0.25 / n)
+    x = np.linspace(0, 1, 200)
+    ax.plot(x, np.exp(-0.5 * ((x - mu) / sd) ** 2) / (np.sqrt(2 * np.pi) * sd),
+            color="tab:red", lw=2)
+    ax.set_title(f"$n = {n}$"); ax.set_yticks([])
+
+fig.suptitle("Distribution of the sample mean of Bernoulli$(0.5)$ draws", fontsize=11)
+fig.tight_layout()
+plt.show()
+```
+
+At $n=1$ the "distribution" is two bars at $0$ and $1$; by $n=40$ the bell curve has taken over completely. A close cousin, the **delta method**, propagates the CLT through a smooth function $g$: if $\sqrt{n}(\bar{X}_n - \mu) \to \mathcal{N}(0, \sigma^2)$ then $\sqrt{n}(g(\bar{X}_n) - g(\mu)) \to \mathcal{N}(0,\ g'(\mu)^2 \sigma^2)$ — a first-order Taylor expansion doing the linearization, which is how the standard errors of nonlinear estimators are found.
+
+
+# Stochastic Processes and a Glimpse of Continuous Time {#sec-pr-processes}
+
+So far a random variable has been a single snapshot. Finance is dynamic: prices, rates, and volatilities evolve, and information accrues over time. A **stochastic process** is a whole family of random variables indexed by time, $\{X_t\}$, and it is the language of asset pricing. This chapter introduces the three processes that matter most — Markov chains, martingales, and Brownian motion — and closes with a first look at Itô calculus, the differential calculus of random paths.
+
+## Filtrations and information {#sec-pr-filtrations}
+
+Time brings information. The $\sigma$-algebra $\mathcal{F}$ of @sec-pr-spaces — the events we can resolve — grows as we observe more.
+
+::: {#def-filtration}
+A **filtration** $\{\mathcal{F}_t\}$ is an increasing family of event spaces, $\mathcal{F}_s \subseteq \mathcal{F}_t$ for $s \le t$, representing the information available by time $t$. A process $\{X_t\}$ is **adapted** if $X_t$ is known given $\mathcal{F}_t$ — no peeking into the future.
+:::
+
+The filtration is the formal version of an *information set*, the object that conditional expectations condition on. Writing $\mathbb{E}[\,\cdot \mid \mathcal{F}_t]$ means "the best forecast given everything known by time $t$," and the tower property of @thm-tower now reads across time: forecasts made today are, on average, confirmed by the more informed forecasts of tomorrow.
+
+## Markov chains {#sec-pr-markov}
+
+The simplest useful dynamics forget the past: tomorrow depends on history only through today.
+
+::: {#def-markov-chain}
+A process $\{X_t\}$ on a finite state space $\{1, \dots, k\}$ is a **Markov chain** if
+$$
+\mathbb{P}(X_{t+1} = j \mid X_t = i, X_{t-1}, \dots) = \mathbb{P}(X_{t+1} = j \mid X_t = i) =: P_{ij} .
+$$
+The **transition matrix** $\boldsymbol{P}$ collects these probabilities; each row is a distribution, so its entries are nonnegative and sum to one.
+:::
+
+The Markov property makes the whole future computable by matrix algebra — and here the linear-algebra part pays off directly. If $\boldsymbol{\pi}_t$ is the row vector of state probabilities at time $t$, then one step forward is a vector–matrix product, $\boldsymbol{\pi}_{t+1} = \boldsymbol{\pi}_t \boldsymbol{P}$, and $n$ steps forward is a matrix power:
+$$
+\boldsymbol{\pi}_{t+n} = \boldsymbol{\pi}_t\, \boldsymbol{P}^n .
+$$ {#eq-chapman-kolmogorov}
+This is the **Chapman–Kolmogorov** equation: the $n$-step transition probabilities are the entries of $\boldsymbol{P}^n$. The long-run behavior is an *eigenvalue* question — exactly the diagonalization of @sec-la-eigenvalues.
+
+::: {#def-stationary-distribution}
+A **stationary distribution** is a probability row vector $\boldsymbol{\pi}$ fixed by the dynamics,
+$$
+\boldsymbol{\pi} \boldsymbol{P} = \boldsymbol{\pi} .
+$$
+:::
+
+Read that equation as an eigenvector problem: $\boldsymbol{\pi}$ is a **left eigenvector of $\boldsymbol{P}$ with eigenvalue $1$**. Every transition matrix has such an eigenvalue (its rows sum to one), and for a well-connected chain the stationary distribution is unique and is the limit of $\boldsymbol{\pi}_t$ from any start — the chain forgets where it began. Markov chains model credit-rating migrations, bull/bear market regimes, and discrete interest-rate states; the stationary distribution is the long-run fraction of time spent in each.
+
+```{python}
+#| fig-align: center
+#| label: fig-markov-chain
+import numpy as np
+import matplotlib.pyplot as plt
+
+# A simple two-regime (bull / bear) market chain.
+P = np.array([[0.90, 0.10],
+              [0.30, 0.70]])
+
+# Long-run distribution as the left eigenvector with eigenvalue 1.
+vals, vecs = np.linalg.eig(P.T)
+i = np.argmin(np.abs(vals - 1.0))
+pi = np.real(vecs[:, i]); pi = pi / pi.sum()
+
+# Iterating the distribution from a "bull" start converges to pi.
+dist = np.array([1.0, 0.0])
+history = [dist]
+for _ in range(20):
+    dist = dist @ P
+    history.append(dist)
+history = np.array(history)
+
+fig, ax = plt.subplots(figsize=(6, 3.5))
+ax.plot(history[:, 0], marker="o", label="P(bull)")
+ax.plot(history[:, 1], marker="s", label="P(bear)")
+ax.axhline(pi[0], color="tab:blue", ls="--", lw=1)
+ax.axhline(pi[1], color="tab:orange", ls="--", lw=1)
+ax.set_xlabel("time step"); ax.set_ylabel("probability")
+ax.set_title(f"Convergence to stationary $\\pi = ({pi[0]:.2f},\\ {pi[1]:.2f})$")
+ax.legend()
+plt.show()
+```
+
+Whatever the starting regime, the state probabilities settle onto the dashed stationary levels — the eigenvector of eigenvalue $1$.
+
+## Martingales {#sec-pr-martingales}
+
+Of all processes, one class is singled out by finance above the rest: those that are, on average, *unchanging*. They formalize a fair game and, through it, the absence of arbitrage.
+
+::: {#def-martingale}
+An adapted process $\{X_t\}$ is a **martingale** with respect to $\{\mathcal{F}_t\}$ if it is integrable and
+$$
+\mathbb{E}[X_{t+1} \mid \mathcal{F}_t] = X_t .
+$$
+The best forecast of tomorrow's value, given all of today's information, is today's value.
+:::
+
+A martingale has no predictable drift: $\mathbb{E}[X_{t+n} \mid \mathcal{F}_t] = X_t$ for all horizons, by the tower property. This is the mathematical content of a **fair game** and, in finance, of **market efficiency**: if a discounted price were expected to rise, traders would buy it now, erasing the expectation. The cornerstone theorem of asset pricing states that a market admits no arbitrage precisely when there exists a **risk-neutral measure** $\mathbb{Q}$ under which every discounted asset price is a martingale — and then any derivative's price today is simply the discounted expected payoff under $\mathbb{Q}$, an expectation made computable by the tower property. A martingale is *not* the same as a Markov chain: the martingale condition constrains the conditional *mean*, the Markov condition constrains the conditional *distribution*, and a process can be either without being the other.
+
+## Brownian motion and Itô calculus {#sec-pr-brownian}
+
+Continuous-time finance replaces discrete steps with a continuous flow of randomness. Two building blocks generate almost all of it: the Poisson process for jumps, and Brownian motion for diffusion.
+
+The **Poisson process** $\{N_t\}$ counts events — trades, defaults, jumps — arriving at rate $\lambda$: $N_t$ has the Poisson$(\lambda t)$ distribution of @sec-pr-distributions, independent increments, and exponentially distributed waiting times between events. It is the canonical model of arrivals. Its continuous counterpart, and the more central object, is Brownian motion.
+
+::: {#def-brownian-motion}
+A **standard Brownian motion** (or Wiener process) $\{W_t\}_{t \ge 0}$ is a process with:
+
+1. $W_0 = 0$;
+2. **independent increments**: for $s < t$, $W_t - W_s$ is independent of the past $\mathcal{F}_s$;
+3. **normal increments**: $W_t - W_s \sim \mathcal{N}(0,\ t - s)$ — variance grows with elapsed time;
+4. **continuous paths**: $t \mapsto W_t$ is continuous.
+:::
+
+Two features drive everything that follows. First, $\{W_t\}$ is a martingale — its expected future value is its current value, so it is the natural noise for an efficient market. Second, its variance accumulates *linearly in time*, which makes the paths continuous but nowhere differentiable: over a tiny interval $dt$, the increment $dW_t$ has standard deviation $\sqrt{dt}$, so it is of order $\sqrt{dt}$, not $dt$. This is why ordinary calculus fails on Brownian paths and a new one is needed.
+
+```{python}
+#| fig-align: center
+#| label: fig-brownian-motion
+import numpy as np
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(1)
+T, n_steps, n_paths = 1.0, 500, 6
+dt = T / n_steps
+t = np.linspace(0, T, n_steps + 1)
+
+# increments ~ N(0, dt); cumulative sum gives the paths
+dW = rng.normal(0, np.sqrt(dt), size=(n_paths, n_steps))
+W = np.concatenate([np.zeros((n_paths, 1)), np.cumsum(dW, axis=1)], axis=1)
+
+fig, ax = plt.subplots(figsize=(7, 3.8))
+for path in W:
+    ax.plot(t, path, lw=1)
+ax.axhline(0, color="0.7", lw=0.8)
+# +/- one standard deviation band, sd = sqrt(t)
+ax.plot(t, np.sqrt(t), "k--", lw=1, label=r"$\pm\sqrt{t}$")
+ax.plot(t, -np.sqrt(t), "k--", lw=1)
+ax.set_xlabel("time $t$"); ax.set_ylabel("$W_t$")
+ax.set_title("Sample paths of Brownian motion")
+ax.legend(loc="upper left")
+plt.show()
+```
+
+The paths spread out like $\sqrt{t}$ — the dashed envelope — never smooth, yet continuous. To model a price we let such a path *drive* a differential equation.
+
+### Itô calculus
+
+A **stochastic differential equation** (SDE) describes how a process $X_t$ moves under a drift and a Brownian shock,
+$$
+dX_t = \mu(X_t, t)\, dt + \sigma(X_t, t)\, dW_t ,
+$$ {#eq-sde}
+read as: over $dt$, $X_t$ drifts by $\mu\, dt$ and is jostled by a random $\sigma\, dW_t$ of size $\sigma\sqrt{dt}$. The trouble is that $dW_t$ is of order $\sqrt{dt}$, so $(dW_t)^2$ is of order $dt$ — *not* negligible, as it would be in ordinary calculus. The single new rule of Itô calculus captures this:
+$$
+(dW_t)^2 = dt, \qquad (dt)^2 = 0, \qquad dt\, dW_t = 0 .
+$$ {#eq-ito-rule}
+Keeping this second-order term is the whole difference from classical calculus, and it produces the chain rule of the stochastic world.
+
+::: {#thm-ito-lemma}
+## Itô's lemma
+If $dX_t = \mu\, dt + \sigma\, dW_t$ and $f(x, t)$ is smooth, then
+$$
+df(X_t, t) = \left( \frac{\partial f}{\partial t} + \mu\, \frac{\partial f}{\partial x} + \tfrac{1}{2}\sigma^2\, \frac{\partial^2 f}{\partial x^2} \right) dt + \sigma\, \frac{\partial f}{\partial x}\, dW_t .
+$$
+:::
+
+Itô's lemma is a Taylor expansion of $f$ that, unlike the ordinary one, retains the second-order term $\frac{1}{2} f_{xx}(dX_t)^2$, because @eq-ito-rule makes $(dX_t)^2 = \sigma^2\, dt$ survive. That extra $\frac{1}{2}\sigma^2 f_{xx}$ term is the fingerprint of stochastic calculus and the source of the convexity corrections that pervade derivative pricing.
+
+::: {#exm-gbm}
+## Geometric Brownian motion
+The standard model of a stock price is
+$$
+dS_t = \mu S_t\, dt + \sigma S_t\, dW_t ,
+$$
+a proportional drift and a proportional shock, so the price stays positive. Apply Itô's lemma to $f = \log S_t$: with $\partial f/\partial S = 1/S$ and $\partial^2 f/\partial S^2 = -1/S^2$,
+$$
+d(\log S_t) = \left( \mu - \tfrac{1}{2}\sigma^2 \right) dt + \sigma\, dW_t .
+$$
+The log-price is Brownian motion with drift, so integrating gives
+$$
+S_t = S_0 \exp\!\left( \big(\mu - \tfrac{1}{2}\sigma^2\big) t + \sigma W_t \right) .
+$$
+Since $W_t \sim \mathcal{N}(0, t)$, the price $S_t$ is **log-normal** — the distribution flagged back in @sec-pr-distributions, now derived. The $-\frac{1}{2}\sigma^2$ correction, absent from ordinary calculus, is pure Itô. Pricing a claim on $S_t$ under the risk-neutral measure of @sec-pr-martingales — where the drift becomes the risk-free rate and the discounted price is a martingale — is exactly the Black–Scholes calculation, the destination this part has been building toward.
+:::
+
+This is where the boot camp hands off to the finance sequence. With probability spaces, random variables, expectation and its conditional form, the multivariate normal, the limit theorems, and now the continuous-time toolkit, the mathematical prerequisites for asset pricing, econometrics, and continuous-time finance are in place — all of it resting on the linear algebra of the first part.

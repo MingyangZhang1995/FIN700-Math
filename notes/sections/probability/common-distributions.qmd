@@ -1,0 +1,236 @@
+# Common Probability Distributions
+In this section, we will discuss several common probability distributions that are frequently used in finance and statistics. Discrete distributions include the Bernoulli, Binomial, Geometric, and Poisson distributions. Continuous distributions include the Uniform, Exponential, Normal, and Lognormal distributions. Each distribution has its own characteristics and applications, which we will explore in detail.
+
+## Bernoulli
+
+The Bernoulli distribution is the probability model for a single yes/no experiment. It is the smallest nontrivial discrete distribution: one outcome is coded as $1$, usually called **success**, and the other is coded as $0$, usually called **failure**. In finance, the words "success" and "failure" are just labels. A "success" might mean default, a trade executing, an option ending in the money, or a stock moving up over one period.
+
+::: {#def-bernoulli}
+Let $0 \le p \le 1$. A random variable $X$ has a **Bernoulli distribution** with parameter $p$, written
+$$
+X \sim \operatorname{Bernoulli}(p),
+$$
+if $X$ takes values in $\{0,1\}$ and
+$$
+\mathbb{P}(X=1)=p, \qquad \mathbb{P}(X=0)=1-p.
+$$
+The parameter $p$ is the probability of the event coded by $1$.
+:::
+
+It is easy to see that, for $x \in \{0,1\}$, the probability mass function is
+$$
+p_X(x)=\mathbb{P}(X=x)=p^x(1-p)^{1-x}.
+$$
+This compact formula works because if $x=1$, it gives $p$; if $x=0$, it gives $1-p$.
+
+The cumulative distribution function is the step function
+$$
+F_X(x)=
+\begin{cases}
+0, & x < 0,\\
+1-p, & 0 \le x < 1,\\
+1, & x \ge 1.
+\end{cases}
+$$
+
+The moments of Bernoulli random variables are simple to compute. Because $X$ only takes the values $0$ and $1$, powers of $X$ are especially simple:
+$$
+X^k = X \qquad \text{for every integer } k \ge 1.
+$$
+Therefore,
+$$
+\mathbb{E}[X^k]=p, \qquad k=1,2,\dots .
+$$
+In particular, the expectation and variance are
+$$
+\mathbb{E}[X]=p,
+$$
+and
+$$
+\operatorname{Var}(X)
+=\mathbb{E}[X^2]-\mathbb{E}[X]^2
+=p-p^2
+=p(1-p).
+$$
+The variance is largest when $p=1/2$ and equals zero when $p=0$ or $p=1$. This matches the intuition: uncertainty is highest when the two outcomes are equally likely, and disappears when the outcome is certain.
+
+## Binomial
+
+The Binomial distribution counts how many successes occur in a fixed number of independent Bernoulli trials. If a Bernoulli random variable models one yes/no event, then a Binomial random variable models the total number of yes answers after repeating the experiment $n$ times.
+
+::: {#def-binomial}
+Let $n$ be a positive integer and let $0 \le p \le 1$. A random variable $X$ has a **Binomial distribution** with parameters $n$ and $p$, written
+$$
+X \sim \operatorname{Binomial}(n,p),
+$$
+if $X$ takes values in $\{0,1,\dots,n\}$ and
+$$
+\mathbb{P}(X=k)=\binom{n}{k}p^k(1-p)^{n-k},
+\qquad k=0,1,\dots,n.
+$$
+Here $n$ is the number of trials and $p$ is the success probability in each trial.
+:::
+The Binomial distribution asks what the probability is of getting exactly $k$ successes in $n$ independent trials, each with success probability $p$. 
+
+The Binomial distribution is built from Bernoulli variables. If
+$$
+X_1,\dots,X_n \stackrel{\text{iid}}{\sim} \operatorname{Bernoulli}(p),
+$$
+where "iid" means independent and identically distributed, then
+$$
+X=\sum_{i=1}^n X_i \sim \operatorname{Binomial}(n,p).
+$$
+Let's see why this is true. The event $\{X=k\}$ means that exactly $k$ of the $n$ Bernoulli variables are equal to $1$, and the remaining $n-k$ variables are equal to $0$. For any fixed subset $A \subseteq \{1,\dots,n\}$ with $|A|=k$, consider the event that the variables indexed by $A$ are successes and the variables outside $A$ are failures:
+$$
+\{X_i=1 \text{ for } i\in A,\ X_i=0 \text{ for } i\notin A\}.
+$$
+Because the $X_i$'s are independent, the probability of this particular pattern is
+$$
+\mathbb{P}(X_i=1 \text{ for } i\in A,\ X_i=0 \text{ for } i\notin A)
+=p^k(1-p)^{n-k}.
+$$
+There are $\binom{n}{k}$ different subsets $A$ with $k$ elements, and these events are disjoint. Therefore,
+$$
+\mathbb{P}(X=k)
+=\mathbb{P}\left(\sum_{i=1}^n X_i=k\right)
+=\sum_{A \subseteq \{1,\dots,n\}, |A|=k} \mathbb{P}\left(X_i=1 \text{ for } i \in A, X_i=0 \text{ for } i \notin A\right)
+=\sum_{A \subseteq \{1,\dots,n\}, |A|=k} p^k(1-p)^{n-k}
+=\binom{n}{k}p^k(1-p)^{n-k}.
+$$
+This is exactly the Binomial PMF, so the sum of $n$ independent Bernoulli$(p)$ random variables has the Binomial$(n,p)$ distribution.
+
+This representation is usually the easiest way to remember its moments. 
+
+
+The expectation is
+$$
+\mathbb{E}[X]
+=\mathbb{E}\left[\sum_{i=1}^n X_i\right]
+=\sum_{i=1}^n \mathbb{E}[X_i]
+=np.
+$$
+Because the Bernoulli trials are independent, the variance is
+$$
+\operatorname{Var}(X)
+=\operatorname{Var}\left(\sum_{i=1}^n X_i\right)
+=\sum_{i=1}^n \operatorname{Var}(X_i)
+=np(1-p).
+$$
+The second moment follows from $\operatorname{Var}(X)=\mathbb{E}[X^2]-\mathbb{E}[X]^2$:
+$$
+\mathbb{E}[X^2]=np(1-p)+n^2p^2.
+$$
+
+The moment generating function is
+$$
+M_X(t)
+=\mathbb{E}[e^{tX}]
+=\left(1-p+pe^t\right)^n.
+$$
+This comes directly from the representation $X=X_1+\cdots+X_n$ and independence. The probability generating function is
+$$
+G_X(s)=\mathbb{E}[s^X]=(1-p+ps)^n.
+$$
+
+Some useful properties are:
+
+1. **Bernoulli as a special case.** If $n=1$, then
+   $$
+   \operatorname{Binomial}(1,p)=\operatorname{Bernoulli}(p).
+   $$
+
+2. **Additivity with the same success probability.** If $X\sim\operatorname{Binomial}(n,p)$, $Y\sim\operatorname{Binomial}(m,p)$, and $X$ and $Y$ are independent, then
+   $$
+   X+Y\sim\operatorname{Binomial}(n+m,p).
+   $$
+   Combining two independent blocks of trials gives one larger block of trials.
+
+3. **Shape.** The distribution is symmetric when $p=1/2$. When $p$ is small, most of the mass is near zero; when $p$ is large, most of the mass is near $n$.
+
+4. **Large-sample approximation.** When $n$ is large and $p$ is not too close to $0$ or $1$,
+   $$
+   \frac{X-np}{\sqrt{np(1-p)}} \approx \mathcal{N}(0,1).
+   $$
+   This is the Central Limit Theorem applied to sums of Bernoulli variables.
+
+### Examples
+
+::: {#exm-binomial-default-count}
+## Number of defaults in a portfolio
+Suppose a portfolio contains $n=100$ firms. Assume, for a simple first model, that each firm defaults over the next year with probability $p=0.02$, independently of the others. Let $X$ be the number of defaults. Then
+$$
+X\sim\operatorname{Binomial}(100,0.02).
+$$
+The expected number of defaults is
+$$
+\mathbb{E}[X]=100(0.02)=2,
+$$
+and the variance is
+$$
+\operatorname{Var}(X)=100(0.02)(0.98)=1.96.
+$$
+The probability of exactly three defaults is
+$$
+\mathbb{P}(X=3)
+=\binom{100}{3}(0.02)^3(0.98)^{97}.
+$$
+This example also shows a limitation of the simplest Binomial model: real defaults are often correlated, especially during recessions, so independence is an approximation rather than a law of nature.
+:::
+
+::: {#exm-binomial-tree}
+## Binomial tree for a stock price
+The Binomial distribution is the counting engine inside the binomial option-pricing tree. Suppose a stock starts at price $S_0$. Over each period it either moves up by a factor $u>1$ or down by a factor $d<1$. After $n$ periods, if the stock has moved up $k$ times and down $n-k$ times, its price is
+$$
+S_n(k)=S_0u^kd^{\,n-k}.
+$$
+If the probability of an up move is $p$ at each step and moves are independent, then the number of up moves is
+$$
+K\sim\operatorname{Binomial}(n,p).
+$$
+Therefore the physical distribution of the terminal stock price is
+$$
+\mathbb{P}\left(S_n=S_0u^kd^{\,n-k}\right)
+=\binom{n}{k}p^k(1-p)^{n-k},
+\qquad k=0,1,\dots,n.
+$$
+
+For derivative pricing, we usually replace the physical probability $p$ by a **risk-neutral probability** $q$. In a one-period tree with gross risk-free return $R=1+r$, no arbitrage gives
+$$
+q=\frac{R-d}{u-d},
+$$
+assuming $d<R<u$. Then a derivative with terminal payoff $g(S_n)$ has time-$0$ price
+$$
+V_0
+=R^{-n}\sum_{k=0}^n
+\binom{n}{k}q^k(1-q)^{n-k}
+g\!\left(S_0u^kd^{\,n-k}\right).
+$$
+So the same Binomial formula appears twice: first as a model for the number of up moves, and then as the weighted average used to price the derivative under the risk-neutral measure.
+:::
+
+::: {#exm-binomial-hit-rate}
+## Trading-rule hit rate
+Suppose a trading rule makes $n=60$ independent directional forecasts, and each forecast is correct with probability $p=0.55$. Let $X$ be the number of correct forecasts. Then
+$$
+X\sim\operatorname{Binomial}(60,0.55),
+$$
+with
+$$
+\mathbb{E}[X]=33,
+\qquad
+\operatorname{Var}(X)=60(0.55)(0.45)=14.85.
+$$
+If the rule gets $40$ forecasts right, the Binomial model can be used to ask whether that performance is unusually high relative to a benchmark such as $p=1/2$.
+:::
+
+## Geometric
+
+## Poisson
+
+## Uniform
+
+## Exponential
+
+## Normal
+
+## Lognormal

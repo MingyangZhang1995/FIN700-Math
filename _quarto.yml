@@ -1,0 +1,69 @@
+project:
+  type: book
+  output-dir: _output
+
+book:
+  title: "FIN700: Mathematics for PhD Finance"
+  subtitle: "A Math Camp in Linear Algebra, Probability, and Machine Learning"
+  author: "Mingyang Zhang"
+  search: true
+  repo-url: https://github.com/MingyangZhang1995/FIN700-Math
+  chapters:
+    - index.qmd
+    - part: "Linear Algebra"
+      chapters:
+        - notes/sections/linear-algebra/vectors.qmd
+        - notes/sections/linear-algebra/linear-maps.qmd
+        - notes/sections/linear-algebra/decompositions.qmd
+    - part: "Probability Theory"
+      chapters:
+        - notes/sections/probability/probability-space.qmd
+        - notes/sections/probability/expectation.qmd
+        - notes/sections/probability/common-distributions.qmd
+    - part: "Machine Learning"
+      chapters:
+        - notes/sections/machine-learning/introduction.qmd
+
+bibliography: references.bib
+
+# Global defaults shared by every output format.
+number-sections: true
+number-depth: 2
+crossref:
+  chapters: true          # number theorems/equations/figures by chapter (e.g. 2.3)
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 3
+    html-math-method: mathjax
+    code-fold: true
+    fig-align: center
+  # pdf:
+  #   documentclass: scrreport
+  #   papersize: letter
+  #   echo: false          # hide source code in the PDF (figures/output still show)
+  #   geometry:
+  #     - margin=1in
+  #   fig-align: center
+  #   include-in-header:
+  #     # Math macros / packages shared across the notes.
+  #     text: |
+  #       \usepackage{amsmath,amssymb,amsthm}
+  #       % Quarto loads unicode-math for the LuaLaTeX engine, which breaks amsmath's
+  #       % \boldsymbol on Greek (e.g. \boldsymbol{\varepsilon} -> "Improper alphabetic
+  #       % constant"). Map \boldsymbol to unicode-math's \symbf, which bolds Latin and
+  #       % Greek alike. Deferred to \AtBeginDocument so unicode-math is loaded first.
+  #       \AtBeginDocument{\let\boldsymbol\symbf}
+
+# Executable-code defaults. Notes use Python cells backed by the uv env.
+jupyter: python3
+execute:
+  # `freeze` is intentionally disabled: this repo lives in a Dropbox-synced
+  # folder, and Dropbox locks files under .quarto/_freeze, which makes Quarto's
+  # freezer-pruning step crash on render. Leave it off unless the repo moves
+  # off a syncing filesystem.
+  freeze: false
+  echo: true
+  warning: false
