@@ -9,6 +9,9 @@ wheels/
 # Virtual environments
 .venv
 
+# Claude
+CLAUDE.md
+
 # Quarto
 /_output/
 /.quarto/
