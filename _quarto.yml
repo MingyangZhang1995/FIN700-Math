@@ -4,7 +4,6 @@ project:
 
 book:
   title: "FIN700: Mathematics for PhD Finance"
-  subtitle: "A Math Camp in Linear Algebra, Probability, and Machine Learning"
   author: "Mingyang Zhang"
   search: true
   repo-url: https://github.com/MingyangZhang1995/FIN700-Math
@@ -20,9 +19,10 @@ book:
         - notes/sections/probability/probability-space.qmd
         - notes/sections/probability/expectation.qmd
         - notes/sections/probability/common-distributions.qmd
-    - part: "Machine Learning"
+        - notes/sections/probability/continuous-time.qmd
+    - part: "Statistics"
       chapters:
-        - notes/sections/machine-learning/introduction.qmd
+        - notes/sections/statistics/introduction.qmd
 
 bibliography: references.bib
 

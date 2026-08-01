@@ -80,33 +80,12 @@ where "iid" means independent and identically distributed, then
 $$
 X=\sum_{i=1}^n X_i \sim \operatorname{Binomial}(n,p).
 $$
-Let's see why this is true. The event $\{X=k\}$ means that exactly $k$ of the $n$ Bernoulli variables are equal to $1$, and the remaining $n-k$ variables are equal to $0$. For any fixed subset $A \subseteq \{1,\dots,n\}$ with $|A|=k$, consider the event that the variables indexed by $A$ are successes and the variables outside $A$ are failures:
-$$
-\{X_i=1 \text{ for } i\in A,\ X_i=0 \text{ for } i\notin A\}.
-$$
-Because the $X_i$'s are independent, the probability of this particular pattern is
-$$
-\mathbb{P}(X_i=1 \text{ for } i\in A,\ X_i=0 \text{ for } i\notin A)
-=p^k(1-p)^{n-k}.
-$$
-There are $\binom{n}{k}$ different subsets $A$ with $k$ elements, and these events are disjoint. Therefore,
-$$
-\mathbb{P}(X=k)
-=\mathbb{P}\left(\sum_{i=1}^n X_i=k\right)
-=\sum_{A \subseteq \{1,\dots,n\}, |A|=k} \mathbb{P}\left(X_i=1 \text{ for } i \in A, X_i=0 \text{ for } i \notin A\right)
-=\sum_{A \subseteq \{1,\dots,n\}, |A|=k} p^k(1-p)^{n-k}
-=\binom{n}{k}p^k(1-p)^{n-k}.
-$$
-This is exactly the Binomial PMF, so the sum of $n$ independent Bernoulli$(p)$ random variables has the Binomial$(n,p)$ distribution.
 
-This representation is usually the easiest way to remember its moments. 
-
-
-The expectation is
+This representation is usually the easiest way to remember its moments. The expectation is
 $$
-\mathbb{E}[X]
-=\mathbb{E}\left[\sum_{i=1}^n X_i\right]
-=\sum_{i=1}^n \mathbb{E}[X_i]
+\mathbb{E}(X)
+=\mathbb{E}\left(\sum_{i=1}^n X_i\right)
+=\sum_{i=1}^n \mathbb{E}(X_i)
 =np.
 $$
 Because the Bernoulli trials are independent, the variance is
@@ -116,116 +95,167 @@ $$
 =\sum_{i=1}^n \operatorname{Var}(X_i)
 =np(1-p).
 $$
-The second moment follows from $\operatorname{Var}(X)=\mathbb{E}[X^2]-\mathbb{E}[X]^2$:
-$$
-\mathbb{E}[X^2]=np(1-p)+n^2p^2.
-$$
+Here we have used the fact that the variance of a sum of independent random variables is the sum of their variances, even though we mentioned that variance is not linear in general. 
 
-The moment generating function is
+One useful property is additivity. If $X\sim\operatorname{Binomial}(n,p)$, $Y\sim\operatorname{Binomial}(m,p)$, and $X$ and $Y$ are independent, then
 $$
-M_X(t)
-=\mathbb{E}[e^{tX}]
-=\left(1-p+pe^t\right)^n.
+X+Y\sim\operatorname{Binomial}(n+m,p).
 $$
-This comes directly from the representation $X=X_1+\cdots+X_n$ and independence. The probability generating function is
-$$
-G_X(s)=\mathbb{E}[s^X]=(1-p+ps)^n.
-$$
-
-Some useful properties are:
-
-1. **Bernoulli as a special case.** If $n=1$, then
-   $$
-   \operatorname{Binomial}(1,p)=\operatorname{Bernoulli}(p).
-   $$
-
-2. **Additivity with the same success probability.** If $X\sim\operatorname{Binomial}(n,p)$, $Y\sim\operatorname{Binomial}(m,p)$, and $X$ and $Y$ are independent, then
-   $$
-   X+Y\sim\operatorname{Binomial}(n+m,p).
-   $$
-   Combining two independent blocks of trials gives one larger block of trials.
-
-3. **Shape.** The distribution is symmetric when $p=1/2$. When $p$ is small, most of the mass is near zero; when $p$ is large, most of the mass is near $n$.
-
-4. **Large-sample approximation.** When $n$ is large and $p$ is not too close to $0$ or $1$,
-   $$
-   \frac{X-np}{\sqrt{np(1-p)}} \approx \mathcal{N}(0,1).
-   $$
-   This is the Central Limit Theorem applied to sums of Bernoulli variables.
-
-### Examples
-
-::: {#exm-binomial-default-count}
-## Number of defaults in a portfolio
-Suppose a portfolio contains $n=100$ firms. Assume, for a simple first model, that each firm defaults over the next year with probability $p=0.02$, independently of the others. Let $X$ be the number of defaults. Then
-$$
-X\sim\operatorname{Binomial}(100,0.02).
-$$
-The expected number of defaults is
-$$
-\mathbb{E}[X]=100(0.02)=2,
-$$
-and the variance is
-$$
-\operatorname{Var}(X)=100(0.02)(0.98)=1.96.
-$$
-The probability of exactly three defaults is
-$$
-\mathbb{P}(X=3)
-=\binom{100}{3}(0.02)^3(0.98)^{97}.
-$$
-This example also shows a limitation of the simplest Binomial model: real defaults are often correlated, especially during recessions, so independence is an approximation rather than a law of nature.
-:::
-
-::: {#exm-binomial-tree}
-## Binomial tree for a stock price
-The Binomial distribution is the counting engine inside the binomial option-pricing tree. Suppose a stock starts at price $S_0$. Over each period it either moves up by a factor $u>1$ or down by a factor $d<1$. After $n$ periods, if the stock has moved up $k$ times and down $n-k$ times, its price is
-$$
-S_n(k)=S_0u^kd^{\,n-k}.
-$$
-If the probability of an up move is $p$ at each step and moves are independent, then the number of up moves is
-$$
-K\sim\operatorname{Binomial}(n,p).
-$$
-Therefore the physical distribution of the terminal stock price is
-$$
-\mathbb{P}\left(S_n=S_0u^kd^{\,n-k}\right)
-=\binom{n}{k}p^k(1-p)^{n-k},
-\qquad k=0,1,\dots,n.
-$$
-
-For derivative pricing, we usually replace the physical probability $p$ by a **risk-neutral probability** $q$. In a one-period tree with gross risk-free return $R=1+r$, no arbitrage gives
-$$
-q=\frac{R-d}{u-d},
-$$
-assuming $d<R<u$. Then a derivative with terminal payoff $g(S_n)$ has time-$0$ price
-$$
-V_0
-=R^{-n}\sum_{k=0}^n
-\binom{n}{k}q^k(1-q)^{n-k}
-g\!\left(S_0u^kd^{\,n-k}\right).
-$$
-So the same Binomial formula appears twice: first as a model for the number of up moves, and then as the weighted average used to price the derivative under the risk-neutral measure.
-:::
-
-::: {#exm-binomial-hit-rate}
-## Trading-rule hit rate
-Suppose a trading rule makes $n=60$ independent directional forecasts, and each forecast is correct with probability $p=0.55$. Let $X$ be the number of correct forecasts. Then
-$$
-X\sim\operatorname{Binomial}(60,0.55),
-$$
-with
-$$
-\mathbb{E}[X]=33,
-\qquad
-\operatorname{Var}(X)=60(0.55)(0.45)=14.85.
-$$
-If the rule gets $40$ forecasts right, the Binomial model can be used to ask whether that performance is unusually high relative to a benchmark such as $p=1/2$.
-:::
+Combining two independent blocks of trials gives one larger block of trials.
 
 ## Geometric
 
+The Geometric distribution models the waiting time until the first success in repeated independent Bernoulli trials. If the Binomial distribution asks "how many successes occur in $n$ trials?", the Geometric distribution asks "how long do we wait until the first success?"
+
+There are two common conventions. In these notes, we use the convention that $X$ is the **number of trials until the first success**, so $X$ takes values in $\{1,2,3,\dots\}$.
+
+::: {#def-geometric}
+Let $0<p\le 1$. A random variable $X$ has a **Geometric distribution** with parameter $p$, written
+$$
+X\sim\operatorname{Geometric}(p),
+$$
+if
+$$
+\mathbb{P}(X=k)=(1-p)^{k-1}p,
+\qquad k=1,2,3,\dots .
+$$
+Here $p$ is the success probability in each independent trial.
+:::
+
+The formula is easy to read. The event $\{X=k\}$ means that the first $k-1$ trials are failures and the $k$th trial is the first success:
+$$
+\underbrace{0,\dots,0}_{k-1\text{ failures}},1.
+$$
+Because the trials are independent, the probability of this pattern is
+$$
+(1-p)^{k-1}p.
+$$
+
+The cumulative distribution function is
+$$
+F_X(k)=\mathbb{P}(X\le k)=1-(1-p)^k,
+\qquad k=1,2,3,\dots .
+$$
+This is because $\{X>k\}$ means that the first $k$ trials all fail, so
+$$
+\mathbb{P}(X>k)=(1-p)^k.
+$$
+
+We can derive the expectation from the PMF. 
+$$
+\begin{aligned}
+\mathbb{E}(X)
+&=\sum_{k=1}^{\infty} k\,\mathbb{P}(X=k)\\
+&=\sum_{k=1}^{\infty} k(1-p)^{k-1}p \\
+&=p\sum_{k=1}^{\infty} k (1-p)^{k-1}
+\end{aligned}
+$$
+By geometric series summation,  We know that $\sum_{k=1}^{\infty} (1-p)^k = \frac{1-p}{p}$. Take the derivative with respect to $(1-p)$ to get
+$$
+\frac{d}{d(1-p)}\left(\sum_{k=1}^{\infty} (1-p)^k\right) = \frac{d}{d(1-p)}\left(\frac{1-p}{p}\right)
+\quad \Rightarrow \quad
+\sum_{k=1}^{\infty} k (1-p)^{k-1} = \frac{1}{p^2}.
+$$
+Plugging this back into the expectation formula, we have
+$$
+\mathbb{E}(X) = \frac{1}{p}.
+$$
+This says that when success is rare, the expected waiting time is long. For example, if $p=0.02$, then the expected number of trials until the first success is $1/0.02=50$.
+
+The variance can be derived similarly but more complicatedly, so we will not derive it here. The result is
+$$
+\operatorname{Var}(X)=\frac{1-p}{p^2}.
+$$
+
+
+The most important property of the Geometric distribution is **memorylessness**. For integers $m,n\ge 0$,
+$$
+\mathbb{P}(X>m+n\mid X>m)=\mathbb{P}(X>n).
+$$
+Indeed,
+$$
+\mathbb{P}(X>m+n\mid X>m)
+=\frac{\mathbb{P}(X>m+n)}{\mathbb{P}(X>m)}
+=\frac{(1-p)^{m+n}}{(1-p)^m}
+=(1-p)^n
+=\mathbb{P}(X>n).
+$$
+Intuitively, if no success has occurred yet, the waiting time starts over. Past failures do not change the probability of success in the next independent trial.
+
 ## Poisson
+
+The Poisson distribution models the number of times an event occurs in a fixed interval of time. It is especially useful for counting rare events: defaults in a portfolio, or jumps in an asset price.
+
+::: {#def-poisson}
+Let $\lambda>0$. A random variable $X$ has a **Poisson distribution** with parameter $\lambda$, written
+$$
+X\sim\operatorname{Poisson}(\lambda),
+$$
+if $X$ takes values in $\{0,1,2,\dots\}$ and
+$$
+\mathbb{P}(X=k)=e^{-\lambda}\frac{\lambda^k}{k!},
+\qquad k=0,1,2,\dots .
+$$
+:::
+Poisson distribution asks the question: "what is the probability of observing exactly $k$ events in a unit of time?" We will see that $\lambda$ is the expected number of events in that time interval.
+
+The expectation is
+$$
+\begin{aligned}
+\mathbb{E}(X)
+&=\sum_{k=0}^{\infty}k\,\mathbb{P}(X=k)\\
+&=\sum_{k=1}^{\infty}k e^{-\lambda}\frac{\lambda^k}{k!}\\
+&=e^{-\lambda}\sum_{k=1}^{\infty}\frac{\lambda^k}{(k-1)!}\\
+&=\lambda e^{-\lambda}\sum_{k=1}^{\infty}\frac{\lambda^{k-1}}{(k-1)!}.
+\end{aligned}
+$$
+The summation part $\sum_{k=1}^{\infty}\frac{\lambda^{k-1}}{(k-1)!}$ is the Taylor series for $e^{\lambda}$ at $\lambda=0$
+$$
+e^{\lambda}= 1 + \frac{\lambda}{1!} + \frac{\lambda^2}{2!} + \frac{\lambda^3}{3!} + \dots
+$$
+Therefore, the expectation simplifies to
+$$
+\mathbb{E}(X) =\lambda e^{-\lambda}e^\lambda =\lambda.
+$$
+
+The variance can be derived similarly, 
+$$
+\begin{aligned}
+\mathbb{E}(X^2)
+&=\sum_{k=0}^{\infty}k^2\,\mathbb{P}(X=k)\\
+&=\sum_{k=1}^{\infty}k^2 e^{-\lambda}\frac{\lambda^k}{k!}\\
+&=\lambda e^{-\lambda}\sum_{k=1}^{\infty}k\frac{\lambda^{k-1}}{(k-1)!}\\
+\end{aligned}
+$$
+Note that the summation part
+$$
+\sum_{k=1}^{\infty}k\frac{\lambda^{k-1}}{(k-1)!} = 1 + 2\frac{\lambda}{1!} + 3\frac{\lambda^2}{2!} + 4\frac{\lambda^3}{3!} + \dots = \frac{d(\lambda e^{\lambda})}{d\lambda} = (1+\lambda)e^{\lambda}.
+$$
+Plugin this back into the expectation formula, we have
+$$
+\mathbb{E}(X^2) = \lambda e^{-\lambda}(1+\lambda)e^{\lambda} = \lambda(1+\lambda).
+$$
+Therefore, the variance is
+$$
+\operatorname{Var}(X) = \mathbb{E}(X^2)-\mathbb{E}(X)^2 = \lambda(1+\lambda)-\lambda^2 = \lambda.
+$$
+This means that the variance of a Poisson distribution is equal to its mean.
+
+One useful property is additivity. If $X\sim\operatorname{Poisson}(\lambda_1)$, $Y\sim\operatorname{Poisson}(\lambda_2)$, and $X$ and $Y$ are independent, then
+$$
+X+Y\sim\operatorname{Poisson}(\lambda_1+\lambda_2).
+$$
+Combining independent event counts adds the arrival rates.
+
+The Poisson distribution also arises as a limit of the Binomial distribution. Suppose
+$$
+X_n\sim\operatorname{Binomial}(n,p_n),
+$$
+where $n$ is large, $p_n$ is small, and $np_n\to\lambda$. Then
+$$
+X_n \to \operatorname{Poisson}(\lambda)
+$$
+in distribution. Intuitively, a large number of tiny independent chances can produce a Poisson count. 
 
 ## Uniform
 

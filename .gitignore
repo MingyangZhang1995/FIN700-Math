@@ -31,3 +31,4 @@ FIN 700 Syllabus.docx
 # OS / Dropbox artifacts
 desktop.ini
 *conflicted copy*
+**/*.quarto_ipynb

@@ -1,15 +1,12 @@
 # Preface {.unnumbered}
 
-These are the lecture notes for **FIN700**, a mathematics camp for incoming PhD
-students in Finance. The camp builds the mathematical foundations used
-throughout the doctoral finance sequence, in three parts:
+These are the lecture (VERY FIRST DRAFT) notes for **FIN700**, a mathematics camp for incoming PhD students in Finance. The camp builds the mathematical foundations used throughout the doctoral finance sequence, in three parts:
 
 1. **Linear Algebra** — vectors, matrices, and the geometry of linear maps.
 2. **Probability Theory** — probability spaces, random variables, and limit theorems.
-3. **Machine Learning** — the core ideas that the first two parts make possible.
+3. **Statistics** — the core ideas that the first two parts make possible.
 
-The parts are meant to be read in order: probability leans on linear algebra,
-and the machine-learning material draws on both.
+The parts are meant to be read in order: probability leans on linear algebra, and the statistics material draws on both.
 
 ## How to read these notes {.unnumbered}
 
