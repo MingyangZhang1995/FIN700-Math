@@ -239,12 +239,18 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Common Probability Distributions</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/probability/continuous-time.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">continuous-time.html</span></span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
- <span class="menu-text">Machine Learning</span></a>
+ <span class="menu-text">Statistics</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -252,8 +258,8 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../notes/sections/machine-learning/introduction.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">introduction.html</span></span></a>
+  <a href="../../../notes/sections/statistics/introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">introduction.html</span></span></a>
   </div>
 </li>
       </ul>
@@ -326,7 +332,7 @@ f_X(x) = \int_{-\infty}^{\infty} f(x, y)\, dy \quad\text{(continuous)},
 </div>
 <div id="exm-marginal-distribution-discrete" class="theorem example">
 <p><span class="theorem-title"><strong>Example 5.1</strong></span> The table below shows a joint PMF of two discrete random variables <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>. The four inner cells are the joint probabilities <span class="math inline">\(p(x, y)\)</span>; the rightmost column and bottom row are the marginals <span class="math inline">\(p_Y(y)\)</span> and <span class="math inline">\(p_X(x)\)</span>, obtained by summing each row and column. The total probability is <span class="math inline">\(1\)</span>.</p>
-<div id="744b8e69" class="cell" data-fig-height="4.8" data-fig-width="7" data-execution_count="1">
+<div id="7bc31d67" class="cell" data-fig-height="4.8" data-fig-width="7" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -367,7 +373,7 @@ f_{Y \mid X}(y \mid x) = f_Y(y)
 \mathbb{P}(X=x,Y=y)=\mathbb{P}(X=x)\,\mathbb{P}(Y=y), \quad\text{or equivalently,}\quad \mathbb{P}(Y=y\mid X=x)=\mathbb{P}(Y=y).
 \]</span></p>
 <p>The figure below takes a jointly normal <span class="math inline">\((X, Y)\)</span> with correlation <span class="math inline">\(0.7\)</span>: the left panel shows the joint density with a slice at <span class="math inline">\(X = x_0\)</span>, and the right panel shows that the conditional <span class="math inline">\(f_{Y\mid X=x_0}\)</span> is shifted (toward positive <span class="math inline">\(Y\)</span>, since the two are positively related) and narrower (conditioning removes uncertainty) than the marginal <span class="math inline">\(f_Y\)</span>.</p>
-<div id="f8e6f3b7" class="cell" data-execution_count="2">
+<div id="85ac18db" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -580,7 +586,7 @@ d\mathcal{L} = 2\boldsymbol{w}^\top \boldsymbol{\Sigma} d\boldsymbol{w} - \lambd
 1
 \end{bmatrix}
 \]</span></p>
-<div id="843e741b" class="cell" data-execution_count="3">
+<div id="049ca14b" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>6&nbsp; Common Probability Distributions – FIN700: Mathematics for PhD Finance</title>
+<title>continuous-time – FIN700: Mathematics for PhD Finance</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -33,8 +33,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../../">
-<link href="../../../notes/sections/probability/continuous-time.html" rel="next">
-<link href="../../../notes/sections/probability/expectation.html" rel="prev">
+<link href="../../../notes/sections/statistics/introduction.html" rel="next">
+<link href="../../../notes/sections/probability/common-distributions.html" rel="prev">
 <script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../../../site_libs/quarto-html/popper.min.js"></script>
@@ -73,35 +73,6 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 </head>
 
@@ -114,7 +85,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/sections/probability/probability-space.html">Probability Theory</a></li><li class="breadcrumb-item"><a href="../../../notes/sections/probability/common-distributions.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Common Probability Distributions</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/sections/probability/probability-space.html">Probability Theory</a></li><li class="breadcrumb-item"><a href="../../../notes/sections/probability/continuous-time.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">continuous-time.html</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -200,13 +171,13 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../notes/sections/probability/common-distributions.html" class="sidebar-item-text sidebar-link active">
+  <a href="../../../notes/sections/probability/common-distributions.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Common Probability Distributions</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../notes/sections/probability/continuous-time.html" class="sidebar-item-text sidebar-link">
+  <a href="../../../notes/sections/probability/continuous-time.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">continuous-time.html</span></span></a>
   </div>
 </li>
@@ -234,223 +205,17 @@ window.Quarto = {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of contents</h2>
-   
-  <ul>
-  <li><a href="#bernoulli" id="toc-bernoulli" class="nav-link active" data-scroll-target="#bernoulli"><span class="header-section-number">6.1</span> Bernoulli</a></li>
-  <li><a href="#binomial" id="toc-binomial" class="nav-link" data-scroll-target="#binomial"><span class="header-section-number">6.2</span> Binomial</a></li>
-  <li><a href="#geometric" id="toc-geometric" class="nav-link" data-scroll-target="#geometric"><span class="header-section-number">6.3</span> Geometric</a></li>
-  <li><a href="#poisson" id="toc-poisson" class="nav-link" data-scroll-target="#poisson"><span class="header-section-number">6.4</span> Poisson</a></li>
-  <li><a href="#uniform" id="toc-uniform" class="nav-link" data-scroll-target="#uniform"><span class="header-section-number">6.5</span> Uniform</a></li>
-  <li><a href="#exponential" id="toc-exponential" class="nav-link" data-scroll-target="#exponential"><span class="header-section-number">6.6</span> Exponential</a></li>
-  <li><a href="#normal" id="toc-normal" class="nav-link" data-scroll-target="#normal"><span class="header-section-number">6.7</span> Normal</a></li>
-  <li><a href="#lognormal" id="toc-lognormal" class="nav-link" data-scroll-target="#lognormal"><span class="header-section-number">6.8</span> Lognormal</a></li>
-  </ul>
-</nav>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/sections/probability/probability-space.html">Probability Theory</a></li><li class="breadcrumb-item"><a href="../../../notes/sections/probability/common-distributions.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Common Probability Distributions</span></a></li></ol></nav>
-<div class="quarto-title">
-<h1 class="title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Common Probability Distributions</span></h1>
-</div>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/sections/probability/probability-space.html">Probability Theory</a></li><li class="breadcrumb-item"><a href="../../../notes/sections/probability/continuous-time.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">continuous-time.html</span></a></li></ol></nav></header>
 
 
 
-<div class="quarto-title-meta">
-
-    
-  
-    
-  </div>
-  
 
 
-</header>
 
-
-<p>In this section, we will discuss several common probability distributions that are frequently used in finance and statistics. Discrete distributions include the Bernoulli, Binomial, Geometric, and Poisson distributions. Continuous distributions include the Uniform, Exponential, Normal, and Lognormal distributions. Each distribution has its own characteristics and applications, which we will explore in detail.</p>
-<section id="bernoulli" class="level2" data-number="6.1">
-<h2 data-number="6.1" class="anchored" data-anchor-id="bernoulli"><span class="header-section-number">6.1</span> Bernoulli</h2>
-<p>The Bernoulli distribution is the probability model for a single yes/no experiment. It is the smallest nontrivial discrete distribution: one outcome is coded as <span class="math inline">\(1\)</span>, usually called <strong>success</strong>, and the other is coded as <span class="math inline">\(0\)</span>, usually called <strong>failure</strong>. In finance, the words “success” and “failure” are just labels. A “success” might mean default, a trade executing, an option ending in the money, or a stock moving up over one period.</p>
-<div id="def-bernoulli" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 6.1</strong></span> Let <span class="math inline">\(0 \le p \le 1\)</span>. A random variable <span class="math inline">\(X\)</span> has a <strong>Bernoulli distribution</strong> with parameter <span class="math inline">\(p\)</span>, written <span class="math display">\[
-X \sim \operatorname{Bernoulli}(p),
-\]</span> if <span class="math inline">\(X\)</span> takes values in <span class="math inline">\(\{0,1\}\)</span> and <span class="math display">\[
-\mathbb{P}(X=1)=p, \qquad \mathbb{P}(X=0)=1-p.
-\]</span> The parameter <span class="math inline">\(p\)</span> is the probability of the event coded by <span class="math inline">\(1\)</span>.</p>
-</div>
-<p>It is easy to see that, for <span class="math inline">\(x \in \{0,1\}\)</span>, the probability mass function is <span class="math display">\[
-p_X(x)=\mathbb{P}(X=x)=p^x(1-p)^{1-x}.
-\]</span> This compact formula works because if <span class="math inline">\(x=1\)</span>, it gives <span class="math inline">\(p\)</span>; if <span class="math inline">\(x=0\)</span>, it gives <span class="math inline">\(1-p\)</span>.</p>
-<p>The cumulative distribution function is the step function <span class="math display">\[
-F_X(x)=
-\begin{cases}
-0, &amp; x &lt; 0,\\
-1-p, &amp; 0 \le x &lt; 1,\\
-1, &amp; x \ge 1.
-\end{cases}
-\]</span></p>
-<p>The moments of Bernoulli random variables are simple to compute. Because <span class="math inline">\(X\)</span> only takes the values <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span>, powers of <span class="math inline">\(X\)</span> are especially simple: <span class="math display">\[
-X^k = X \qquad \text{for every integer } k \ge 1.
-\]</span> Therefore, <span class="math display">\[
-\mathbb{E}[X^k]=p, \qquad k=1,2,\dots .
-\]</span> In particular, the expectation and variance are <span class="math display">\[
-\mathbb{E}[X]=p,
-\]</span> and <span class="math display">\[
-\operatorname{Var}(X)
-=\mathbb{E}[X^2]-\mathbb{E}[X]^2
-=p-p^2
-=p(1-p).
-\]</span> The variance is largest when <span class="math inline">\(p=1/2\)</span> and equals zero when <span class="math inline">\(p=0\)</span> or <span class="math inline">\(p=1\)</span>. This matches the intuition: uncertainty is highest when the two outcomes are equally likely, and disappears when the outcome is certain.</p>
-</section>
-<section id="binomial" class="level2" data-number="6.2">
-<h2 data-number="6.2" class="anchored" data-anchor-id="binomial"><span class="header-section-number">6.2</span> Binomial</h2>
-<p>The Binomial distribution counts how many successes occur in a fixed number of independent Bernoulli trials. If a Bernoulli random variable models one yes/no event, then a Binomial random variable models the total number of yes answers after repeating the experiment <span class="math inline">\(n\)</span> times.</p>
-<div id="def-binomial" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 6.2</strong></span> Let <span class="math inline">\(n\)</span> be a positive integer and let <span class="math inline">\(0 \le p \le 1\)</span>. A random variable <span class="math inline">\(X\)</span> has a <strong>Binomial distribution</strong> with parameters <span class="math inline">\(n\)</span> and <span class="math inline">\(p\)</span>, written <span class="math display">\[
-X \sim \operatorname{Binomial}(n,p),
-\]</span> if <span class="math inline">\(X\)</span> takes values in <span class="math inline">\(\{0,1,\dots,n\}\)</span> and <span class="math display">\[
-\mathbb{P}(X=k)=\binom{n}{k}p^k(1-p)^{n-k},
-\qquad k=0,1,\dots,n.
-\]</span> Here <span class="math inline">\(n\)</span> is the number of trials and <span class="math inline">\(p\)</span> is the success probability in each trial.</p>
-</div>
-<p>The Binomial distribution asks what the probability is of getting exactly <span class="math inline">\(k\)</span> successes in <span class="math inline">\(n\)</span> independent trials, each with success probability <span class="math inline">\(p\)</span>.</p>
-<p>The Binomial distribution is built from Bernoulli variables. If <span class="math display">\[
-X_1,\dots,X_n \stackrel{\text{iid}}{\sim} \operatorname{Bernoulli}(p),
-\]</span> where “iid” means independent and identically distributed, then <span class="math display">\[
-X=\sum_{i=1}^n X_i \sim \operatorname{Binomial}(n,p).
-\]</span></p>
-<p>This representation is usually the easiest way to remember its moments. The expectation is <span class="math display">\[
-\mathbb{E}(X)
-=\mathbb{E}\left(\sum_{i=1}^n X_i\right)
-=\sum_{i=1}^n \mathbb{E}(X_i)
-=np.
-\]</span> Because the Bernoulli trials are independent, the variance is <span class="math display">\[
-\operatorname{Var}(X)
-=\operatorname{Var}\left(\sum_{i=1}^n X_i\right)
-=\sum_{i=1}^n \operatorname{Var}(X_i)
-=np(1-p).
-\]</span> Here we have used the fact that the variance of a sum of independent random variables is the sum of their variances, even though we mentioned that variance is not linear in general.</p>
-<p>One useful property is additivity. If <span class="math inline">\(X\sim\operatorname{Binomial}(n,p)\)</span>, <span class="math inline">\(Y\sim\operatorname{Binomial}(m,p)\)</span>, and <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are independent, then <span class="math display">\[
-X+Y\sim\operatorname{Binomial}(n+m,p).
-\]</span> Combining two independent blocks of trials gives one larger block of trials.</p>
-</section>
-<section id="geometric" class="level2" data-number="6.3">
-<h2 data-number="6.3" class="anchored" data-anchor-id="geometric"><span class="header-section-number">6.3</span> Geometric</h2>
-<p>The Geometric distribution models the waiting time until the first success in repeated independent Bernoulli trials. If the Binomial distribution asks “how many successes occur in <span class="math inline">\(n\)</span> trials?”, the Geometric distribution asks “how long do we wait until the first success?”</p>
-<p>There are two common conventions. In these notes, we use the convention that <span class="math inline">\(X\)</span> is the <strong>number of trials until the first success</strong>, so <span class="math inline">\(X\)</span> takes values in <span class="math inline">\(\{1,2,3,\dots\}\)</span>.</p>
-<div id="def-geometric" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 6.3</strong></span> Let <span class="math inline">\(0&lt;p\le 1\)</span>. A random variable <span class="math inline">\(X\)</span> has a <strong>Geometric distribution</strong> with parameter <span class="math inline">\(p\)</span>, written <span class="math display">\[
-X\sim\operatorname{Geometric}(p),
-\]</span> if <span class="math display">\[
-\mathbb{P}(X=k)=(1-p)^{k-1}p,
-\qquad k=1,2,3,\dots .
-\]</span> Here <span class="math inline">\(p\)</span> is the success probability in each independent trial.</p>
-</div>
-<p>The formula is easy to read. The event <span class="math inline">\(\{X=k\}\)</span> means that the first <span class="math inline">\(k-1\)</span> trials are failures and the <span class="math inline">\(k\)</span>th trial is the first success: <span class="math display">\[
-\underbrace{0,\dots,0}_{k-1\text{ failures}},1.
-\]</span> Because the trials are independent, the probability of this pattern is <span class="math display">\[
-(1-p)^{k-1}p.
-\]</span></p>
-<p>The cumulative distribution function is <span class="math display">\[
-F_X(k)=\mathbb{P}(X\le k)=1-(1-p)^k,
-\qquad k=1,2,3,\dots .
-\]</span> This is because <span class="math inline">\(\{X&gt;k\}\)</span> means that the first <span class="math inline">\(k\)</span> trials all fail, so <span class="math display">\[
-\mathbb{P}(X&gt;k)=(1-p)^k.
-\]</span></p>
-<p>We can derive the expectation from the PMF. <span class="math display">\[
-\begin{aligned}
-\mathbb{E}(X)
-&amp;=\sum_{k=1}^{\infty} k\,\mathbb{P}(X=k)\\
-&amp;=\sum_{k=1}^{\infty} k(1-p)^{k-1}p \\
-&amp;=p\sum_{k=1}^{\infty} k (1-p)^{k-1}
-\end{aligned}
-\]</span> By geometric series summation, We know that <span class="math inline">\(\sum_{k=1}^{\infty} (1-p)^k = \frac{1-p}{p}\)</span>. Take the derivative with respect to <span class="math inline">\((1-p)\)</span> to get <span class="math display">\[
-\frac{d}{d(1-p)}\left(\sum_{k=1}^{\infty} (1-p)^k\right) = \frac{d}{d(1-p)}\left(\frac{1-p}{p}\right)
-\quad \Rightarrow \quad
-\sum_{k=1}^{\infty} k (1-p)^{k-1} = \frac{1}{p^2}.
-\]</span> Plugging this back into the expectation formula, we have <span class="math display">\[
-\mathbb{E}(X) = \frac{1}{p}.
-\]</span> This says that when success is rare, the expected waiting time is long. For example, if <span class="math inline">\(p=0.02\)</span>, then the expected number of trials until the first success is <span class="math inline">\(1/0.02=50\)</span>.</p>
-<p>The variance can be derived similarly but more complicatedly, so we will not derive it here. The result is <span class="math display">\[
-\operatorname{Var}(X)=\frac{1-p}{p^2}.
-\]</span></p>
-<p>The most important property of the Geometric distribution is <strong>memorylessness</strong>. For integers <span class="math inline">\(m,n\ge 0\)</span>, <span class="math display">\[
-\mathbb{P}(X&gt;m+n\mid X&gt;m)=\mathbb{P}(X&gt;n).
-\]</span> Indeed, <span class="math display">\[
-\mathbb{P}(X&gt;m+n\mid X&gt;m)
-=\frac{\mathbb{P}(X&gt;m+n)}{\mathbb{P}(X&gt;m)}
-=\frac{(1-p)^{m+n}}{(1-p)^m}
-=(1-p)^n
-=\mathbb{P}(X&gt;n).
-\]</span> Intuitively, if no success has occurred yet, the waiting time starts over. Past failures do not change the probability of success in the next independent trial.</p>
-</section>
-<section id="poisson" class="level2" data-number="6.4">
-<h2 data-number="6.4" class="anchored" data-anchor-id="poisson"><span class="header-section-number">6.4</span> Poisson</h2>
-<p>The Poisson distribution models the number of times an event occurs in a fixed interval of time. It is especially useful for counting rare events: defaults in a portfolio, or jumps in an asset price.</p>
-<div id="def-poisson" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 6.4</strong></span> Let <span class="math inline">\(\lambda&gt;0\)</span>. A random variable <span class="math inline">\(X\)</span> has a <strong>Poisson distribution</strong> with parameter <span class="math inline">\(\lambda\)</span>, written <span class="math display">\[
-X\sim\operatorname{Poisson}(\lambda),
-\]</span> if <span class="math inline">\(X\)</span> takes values in <span class="math inline">\(\{0,1,2,\dots\}\)</span> and <span class="math display">\[
-\mathbb{P}(X=k)=e^{-\lambda}\frac{\lambda^k}{k!},
-\qquad k=0,1,2,\dots .
-\]</span></p>
-</div>
-<p>Poisson distribution asks the question: “what is the probability of observing exactly <span class="math inline">\(k\)</span> events in a unit of time?” We will see that <span class="math inline">\(\lambda\)</span> is the expected number of events in that time interval.</p>
-<p>The expectation is <span class="math display">\[
-\begin{aligned}
-\mathbb{E}(X)
-&amp;=\sum_{k=0}^{\infty}k\,\mathbb{P}(X=k)\\
-&amp;=\sum_{k=1}^{\infty}k e^{-\lambda}\frac{\lambda^k}{k!}\\
-&amp;=e^{-\lambda}\sum_{k=1}^{\infty}\frac{\lambda^k}{(k-1)!}\\
-&amp;=\lambda e^{-\lambda}\sum_{k=1}^{\infty}\frac{\lambda^{k-1}}{(k-1)!}.
-\end{aligned}
-\]</span> The summation part <span class="math inline">\(\sum_{k=1}^{\infty}\frac{\lambda^{k-1}}{(k-1)!}\)</span> is the Taylor series for <span class="math inline">\(e^{\lambda}\)</span> at <span class="math inline">\(\lambda=0\)</span> <span class="math display">\[
-e^{\lambda}= 1 + \frac{\lambda}{1!} + \frac{\lambda^2}{2!} + \frac{\lambda^3}{3!} + \dots
-\]</span> Therefore, the expectation simplifies to <span class="math display">\[
-\mathbb{E}(X) =\lambda e^{-\lambda}e^\lambda =\lambda.
-\]</span></p>
-<p>The variance can be derived similarly, <span class="math display">\[
-\begin{aligned}
-\mathbb{E}(X^2)
-&amp;=\sum_{k=0}^{\infty}k^2\,\mathbb{P}(X=k)\\
-&amp;=\sum_{k=1}^{\infty}k^2 e^{-\lambda}\frac{\lambda^k}{k!}\\
-&amp;=\lambda e^{-\lambda}\sum_{k=1}^{\infty}k\frac{\lambda^{k-1}}{(k-1)!}\\
-\end{aligned}
-\]</span> Note that the summation part <span class="math display">\[
-\sum_{k=1}^{\infty}k\frac{\lambda^{k-1}}{(k-1)!} = 1 + 2\frac{\lambda}{1!} + 3\frac{\lambda^2}{2!} + 4\frac{\lambda^3}{3!} + \dots = \frac{d(\lambda e^{\lambda})}{d\lambda} = (1+\lambda)e^{\lambda}.
-\]</span> Plugin this back into the expectation formula, we have <span class="math display">\[
-\mathbb{E}(X^2) = \lambda e^{-\lambda}(1+\lambda)e^{\lambda} = \lambda(1+\lambda).
-\]</span> Therefore, the variance is <span class="math display">\[
-\operatorname{Var}(X) = \mathbb{E}(X^2)-\mathbb{E}(X)^2 = \lambda(1+\lambda)-\lambda^2 = \lambda.
-\]</span> This means that the variance of a Poisson distribution is equal to its mean.</p>
-<p>One useful property is additivity. If <span class="math inline">\(X\sim\operatorname{Poisson}(\lambda_1)\)</span>, <span class="math inline">\(Y\sim\operatorname{Poisson}(\lambda_2)\)</span>, and <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are independent, then <span class="math display">\[
-X+Y\sim\operatorname{Poisson}(\lambda_1+\lambda_2).
-\]</span> Combining independent event counts adds the arrival rates.</p>
-<p>The Poisson distribution also arises as a limit of the Binomial distribution. Suppose <span class="math display">\[
-X_n\sim\operatorname{Binomial}(n,p_n),
-\]</span> where <span class="math inline">\(n\)</span> is large, <span class="math inline">\(p_n\)</span> is small, and <span class="math inline">\(np_n\to\lambda\)</span>. Then <span class="math display">\[
-X_n \to \operatorname{Poisson}(\lambda)
-\]</span> in distribution. Intuitively, a large number of tiny independent chances can produce a Poisson count.</p>
-</section>
-<section id="uniform" class="level2" data-number="6.5">
-<h2 data-number="6.5" class="anchored" data-anchor-id="uniform"><span class="header-section-number">6.5</span> Uniform</h2>
-</section>
-<section id="exponential" class="level2" data-number="6.6">
-<h2 data-number="6.6" class="anchored" data-anchor-id="exponential"><span class="header-section-number">6.6</span> Exponential</h2>
-</section>
-<section id="normal" class="level2" data-number="6.7">
-<h2 data-number="6.7" class="anchored" data-anchor-id="normal"><span class="header-section-number">6.7</span> Normal</h2>
-</section>
-<section id="lognormal" class="level2" data-number="6.8">
-<h2 data-number="6.8" class="anchored" data-anchor-id="lognormal"><span class="header-section-number">6.8</span> Lognormal</h2>
-
-
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -855,13 +620,13 @@ X_n \to \operatorname{Poisson}(\lambda)
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../../notes/sections/probability/expectation.html" class="pagination-link" aria-label="Distributions, Expectation, and Dependence">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Distributions, Expectation, and Dependence</span></span>
+      <a href="../../../notes/sections/probability/common-distributions.html" class="pagination-link" aria-label="Common Probability Distributions">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Common Probability Distributions</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../../notes/sections/probability/continuous-time.html" class="pagination-link" aria-label="continuous-time.html">
-        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">continuous-time.html</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../../notes/sections/statistics/introduction.html" class="pagination-link" aria-label="introduction.html">
+        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">introduction.html</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
