@@ -312,8 +312,7 @@ Formally, expectation is a single object — the Lebesgue integral $\int_\Omega 
 
 Below are some properties of expectation that we will use constantly:
 
-
-1. Linearity: For any random variables $X$ and $Y$ and constants $a$, $b$, and $c$,
+**Linearity**: For any random variables $X$ and $Y$ and constants $a$, $b$, and $c$,
 $$
 \mathbb{E}[aX + bY + c] = a\,\mathbb{E}[X] + b\,\mathbb{E}[Y] + c.
 $$
@@ -338,11 +337,119 @@ $$
 \mathbb{E}[\boldsymbol{A}\boldsymbol{X}\boldsymbol{X}^\top\boldsymbol{B}] = \boldsymbol{A}\,\mathbb{E}[\boldsymbol{X}\boldsymbol{X}^\top]\,\boldsymbol{B}.
 $$
 where $\boldsymbol{A}$ and $\boldsymbol{B}$ are constant matrices of appropriate dimensions, and $\boldsymbol{X}$ is a random vector, so $\boldsymbol{X} \boldsymbol{X}^\top$ is a matrix.
-1. Law of the unconscious statistician (LOTUS): The expectation of a function $g(X)$ is the average of $g$ under the distribution of $X$,
+**Law of the unconscious statistician (LOTUS)**: The expectation of a function $g(X)$ is the average of $g$ under the distribution of $X$,
 $$
 \mathbb{E}[g(X)] = \sum_x g(x)\, p_X(x) \quad\text{or}\quad \int_{-\infty}^\infty g(x)\, f_X(x)\, dx,
 $$ {#eq-lotus}
 and, for a function of two variables against the joint, $\mathbb{E}[g(X,Y)] = \iint g(x,y)\, f(x,y)\, dx\, dy$. 
+
+Lastly, we state a fundamental inequality that will be useful in many applications.
+::: {#thm-jensen-inequality}
+**Jensen's Inequality**: For a convex function $g$ and a random variable $X$,
+$$
+g(\mathbb{E}[X]) \leq \mathbb{E}[g(X)].
+$$
+:::
+Similarly, for a concave function $g$, the inequality is reversed: 
+$$
+g(\mathbb{E}[X]) \geq \mathbb{E}[g(X)].
+$$
+You will see Jensen's inequality in many financial theories. Let's firstly prove it and then give an example. For simplicity, let's assume that $g$ is differentiable. Let $\mu=\mathbb{E}[X]$. For a convex function $g$, the tangent line at $\mu$ lies below the graph, so for every $x$
+$$
+g(x)\ge g(\mu)+g'(\mu)(x-\mu).
+$$
+Now plug in the random variable $X$:
+$$
+g(X)\ge g(\mu)+g'(\mu)(X-\mu).
+$$
+Take expectations on both sides:
+$$
+\mathbb{E}[g(X)] \ge \mathbb{E}[g(\mu)+g'(\mu)(X-\mu)].
+$$
+Since $g(\mu)$ and $g'(\mu)$ are constants,
+$$
+\mathbb{E}[g(X)] \ge g(\mu)+g'(\mu)\big(\mathbb{E}[X]-\mu\big).
+$$
+Because $\mu=\mathbb{E}[X]$, the last term is zero, hence
+$$
+\mathbb{E}[g(X)] \ge g(\mu)=g(\mathbb{E}[X]).
+$$
+
+```{python}
+#| fig-align: center
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+fig, axs = plt.subplots(1, 1, figsize=(4, 4))
+
+# axs[0]: convex function and tangent line
+# Define a convex function
+def g(x):
+    return x**2
+
+def g_prime(x):
+    return 2*x
+
+# Generate some data
+x = np.linspace(0, 2, 100)
+y = g(x)
+
+mu = 1
+# tangent line at mu
+def tangent_line(x):
+    return g(mu) + g_prime(mu) * (x - mu)
+
+axs.plot(x, y, label=r"$g(x)$")
+axs.plot(x, tangent_line(x), label=r"$g(\mu) + g'(\mu)(x - \mu)$", linestyle='--')
+axs.scatter(mu, g(mu), color='red', zorder=5)
+# hide ticks
+axs.set_xticks([])
+axs.set_yticks([])
+axs.legend()
+plt.show()
+```
+
+::: {#exm-jensen-inequality}
+In finance and economics, we often assume investors make decisions to maximize their expected utility. Generally, investors are risk-averse. This is captured by a concave utility function $U$ and its expectation, such as 
+$$
+\mathbb{E}[U(W)] = \mathbb{E}[\log(W)], 
+$$
+where $W$ is wealth. Suppose an investor has a choice between two investments: 
+
+1. A risk-free investment that guarantees a return of \$1.
+2. A risky investment that has a 50% chance of returning \$0.7 and a 50% chance of returning \$1.3.
+
+We can see the expected payoff of the risky investment: $0.5 \times 0.7 + 0.5 \times 1.3 = 1.$ However, the expected utility of the risky investment is
+$$  
+\mathbb{E}[\log(W)] = 0.5 \log(0.7) + 0.5 \log(1.3) < \log(1).
+$$
+
+```{python}
+#| fig-align: center
+import numpy as np
+import matplotlib.pyplot as plt
+
+# plot the utility function 
+def U(W):
+    return np.log(W)
+
+d = 0.7
+u = 1.3
+
+W = np.linspace(0.6, 1.4, 100)
+plt.plot(W, U(W), label="Utility function", color='black')
+plt.scatter([1], [U(1)], color='red', zorder=5)
+plt.scatter([1], [0.5*U(d)+0.5*U(u)], color='tab:orange', zorder=5)
+plt.plot([d, u], [U(d), U(u)], color='tab:orange', linestyle='--')
+plt.xlabel("Wealth")
+plt.ylabel("Utility")
+plt.legend()
+plt.grid()
+plt.show()
+```
+:::
+
 
 ::: {#def-variance}
 The **variance** of $X$ is

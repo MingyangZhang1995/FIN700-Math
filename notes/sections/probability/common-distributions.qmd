@@ -259,8 +259,464 @@ in distribution. Intuitively, a large number of tiny independent chances can pro
 
 ## Uniform
 
-## Exponential
+The Uniform distribution is the simplest continuous distribution on an interval. It assigns equal density to every point between two endpoints $a$ and $b$. In this sense, it is the continuous analogue of "all outcomes are equally likely," although for a continuous random variable the probability of any single point is still zero.
+
+::: {#def-uniform}
+Let $a<b$. A random variable $X$ has a **Uniform distribution** on $[a,b]$, written
+$$
+X\sim\operatorname{Uniform}(a,b),
+$$
+if its probability density function is
+$$
+f_X(x)=
+\begin{cases}
+\dfrac{1}{b-a}, & a\le x\le b,\\
+0, & \text{otherwise}.
+\end{cases}
+$$
+:::
+```{python}
+#| fig-align: center
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Plot the PDF of a Uniform(0,1) distribution
+x = np.linspace(-0.5, 1.5, 100)
+pdf = np.where((x >= 0) & (x <= 1), 1, 0)
+plt.plot(x, pdf, label='PDF of Uniform(0,1)')
+plt.fill_between(x, pdf, alpha=0.2)
+plt.xlabel('x')
+plt.ylabel('PDF')
+plt.show()
+```
+Question: What is the area under the curve of the PDF of a Uniform$(a,b)$ distribution? The height of the density is $1/(b-a)$ because the total area under the density must be one:
+$$
+\int_a^b \frac{1}{b-a}\,dx=1.
+$$
+Actually, for any continuous random variable, the total area under the PDF must be one. This is because the total probability of all possible outcomes must equal one. 
+
+For any subinterval $[c,d]\subseteq [a,b]$,
+$$
+\mathbb{P}(c\le X\le d)
+=\int_c^d \frac{1}{b-a}\,dx
+=\frac{d-c}{b-a}.
+$$
+Thus, probabilities are proportional to lengths of intervals.
+
+The cumulative distribution function is
+$$
+F_X(x)=
+\begin{cases}
+0, & x<a,\\
+\dfrac{x-a}{b-a}, & a\le x\le b,\\
+1, & x>b.
+\end{cases}
+$$
+Between $a$ and $b$, the CDF is a straight line because probability accumulates at a constant rate.
+
+The expectation is
+$$
+\begin{aligned}
+\mathbb{E}(X)
+&=\int_{-\infty}^{\infty} x f_X(x)\,dx\\
+&=\int_a^b x\frac{1}{b-a}\,dx\\
+&=\frac{1}{b-a}\frac{x^2}{2}\Big|_a^b\\
+&=\frac{a+b}{2}.
+\end{aligned}
+$$
+So the mean is the midpoint of the interval.
+
+To compute the variance, first compute the second moment:
+$$
+\begin{aligned}
+\mathbb{E}(X^2)
+&=\int_a^b x^2\frac{1}{b-a}\,dx\\
+&=\frac{1}{b-a}\frac{x^3}{3}\Big|_a^b\\
+&=\frac{b^3-a^3}{3(b-a)}\\
+&=\frac{a^2+ab+b^2}{3}.
+\end{aligned}
+$$
+Therefore,
+$$
+\begin{aligned}
+\operatorname{Var}(X)
+&=\mathbb{E}(X^2)-[\mathbb{E}(X)]^2\\
+&=\frac{a^2+ab+b^2}{3}-\left(\frac{a+b}{2}\right)^2\\
+&=\frac{(b-a)^2}{12}.
+\end{aligned}
+$$
+
+A useful transformation property is that every Uniform$(a,b)$ random variable can be generated from a Uniform$(0,1)$ random variable. If
+$$
+U\sim\operatorname{Uniform}(0,1),
+$$
+then
+$$
+X=a+(b-a)U\sim\operatorname{Uniform}(a,b).
+$$
+
+::: {#exm-uniform-random-return}
+## Levered project payoff
+Suppose a project requires an initial investment of \$100 and has a random payoff $R$ that is uniformly distributed between \$50 and \$160. An investor has \$50 in cash and can borrow the remaining \$50 with no interest. After the project is completed, the investor repays the loan and keeps any remaining payoff.
+
+1. What is the expected payoff to the investor after debt repayment?
+2. What is the expected payoff to the investor if $R\sim \operatorname{Uniform}(30,180)$?
+
+In this problem, we know the random variable $R$. We need to express the investor's payoff as a function of $R$, so that we can compute its expectation using
+$$
+\mathbb{E}[f(R)] = \int f(r) f_R(r)\,dr.
+$$
+Denote the investor's payoff by $P$.
+
+In Q1, the project payoff is always at least \$50, so the investor can always repay the loan. Thus,
+$$
+P = R - 50.
+$$
+The expected payoff is
+$$
+\mathbb{E}[P]
+=\mathbb{E}[R-50]
+=\mathbb{E}[R]-50
+=\frac{50+160}{2}-50
+=55.
+$$
+
+In Q2, it is possible that the project payoff is less than \$50. In that case, the investor defaults on the loan and receives zero after debt repayment. Therefore, the investor's payoff is
+$$
+P = \max(R-50, 0).
+$$
+The expected payoff is
+$$
+\begin{aligned}
+\mathbb{E}[P] 
+&= \mathbb{E}[\max(R-50, 0)]\\
+&= \int_{30}^{180} \max(r-50, 0) f_R(r) dr\\
+&= \int_{50}^{180} (r-50) \frac{1}{180-30} dr\\
+&= \frac{1}{150} \frac{(r-50)^2}{2}\Big|_{50}^{180}\\
+&= 56.333
+\end{aligned}
+$$
+
+In Q1, $\mathbb{E}(R)=105$ and
+$$
+\operatorname{Var}(R)=\frac{(160-50)^2}{12}=1008.333.
+$$
+In Q2, $\mathbb{E}(R)=105$ again, but
+$$
+\operatorname{Var}(R)=\frac{(180-30)^2}{12}=1875.
+$$
+The two projects have the same expected payoff before debt repayment, but the second project has higher variance. Because the investor has limited liability, the downside below \$50 is partly absorbed by the lender, while the investor keeps the upside. This is why the expected payoff to the investor is higher in Q2. Formally, $\max(R-50,0)$ is a convex function of $R$, so Jensen's inequality gives
+$$
+\mathbb{E}[\max(R-50, 0)] \ge \max(\mathbb{E}[R]-50, 0) = 55.
+$$
+In finance, this phenomenon is called **risk shifting**.
+:::
 
 ## Normal
 
+The Normal distribution is the most important continuous distribution in statistics and finance. It is the familiar bell-shaped distribution, symmetric around its mean. It appears in many places because sums and averages of many small independent shocks are often approximately Normal, even when the individual shocks are not Normal.
+
+::: {#def-normal}
+Let $\mu\in\mathbb{R}$ and $\sigma>0$. A random variable $X$ has a **Normal distribution** with mean $\mu$ and variance $\sigma^2$, written
+$$
+X\sim\mathcal{N}(\mu,\sigma^2),
+$$
+if its probability density function is
+$$
+f_X(x)
+=\frac{1}{\sqrt{2\pi}\sigma}
+\exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right),
+\qquad x\in\mathbb{R}.
+$$
+:::
+
+The expectation and variance of a Normal random variable are
+$$
+\mathbb{E}(X)=\mu,
+\qquad
+\operatorname{Var}(X)=\sigma^2.
+$$
+
+The special case
+$$
+Z\sim\mathcal{N}(0,1)
+$$
+is called the **standard Normal distribution**. Its density is
+$$
+\phi(z)=\frac{1}{\sqrt{2\pi}}\exp\left(-\frac{z^2}{2}\right).
+$$
+Its cumulative distribution function is denoted by
+$$
+\Phi(z)=\mathbb{P}(Z\le z)=\int_{-\infty}^z \phi(t)\,dt.
+$$
+There is no elementary closed-form expression for $\Phi(z)$, so we usually evaluate it using a table, a calculator, or software.
+
+Any Normal random variable can be standardized. If
+$$
+X\sim\mathcal{N}(\mu,\sigma^2),
+$$
+then
+$$
+Z=\frac{X-\mu}{\sigma}\sim\mathcal{N}(0,1).
+$$
+Therefore,
+$$
+\mathbb{P}(X\le x)
+=\mathbb{P}\left(\frac{X-\mu}{\sigma}\le \frac{x-\mu}{\sigma}\right)
+=\Phi\left(\frac{x-\mu}{\sigma}\right).
+$$
+Standardization is useful because it reduces probability calculations for any Normal distribution to probability calculations for the standard Normal distribution.
+
+The Normal distribution has several useful properties.
+
+1. **Symmetry.** If $X\sim\mathcal{N}(\mu,\sigma^2)$, then the density is symmetric around $\mu$. In particular,
+   $$
+   \mathbb{P}(X\le \mu)=\mathbb{P}(X\ge \mu)=\frac{1}{2}.
+   $$
+
+2. **Linear transformations.** If
+   $$
+   X\sim\mathcal{N}(\mu,\sigma^2),
+   $$
+   and $a,b$ are constants with $b\ne 0$, then
+   $$
+   a+bX\sim\mathcal{N}(a+b\mu,b^2\sigma^2).
+   $$
+   To remember this, just think about how the mean and variance change under linear transformations. 
+   $$
+   \mathbb{E}(a+bX)=a+b\mathbb{E}(X)=a+b\mu,
+   \qquad
+   \operatorname{Var}(a+bX)=b^2\operatorname{Var(X)}=b^2\sigma^2.
+   $$
+
+3. **Sums of independent Normals.** If $X$ and $Y$ are independent with
+   $$
+   X\sim\mathcal{N}(\mu_X,\sigma_X^2),
+   \qquad
+   Y\sim\mathcal{N}(\mu_Y,\sigma_Y^2),
+   $$
+   then
+   $$
+   X+Y\sim\mathcal{N}(\mu_X+\mu_Y,\sigma_X^2+\sigma_Y^2) \qquad X-Y\sim\mathcal{N}(\mu_X-\mu_Y,\sigma_X^2+\sigma_Y^2).
+   $$
+   More generally, a linear combination of independent Normal random variables is Normal. Again, we can remember this by thinking about how the mean and variance change under linear combinations. If $X_1,\dots,X_n$ are independent with
+   $$
+   X_i\sim\mathcal{N}(\mu_i,\sigma_i^2),
+   $$
+   then for constants $a_1,\dots,a_n$,
+   $$
+   \sum_{i=1}^n a_i X_i \sim \mathcal{N}\left(\sum_{i=1}^n a_i \mu_i, \sum_{i=1}^n a_i^2 \sigma_i^2\right).
+   $$
+   This is a key property of the Normal distribution, which makes it very useful in many applications.
+
 ## Lognormal
+
+::: {#def-lognormal}
+Let $\mu\in\mathbb{R}$ and $\sigma>0$. A positive random variable $X$ has a **Lognormal distribution** with parameters $\mu$ and $\sigma^2$, written
+$$
+X\sim\operatorname{Lognormal}(\mu,\sigma^2),
+$$
+if
+$$
+\log X \sim \mathcal{N}(\mu,\sigma^2).
+$$
+Equivalently, if $Z\sim\mathcal{N}(0,1)$, then
+$$
+X=e^{\mu+\sigma Z}
+$$
+has a Lognormal$(\mu,\sigma^2)$ distribution.
+:::
+
+Notice carefully that $\mu$ and $\sigma^2$ are the mean and variance of $\log X$, not the mean and variance of $X$. That is,
+$$
+\mathbb{E}(\log X)=\mu,
+\qquad
+\operatorname{Var}(\log X)=\sigma^2.
+$$
+The mean and variance of $X$ itself are 
+$$
+\mathbb{E}(X)=e^{\mu+\sigma^2/2},
+\qquad
+\operatorname{Var}(X)=e^{2\mu+\sigma^2}\left(e^{\sigma^2}-1\right).
+$$
+
+To compute the expectation, write $X=e^Y$ where $Y\sim\mathcal{N}(\mu,\sigma^2)$. Then
+$$
+\mathbb{E}(X)=\mathbb{E}(e^Y)=\int_{-\infty}^{+\infty}e^y\frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{1}{2}(\frac{y-\mu}{\sigma})^2}\,dy
+$$
+let $t = \frac{y-\mu}{\sigma} \in (-\infty,+\infty)$, then $y = \sigma t + \mu $
+$$
+\begin{aligned}
+\mathbb{E}(e^Y)
+    & = \int_{-\infty}^{+\infty}e^{\sigma t + \mu} \frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}t^2}\,dt \\
+    & = e^{\mu}\int_{-\infty}^{+\infty}e^{\sigma t} \frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}t^2}\,dt \\
+    & = e^{\mu}\int_{-\infty}^{+\infty} \frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}((t-\sigma)^2-\sigma^2)}\,dt \\
+    & = e^{\mu + \frac{\sigma^2}{2}}\int_{-\infty}^{+\infty} \frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}(t-\sigma)^2}\,d(t-\sigma) \\
+    & = e^{\mu + \frac{\sigma^2}{2}}
+\end{aligned}
+$$
+
+Similarly, since $2Y\sim\mathcal{N}(2\mu,4\sigma^2)$, we have
+$$
+\mathbb{E}(X^2)=\mathbb{E}(e^{2Y})=e^{2\mu+2\sigma^2}.
+$$
+Therefore,
+$$
+\begin{aligned}
+\operatorname{Var}(X)
+&=\mathbb{E}(X^2)-[\mathbb{E}(X)]^2\\
+&=e^{2\mu+2\sigma^2}-e^{2\mu+\sigma^2}\\
+&=e^{2\mu+\sigma^2}\left(e^{\sigma^2}-1\right).
+\end{aligned}
+$$
+
+The median of a Lognormal random variable is
+$$
+\operatorname{median}(X)=e^\mu.
+$$
+This follows because
+$$
+\mathbb{P}(X\le e^\mu)
+=\mathbb{P}(\log X\le \mu)
+=\frac{1}{2}.
+$$
+
+
+The Lognormal distribution is used for positive random variables. A Normal random variable can take any real value, including negative values. A Lognormal random variable, by contrast, is always positive because it is obtained by exponentiating a Normal random variable. 
+
+For example, suppose the stock price is $S_t$ at time $t$, and $S_{t+1}$ at time $t+1$. The **total return** is
+$$
+R_{t+1}=\frac{S_{t+1}}{S_t}.
+$$
+The **log return** is
+$$ 
+r_{t+1}=\log R_{t+1}=\log S_{t+1}-\log S_t.
+$$
+The **net return** is
+$$
+r_{t+1}^{\text{net}}=R_{t+1}-1.
+$$
+Note that we generally use log returns instead of net returns in finance because log returns are additive over time, while net returns are not. To see this, consider two consecutive periods. The log return over the two periods is
+$$
+\begin{aligned}
+r_{t:t+2}&=\log\left(\frac{S_{t+2}}{S_t}\right) \\
+&=\log\left(\frac{S_{t+2}}{S_{t+1}}\frac{S_{t+1}}{S_t}\right) \\
+&= \log R_{t+1}+\log R_{t+2}\\
+&=r_{t+1}+r_{t+2}. 
+\end{aligned}
+$$
+
+::: {#exm-future-pricing}
+Suppose the current gold price is $S_0$. The log risk-free rate is $r^f$. Without any market frictions, by no arbitrage, the future price of gold at time excercise at $T$ is
+$$
+F = S_0 e^{r^f T}.
+$$
+
+```{python}
+#| fig-align: center
+import matplotlib.pyplot as plt
+from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
+
+# Create a clean diagram that can be pasted into Quarto/Python workflows
+fig, ax = plt.subplots(figsize=(6, 4))
+ax.set_xlim(0, 6)
+ax.set_ylim(0, 4)
+ax.axis("off")
+
+# Box settings
+box_w, box_h = 1, 1
+left_x, right_x = 0.1, 4.9
+top_y, bottom_y = 2.9, 0.1
+
+def add_box(x, y, label):
+    box = FancyBboxPatch(
+        (x, y), box_w, box_h,
+        boxstyle="round,pad=0.02",
+        linewidth=2,
+        facecolor="white",
+        edgecolor="black"
+    )
+    ax.add_patch(box)
+    ax.text(x + box_w/2, y + box_h/2, label,
+            ha="center", va="center", fontsize=14)
+
+add_box(left_x, top_y, "$S_0$")
+add_box(right_x, top_y, "$S_0 e^{r^f T}$")
+add_box(left_x, bottom_y, "1 unit\n gold")
+add_box(right_x, bottom_y, "1 unit\n gold")
+
+def connect(p1, p2, text, text_offset=(0, 0)):
+    arrow = FancyArrowPatch(
+        p1, p2,
+        arrowstyle="->",
+        mutation_scale=18,
+        linewidth=2,
+        color="black"
+    )
+    ax.add_patch(arrow)
+    mx = (p1[0] + p2[0]) / 2 + text_offset[0]
+    my = (p1[1] + p2[1]) / 2 + text_offset[1]
+    ax.text(mx, my, text, ha="center", va="center", fontsize=14)
+
+# Horizontal and vertical connections
+connect((left_x + box_w, top_y + box_h/2), (right_x, top_y + box_h/2), r"Save at $r^f$", (0, 0.2))
+connect((left_x + box_w, bottom_y + box_h/2), (right_x, bottom_y + box_h/2), r"Hold for $T$", (0, 0.2))
+connect((left_x + box_w/2, top_y), (left_x + box_w/2, bottom_y + box_h), r"$-S_0$", (-0.4, 0))
+connect((right_x + box_w/2, bottom_y + box_h), (right_x + box_w/2, top_y), r"$+F$", (0.35, 0))
+
+plt.tight_layout()
+plt.show()
+```
+:::
+
+::: {#exm-option}
+Suppose the current stock price is $S_{t}$. The log risk-free rate is $r^f$. A European call option with strike price $K$ and maturity $t+1$ gives the holder the right to buy one share of stock at time $t+1$ for price $K$. The payoff of the option at maturity is
+$$
+\max(S_{t+1} - K, 0).
+$$
+Suppose the stock price at time $t+1$ is lognormally distributed:
+$$
+S_{t+1}/S_t \sim \operatorname{Lognormal}(\mu, \sigma^2).
+$$
+What is the expected payoff of the option at maturity?
+
+First, $S_{t+1}/S_t$ is lognormally distributed, so $\log(S_{t+1}/S_t)$ is normally distributed. Denote $r = \log(S_{t+1}/S_t)$, the log return. Then $S_{t+1} = S_t e^r$. The expected payoff of the option is
+$$
+\begin{aligned}
+\mathbb{E}[\max(S_t e^r - K, 0)] 
+&= \int_{-\infty}^{\infty} \max(S_t e^r - K, 0) \frac{1}{\sqrt{2\pi}\sigma} e^{-\frac{(r-\mu)^2}{2\sigma^2}} dr \\
+&= \int_{\log(K/S_t)}^{\infty} (S_t e^r - K) \frac{1}{\sqrt{2\pi}\sigma} e^{-\frac{(r-\mu)^2}{2\sigma^2}} dr.
+\end{aligned}
+$$
+Again, we let $z = \frac{r-\mu}{\sigma}$, then $r = \sigma z + \mu$. 
+$$
+\begin{aligned}
+\mathbb{E}[C_{t+1}]
+&= \int_{\log(K/S_t)}^{\infty} (S_t e^r - K) \frac{1}{\sqrt{2\pi}\sigma} e^{-\frac{(r-\mu)^2}{2\sigma^2}} dr \\
+&= \int_{\frac{\log(K/S_t)-\mu}{\sigma}}^{\infty} (S_t e^{\sigma z + \mu} - K) \frac{1}{\sqrt{2\pi}} e^{-\frac{z^2}{2}} dz \\
+&= S_t e^{\mu + \frac{\sigma^2}{2}}\int_{\frac{\log(K/S_t)-\mu}{\sigma}}^{\infty} \frac{1}{\sqrt{2\pi}} e^{-\frac{(z-\sigma)^2}{2}} dz - K \int_{\frac{\log(K/S_t)-\mu}{\sigma}}^{\infty} \frac{1}{\sqrt{2\pi}} e^{-\frac{z^2}{2}} dz
+\end{aligned}
+$$
+Let's compute the above two integrals seperately. In the first integral, we need to define $y = z - \sigma$, then $z = y + \sigma$. The lower bound of the integral becomes $\frac{\log(K/S_t)-\mu}{\sigma} - \sigma = \frac{\log(K/S_t)-\mu-\sigma^2}{\sigma}$. The first integral becomes
+$$
+\begin{aligned}
+\int_{\frac{\log(K/S_t)-\mu-\sigma^2}{\sigma}}^{\infty} \frac{1}{\sqrt{2\pi}} e^{-\frac{y^2}{2}} dy = \Phi\left(-\frac{\log(K/S_t)-\mu-\sigma^2}{\sigma}\right) = \Phi\left(\frac{\log(S_t/K)+\mu+\sigma^2}{\sigma}\right)
+\end{aligned}
+$$
+The second integral is just
+$$
+\int_{\frac{\log(K/S_t)-\mu}{\sigma}}^{\infty} \frac{1}{\sqrt{2\pi}} e^{-\frac{z^2}{2}} dz = \Phi\left(-\frac{\log(K/S_t)-\mu}{\sigma}\right) = \Phi\left(\frac{\log(S_t/K)+\mu}{\sigma}\right)
+$$
+Therefore, we have 
+$$
+\mathbb{E}[\max(S_t e^r - K, 0)] = S_t e^{\mu + \frac{\sigma^2}{2}} \Phi\left(d_1\right) - K \Phi\left(d_2\right)
+$$
+where 
+$$
+\begin{aligned}
+d_1 &= \frac{\log(S_t/K)+\mu+\sigma^2}{\sigma} \\
+d_2 &= d_1 - \sigma 
+\end{aligned}
+$$
+Note that even though the above formula looks very similar to the Black-Scholes formula for European call option pricing, the idea is way simpler than the Black-Scholes model. We will discuss the Black-Scholes model in detail in the future chapters.
+:::
