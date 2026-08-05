@@ -23,6 +23,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -244,9 +279,8 @@ window.Quarto = {
   <li><a href="#geometric" id="toc-geometric" class="nav-link" data-scroll-target="#geometric"><span class="header-section-number">6.3</span> Geometric</a></li>
   <li><a href="#poisson" id="toc-poisson" class="nav-link" data-scroll-target="#poisson"><span class="header-section-number">6.4</span> Poisson</a></li>
   <li><a href="#uniform" id="toc-uniform" class="nav-link" data-scroll-target="#uniform"><span class="header-section-number">6.5</span> Uniform</a></li>
-  <li><a href="#exponential" id="toc-exponential" class="nav-link" data-scroll-target="#exponential"><span class="header-section-number">6.6</span> Exponential</a></li>
-  <li><a href="#normal" id="toc-normal" class="nav-link" data-scroll-target="#normal"><span class="header-section-number">6.7</span> Normal</a></li>
-  <li><a href="#lognormal" id="toc-lognormal" class="nav-link" data-scroll-target="#lognormal"><span class="header-section-number">6.8</span> Lognormal</a></li>
+  <li><a href="#normal" id="toc-normal" class="nav-link" data-scroll-target="#normal"><span class="header-section-number">6.6</span> Normal</a></li>
+  <li><a href="#lognormal" id="toc-lognormal" class="nav-link" data-scroll-target="#lognormal"><span class="header-section-number">6.7</span> Lognormal</a></li>
   </ul>
 </nav>
     </div>
@@ -439,15 +473,354 @@ X_n \to \operatorname{Poisson}(\lambda)
 </section>
 <section id="uniform" class="level2" data-number="6.5">
 <h2 data-number="6.5" class="anchored" data-anchor-id="uniform"><span class="header-section-number">6.5</span> Uniform</h2>
+<p>The Uniform distribution is the simplest continuous distribution on an interval. It assigns equal density to every point between two endpoints <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>. In this sense, it is the continuous analogue of “all outcomes are equally likely,” although for a continuous random variable the probability of any single point is still zero.</p>
+<div id="def-uniform" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 6.5</strong></span> Let <span class="math inline">\(a&lt;b\)</span>. A random variable <span class="math inline">\(X\)</span> has a <strong>Uniform distribution</strong> on <span class="math inline">\([a,b]\)</span>, written <span class="math display">\[
+X\sim\operatorname{Uniform}(a,b),
+\]</span> if its probability density function is <span class="math display">\[
+f_X(x)=
+\begin{cases}
+\dfrac{1}{b-a}, &amp; a\le x\le b,\\
+0, &amp; \text{otherwise}.
+\end{cases}
+\]</span></p>
+</div>
+<div id="66b87abf" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the PDF of a Uniform(0,1) distribution</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.linspace(<span class="op">-</span><span class="fl">0.5</span>, <span class="fl">1.5</span>, <span class="dv">100</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>pdf <span class="op">=</span> np.where((x <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="op">&amp;</span> (x <span class="op">&lt;=</span> <span class="dv">1</span>), <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>plt.plot(x, pdf, label<span class="op">=</span><span class="st">'PDF of Uniform(0,1)'</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>plt.fill_between(x, pdf, alpha<span class="op">=</span><span class="fl">0.2</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'x'</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'PDF'</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="common-distributions_files/figure-html/cell-2-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="590" height="430"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Question: What is the area under the curve of the PDF of a Uniform<span class="math inline">\((a,b)\)</span> distribution? The height of the density is <span class="math inline">\(1/(b-a)\)</span> because the total area under the density must be one: <span class="math display">\[
+\int_a^b \frac{1}{b-a}\,dx=1.
+\]</span> Actually, for any continuous random variable, the total area under the PDF must be one. This is because the total probability of all possible outcomes must equal one.</p>
+<p>For any subinterval <span class="math inline">\([c,d]\subseteq [a,b]\)</span>, <span class="math display">\[
+\mathbb{P}(c\le X\le d)
+=\int_c^d \frac{1}{b-a}\,dx
+=\frac{d-c}{b-a}.
+\]</span> Thus, probabilities are proportional to lengths of intervals.</p>
+<p>The cumulative distribution function is <span class="math display">\[
+F_X(x)=
+\begin{cases}
+0, &amp; x&lt;a,\\
+\dfrac{x-a}{b-a}, &amp; a\le x\le b,\\
+1, &amp; x&gt;b.
+\end{cases}
+\]</span> Between <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>, the CDF is a straight line because probability accumulates at a constant rate.</p>
+<p>The expectation is <span class="math display">\[
+\begin{aligned}
+\mathbb{E}(X)
+&amp;=\int_{-\infty}^{\infty} x f_X(x)\,dx\\
+&amp;=\int_a^b x\frac{1}{b-a}\,dx\\
+&amp;=\frac{1}{b-a}\frac{x^2}{2}\Big|_a^b\\
+&amp;=\frac{a+b}{2}.
+\end{aligned}
+\]</span> So the mean is the midpoint of the interval.</p>
+<p>To compute the variance, first compute the second moment: <span class="math display">\[
+\begin{aligned}
+\mathbb{E}(X^2)
+&amp;=\int_a^b x^2\frac{1}{b-a}\,dx\\
+&amp;=\frac{1}{b-a}\frac{x^3}{3}\Big|_a^b\\
+&amp;=\frac{b^3-a^3}{3(b-a)}\\
+&amp;=\frac{a^2+ab+b^2}{3}.
+\end{aligned}
+\]</span> Therefore, <span class="math display">\[
+\begin{aligned}
+\operatorname{Var}(X)
+&amp;=\mathbb{E}(X^2)-[\mathbb{E}(X)]^2\\
+&amp;=\frac{a^2+ab+b^2}{3}-\left(\frac{a+b}{2}\right)^2\\
+&amp;=\frac{(b-a)^2}{12}.
+\end{aligned}
+\]</span></p>
+<p>A useful transformation property is that every Uniform<span class="math inline">\((a,b)\)</span> random variable can be generated from a Uniform<span class="math inline">\((0,1)\)</span> random variable. If <span class="math display">\[
+U\sim\operatorname{Uniform}(0,1),
+\]</span> then <span class="math display">\[
+X=a+(b-a)U\sim\operatorname{Uniform}(a,b).
+\]</span></p>
+<div id="exm-uniform-random-return" class="theorem example">
+<p><span class="theorem-title"><strong>Example 6.1 (Levered project payoff)</strong></span> Suppose a project requires an initial investment of $100 and has a random payoff <span class="math inline">\(R\)</span> that is uniformly distributed between $50 and $160. An investor has $50 in cash and can borrow the remaining $50 with no interest. After the project is completed, the investor repays the loan and keeps any remaining payoff.</p>
+<ol type="1">
+<li>What is the expected payoff to the investor after debt repayment?</li>
+<li>What is the expected payoff to the investor if <span class="math inline">\(R\sim \operatorname{Uniform}(30,180)\)</span>?</li>
+</ol>
+<p>In this problem, we know the random variable <span class="math inline">\(R\)</span>. We need to express the investor’s payoff as a function of <span class="math inline">\(R\)</span>, so that we can compute its expectation using <span class="math display">\[
+\mathbb{E}[f(R)] = \int f(r) f_R(r)\,dr.
+\]</span> Denote the investor’s payoff by <span class="math inline">\(P\)</span>.</p>
+<p>In Q1, the project payoff is always at least $50, so the investor can always repay the loan. Thus, <span class="math display">\[
+P = R - 50.
+\]</span> The expected payoff is <span class="math display">\[
+\mathbb{E}[P]
+=\mathbb{E}[R-50]
+=\mathbb{E}[R]-50
+=\frac{50+160}{2}-50
+=55.
+\]</span></p>
+<p>In Q2, it is possible that the project payoff is less than $50. In that case, the investor defaults on the loan and receives zero after debt repayment. Therefore, the investor’s payoff is <span class="math display">\[
+P = \max(R-50, 0).
+\]</span> The expected payoff is <span class="math display">\[
+\begin{aligned}
+\mathbb{E}[P]
+&amp;= \mathbb{E}[\max(R-50, 0)]\\
+&amp;= \int_{30}^{180} \max(r-50, 0) f_R(r) dr\\
+&amp;= \int_{50}^{180} (r-50) \frac{1}{180-30} dr\\
+&amp;= \frac{1}{150} \frac{(r-50)^2}{2}\Big|_{50}^{180}\\
+&amp;= 56.333
+\end{aligned}
+\]</span></p>
+<p>In Q1, <span class="math inline">\(\mathbb{E}(R)=105\)</span> and <span class="math display">\[
+\operatorname{Var}(R)=\frac{(160-50)^2}{12}=1008.333.
+\]</span> In Q2, <span class="math inline">\(\mathbb{E}(R)=105\)</span> again, but <span class="math display">\[
+\operatorname{Var}(R)=\frac{(180-30)^2}{12}=1875.
+\]</span> The two projects have the same expected payoff before debt repayment, but the second project has higher variance. Because the investor has limited liability, the downside below $50 is partly absorbed by the lender, while the investor keeps the upside. This is why the expected payoff to the investor is higher in Q2. Formally, <span class="math inline">\(\max(R-50,0)\)</span> is a convex function of <span class="math inline">\(R\)</span>, so Jensen’s inequality gives <span class="math display">\[
+\mathbb{E}[\max(R-50, 0)] \ge \max(\mathbb{E}[R]-50, 0) = 55.
+\]</span> In finance, this phenomenon is called <strong>risk shifting</strong>.</p>
+</div>
 </section>
-<section id="exponential" class="level2" data-number="6.6">
-<h2 data-number="6.6" class="anchored" data-anchor-id="exponential"><span class="header-section-number">6.6</span> Exponential</h2>
+<section id="normal" class="level2" data-number="6.6">
+<h2 data-number="6.6" class="anchored" data-anchor-id="normal"><span class="header-section-number">6.6</span> Normal</h2>
+<p>The Normal distribution is the most important continuous distribution in statistics and finance. It is the familiar bell-shaped distribution, symmetric around its mean. It appears in many places because sums and averages of many small independent shocks are often approximately Normal, even when the individual shocks are not Normal.</p>
+<div id="def-normal" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 6.6</strong></span> Let <span class="math inline">\(\mu\in\mathbb{R}\)</span> and <span class="math inline">\(\sigma&gt;0\)</span>. A random variable <span class="math inline">\(X\)</span> has a <strong>Normal distribution</strong> with mean <span class="math inline">\(\mu\)</span> and variance <span class="math inline">\(\sigma^2\)</span>, written <span class="math display">\[
+X\sim\mathcal{N}(\mu,\sigma^2),
+\]</span> if its probability density function is <span class="math display">\[
+f_X(x)
+=\frac{1}{\sqrt{2\pi}\sigma}
+\exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right),
+\qquad x\in\mathbb{R}.
+\]</span></p>
+</div>
+<p>The expectation and variance of a Normal random variable are <span class="math display">\[
+\mathbb{E}(X)=\mu,
+\qquad
+\operatorname{Var}(X)=\sigma^2.
+\]</span></p>
+<p>The special case <span class="math display">\[
+Z\sim\mathcal{N}(0,1)
+\]</span> is called the <strong>standard Normal distribution</strong>. Its density is <span class="math display">\[
+\phi(z)=\frac{1}{\sqrt{2\pi}}\exp\left(-\frac{z^2}{2}\right).
+\]</span> Its cumulative distribution function is denoted by <span class="math display">\[
+\Phi(z)=\mathbb{P}(Z\le z)=\int_{-\infty}^z \phi(t)\,dt.
+\]</span> There is no elementary closed-form expression for <span class="math inline">\(\Phi(z)\)</span>, so we usually evaluate it using a table, a calculator, or software.</p>
+<p>Any Normal random variable can be standardized. If <span class="math display">\[
+X\sim\mathcal{N}(\mu,\sigma^2),
+\]</span> then <span class="math display">\[
+Z=\frac{X-\mu}{\sigma}\sim\mathcal{N}(0,1).
+\]</span> Therefore, <span class="math display">\[
+\mathbb{P}(X\le x)
+=\mathbb{P}\left(\frac{X-\mu}{\sigma}\le \frac{x-\mu}{\sigma}\right)
+=\Phi\left(\frac{x-\mu}{\sigma}\right).
+\]</span> Standardization is useful because it reduces probability calculations for any Normal distribution to probability calculations for the standard Normal distribution.</p>
+<p>The Normal distribution has several useful properties.</p>
+<ol type="1">
+<li><p><strong>Symmetry.</strong> If <span class="math inline">\(X\sim\mathcal{N}(\mu,\sigma^2)\)</span>, then the density is symmetric around <span class="math inline">\(\mu\)</span>. In particular, <span class="math display">\[
+\mathbb{P}(X\le \mu)=\mathbb{P}(X\ge \mu)=\frac{1}{2}.
+\]</span></p></li>
+<li><p><strong>Linear transformations.</strong> If <span class="math display">\[
+X\sim\mathcal{N}(\mu,\sigma^2),
+\]</span> and <span class="math inline">\(a,b\)</span> are constants with <span class="math inline">\(b\ne 0\)</span>, then <span class="math display">\[
+a+bX\sim\mathcal{N}(a+b\mu,b^2\sigma^2).
+\]</span> To remember this, just think about how the mean and variance change under linear transformations. <span class="math display">\[
+\mathbb{E}(a+bX)=a+b\mathbb{E}(X)=a+b\mu,
+\qquad
+\operatorname{Var}(a+bX)=b^2\operatorname{Var(X)}=b^2\sigma^2.
+\]</span></p></li>
+<li><p><strong>Sums of independent Normals.</strong> If <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are independent with <span class="math display">\[
+X\sim\mathcal{N}(\mu_X,\sigma_X^2),
+\qquad
+Y\sim\mathcal{N}(\mu_Y,\sigma_Y^2),
+\]</span> then <span class="math display">\[
+X+Y\sim\mathcal{N}(\mu_X+\mu_Y,\sigma_X^2+\sigma_Y^2) \qquad X-Y\sim\mathcal{N}(\mu_X-\mu_Y,\sigma_X^2+\sigma_Y^2).
+\]</span> More generally, a linear combination of independent Normal random variables is Normal. Again, we can remember this by thinking about how the mean and variance change under linear combinations. If <span class="math inline">\(X_1,\dots,X_n\)</span> are independent with <span class="math display">\[
+X_i\sim\mathcal{N}(\mu_i,\sigma_i^2),
+\]</span> then for constants <span class="math inline">\(a_1,\dots,a_n\)</span>, <span class="math display">\[
+\sum_{i=1}^n a_i X_i \sim \mathcal{N}\left(\sum_{i=1}^n a_i \mu_i, \sum_{i=1}^n a_i^2 \sigma_i^2\right).
+\]</span> This is a key property of the Normal distribution, which makes it very useful in many applications.</p></li>
+</ol>
 </section>
-<section id="normal" class="level2" data-number="6.7">
-<h2 data-number="6.7" class="anchored" data-anchor-id="normal"><span class="header-section-number">6.7</span> Normal</h2>
-</section>
-<section id="lognormal" class="level2" data-number="6.8">
-<h2 data-number="6.8" class="anchored" data-anchor-id="lognormal"><span class="header-section-number">6.8</span> Lognormal</h2>
+<section id="lognormal" class="level2" data-number="6.7">
+<h2 data-number="6.7" class="anchored" data-anchor-id="lognormal"><span class="header-section-number">6.7</span> Lognormal</h2>
+<div id="def-lognormal" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 6.7</strong></span> Let <span class="math inline">\(\mu\in\mathbb{R}\)</span> and <span class="math inline">\(\sigma&gt;0\)</span>. A positive random variable <span class="math inline">\(X\)</span> has a <strong>Lognormal distribution</strong> with parameters <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma^2\)</span>, written <span class="math display">\[
+X\sim\operatorname{Lognormal}(\mu,\sigma^2),
+\]</span> if <span class="math display">\[
+\log X \sim \mathcal{N}(\mu,\sigma^2).
+\]</span> Equivalently, if <span class="math inline">\(Z\sim\mathcal{N}(0,1)\)</span>, then <span class="math display">\[
+X=e^{\mu+\sigma Z}
+\]</span> has a Lognormal<span class="math inline">\((\mu,\sigma^2)\)</span> distribution.</p>
+</div>
+<p>Notice carefully that <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma^2\)</span> are the mean and variance of <span class="math inline">\(\log X\)</span>, not the mean and variance of <span class="math inline">\(X\)</span>. That is, <span class="math display">\[
+\mathbb{E}(\log X)=\mu,
+\qquad
+\operatorname{Var}(\log X)=\sigma^2.
+\]</span> The mean and variance of <span class="math inline">\(X\)</span> itself are <span class="math display">\[
+\mathbb{E}(X)=e^{\mu+\sigma^2/2},
+\qquad
+\operatorname{Var}(X)=e^{2\mu+\sigma^2}\left(e^{\sigma^2}-1\right).
+\]</span></p>
+<p>To compute the expectation, write <span class="math inline">\(X=e^Y\)</span> where <span class="math inline">\(Y\sim\mathcal{N}(\mu,\sigma^2)\)</span>. Then <span class="math display">\[
+\mathbb{E}(X)=\mathbb{E}(e^Y)=\int_{-\infty}^{+\infty}e^y\frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{1}{2}(\frac{y-\mu}{\sigma})^2}\,dy
+\]</span> let <span class="math inline">\(t = \frac{y-\mu}{\sigma} \in (-\infty,+\infty)\)</span>, then $y = t + $ <span class="math display">\[
+\begin{aligned}
+\mathbb{E}(e^Y)
+    &amp; = \int_{-\infty}^{+\infty}e^{\sigma t + \mu} \frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}t^2}\,dt \\
+    &amp; = e^{\mu}\int_{-\infty}^{+\infty}e^{\sigma t} \frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}t^2}\,dt \\
+    &amp; = e^{\mu}\int_{-\infty}^{+\infty} \frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}((t-\sigma)^2-\sigma^2)}\,dt \\
+    &amp; = e^{\mu + \frac{\sigma^2}{2}}\int_{-\infty}^{+\infty} \frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}(t-\sigma)^2}\,d(t-\sigma) \\
+    &amp; = e^{\mu + \frac{\sigma^2}{2}}
+\end{aligned}
+\]</span></p>
+<p>Similarly, since <span class="math inline">\(2Y\sim\mathcal{N}(2\mu,4\sigma^2)\)</span>, we have <span class="math display">\[
+\mathbb{E}(X^2)=\mathbb{E}(e^{2Y})=e^{2\mu+2\sigma^2}.
+\]</span> Therefore, <span class="math display">\[
+\begin{aligned}
+\operatorname{Var}(X)
+&amp;=\mathbb{E}(X^2)-[\mathbb{E}(X)]^2\\
+&amp;=e^{2\mu+2\sigma^2}-e^{2\mu+\sigma^2}\\
+&amp;=e^{2\mu+\sigma^2}\left(e^{\sigma^2}-1\right).
+\end{aligned}
+\]</span></p>
+<p>The median of a Lognormal random variable is <span class="math display">\[
+\operatorname{median}(X)=e^\mu.
+\]</span> This follows because <span class="math display">\[
+\mathbb{P}(X\le e^\mu)
+=\mathbb{P}(\log X\le \mu)
+=\frac{1}{2}.
+\]</span></p>
+<p>The Lognormal distribution is used for positive random variables. A Normal random variable can take any real value, including negative values. A Lognormal random variable, by contrast, is always positive because it is obtained by exponentiating a Normal random variable.</p>
+<p>For example, suppose the stock price is <span class="math inline">\(S_t\)</span> at time <span class="math inline">\(t\)</span>, and <span class="math inline">\(S_{t+1}\)</span> at time <span class="math inline">\(t+1\)</span>. The <strong>total return</strong> is <span class="math display">\[
+R_{t+1}=\frac{S_{t+1}}{S_t}.
+\]</span> The <strong>log return</strong> is <span class="math display">\[
+r_{t+1}=\log R_{t+1}=\log S_{t+1}-\log S_t.
+\]</span> The <strong>net return</strong> is <span class="math display">\[
+r_{t+1}^{\text{net}}=R_{t+1}-1.
+\]</span> Note that we generally use log returns instead of net returns in finance because log returns are additive over time, while net returns are not. To see this, consider two consecutive periods. The log return over the two periods is <span class="math display">\[
+\begin{aligned}
+r_{t:t+2}&amp;=\log\left(\frac{S_{t+2}}{S_t}\right) \\
+&amp;=\log\left(\frac{S_{t+2}}{S_{t+1}}\frac{S_{t+1}}{S_t}\right) \\
+&amp;= \log R_{t+1}+\log R_{t+2}\\
+&amp;=r_{t+1}+r_{t+2}.
+\end{aligned}
+\]</span></p>
+<div id="exm-future-pricing" class="theorem example">
+<p><span class="theorem-title"><strong>Example 6.2</strong></span> Suppose the current gold price is <span class="math inline">\(S_0\)</span>. The log risk-free rate is <span class="math inline">\(r^f\)</span>. Without any market frictions, by no arbitrage, the future price of gold at time excercise at <span class="math inline">\(T\)</span> is <span class="math display">\[
+F = S_0 e^{r^f T}.
+\]</span></p>
+<div id="519f076f" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib.patches <span class="im">import</span> FancyBboxPatch, FancyArrowPatch</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a clean diagram that can be pasted into Quarto/Python workflows</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">4</span>))</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>ax.set_xlim(<span class="dv">0</span>, <span class="dv">6</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="dv">0</span>, <span class="dv">4</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>ax.axis(<span class="st">"off"</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Box settings</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>box_w, box_h <span class="op">=</span> <span class="dv">1</span>, <span class="dv">1</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>left_x, right_x <span class="op">=</span> <span class="fl">0.1</span>, <span class="fl">4.9</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>top_y, bottom_y <span class="op">=</span> <span class="fl">2.9</span>, <span class="fl">0.1</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> add_box(x, y, label):</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    box <span class="op">=</span> FancyBboxPatch(</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>        (x, y), box_w, box_h,</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>        boxstyle<span class="op">=</span><span class="st">"round,pad=0.02"</span>,</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>        linewidth<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>        facecolor<span class="op">=</span><span class="st">"white"</span>,</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>        edgecolor<span class="op">=</span><span class="st">"black"</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    ax.add_patch(box)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    ax.text(x <span class="op">+</span> box_w<span class="op">/</span><span class="dv">2</span>, y <span class="op">+</span> box_h<span class="op">/</span><span class="dv">2</span>, label,</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>            ha<span class="op">=</span><span class="st">"center"</span>, va<span class="op">=</span><span class="st">"center"</span>, fontsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>add_box(left_x, top_y, <span class="st">"$S_0$"</span>)</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>add_box(right_x, top_y, <span class="st">"$S_0 e^{r^f T}$"</span>)</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>add_box(left_x, bottom_y, <span class="st">"1 unit</span><span class="ch">\n</span><span class="st"> gold"</span>)</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>add_box(right_x, bottom_y, <span class="st">"1 unit</span><span class="ch">\n</span><span class="st"> gold"</span>)</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> <span class="ex">connect</span>(p1, p2, text, text_offset<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>)):</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    arrow <span class="op">=</span> FancyArrowPatch(</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>        p1, p2,</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>        arrowstyle<span class="op">=</span><span class="st">"-&gt;"</span>,</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>        mutation_scale<span class="op">=</span><span class="dv">18</span>,</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>        linewidth<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>        color<span class="op">=</span><span class="st">"black"</span></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>    ax.add_patch(arrow)</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>    mx <span class="op">=</span> (p1[<span class="dv">0</span>] <span class="op">+</span> p2[<span class="dv">0</span>]) <span class="op">/</span> <span class="dv">2</span> <span class="op">+</span> text_offset[<span class="dv">0</span>]</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>    my <span class="op">=</span> (p1[<span class="dv">1</span>] <span class="op">+</span> p2[<span class="dv">1</span>]) <span class="op">/</span> <span class="dv">2</span> <span class="op">+</span> text_offset[<span class="dv">1</span>]</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>    ax.text(mx, my, text, ha<span class="op">=</span><span class="st">"center"</span>, va<span class="op">=</span><span class="st">"center"</span>, fontsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Horizontal and vertical connections</span></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="ex">connect</span>((left_x <span class="op">+</span> box_w, top_y <span class="op">+</span> box_h<span class="op">/</span><span class="dv">2</span>), (right_x, top_y <span class="op">+</span> box_h<span class="op">/</span><span class="dv">2</span>), <span class="vs">r"Save at </span><span class="dv">$</span><span class="vs">r</span><span class="dv">^</span><span class="vs">f</span><span class="dv">$</span><span class="vs">"</span>, (<span class="dv">0</span>, <span class="fl">0.2</span>))</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="ex">connect</span>((left_x <span class="op">+</span> box_w, bottom_y <span class="op">+</span> box_h<span class="op">/</span><span class="dv">2</span>), (right_x, bottom_y <span class="op">+</span> box_h<span class="op">/</span><span class="dv">2</span>), <span class="vs">r"Hold for </span><span class="dv">$</span><span class="vs">T</span><span class="dv">$</span><span class="vs">"</span>, (<span class="dv">0</span>, <span class="fl">0.2</span>))</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a><span class="ex">connect</span>((left_x <span class="op">+</span> box_w<span class="op">/</span><span class="dv">2</span>, top_y), (left_x <span class="op">+</span> box_w<span class="op">/</span><span class="dv">2</span>, bottom_y <span class="op">+</span> box_h), <span class="vs">r"</span><span class="dv">$</span><span class="vs">-S_0</span><span class="dv">$</span><span class="vs">"</span>, (<span class="op">-</span><span class="fl">0.4</span>, <span class="dv">0</span>))</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="ex">connect</span>((right_x <span class="op">+</span> box_w<span class="op">/</span><span class="dv">2</span>, bottom_y <span class="op">+</span> box_h), (right_x <span class="op">+</span> box_w<span class="op">/</span><span class="dv">2</span>, top_y), <span class="vs">r"</span><span class="dv">$</span><span class="op">+</span><span class="vs">F</span><span class="dv">$</span><span class="vs">"</span>, (<span class="fl">0.35</span>, <span class="dv">0</span>))</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="common-distributions_files/figure-html/cell-3-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="563" height="374"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="exm-option" class="theorem example">
+<p><span class="theorem-title"><strong>Example 6.3</strong></span> Suppose the current stock price is <span class="math inline">\(S_{t}\)</span>. The log risk-free rate is <span class="math inline">\(r^f\)</span>. A European call option with strike price <span class="math inline">\(K\)</span> and maturity <span class="math inline">\(t+1\)</span> gives the holder the right to buy one share of stock at time <span class="math inline">\(t+1\)</span> for price <span class="math inline">\(K\)</span>. The payoff of the option at maturity is <span class="math display">\[
+\max(S_{t+1} - K, 0).
+\]</span> Suppose the stock price at time <span class="math inline">\(t+1\)</span> is lognormally distributed: <span class="math display">\[
+S_{t+1}/S_t \sim \operatorname{Lognormal}(\mu, \sigma^2).
+\]</span> What is the expected payoff of the option at maturity?</p>
+<p>First, <span class="math inline">\(S_{t+1}/S_t\)</span> is lognormally distributed, so <span class="math inline">\(\log(S_{t+1}/S_t)\)</span> is normally distributed. Denote <span class="math inline">\(r = \log(S_{t+1}/S_t)\)</span>, the log return. Then <span class="math inline">\(S_{t+1} = S_t e^r\)</span>. The expected payoff of the option is <span class="math display">\[
+\begin{aligned}
+\mathbb{E}[\max(S_t e^r - K, 0)]
+&amp;= \int_{-\infty}^{\infty} \max(S_t e^r - K, 0) \frac{1}{\sqrt{2\pi}\sigma} e^{-\frac{(r-\mu)^2}{2\sigma^2}} dr \\
+&amp;= \int_{\log(K/S_t)}^{\infty} (S_t e^r - K) \frac{1}{\sqrt{2\pi}\sigma} e^{-\frac{(r-\mu)^2}{2\sigma^2}} dr.
+\end{aligned}
+\]</span> Again, we let <span class="math inline">\(z = \frac{r-\mu}{\sigma}\)</span>, then <span class="math inline">\(r = \sigma z + \mu\)</span>. <span class="math display">\[
+\begin{aligned}
+\mathbb{E}[C_{t+1}]
+&amp;= \int_{\log(K/S_t)}^{\infty} (S_t e^r - K) \frac{1}{\sqrt{2\pi}\sigma} e^{-\frac{(r-\mu)^2}{2\sigma^2}} dr \\
+&amp;= \int_{\frac{\log(K/S_t)-\mu}{\sigma}}^{\infty} (S_t e^{\sigma z + \mu} - K) \frac{1}{\sqrt{2\pi}} e^{-\frac{z^2}{2}} dz \\
+&amp;= S_t e^{\mu + \frac{\sigma^2}{2}}\int_{\frac{\log(K/S_t)-\mu}{\sigma}}^{\infty} \frac{1}{\sqrt{2\pi}} e^{-\frac{(z-\sigma)^2}{2}} dz - K \int_{\frac{\log(K/S_t)-\mu}{\sigma}}^{\infty} \frac{1}{\sqrt{2\pi}} e^{-\frac{z^2}{2}} dz
+\end{aligned}
+\]</span> Let’s compute the above two integrals seperately. In the first integral, we need to define <span class="math inline">\(y = z - \sigma\)</span>, then <span class="math inline">\(z = y + \sigma\)</span>. The lower bound of the integral becomes <span class="math inline">\(\frac{\log(K/S_t)-\mu}{\sigma} - \sigma = \frac{\log(K/S_t)-\mu-\sigma^2}{\sigma}\)</span>. The first integral becomes <span class="math display">\[
+\begin{aligned}
+\int_{\frac{\log(K/S_t)-\mu-\sigma^2}{\sigma}}^{\infty} \frac{1}{\sqrt{2\pi}} e^{-\frac{y^2}{2}} dy = \Phi\left(-\frac{\log(K/S_t)-\mu-\sigma^2}{\sigma}\right) = \Phi\left(\frac{\log(S_t/K)+\mu+\sigma^2}{\sigma}\right)
+\end{aligned}
+\]</span> The second integral is just <span class="math display">\[
+\int_{\frac{\log(K/S_t)-\mu}{\sigma}}^{\infty} \frac{1}{\sqrt{2\pi}} e^{-\frac{z^2}{2}} dz = \Phi\left(-\frac{\log(K/S_t)-\mu}{\sigma}\right) = \Phi\left(\frac{\log(S_t/K)+\mu}{\sigma}\right)
+\]</span> Therefore, we have <span class="math display">\[
+\mathbb{E}[\max(S_t e^r - K, 0)] = S_t e^{\mu + \frac{\sigma^2}{2}} \Phi\left(d_1\right) - K \Phi\left(d_2\right)
+\]</span> where <span class="math display">\[
+\begin{aligned}
+d_1 &amp;= \frac{\log(S_t/K)+\mu+\sigma^2}{\sigma} \\
+d_2 &amp;= d_1 - \sigma
+\end{aligned}
+\]</span> Note that even though the above formula looks very similar to the Black-Scholes formula for European call option pricing, the idea is way simpler than the Black-Scholes model. We will discuss the Black-Scholes model in detail in the future chapters.</p>
+</div>
 
 
 </section>

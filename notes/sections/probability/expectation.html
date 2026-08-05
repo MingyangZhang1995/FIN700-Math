@@ -332,7 +332,7 @@ f_X(x) = \int_{-\infty}^{\infty} f(x, y)\, dy \quad\text{(continuous)},
 </div>
 <div id="exm-marginal-distribution-discrete" class="theorem example">
 <p><span class="theorem-title"><strong>Example 5.1</strong></span> The table below shows a joint PMF of two discrete random variables <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>. The four inner cells are the joint probabilities <span class="math inline">\(p(x, y)\)</span>; the rightmost column and bottom row are the marginals <span class="math inline">\(p_Y(y)\)</span> and <span class="math inline">\(p_X(x)\)</span>, obtained by summing each row and column. The total probability is <span class="math inline">\(1\)</span>.</p>
-<div id="7bc31d67" class="cell" data-fig-height="4.8" data-fig-width="7" data-execution_count="1">
+<div id="e57f6927" class="cell" data-fig-height="4.8" data-fig-width="7" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -373,7 +373,7 @@ f_{Y \mid X}(y \mid x) = f_Y(y)
 \mathbb{P}(X=x,Y=y)=\mathbb{P}(X=x)\,\mathbb{P}(Y=y), \quad\text{or equivalently,}\quad \mathbb{P}(Y=y\mid X=x)=\mathbb{P}(Y=y).
 \]</span></p>
 <p>The figure below takes a jointly normal <span class="math inline">\((X, Y)\)</span> with correlation <span class="math inline">\(0.7\)</span>: the left panel shows the joint density with a slice at <span class="math inline">\(X = x_0\)</span>, and the right panel shows that the conditional <span class="math inline">\(f_{Y\mid X=x_0}\)</span> is shifted (toward positive <span class="math inline">\(Y\)</span>, since the two are positively related) and narrower (conditioning removes uncertainty) than the marginal <span class="math inline">\(f_Y\)</span>.</p>
-<div id="85ac18db" class="cell" data-execution_count="2">
+<div id="6338c119" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -429,8 +429,7 @@ f_{Y \mid X}(y \mid x) = f_Y(y)
 </div>
 <p>Formally, expectation is a single object — the Lebesgue integral <span class="math inline">\(\int_\Omega X(\omega)\, d\mathbb{P}(\omega)\)</span> — that the two formulas above specialize; the integral itself is beyond the math camp and unnecessary for computation.</p>
 <p>Below are some properties of expectation that we will use constantly:</p>
-<ol type="1">
-<li>Linearity: For any random variables <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> and constants <span class="math inline">\(a\)</span>, <span class="math inline">\(b\)</span>, and <span class="math inline">\(c\)</span>, <span class="math display">\[
+<p><strong>Linearity</strong>: For any random variables <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> and constants <span class="math inline">\(a\)</span>, <span class="math inline">\(b\)</span>, and <span class="math inline">\(c\)</span>, <span class="math display">\[
 \mathbb{E}[aX + bY + c] = a\,\mathbb{E}[X] + b\,\mathbb{E}[Y] + c.
 \]</span> Similarly, for a random vector <span class="math inline">\(\boldsymbol{X} = [X_1, \dots, X_k]^\top\)</span> and a constant vector <span class="math inline">\(\boldsymbol{w} = [w_1, \dots, w_k]^\top\)</span>, <span class="math display">\[
 \mathbb{E}[\boldsymbol{w}^\top \boldsymbol{X}] = \mathbb{E}[\sum_{i=1}^k w_i\, X_i] = \sum_{i=1}^k w_i\, \mathbb{E}[X_i]
@@ -446,11 +445,110 @@ f_{Y \mid X}(y \mid x) = f_Y(y)
 = \boldsymbol{A}\,\mathbb{E}[\boldsymbol{X}].
 \]</span> The linearity of expectation also holds for matrices of random variables: <span class="math display">\[
 \mathbb{E}[\boldsymbol{A}\boldsymbol{X}\boldsymbol{X}^\top\boldsymbol{B}] = \boldsymbol{A}\,\mathbb{E}[\boldsymbol{X}\boldsymbol{X}^\top]\,\boldsymbol{B}.
-\]</span> where <span class="math inline">\(\boldsymbol{A}\)</span> and <span class="math inline">\(\boldsymbol{B}\)</span> are constant matrices of appropriate dimensions, and <span class="math inline">\(\boldsymbol{X}\)</span> is a random vector, so <span class="math inline">\(\boldsymbol{X} \boldsymbol{X}^\top\)</span> is a matrix.</li>
-<li>Law of the unconscious statistician (LOTUS): The expectation of a function <span class="math inline">\(g(X)\)</span> is the average of <span class="math inline">\(g\)</span> under the distribution of <span class="math inline">\(X\)</span>, <span id="eq-lotus"><span class="math display">\[
+\]</span> where <span class="math inline">\(\boldsymbol{A}\)</span> and <span class="math inline">\(\boldsymbol{B}\)</span> are constant matrices of appropriate dimensions, and <span class="math inline">\(\boldsymbol{X}\)</span> is a random vector, so <span class="math inline">\(\boldsymbol{X} \boldsymbol{X}^\top\)</span> is a matrix. <strong>Law of the unconscious statistician (LOTUS)</strong>: The expectation of a function <span class="math inline">\(g(X)\)</span> is the average of <span class="math inline">\(g\)</span> under the distribution of <span class="math inline">\(X\)</span>, <span id="eq-lotus"><span class="math display">\[
 \mathbb{E}[g(X)] = \sum_x g(x)\, p_X(x) \quad\text{or}\quad \int_{-\infty}^\infty g(x)\, f_X(x)\, dx,
-\tag{5.2}\]</span></span> and, for a function of two variables against the joint, <span class="math inline">\(\mathbb{E}[g(X,Y)] = \iint g(x,y)\, f(x,y)\, dx\, dy\)</span>.</li>
+\tag{5.2}\]</span></span> and, for a function of two variables against the joint, <span class="math inline">\(\mathbb{E}[g(X,Y)] = \iint g(x,y)\, f(x,y)\, dx\, dy\)</span>.</p>
+<p>Lastly, we state a fundamental inequality that will be useful in many applications. ::: {#thm-jensen-inequality} <strong>Jensen’s Inequality</strong>: For a convex function <span class="math inline">\(g\)</span> and a random variable <span class="math inline">\(X\)</span>, <span class="math display">\[
+g(\mathbb{E}[X]) \leq \mathbb{E}[g(X)].
+\]</span> ::: Similarly, for a concave function <span class="math inline">\(g\)</span>, the inequality is reversed: <span class="math display">\[
+g(\mathbb{E}[X]) \geq \mathbb{E}[g(X)].
+\]</span> You will see Jensen’s inequality in many financial theories. Let’s firstly prove it and then give an example. For simplicity, let’s assume that <span class="math inline">\(g\)</span> is differentiable. Let <span class="math inline">\(\mu=\mathbb{E}[X]\)</span>. For a convex function <span class="math inline">\(g\)</span>, the tangent line at <span class="math inline">\(\mu\)</span> lies below the graph, so for every <span class="math inline">\(x\)</span> <span class="math display">\[
+g(x)\ge g(\mu)+g'(\mu)(x-\mu).
+\]</span> Now plug in the random variable <span class="math inline">\(X\)</span>: <span class="math display">\[
+g(X)\ge g(\mu)+g'(\mu)(X-\mu).
+\]</span> Take expectations on both sides: <span class="math display">\[
+\mathbb{E}[g(X)] \ge \mathbb{E}[g(\mu)+g'(\mu)(X-\mu)].
+\]</span> Since <span class="math inline">\(g(\mu)\)</span> and <span class="math inline">\(g'(\mu)\)</span> are constants, <span class="math display">\[
+\mathbb{E}[g(X)] \ge g(\mu)+g'(\mu)\big(\mathbb{E}[X]-\mu\big).
+\]</span> Because <span class="math inline">\(\mu=\mathbb{E}[X]\)</span>, the last term is zero, hence <span class="math display">\[
+\mathbb{E}[g(X)] \ge g(\mu)=g(\mathbb{E}[X]).
+\]</span></p>
+<div id="a5ae5bd4" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">4</span>, <span class="dv">4</span>))</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># axs[0]: convex function and tangent line</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a convex function</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> g(x):</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x<span class="op">**</span><span class="dv">2</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> g_prime(x):</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">2</span><span class="op">*</span>x</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate some data</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">100</span>)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> g(x)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>mu <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co"># tangent line at mu</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> tangent_line(x):</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> g(mu) <span class="op">+</span> g_prime(mu) <span class="op">*</span> (x <span class="op">-</span> mu)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>axs.plot(x, y, label<span class="op">=</span><span class="vs">r"</span><span class="dv">$</span><span class="vs">g</span><span class="kw">(</span><span class="vs">x</span><span class="kw">)</span><span class="dv">$</span><span class="vs">"</span>)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>axs.plot(x, tangent_line(x), label<span class="op">=</span><span class="vs">r"</span><span class="dv">$</span><span class="vs">g</span><span class="kw">(</span><span class="dv">\m</span><span class="vs">u</span><span class="kw">)</span><span class="vs"> </span><span class="op">+</span><span class="vs"> g'</span><span class="kw">(</span><span class="dv">\m</span><span class="vs">u</span><span class="kw">)(</span><span class="vs">x - </span><span class="dv">\m</span><span class="vs">u</span><span class="kw">)</span><span class="dv">$</span><span class="vs">"</span>, linestyle<span class="op">=</span><span class="st">'--'</span>)</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>axs.scatter(mu, g(mu), color<span class="op">=</span><span class="st">'red'</span>, zorder<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="co"># hide ticks</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>axs.set_xticks([])</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>axs.set_yticks([])</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>axs.legend()</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="expectation_files/figure-html/cell-4-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="317" height="315"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="exm-jensen-inequality" class="theorem example">
+<p><span class="theorem-title"><strong>Example 5.2</strong></span> In finance and economics, we often assume investors make decisions to maximize their expected utility. Generally, investors are risk-averse. This is captured by a concave utility function <span class="math inline">\(U\)</span> and its expectation, such as <span class="math display">\[
+\mathbb{E}[U(W)] = \mathbb{E}[\log(W)],
+\]</span> where <span class="math inline">\(W\)</span> is wealth. Suppose an investor has a choice between two investments:</p>
+<ol type="1">
+<li>A risk-free investment that guarantees a return of $1.</li>
+<li>A risky investment that has a 50% chance of returning $0.7 and a 50% chance of returning $1.3.</li>
 </ol>
+<p>We can see the expected payoff of the risky investment: <span class="math inline">\(0.5 \times 0.7 + 0.5 \times 1.3 = 1.\)</span> However, the expected utility of the risky investment is <span class="math display">\[  
+\mathbb{E}[\log(W)] = 0.5 \log(0.7) + 0.5 \log(1.3) &lt; \log(1).
+\]</span></p>
+<div id="9b9bdb55" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the utility function </span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> U(W):</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.log(W)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> <span class="fl">0.7</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>u <span class="op">=</span> <span class="fl">1.3</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>W <span class="op">=</span> np.linspace(<span class="fl">0.6</span>, <span class="fl">1.4</span>, <span class="dv">100</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>plt.plot(W, U(W), label<span class="op">=</span><span class="st">"Utility function"</span>, color<span class="op">=</span><span class="st">'black'</span>)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>plt.scatter([<span class="dv">1</span>], [U(<span class="dv">1</span>)], color<span class="op">=</span><span class="st">'red'</span>, zorder<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>plt.scatter([<span class="dv">1</span>], [<span class="fl">0.5</span><span class="op">*</span>U(d)<span class="op">+</span><span class="fl">0.5</span><span class="op">*</span>U(u)], color<span class="op">=</span><span class="st">'tab:orange'</span>, zorder<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>plt.plot([d, u], [U(d), U(u)], color<span class="op">=</span><span class="st">'tab:orange'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Wealth"</span>)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Utility"</span>)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>plt.grid()</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="expectation_files/figure-html/cell-5-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="601" height="431"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
 <div id="def-variance" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 5.6</strong></span> The <strong>variance</strong> of <span class="math inline">\(X\)</span> is <span class="math display">\[
 \operatorname{Var}(X) = \mathbb{E}\!\big[(X - \mathbb{E}[X])^2\big] = \mathbb{E}[X^2] - (\mathbb{E}[X])^2,
@@ -476,7 +574,7 @@ f_{Y \mid X}(y \mid x) = f_Y(y)
 \operatorname{Var}(aX) = \operatorname{Cov}(aX, aX) = a^2 \operatorname{Cov}(X, X) = a^2 \operatorname{Var}(X) .
 \]</span></p>
 <div id="exm-covariance" class="theorem example">
-<p><span class="theorem-title"><strong>Example 5.2</strong></span> Compute <span class="math inline">\(\operatorname{Var}(aX + bY)\)</span>. <span class="math display">\[
+<p><span class="theorem-title"><strong>Example 5.3</strong></span> Compute <span class="math inline">\(\operatorname{Var}(aX + bY)\)</span>. <span class="math display">\[
 \begin{aligned}
 \operatorname{Var}(aX + bY) &amp;= \operatorname{Cov}(aX + bY, aX + bY) \\
 &amp;= \operatorname{Cov}(aX, aX + bY) + \operatorname{Cov}(bY, aX + bY) \quad \text{by rule 2} \\
@@ -487,7 +585,7 @@ f_{Y \mid X}(y \mid x) = f_Y(y)
 \]</span></p>
 </div>
 <div id="exm-covariance-matrix" class="theorem example">
-<p><span class="theorem-title"><strong>Example 5.3</strong></span> Compute <span class="math inline">\(\operatorname{Var}(\sum_{i=1}^N a_i X_i)\)</span>. <span class="math display">\[
+<p><span class="theorem-title"><strong>Example 5.4</strong></span> Compute <span class="math inline">\(\operatorname{Var}(\sum_{i=1}^N a_i X_i)\)</span>. <span class="math display">\[
 \begin{aligned}
 \operatorname{Var}\Big(\sum_{i=1}^N a_i X_i\Big) &amp;= \operatorname{Cov}\Big(\sum_{i=1}^N a_i X_i, \sum_{j=1}^N a_j X_j\Big) \\
 &amp;= \sum_{i=1}^N \sum_{j=1}^N a_i a_j \operatorname{Cov}(X_i, X_j)
@@ -503,7 +601,7 @@ f_{Y \mid X}(y \mid x) = f_Y(y)
 <div id="thm-cov-psd" class="theorem">
 <p><span class="theorem-title"><strong>Theorem 5.1</strong></span> The covariance matrix <span class="math inline">\(\boldsymbol{\Sigma}\)</span> is positive semidefinite: <span class="math inline">\(\boldsymbol{w}^\top \boldsymbol{\Sigma}\, \boldsymbol{w} \ge 0\)</span> for every <span class="math inline">\(\boldsymbol{w}\)</span>.</p>
 </div>
-<p>The proof is immediate from <a href="#exm-covariance-matrix" class="quarto-xref">Example&nbsp;<span>5.3</span></a>: <span class="math inline">\(\operatorname{Var}(\boldsymbol{w}^\top \boldsymbol{X}) = \boldsymbol{w}^\top \boldsymbol{\Sigma}\, \boldsymbol{w}\)</span>, and variance is nonnegative.</p>
+<p>The proof is immediate from <a href="#exm-covariance-matrix" class="quarto-xref">Example&nbsp;<span>5.4</span></a>: <span class="math inline">\(\operatorname{Var}(\boldsymbol{w}^\top \boldsymbol{X}) = \boldsymbol{w}^\top \boldsymbol{\Sigma}\, \boldsymbol{w}\)</span>, and variance is nonnegative.</p>
 </section>
 <section id="sec-pr-conditional-expectation" class="level2" data-number="5.3">
 <h2 data-number="5.3" class="anchored" data-anchor-id="sec-pr-conditional-expectation"><span class="header-section-number">5.3</span> Conditional expectation</h2>
@@ -586,58 +684,58 @@ d\mathcal{L} = 2\boldsymbol{w}^\top \boldsymbol{\Sigma} d\boldsymbol{w} - \lambd
 1
 \end{bmatrix}
 \]</span></p>
-<div id="049ca14b" class="cell" data-execution_count="3">
+<div id="0b79fe18" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> pyplot <span class="im">as</span> plt</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">0</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="dv">25</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate expected returns and a positive definite covariance matrix.</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Assets with higher exposure to the first factor have higher expected returns.</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>factor_loadings <span class="op">=</span> rng.normal(<span class="fl">0.03</span>, <span class="fl">0.02</span>, size<span class="op">=</span>(N, <span class="dv">3</span>))</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>market_exposure <span class="op">=</span> factor_loadings[:, [<span class="dv">0</span>]]</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>mu <span class="op">=</span> <span class="fl">0.03</span> <span class="op">+</span> market_exposure <span class="op">+</span> rng.normal(<span class="dv">0</span>, <span class="fl">0.01</span>, size<span class="op">=</span>(N, <span class="dv">1</span>))</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>idiosyncratic_var <span class="op">=</span> rng.uniform(<span class="fl">0.03</span>, <span class="fl">0.10</span>, N) <span class="op">**</span> <span class="dv">2</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>Sigma <span class="op">=</span> factor_loadings <span class="op">@</span> factor_loadings.T <span class="op">+</span> np.diag(idiosyncratic_var)</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Solve the minimum-variance portfolio for each target return.</span></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>ones <span class="op">=</span> np.ones((N, <span class="dv">1</span>))</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>Sigma_inv <span class="op">=</span> np.linalg.inv(Sigma)</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> <span class="fl">0.5</span> <span class="op">*</span> np.array([</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    [(mu.T <span class="op">@</span> Sigma_inv <span class="op">@</span> mu).item(), (ones.T <span class="op">@</span> Sigma_inv <span class="op">@</span> mu).item()],</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    [(ones.T <span class="op">@</span> Sigma_inv <span class="op">@</span> mu).item(), (ones.T <span class="op">@</span> Sigma_inv <span class="op">@</span> ones).item()],</span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>])</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>target_returns <span class="op">=</span> np.linspace(mu.<span class="bu">min</span>(), mu.<span class="bu">max</span>() <span class="op">*</span> <span class="fl">1.5</span>, <span class="dv">200</span>)</span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>rhs <span class="op">=</span> np.vstack([target_returns, np.ones_like(target_returns)])</span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>lambd, gamma <span class="op">=</span> np.linalg.solve(A, rhs)</span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>weights <span class="op">=</span> <span class="fl">0.5</span> <span class="op">*</span> Sigma_inv <span class="op">@</span> (mu <span class="op">@</span> lambd.reshape(<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>) <span class="op">+</span> ones <span class="op">@</span> gamma.reshape(<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>))</span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>frontier_returns <span class="op">=</span> (mu.T <span class="op">@</span> weights).ravel()</span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>frontier_risks <span class="op">=</span> np.sqrt(np.<span class="bu">sum</span>(weights <span class="op">*</span> (Sigma <span class="op">@</span> weights), axis<span class="op">=</span><span class="dv">0</span>))</span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="co"># The global minimum-variance portfolio is the leftmost point on the frontier.</span></span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>gmv_index <span class="op">=</span> np.argmin(frontier_risks)</span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">5</span>))</span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>ax.plot(frontier_risks, frontier_returns, color<span class="op">=</span><span class="st">"black"</span>, lw<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="st">"minimum-variance frontier"</span>)</span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>ax.scatter(frontier_risks[gmv_index], frontier_returns[gmv_index], color<span class="op">=</span><span class="st">"tab:red"</span>, zorder<span class="op">=</span><span class="dv">3</span>, label<span class="op">=</span><span class="st">"global minimum variance"</span>)</span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>asset_points <span class="op">=</span> ax.scatter(np.sqrt(np.diag(Sigma)), mu.ravel(), alpha<span class="op">=</span><span class="fl">0.5</span>, label<span class="op">=</span><span class="st">"individual assets"</span>, color<span class="op">=</span><span class="st">"tab:red"</span>, lw<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"standard deviation"</span>)</span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"expected return"</span>)</span>
-<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Mean-variance efficient frontier"</span>)</span>
-<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>ax.legend(fontsize<span class="op">=</span><span class="dv">8</span>)</span>
-<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>ax.grid()</span>
-<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> pyplot <span class="im">as</span> plt</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">0</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="dv">25</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate expected returns and a positive definite covariance matrix.</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Assets with higher exposure to the first factor have higher expected returns.</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>factor_loadings <span class="op">=</span> rng.normal(<span class="fl">0.03</span>, <span class="fl">0.02</span>, size<span class="op">=</span>(N, <span class="dv">3</span>))</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>market_exposure <span class="op">=</span> factor_loadings[:, [<span class="dv">0</span>]]</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>mu <span class="op">=</span> <span class="fl">0.03</span> <span class="op">+</span> market_exposure <span class="op">+</span> rng.normal(<span class="dv">0</span>, <span class="fl">0.01</span>, size<span class="op">=</span>(N, <span class="dv">1</span>))</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>idiosyncratic_var <span class="op">=</span> rng.uniform(<span class="fl">0.03</span>, <span class="fl">0.10</span>, N) <span class="op">**</span> <span class="dv">2</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>Sigma <span class="op">=</span> factor_loadings <span class="op">@</span> factor_loadings.T <span class="op">+</span> np.diag(idiosyncratic_var)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Solve the minimum-variance portfolio for each target return.</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>ones <span class="op">=</span> np.ones((N, <span class="dv">1</span>))</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>Sigma_inv <span class="op">=</span> np.linalg.inv(Sigma)</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> <span class="fl">0.5</span> <span class="op">*</span> np.array([</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    [(mu.T <span class="op">@</span> Sigma_inv <span class="op">@</span> mu).item(), (ones.T <span class="op">@</span> Sigma_inv <span class="op">@</span> mu).item()],</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    [(ones.T <span class="op">@</span> Sigma_inv <span class="op">@</span> mu).item(), (ones.T <span class="op">@</span> Sigma_inv <span class="op">@</span> ones).item()],</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>target_returns <span class="op">=</span> np.linspace(mu.<span class="bu">min</span>(), mu.<span class="bu">max</span>() <span class="op">*</span> <span class="fl">1.5</span>, <span class="dv">200</span>)</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>rhs <span class="op">=</span> np.vstack([target_returns, np.ones_like(target_returns)])</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>lambd, gamma <span class="op">=</span> np.linalg.solve(A, rhs)</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>weights <span class="op">=</span> <span class="fl">0.5</span> <span class="op">*</span> Sigma_inv <span class="op">@</span> (mu <span class="op">@</span> lambd.reshape(<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>) <span class="op">+</span> ones <span class="op">@</span> gamma.reshape(<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>))</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>frontier_returns <span class="op">=</span> (mu.T <span class="op">@</span> weights).ravel()</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>frontier_risks <span class="op">=</span> np.sqrt(np.<span class="bu">sum</span>(weights <span class="op">*</span> (Sigma <span class="op">@</span> weights), axis<span class="op">=</span><span class="dv">0</span>))</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a><span class="co"># The global minimum-variance portfolio is the leftmost point on the frontier.</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>gmv_index <span class="op">=</span> np.argmin(frontier_risks)</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">5</span>))</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>ax.plot(frontier_risks, frontier_returns, color<span class="op">=</span><span class="st">"black"</span>, lw<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="st">"minimum-variance frontier"</span>)</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>ax.scatter(frontier_risks[gmv_index], frontier_returns[gmv_index], color<span class="op">=</span><span class="st">"tab:red"</span>, zorder<span class="op">=</span><span class="dv">3</span>, label<span class="op">=</span><span class="st">"global minimum variance"</span>)</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>asset_points <span class="op">=</span> ax.scatter(np.sqrt(np.diag(Sigma)), mu.ravel(), alpha<span class="op">=</span><span class="fl">0.5</span>, label<span class="op">=</span><span class="st">"individual assets"</span>, color<span class="op">=</span><span class="st">"tab:red"</span>, lw<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"standard deviation"</span>)</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"expected return"</span>)</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Mean-variance efficient frontier"</span>)</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>ax.legend(fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>ax.grid()</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="expectation_files/figure-html/cell-4-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="607" height="451"></p>
+<p><img src="expectation_files/figure-html/cell-6-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="607" height="451"></p>
 </figure>
 </div>
 </div>
