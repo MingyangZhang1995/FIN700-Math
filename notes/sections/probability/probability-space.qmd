@@ -50,7 +50,7 @@ $$
 $$
 $\mathcal{F}_1$ is the largest possible $\sigma$-algebra on $\Omega$, since it contains all subsets of $\Omega$. However, $\mathcal{F}_2$ is also a valid $\sigma$-algebra. Firstly, the $\emptyset$ and $\Omega$ are in $\mathcal{F}_2$. Secondly, the complement of $\{\text{rain}\}$ is $\{\text{snow},\text{sun}\}$, which is also in $\mathcal{F}_2$. Finally, the union of any two sets in $\mathcal{F}_2$ is also in $\mathcal{F}_2$. 
 
-We will not explore the technical details; the intuition is that $\mathcal{F}$ is the collection of events whose occurrence we can determine from the information available. In the above example, $\mathcal{F}_1$ provides more information than $\mathcal{F}_2$. $\mathcal{F}_2$ only allows us to determine whether it is raining or not, while $\mathcal{F}_1$ allows us to determine the exact weather condition. 
+We will not explore the technical details; the intuition is that $\mathcal{F}$ is the collection of events whose occurrence we can determine from the information available. In the above examples, larger $\mathcal{F}$ means more information, and smaller $\mathcal{F}$ means less information (Note that larger/smaller is defined "$\subset$" or "$\supset$").
 
 Lastly, $\mathbb{P}$ is a function that assigns a probability to each event in $\mathcal{F}$. For example, if $\Omega = \{\text{rain}, \text{snow}, \text{sun}\}$, we might have $\mathbb{P}(\{\text{rain}\}) = 0.3$, $\mathbb{P}(\{\text{snow}\}) = 0.3$, $\mathbb{P}(\{\text{sun}\}) = 0.4$. 
 

@@ -486,7 +486,7 @@ The Normal distribution has several useful properties.
    $$
    \mathbb{E}(a+bX)=a+b\mathbb{E}(X)=a+b\mu,
    \qquad
-   \operatorname{Var}(a+bX)=b^2\operatorname{Var(X)}=b^2\sigma^2.
+   \operatorname{Var}(a+bX)=b^2\operatorname{Var}(X)=b^2\sigma^2.
    $$
 
 3. **Sums of independent Normals.** If $X$ and $Y$ are independent with
@@ -720,3 +720,358 @@ d_2 &= d_1 - \sigma
 $$
 Note that even though the above formula looks very similar to the Black-Scholes formula for European call option pricing, the idea is way simpler than the Black-Scholes model. We will discuss the Black-Scholes model in detail in the future chapters.
 :::
+
+
+## Multivariate Normal
+
+The **Multivariate Normal distribution** extends the Normal distribution from one variable to a random vector.
+
+Let $\boldsymbol{X} = (X_1, \ldots, X_n)^\top$ be an $n$-dimensional random vector. Its expectation and covariance matrix are defined as
+$$
+\boldsymbol{\mu}
+=\mathbb{E}(\boldsymbol{X})
+=
+\begin{bmatrix}
+\mathbb{E}(X_1)\\
+\vdots\\
+\mathbb{E}(X_n)
+\end{bmatrix},
+\qquad
+\boldsymbol{\Sigma}
+=\operatorname{Var}(\boldsymbol{X})
+=\mathbb{E}\left[(\boldsymbol{X}-\boldsymbol{\mu})(\boldsymbol{X}-\boldsymbol{\mu})^\top\right].
+$$
+The diagonal entries of $\boldsymbol{\Sigma}$ are variances, and the off-diagonal entries are covariances:
+$$
+\Sigma_{ij}=\operatorname{Cov}(X_i,X_j).
+$$
+
+::: {#def-multivariate-normal-1}
+Let $\boldsymbol{\mu}\in\mathbb{R}^n$ and let $\boldsymbol{\Sigma}$ be an $n\times n$ positive semidefinite matrix. A random vector $\boldsymbol{X}$ has a **Multivariate Normal distribution** with mean vector $\boldsymbol{\mu}$ and covariance matrix $\boldsymbol{\Sigma}$, written
+$$
+\boldsymbol{X}\sim\mathcal{N}_{n}(\boldsymbol{\mu},\boldsymbol{\Sigma}),
+$$
+if every linear combination of its components follows a univariate Normal distribution. That is, for every constant vector $\boldsymbol{a}\in\mathbb{R}^n$,
+$$
+\boldsymbol{a}^\top \boldsymbol{X}
+\sim
+\mathcal{N}\left(\boldsymbol{a}^\top\boldsymbol{\mu},
+\boldsymbol{a}^\top\boldsymbol{\Sigma}\boldsymbol{a}\right).
+$$
+:::
+
+The following definition is equivalent to the above definition.
+::: {#def-multivariate-normal-2}
+$$
+\boldsymbol{X}\sim\mathcal{N}_{n}(\boldsymbol{\mu},\boldsymbol{\Sigma}),
+$$
+if and only if there exists a vector $\boldsymbol{\mu}\in\mathbb{R}^n$ and a matrix $\boldsymbol{A}\in\mathbb{R}^{n\times k}$ such that $\boldsymbol{X} = \boldsymbol{A}\boldsymbol{Z} + \boldsymbol{\mu}$, where each component of $\boldsymbol{Z}$ is independent and standard Normal $Z_i\sim\mathcal{N}(0,1)$, for $i=1,\dots,k$. In this case, $\boldsymbol{\Sigma} = \boldsymbol{A}\boldsymbol{A}^\top$.
+:::
+
+When $\boldsymbol{\Sigma}$ is positive definite, the Multivariate Normal distribution has the joint density
+$$
+f_{\boldsymbol{X}}(\boldsymbol{x})
+=
+\frac{1}{(2\pi)^{n/2}|\boldsymbol{\Sigma}|^{1/2}}
+\exp\left(
+-\frac{1}{2}
+(\boldsymbol{x}-\boldsymbol{\mu})^\top
+\boldsymbol{\Sigma}^{-1}
+(\boldsymbol{x}-\boldsymbol{\mu})
+\right),
+\qquad \boldsymbol{x}\in\mathbb{R}^n.
+$$
+Here $|\boldsymbol{\Sigma}|$ is the determinant of $\boldsymbol{\Sigma}$. 
+
+@def-multivariate-normal-1 is very useful in asset pricing, because portfolios are linear combinations. If $\boldsymbol{X}$ is a $n$-dimensional vector of asset returns and $\boldsymbol{w}$ is a vector of portfolio weights, then the portfolio return is
+$$
+R_p=\boldsymbol{w}^\top\boldsymbol{X}.
+$$
+If $\boldsymbol{X}\sim\mathcal{N}_{n}(\boldsymbol{\mu},\boldsymbol{\Sigma})$, then
+$$
+R_p\sim
+\mathcal{N}\left(
+\boldsymbol{w}^\top\boldsymbol{\mu},
+\boldsymbol{w}^\top\boldsymbol{\Sigma}\boldsymbol{w}
+\right).
+$$
+So the whole distribution of a Normal portfolio return is determined by its mean and variance.
+
+Some useful properties are:
+
+1. **Marginal distributions are Normal.** If
+   $$
+   \boldsymbol{X}\sim\mathcal{N}_{n}(\boldsymbol{\mu},\boldsymbol{\Sigma}),
+   $$
+   then each component $X_i$ is univariate Normal:
+   $$
+   X_i\sim\mathcal{N}(\mu_i,\Sigma_{ii}).
+   $$
+   More generally, any subvector of $\boldsymbol{X}$ is Multivariate Normal.
+
+2. **Linear transformations are Normal.** If
+   $$
+   \boldsymbol{X}\sim\mathcal{N}_{n}(\boldsymbol{\mu},\boldsymbol{\Sigma})
+   $$
+   and $\boldsymbol{B}\in \mathbb{R}^{m\times n}$ is a constant matrix, then
+   $$
+   \boldsymbol{B}\boldsymbol{X}
+   \sim
+   \mathcal{N}(\boldsymbol{B}\boldsymbol{\mu},
+   \boldsymbol{B}\boldsymbol{\Sigma}\boldsymbol{B}^\top).
+   $$
+
+::: {#exm-mean-variance-portfolio}
+## Mean variance portfolio theory 
+In this section, we apply the machinery of expectation and covariance to portfolio theory. We will derive the mean-variance efficient frontier. 
+
+Suppose we have $N$ assets with log returns $\boldsymbol{r}\sim \mathcal{N}_{n}(\boldsymbol{\mu}, \boldsymbol{\Sigma})$. Because of risk aversion, investors want to maximize expected return but minimize risk. The question is: how do we combine the $N$ assets into a portfolio that achieves the best tradeoff between expected return and risk? In asset pricing, you will see the following optimization problem: for a given level of expected return $\mu_p$, minimize the portfolio variance. 
+
+We use $\boldsymbol{w}$ to denote the portfolio weights, where $w_i$ is the weight of asset $i$ in the portfolio. Then, by @def-multivariate-normal-1, the portfolio return is a linear combination of the individual asset returns, which follows a univariate Normal distribution:
+$$
+\boldsymbol{w}^\top \boldsymbol{r} \sim \mathcal{N}(\boldsymbol{w}^\top \boldsymbol{\mu}, \boldsymbol{w}^\top \boldsymbol{\Sigma} \boldsymbol{w}).
+$$
+The optimization problem is therefore
+$$
+\begin{aligned}
+\min_{\boldsymbol{w}} \quad & \boldsymbol{w}^\top \boldsymbol{\Sigma} \boldsymbol{w} \\
+\text{s.t.} \quad & \boldsymbol{w}^\top \boldsymbol{\mu} = \mu_p \\
+& \boldsymbol{w}^\top \boldsymbol{1} = 1
+\end{aligned}
+$$
+where $\boldsymbol{1}$ is a vector of ones. The first constraint ensures that the portfolio has the desired expected return, and the second constraint ensures that the weights sum to one (i.e., the entire wealth is invested).
+
+We set the Lagrangian for this optimization problem:
+$$
+\mathcal{L}(\boldsymbol{w}, \lambda, \gamma) = \boldsymbol{w}^\top \boldsymbol{\Sigma} \boldsymbol{w} - \lambda (\boldsymbol{w}^\top \boldsymbol{\mu} - \mu_p) - \gamma (\boldsymbol{w}^\top \boldsymbol{1} - 1)
+$$
+Taking the derivative with respect to $\boldsymbol{w}$ (hint: @exm-diff-quadratic):
+$$
+d\mathcal{L} = 2\boldsymbol{w}^\top \boldsymbol{\Sigma} d\boldsymbol{w} - \lambda \boldsymbol{\mu}^\top d\boldsymbol{w} - \gamma \boldsymbol{1}^\top d\boldsymbol{w}
+$$
+Setting the derivative to zero gives the first-order condition:
+$$
+\boldsymbol{w} = \frac{1}{2} \boldsymbol{\Sigma}^{-1} (\lambda \boldsymbol{\mu} + \gamma \boldsymbol{1})
+$$
+To solve for $\lambda$ and $\gamma$, we plug this expression for $\boldsymbol{w}$ into the constraints:
+$$
+\begin{cases}
+\boldsymbol{w}^\top \boldsymbol{\mu} &= \mu_p \\
+\boldsymbol{w}^\top \boldsymbol{1} &= 1
+\end{cases}
+\Rightarrow
+\begin{cases}
+\frac{1}{2} (\lambda \boldsymbol{\mu} + \gamma \boldsymbol{1})^\top \boldsymbol{\Sigma}^{-1} \boldsymbol{\mu} &= \mu_p \\
+\frac{1}{2} (\lambda \boldsymbol{\mu} + \gamma \boldsymbol{1})^\top \boldsymbol{\Sigma}^{-1} \boldsymbol{1} &= 1
+\end{cases}
+$$
+For simplicity, we denote 
+$$
+\boldsymbol{A} = 
+\begin{bmatrix}
+\frac{1}{2}\boldsymbol{\mu}^\top\boldsymbol{\Sigma}^{-1}\boldsymbol{\mu} & \frac{1}{2}\boldsymbol{1}^\top\boldsymbol{\Sigma}^{-1}\boldsymbol{\mu} \\
+\frac{1}{2}\boldsymbol{1}^\top\boldsymbol{\Sigma}^{-1}\boldsymbol{\mu} & \frac{1}{2}\boldsymbol{1}^\top\boldsymbol{\Sigma}^{-1}\boldsymbol{1}
+\end{bmatrix}
+$$
+Then we can write the above system of equations as a linear system:
+$$
+\boldsymbol{A}
+\begin{bmatrix}
+\lambda \\
+\gamma
+\end{bmatrix}=
+\begin{bmatrix}
+\mu_p \\
+1
+\end{bmatrix}
+\Rightarrow
+\begin{bmatrix}
+\lambda \\
+\gamma
+\end{bmatrix} = \boldsymbol{A}^{-1}
+\begin{bmatrix}
+\mu_p \\
+1
+\end{bmatrix}
+$$ 
+```{python}
+#| fig-align: center
+
+import numpy as np
+from matplotlib import pyplot as plt
+
+rng = np.random.default_rng(0)
+N = 25
+
+# Generate expected returns and a positive definite covariance matrix.
+# Assets with higher exposure to the first factor have higher expected returns.
+factor_loadings = rng.normal(0.03, 0.02, size=(N, 3))
+market_exposure = factor_loadings[:, [0]]
+mu = 0.03 + market_exposure + rng.normal(0, 0.01, size=(N, 1))
+idiosyncratic_var = rng.uniform(0.03, 0.10, N) ** 2
+Sigma = factor_loadings @ factor_loadings.T + np.diag(idiosyncratic_var)
+
+# Solve the minimum-variance portfolio for each target return.
+ones = np.ones((N, 1))
+Sigma_inv = np.linalg.inv(Sigma)
+
+A = 0.5 * np.array([
+    [(mu.T @ Sigma_inv @ mu).item(), (ones.T @ Sigma_inv @ mu).item()],
+    [(ones.T @ Sigma_inv @ mu).item(), (ones.T @ Sigma_inv @ ones).item()],
+])
+
+target_returns = np.linspace(mu.min(), mu.max() * 1.5, 200)
+rhs = np.vstack([target_returns, np.ones_like(target_returns)])
+lambd, gamma = np.linalg.solve(A, rhs)
+
+weights = 0.5 * Sigma_inv @ (mu @ lambd.reshape(1, -1) + ones @ gamma.reshape(1, -1))
+frontier_returns = (mu.T @ weights).ravel()
+frontier_risks = np.sqrt(np.sum(weights * (Sigma @ weights), axis=0))
+
+# The global minimum-variance portfolio is the leftmost point on the frontier.
+gmv_index = np.argmin(frontier_risks)
+
+fig, ax = plt.subplots(figsize=(7, 5))
+ax.plot(frontier_risks, frontier_returns, color="black", lw=2, label="minimum-variance frontier")
+ax.scatter(frontier_risks[gmv_index], frontier_returns[gmv_index], color="tab:red", zorder=3, label="global minimum variance")
+asset_points = ax.scatter(np.sqrt(np.diag(Sigma)), mu.ravel(), alpha=0.5, label="individual assets", color="tab:red", lw=0)
+ax.set_xlabel("standard deviation")
+ax.set_ylabel("expected return")
+ax.set_title("Mean-variance efficient frontier")
+ax.legend(fontsize=8)
+ax.grid()
+plt.show()
+```
+On the plot, the black curve is the mean-variance efficient frontier, which shows the best possible tradeoff between expected return and risk (standard deviation) for portfolios composed of the $N$ assets. Each point on the curve represents a portfolio that minimizes risk for a given level of expected return. The red point indicates the global minimum-variance portfolio, which has the lowest risk among all possible portfolios. The individual assets are shown as red points, and they generally lie below the efficient frontier, indicating that diversification can lead to better risk-return profiles than investing in individual assets alone.
+:::
+
+## Law of Large Numbers
+
+The distributions above describe individual random variables. In statistics and finance, however, we often work with **averages**: average returns, average forecast errors, average default rates, average factor realizations, and so on. The Law of Large Numbers explains why averages are meaningful.
+
+Let $X_1,\dots,X_n$ be independent and identically distributed random variables with
+$$
+\mathbb{E}(X_i)=\mu,
+\qquad
+\operatorname{Var}(X_i)=\sigma^2<\infty.
+$$
+The sample mean is
+$$
+\bar X_n=\frac{1}{n}\sum_{i=1}^n X_i.
+$$
+The expectation of the sample mean is
+$$
+\mathbb{E}(\bar X_n)
+=
+\mathbb{E}\left(\frac{1}{n}\sum_{i=1}^n X_i\right)
+=
+\frac{1}{n}\sum_{i=1}^n \mathbb{E}(X_i)
+=
+\mu.
+$$
+Thus, the sample mean is centered at the population mean.
+
+Because the $X_i$'s are independent, the variance of the sample mean is
+$$
+\begin{aligned}
+\operatorname{Var}(\bar X_n)
+&=
+\operatorname{Var}\left(\frac{1}{n}\sum_{i=1}^n X_i\right)\\
+&=
+\frac{1}{n^2}\sum_{i=1}^n \operatorname{Var}(X_i)\\
+&=
+\frac{1}{n^2}n\sigma^2\\
+&=
+\frac{\sigma^2}{n}.
+\end{aligned}
+$$
+As $n$ becomes large, this variance goes to zero. The sample mean becomes more and more concentrated around $\mu$.
+
+The same logic applies to higher moments. For example, the third central moment of the sample mean is
+$$
+\mathbb{E}\left[(\bar X_n-\mu)^3\right]
+=
+\frac{1}{n^3}\sum_{i=1}^n \mathbb{E}\left[(X_i-\mu)^3\right]
+=
+\frac{1}{n^2}\mathbb{E}\left[(X_1-\mu)^3\right]
+$$
+As $n\to\infty$, this goes to zero. 
+
+::: {#thm-law-large-numbers}
+## Law of Large Numbers
+If $X_1,X_2,\dots$ are independent and identically distributed with finite mean $\mu$, then
+$$
+\bar X_n=\frac{1}{n}\sum_{i=1}^n X_i
+\longrightarrow
+\mu
+$$
+as $n\to\infty$.
+:::
+
+The theorem says that random noise averages out. Individual observations may be very noisy, but their average settles down near the true mean when the sample size is large.
+
+Note that the Law of Large Numbers have two versions: the **weak law** and the **strong law**, which correspond to **convergence in probability** and **almost sure convergence**, respectively. The weak law is easier to prove, but the strong law is more useful in practice. In this course, we will not distinguish between the two versions and skip the technical details of convergence. 
+
+## Central Limit Theorem
+
+The Law of Large Numbers says that the sample mean gets close to the population mean. The Central Limit Theorem goes further: it describes the **shape** of the remaining error.
+
+Again let $X_1,\dots,X_n$ be independent and identically distributed with
+$$
+\mathbb{E}(X_i)=\mu,
+\qquad
+\operatorname{Var}(X_i)=\sigma^2<\infty.
+$$
+The sample mean has
+$$
+\mathbb{E}(\bar X_n)=\mu,
+\qquad
+\operatorname{Var}(\bar X_n)=\frac{\sigma^2}{n}.
+$$
+Therefore, the standardized sample mean is
+$$
+\frac{\bar X_n-\mu}{\sigma/\sqrt{n}}.
+$$
+This subtracts the mean and divides by the standard deviation of $\bar X_n$.
+
+::: {#thm-central-limit-theorem}
+## Central Limit Theorem
+If $X_1,X_2,\dots$ are independent and identically distributed with mean $\mu$ and finite variance $\sigma^2$, then, for large $n$,
+$$
+\frac{\bar X_n-\mu}{\sigma/\sqrt{n}}
+\approx
+\mathcal{N}(0,1).
+$$
+Equivalently,
+$$
+\bar X_n
+\approx
+\mathcal{N}\left(\mu,\frac{\sigma^2}{n}\right).
+$$
+:::
+
+The Central Limit Theorem is remarkable because the original $X_i$'s do not need to be Normally distributed. They can be Bernoulli, Uniform, Exponential, or many other distributions. After averaging many independent observations, the sample mean is approximately Normal.
+
+The quantity
+$$
+\frac{\sigma}{\sqrt{n}}
+$$
+is called the **standard error** of the sample mean. It measures the typical size of the estimation error $\bar X_n-\mu$. Doubling the sample size does not cut the standard error in half; to cut the standard error in half, we need about four times as many observations.
+
+The CLT gives the approximation
+$$
+\mathbb{P}\left(
+\frac{\bar X_n-\mu}{\sigma/\sqrt{n}}\le z
+\right)
+\approx
+\Phi(z),
+$$
+where $\Phi$ is the standard Normal CDF. Equivalently,
+$$
+\mathbb{P}\left(
+\bar X_n\le \mu+z\frac{\sigma}{\sqrt{n}}
+\right)
+\approx
+\Phi(z).
+$$
+This is the foundation for standard errors, confidence intervals, and many hypothesis tests.
