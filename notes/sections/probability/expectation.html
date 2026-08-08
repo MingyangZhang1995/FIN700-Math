@@ -242,7 +242,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../../notes/sections/probability/continuous-time.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">continuous-time.html</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Stochastic Processes and a Introduction to Continuous Time</span></span></a>
   </div>
 </li>
       </ul>
@@ -281,7 +281,6 @@ window.Quarto = {
   </ul></li>
   <li><a href="#sec-pr-moments" id="toc-sec-pr-moments" class="nav-link" data-scroll-target="#sec-pr-moments"><span class="header-section-number">5.2</span> Moments</a></li>
   <li><a href="#sec-pr-conditional-expectation" id="toc-sec-pr-conditional-expectation" class="nav-link" data-scroll-target="#sec-pr-conditional-expectation"><span class="header-section-number">5.3</span> Conditional expectation</a></li>
-  <li><a href="#sec-pr-mean-variance" id="toc-sec-pr-mean-variance" class="nav-link" data-scroll-target="#sec-pr-mean-variance"><span class="header-section-number">5.4</span> Mean variance portfolio theory</a></li>
   </ul>
 </nav>
     </div>
@@ -332,7 +331,7 @@ f_X(x) = \int_{-\infty}^{\infty} f(x, y)\, dy \quad\text{(continuous)},
 </div>
 <div id="exm-marginal-distribution-discrete" class="theorem example">
 <p><span class="theorem-title"><strong>Example 5.1</strong></span> The table below shows a joint PMF of two discrete random variables <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>. The four inner cells are the joint probabilities <span class="math inline">\(p(x, y)\)</span>; the rightmost column and bottom row are the marginals <span class="math inline">\(p_Y(y)\)</span> and <span class="math inline">\(p_X(x)\)</span>, obtained by summing each row and column. The total probability is <span class="math inline">\(1\)</span>.</p>
-<div id="e57f6927" class="cell" data-fig-height="4.8" data-fig-width="7" data-execution_count="1">
+<div id="5a846173" class="cell" data-fig-height="4.8" data-fig-width="7" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -373,7 +372,7 @@ f_{Y \mid X}(y \mid x) = f_Y(y)
 \mathbb{P}(X=x,Y=y)=\mathbb{P}(X=x)\,\mathbb{P}(Y=y), \quad\text{or equivalently,}\quad \mathbb{P}(Y=y\mid X=x)=\mathbb{P}(Y=y).
 \]</span></p>
 <p>The figure below takes a jointly normal <span class="math inline">\((X, Y)\)</span> with correlation <span class="math inline">\(0.7\)</span>: the left panel shows the joint density with a slice at <span class="math inline">\(X = x_0\)</span>, and the right panel shows that the conditional <span class="math inline">\(f_{Y\mid X=x_0}\)</span> is shifted (toward positive <span class="math inline">\(Y\)</span>, since the two are positively related) and narrower (conditioning removes uncertainty) than the marginal <span class="math inline">\(f_Y\)</span>.</p>
-<div id="6338c119" class="cell" data-execution_count="2">
+<div id="cf80716a" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -427,7 +426,7 @@ f_{Y \mid X}(y \mid x) = f_Y(y)
 \mathbb{E}[X] = \int_{-\infty}^\infty x\, f_X(x)\, dx \quad\text{(continuous)} .
 \]</span></p>
 </div>
-<p>Formally, expectation is a single object — the Lebesgue integral <span class="math inline">\(\int_\Omega X(\omega)\, d\mathbb{P}(\omega)\)</span> — that the two formulas above specialize; the integral itself is beyond the math camp and unnecessary for computation.</p>
+<p>Formally, expectation is a single object — the Lebesgue integral <span class="math inline">\(\int_\Omega X(\omega)\, d\mathbb{P}(\omega)\)</span> — that the two formulas above specialize; the formal definition of the Lebesgue integral is beyond the math camp and unnecessary for computation. Intuitively, you could just think of <span class="math inline">\(d\mathbb{P}(\omega)\)</span> as a weight on each outcome <span class="math inline">\(\omega\)</span>, and the integral as a weighted average of <span class="math inline">\(X(\omega)\)</span> over all outcomes.</p>
 <p>Below are some properties of expectation that we will use constantly:</p>
 <p><strong>Linearity</strong>: For any random variables <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> and constants <span class="math inline">\(a\)</span>, <span class="math inline">\(b\)</span>, and <span class="math inline">\(c\)</span>, <span class="math display">\[
 \mathbb{E}[aX + bY + c] = a\,\mathbb{E}[X] + b\,\mathbb{E}[Y] + c.
@@ -463,7 +462,7 @@ g(X)\ge g(\mu)+g'(\mu)(X-\mu).
 \]</span> Because <span class="math inline">\(\mu=\mathbb{E}[X]\)</span>, the last term is zero, hence <span class="math display">\[
 \mathbb{E}[g(X)] \ge g(\mu)=g(\mathbb{E}[X]).
 \]</span></p>
-<div id="a5ae5bd4" class="cell" data-execution_count="3">
+<div id="36dc15fa" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -516,7 +515,7 @@ g(X)\ge g(\mu)+g'(\mu)(X-\mu).
 <p>We can see the expected payoff of the risky investment: <span class="math inline">\(0.5 \times 0.7 + 0.5 \times 1.3 = 1.\)</span> However, the expected utility of the risky investment is <span class="math display">\[  
 \mathbb{E}[\log(W)] = 0.5 \log(0.7) + 0.5 \log(1.3) &lt; \log(1).
 \]</span></p>
-<div id="9b9bdb55" class="cell" data-execution_count="4">
+<div id="4e8b39d5" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -616,7 +615,7 @@ g(X)\ge g(\mu)+g'(\mu)(X-\mu).
 \mathbb{E}\big[\mathbb{E}[Y \mid X]\big]
 \]</span> To answer this question, we first need to be clear about the meaning of <span class="math inline">\(\mathbb{E}[Y \mid X]\)</span>. It is a random variable that depends on <span class="math inline">\(X\)</span>, so we should express it as a function of <span class="math inline">\(X\)</span>, and then take the expectation of that function. So, the first step is <span class="math display">\[
 \mathbb{E}_X\big[\mathbb{E}_Y[Y \mid X]\big] = \int \mathbb{E}[Y \mid X = x] f_X(x) dx
-\]</span> where we use subscripts <span class="math inline">\(X\)</span> or <span class="math inline">\(Y\)</span> to remind ourselves that the expectation is taken with respect to the distribution of <span class="math inline">\(X\)</span> or <span class="math inline">\(Y\)</span>, respectively. Then, we plug in the <a href="#def-conditional-expectation" class="quarto-xref">Definition&nbsp;<span>5.9</span></a> to get <span class="math display">\[
+\]</span> where we use subscripts <span class="math inline">\(X\)</span> or <span class="math inline">\(Y\)</span> to remind ourselves that the expectation is taken with respect to the distribution of <span class="math inline">\(X\)</span> or <span class="math inline">\(Y\)</span>, respectively. Then, we plug in the <a href="continuous-time.html#def-conditional-expectation" class="quarto-xref">Definition&nbsp;<span>7.3</span></a> to get <span class="math display">\[
 \mathbb{E}_X\big[\mathbb{E}_Y[Y \mid X]\big] = \int  \int y f_{Y \mid X}(y \mid x) dy  f_X(x) dx
 \]</span> Rearranging the order of integration and using the <a href="#def-conditional-distribution" class="quarto-xref">Definition&nbsp;<span>5.3</span></a>, we have <span class="math display">\[
 \mathbb{E}_X\big[\mathbb{E}_Y[Y \mid X]\big] = \int  \int y f_{Y \mid X}(y \mid x) f_X(x) dx dy = \mathbb{E}[Y]
@@ -626,121 +625,6 @@ g(X)\ge g(\mu)+g'(\mu)(X-\mu).
 \mathbb{E}\big[\mathbb{E}[Y \mid X]\big] = \mathbb{E}[Y] .
 \]</span> More generally, conditioning on less information averages out the more refined conditional: <span class="math inline">\(\mathbb{E}[\mathbb{E}[Y \mid X, Z] \mid X] = \mathbb{E}[Y \mid X]\)</span>.</p>
 </div>
-</section>
-<section id="sec-pr-mean-variance" class="level2" data-number="5.4">
-<h2 data-number="5.4" class="anchored" data-anchor-id="sec-pr-mean-variance"><span class="header-section-number">5.4</span> Mean variance portfolio theory</h2>
-<p>In this section, we apply the machinery of expectation and covariance to portfolio theory. We will derive the mean-variance efficient frontier.</p>
-<p>Suppose we have <span class="math inline">\(N\)</span> assets with expected returns <span class="math inline">\(\boldsymbol{\mu}\)</span> and covariance matrix <span class="math inline">\(\boldsymbol{\Sigma}\)</span>. Because of risk aversion, investors want to maximize expected return but minimize risk. The question is: how do we combine the <span class="math inline">\(N\)</span> assets into a portfolio that achieves the best tradeoff between expected return and risk? In asset pricing, you will see the following optimization problem: for a given level of expected return <span class="math inline">\(\mu_p\)</span>, minimize the portfolio variance. Therefore, we need to answer the following question:</p>
-<ol type="1">
-<li>How to express the portfolio expected return?</li>
-<li>How to express the portfolio variance?</li>
-</ol>
-<p>We use <span class="math inline">\(\boldsymbol{w}\)</span> to denote the portfolio weights, where <span class="math inline">\(w_i\)</span> is the weight of asset <span class="math inline">\(i\)</span> in the portfolio. Then, the portfolio expected return is a linear combination of the individual asset expected returns <span class="math inline">\(\boldsymbol{w}^\top \boldsymbol{\mu}\)</span>. The portfolio variance is a quadratic form of the weights and the covariance matrix <span class="math inline">\(\boldsymbol{w}^\top \boldsymbol{\Sigma} \boldsymbol{w}\)</span>. The optimization problem is therefore <span class="math display">\[
-\begin{aligned}
-\min_{\boldsymbol{w}} \quad &amp; \boldsymbol{w}^\top \boldsymbol{\Sigma} \boldsymbol{w} \\
-\text{s.t.} \quad &amp; \boldsymbol{w}^\top \boldsymbol{\mu} = \mu_p \\
-&amp; \boldsymbol{w}^\top \boldsymbol{1} = 1
-\end{aligned}
-\]</span> where <span class="math inline">\(\boldsymbol{1}\)</span> is a vector of ones. The first constraint ensures that the portfolio has the desired expected return, and the second constraint ensures that the weights sum to one (i.e., the entire wealth is invested).</p>
-<p>We set the Lagrangian for this optimization problem: <span class="math display">\[
-\mathcal{L}(\boldsymbol{w}, \lambda, \gamma) = \boldsymbol{w}^\top \boldsymbol{\Sigma} \boldsymbol{w} - \lambda (\boldsymbol{w}^\top \boldsymbol{\mu} - \mu_p) - \gamma (\boldsymbol{w}^\top \boldsymbol{1} - 1)
-\]</span> Taking the derivative with respect to <span class="math inline">\(\boldsymbol{w}\)</span> (hint: <a href="../linear-algebra/decompositions.html#exm-diff-quadratic" class="quarto-xref">Example&nbsp;<span>3.3</span></a>): <span class="math display">\[
-d\mathcal{L} = 2\boldsymbol{w}^\top \boldsymbol{\Sigma} d\boldsymbol{w} - \lambda \boldsymbol{\mu}^\top d\boldsymbol{w} - \gamma \boldsymbol{1}^\top d\boldsymbol{w}
-\]</span> Setting the derivative to zero gives the first-order condition: <span class="math display">\[
-\boldsymbol{w} = \frac{1}{2} \boldsymbol{\Sigma}^{-1} (\lambda \boldsymbol{\mu} + \gamma \boldsymbol{1})
-\]</span> To solve for <span class="math inline">\(\lambda\)</span> and <span class="math inline">\(\gamma\)</span>, we plug this expression for <span class="math inline">\(\boldsymbol{w}\)</span> into the constraints: <span class="math display">\[
-\begin{cases}
-\boldsymbol{w}^\top \boldsymbol{\mu} &amp;= \mu_p \\
-\boldsymbol{w}^\top \boldsymbol{1} &amp;= 1
-\end{cases}
-\Rightarrow
-\begin{cases}
-\frac{1}{2} (\lambda \boldsymbol{\mu} + \gamma \boldsymbol{1})^\top \boldsymbol{\Sigma}^{-1} \boldsymbol{\mu} &amp;= \mu_p \\
-\frac{1}{2} (\lambda \boldsymbol{\mu} + \gamma \boldsymbol{1})^\top \boldsymbol{\Sigma}^{-1} \boldsymbol{1} &amp;= 1
-\end{cases}
-\]</span> For simplicity, we denote <span class="math display">\[
-\boldsymbol{A} =
-\begin{bmatrix}
-\frac{1}{2}\boldsymbol{\mu}^\top\boldsymbol{\Sigma}^{-1}\boldsymbol{\mu} &amp; \frac{1}{2}\boldsymbol{1}^\top\boldsymbol{\Sigma}^{-1}\boldsymbol{\mu} \\
-\frac{1}{2}\boldsymbol{1}^\top\boldsymbol{\Sigma}^{-1}\boldsymbol{\mu} &amp; \frac{1}{2}\boldsymbol{1}^\top\boldsymbol{\Sigma}^{-1}\boldsymbol{1}
-\end{bmatrix}
-\]</span> Then we can write the above system of equations as a linear system: <span class="math display">\[
-\boldsymbol{A}
-\begin{bmatrix}
-\lambda \\
-\gamma
-\end{bmatrix}=
-\begin{bmatrix}
-\mu_p \\
-1
-\end{bmatrix}
-\Rightarrow
-\begin{bmatrix}
-\lambda \\
-\gamma
-\end{bmatrix} = \boldsymbol{A}^{-1}
-\begin{bmatrix}
-\mu_p \\
-1
-\end{bmatrix}
-\]</span></p>
-<div id="0b79fe18" class="cell" data-execution_count="5">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> pyplot <span class="im">as</span> plt</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">0</span>)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="dv">25</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate expected returns and a positive definite covariance matrix.</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Assets with higher exposure to the first factor have higher expected returns.</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>factor_loadings <span class="op">=</span> rng.normal(<span class="fl">0.03</span>, <span class="fl">0.02</span>, size<span class="op">=</span>(N, <span class="dv">3</span>))</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>market_exposure <span class="op">=</span> factor_loadings[:, [<span class="dv">0</span>]]</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>mu <span class="op">=</span> <span class="fl">0.03</span> <span class="op">+</span> market_exposure <span class="op">+</span> rng.normal(<span class="dv">0</span>, <span class="fl">0.01</span>, size<span class="op">=</span>(N, <span class="dv">1</span>))</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>idiosyncratic_var <span class="op">=</span> rng.uniform(<span class="fl">0.03</span>, <span class="fl">0.10</span>, N) <span class="op">**</span> <span class="dv">2</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>Sigma <span class="op">=</span> factor_loadings <span class="op">@</span> factor_loadings.T <span class="op">+</span> np.diag(idiosyncratic_var)</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Solve the minimum-variance portfolio for each target return.</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>ones <span class="op">=</span> np.ones((N, <span class="dv">1</span>))</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>Sigma_inv <span class="op">=</span> np.linalg.inv(Sigma)</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> <span class="fl">0.5</span> <span class="op">*</span> np.array([</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    [(mu.T <span class="op">@</span> Sigma_inv <span class="op">@</span> mu).item(), (ones.T <span class="op">@</span> Sigma_inv <span class="op">@</span> mu).item()],</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    [(ones.T <span class="op">@</span> Sigma_inv <span class="op">@</span> mu).item(), (ones.T <span class="op">@</span> Sigma_inv <span class="op">@</span> ones).item()],</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>])</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>target_returns <span class="op">=</span> np.linspace(mu.<span class="bu">min</span>(), mu.<span class="bu">max</span>() <span class="op">*</span> <span class="fl">1.5</span>, <span class="dv">200</span>)</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>rhs <span class="op">=</span> np.vstack([target_returns, np.ones_like(target_returns)])</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>lambd, gamma <span class="op">=</span> np.linalg.solve(A, rhs)</span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>weights <span class="op">=</span> <span class="fl">0.5</span> <span class="op">*</span> Sigma_inv <span class="op">@</span> (mu <span class="op">@</span> lambd.reshape(<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>) <span class="op">+</span> ones <span class="op">@</span> gamma.reshape(<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>))</span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>frontier_returns <span class="op">=</span> (mu.T <span class="op">@</span> weights).ravel()</span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>frontier_risks <span class="op">=</span> np.sqrt(np.<span class="bu">sum</span>(weights <span class="op">*</span> (Sigma <span class="op">@</span> weights), axis<span class="op">=</span><span class="dv">0</span>))</span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a><span class="co"># The global minimum-variance portfolio is the leftmost point on the frontier.</span></span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>gmv_index <span class="op">=</span> np.argmin(frontier_risks)</span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">5</span>))</span>
-<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>ax.plot(frontier_risks, frontier_returns, color<span class="op">=</span><span class="st">"black"</span>, lw<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="st">"minimum-variance frontier"</span>)</span>
-<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>ax.scatter(frontier_risks[gmv_index], frontier_returns[gmv_index], color<span class="op">=</span><span class="st">"tab:red"</span>, zorder<span class="op">=</span><span class="dv">3</span>, label<span class="op">=</span><span class="st">"global minimum variance"</span>)</span>
-<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>asset_points <span class="op">=</span> ax.scatter(np.sqrt(np.diag(Sigma)), mu.ravel(), alpha<span class="op">=</span><span class="fl">0.5</span>, label<span class="op">=</span><span class="st">"individual assets"</span>, color<span class="op">=</span><span class="st">"tab:red"</span>, lw<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"standard deviation"</span>)</span>
-<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"expected return"</span>)</span>
-<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Mean-variance efficient frontier"</span>)</span>
-<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>ax.legend(fontsize<span class="op">=</span><span class="dv">8</span>)</span>
-<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>ax.grid()</span>
-<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="expectation_files/figure-html/cell-6-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="607" height="451"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>On the plot, the black curve is the mean-variance efficient frontier, which shows the best possible tradeoff between expected return and risk (standard deviation) for portfolios composed of the <span class="math inline">\(N\)</span> assets. Each point on the curve represents a portfolio that minimizes risk for a given level of expected return. The red point indicates the global minimum-variance portfolio, which has the lowest risk among all possible portfolios. The individual assets are shown as red points, and they generally lie below the efficient frontier, indicating that diversification can lead to better risk-return profiles than investing in individual assets alone.</p>
 
 
 </section>

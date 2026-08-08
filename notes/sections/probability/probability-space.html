@@ -242,7 +242,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../../notes/sections/probability/continuous-time.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">continuous-time.html</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Stochastic Processes and a Introduction to Continuous Time</span></span></a>
   </div>
 </li>
       </ul>
@@ -349,7 +349,7 @@ window.Quarto = {
 \mathcal{F}_2 &amp;= \{\varnothing, \{\text{rain}\}, \{\text{snow},\text{sun}\}, \Omega\}
 \end{aligned}
 \]</span> <span class="math inline">\(\mathcal{F}_1\)</span> is the largest possible <span class="math inline">\(\sigma\)</span>-algebra on <span class="math inline">\(\Omega\)</span>, since it contains all subsets of <span class="math inline">\(\Omega\)</span>. However, <span class="math inline">\(\mathcal{F}_2\)</span> is also a valid <span class="math inline">\(\sigma\)</span>-algebra. Firstly, the <span class="math inline">\(\emptyset\)</span> and <span class="math inline">\(\Omega\)</span> are in <span class="math inline">\(\mathcal{F}_2\)</span>. Secondly, the complement of <span class="math inline">\(\{\text{rain}\}\)</span> is <span class="math inline">\(\{\text{snow},\text{sun}\}\)</span>, which is also in <span class="math inline">\(\mathcal{F}_2\)</span>. Finally, the union of any two sets in <span class="math inline">\(\mathcal{F}_2\)</span> is also in <span class="math inline">\(\mathcal{F}_2\)</span>.</p>
-<p>We will not explore the technical details; the intuition is that <span class="math inline">\(\mathcal{F}\)</span> is the collection of events whose occurrence we can determine from the information available. In the above example, <span class="math inline">\(\mathcal{F}_1\)</span> provides more information than <span class="math inline">\(\mathcal{F}_2\)</span>. <span class="math inline">\(\mathcal{F}_2\)</span> only allows us to determine whether it is raining or not, while <span class="math inline">\(\mathcal{F}_1\)</span> allows us to determine the exact weather condition.</p>
+<p>We will not explore the technical details; the intuition is that <span class="math inline">\(\mathcal{F}\)</span> is the collection of events whose occurrence we can determine from the information available. In the above examples, larger <span class="math inline">\(\mathcal{F}\)</span> means more information, and smaller <span class="math inline">\(\mathcal{F}\)</span> means less information (Note that larger/smaller is defined “<span class="math inline">\(\subset\)</span>” or “<span class="math inline">\(\supset\)</span>”).</p>
 <p>Lastly, <span class="math inline">\(\mathbb{P}\)</span> is a function that assigns a probability to each event in <span class="math inline">\(\mathcal{F}\)</span>. For example, if <span class="math inline">\(\Omega = \{\text{rain}, \text{snow}, \text{sun}\}\)</span>, we might have <span class="math inline">\(\mathbb{P}(\{\text{rain}\}) = 0.3\)</span>, <span class="math inline">\(\mathbb{P}(\{\text{snow}\}) = 0.3\)</span>, <span class="math inline">\(\mathbb{P}(\{\text{sun}\}) = 0.4\)</span>.</p>
 <p>Everything else follows from the three axioms. The complement rule <span class="math inline">\(\mathbb{P}(A^c) = 1 - \mathbb{P}(A)\)</span> comes from applying additivity to <span class="math inline">\(A\)</span> and <span class="math inline">\(A^c\)</span>; monotonicity (<span class="math inline">\(A \subseteq B \Rightarrow \mathbb{P}(A) \le \mathbb{P}(B)\)</span>) and the inclusion–exclusion formula <span class="math display">\[
 \mathbb{P}(A \cup B) = \mathbb{P}(A) + \mathbb{P}(B) - \mathbb{P}(A \cap B)
@@ -390,7 +390,7 @@ window.Quarto = {
 <p>The probability that <span class="math inline">\(X\)</span> takes on a value in a Borel set <span class="math inline">\(B\)</span> is written as <span class="math display">\[
 \mathbb{P} (X\in B)=\mathbb{P} (\{\omega \in \Omega \mid X(\omega )\in B\}).
 \]</span></p>
-<div id="061c5289" class="cell" data-execution_count="1">
+<div id="18e00abd" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>continuous-time – FIN700: Mathematics for PhD Finance</title>
+<title>7&nbsp; Stochastic Processes and a Introduction to Continuous Time – FIN700: Mathematics for PhD Finance</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -22,6 +22,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -73,6 +108,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -85,7 +149,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/sections/probability/probability-space.html">Probability Theory</a></li><li class="breadcrumb-item"><a href="../../../notes/sections/probability/continuous-time.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">continuous-time.html</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/sections/probability/probability-space.html">Probability Theory</a></li><li class="breadcrumb-item"><a href="../../../notes/sections/probability/continuous-time.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Stochastic Processes and a Introduction to Continuous Time</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -178,7 +242,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../../notes/sections/probability/continuous-time.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">continuous-time.html</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Stochastic Processes and a Introduction to Continuous Time</span></span></a>
   </div>
 </li>
       </ul>
@@ -205,17 +269,334 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#filtration-and-conditional-expectation" id="toc-filtration-and-conditional-expectation" class="nav-link active" data-scroll-target="#filtration-and-conditional-expectation"><span class="header-section-number">7.1</span> Filtration and Conditional Expectation</a></li>
+  <li><a href="#markov-process" id="toc-markov-process" class="nav-link" data-scroll-target="#markov-process"><span class="header-section-number">7.2</span> Markov Process</a></li>
+  <li><a href="#brownian-motion" id="toc-brownian-motion" class="nav-link" data-scroll-target="#brownian-motion"><span class="header-section-number">7.3</span> Brownian motion</a></li>
+  <li><a href="#ito-integral" id="toc-ito-integral" class="nav-link" data-scroll-target="#ito-integral"><span class="header-section-number">7.4</span> It^{o} Integral</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/sections/probability/probability-space.html">Probability Theory</a></li><li class="breadcrumb-item"><a href="../../../notes/sections/probability/continuous-time.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">continuous-time.html</span></a></li></ol></nav></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/sections/probability/probability-space.html">Probability Theory</a></li><li class="breadcrumb-item"><a href="../../../notes/sections/probability/continuous-time.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Stochastic Processes and a Introduction to Continuous Time</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-pr-processes" class="quarto-section-identifier"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Stochastic Processes and a Introduction to Continuous Time</span></span></h1>
+</div>
 
 
 
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
 
 
+</header>
 
+
+<p>So far a random variable has been a single snapshot. Finance is dynamic: prices, rates, and volatilities evolve, and information accrues over time. A <strong>stochastic process</strong> is a whole family of random variables indexed by time, <span class="math inline">\(\{X_t\}\)</span>, and it is the language of asset pricing. Formally, for a given probability space <span class="math inline">\((\Omega ,{\mathcal{F}},\mathbb{P})\)</span>, a stochastic process is a collection of <span class="math inline">\(\mathcal{F}\)</span>-measurable random variables, which can be written as: <span class="math display">\[
+\{X(t):t\in T\}.
+\]</span></p>
+<p>This chapter introduces the three processes that matter most — Markov chains, martingales, and Brownian motion — and closes with a first look at Itô calculus, the differential calculus of random paths.</p>
+<section id="filtration-and-conditional-expectation" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="filtration-and-conditional-expectation"><span class="header-section-number">7.1</span> Filtration and Conditional Expectation</h2>
+<p>Before we get to the processes, we need to introduce the concept of <strong>filtration</strong>. Recall that in <a href="probability-space.html#sec-pr-spaces" class="quarto-xref"><span>Section 4.1</span></a>, we use “information” to explain <span class="math inline">\(\mathcal{F}\)</span>. We say that a larger <span class="math inline">\(\mathcal{F}\)</span> means more information, and a smaller <span class="math inline">\(\mathcal{F}\)</span> means less information. In a stochastic process, we have a sequence of <span class="math inline">\(\sigma\)</span>-algebras <span class="math inline">\(\{\mathcal{F}_t\}\)</span>, each representing the information available at time <span class="math inline">\(t\)</span>. As time progresses, we gain more information, so <span class="math inline">\(\mathcal{F}_t\)</span> grows larger.</p>
+<div id="def-filtration" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 7.1</strong></span> Given a probability space <span class="math inline">\((\Omega ,{\mathcal {F}}, \mathbb{P})\)</span>, a filtration is a sequence of <span class="math inline">\(\sigma\)</span>-algebras <span class="math inline">\(\{{\mathcal {F}}_{t}\}_{t\geq 0}\)</span> with <span class="math inline">\({\mathcal {F}}_{t}\subseteq {\mathcal {F}}\)</span> <span class="math display">\[
+t_{1}\leq t_{2}\implies {\mathcal {F}}_{t_{1}}\subseteq {\mathcal {F}}_{t_{2}}.
+\]</span></p>
+</div>
+<div id="def-adapted" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 7.2</strong></span> A stochastic process <span class="math inline">\(\{X_t\}\)</span> is <strong>adapted</strong> if <span class="math inline">\(X_t\)</span> is known given <span class="math inline">\(\mathcal{F}_t\)</span></p>
+</div>
+<p>The filtration is the formal version of an information set, the object that conditional expectations condition on. In finance, you will see the following notations like the following again and again <span class="math display">\[
+\mathbb{E}_t(R_{t+1}).
+\]</span> This notation is a shorthand for <span class="math display">\[
+\mathbb{E}[R_{t+1}|\mathcal{F}_t],
+\]</span> the expected return at time <span class="math inline">\(t+1\)</span> given the information available at time <span class="math inline">\(t\)</span>.</p>
+<p>To better understand <span class="math inline">\(\mathbb{E}[R_{t+1}|\mathcal{F}_t]\)</span>, we need to redefine expectation in a formal way. In <a href="expectation.html#def-expectation" class="quarto-xref">Definition&nbsp;<span>5.5</span></a> and <a href="#def-conditional-expectation" class="quarto-xref">Definition&nbsp;<span>7.3</span></a>, we defined expectation and conditional expectation using PDF amd PMF. However, in a stochastic process, we have a sequence of <span class="math inline">\(\sigma\)</span>-algebras <span class="math inline">\(\{\mathcal{F}_t\}\)</span>, and we need to define expectation conditional on the information available at time <span class="math inline">\(t\)</span>.</p>
+<div id="def-conditional-expectation" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 7.3</strong></span> Let <span class="math inline">\((\Omega, \mathcal{F}, \mathbb{P})\)</span> be a probability space, let <span class="math inline">\(\mathcal{G} \subseteq \mathcal{F}\)</span>, and let <span class="math inline">\(X\)</span> be a random variable. The conditional expectation of <span class="math inline">\(X\)</span> given <span class="math inline">\(\mathcal{G}\)</span>, denoted by <span class="math inline">\(\mathbb{E}[X|\mathcal{G}]\)</span>, is any random variable that satisfies</p>
+<ol type="1">
+<li><span class="math inline">\(\mathbb{E}[X|\mathcal{G}]\)</span> is <span class="math inline">\(\mathcal{G}\)</span>-measurable, and</li>
+<li><span class="math inline">\(\int_A \mathbb{E}[X|\mathcal{G}](\omega) \, d\mathbb{P}(\omega) = \int_A X(\omega) \, d\mathbb{P}(\omega)\)</span> for all <span class="math inline">\(A \in \mathcal{G}\)</span>.</li>
+</ol>
+</div>
+<p>In <a href="#def-conditional-expectation" class="quarto-xref">Definition&nbsp;<span>7.3</span></a>, we defined conditional expectation of <span class="math inline">\(Y\)</span> given <span class="math inline">\(X\)</span> by <span class="math inline">\(\mathbb{E}(Y|X)\)</span>. Under <a href="#def-conditional-expectation" class="quarto-xref">Definition&nbsp;<span>7.3</span></a>, the notation is equivalent to <span class="math inline">\(\mathbb{E}(Y|\sigma(X))\)</span>, where <span class="math inline">\(\sigma(X)\)</span> is the <span class="math inline">\(\sigma\)</span>-algebra generated by <span class="math inline">\(X\)</span> (see <a href="probability-space.html#def-measurability" class="quarto-xref">Definition&nbsp;<span>4.8</span></a>).</p>
+<div id="exm-filtration" class="theorem example">
+<p><span class="theorem-title"><strong>Example 7.1</strong></span> Given a probability space <span class="math inline">\((\Omega, \mathcal{F}, \mathbb{P})\)</span> with <span class="math inline">\(\Omega=[0,2]\)</span>, and <span class="math inline">\(\mathbb{P}\)</span> is the uniform distribution on <span class="math inline">\([0,2]\)</span>. Let <span class="math inline">\(R_{t+1}=\omega\)</span> denote the stock return (For simplicity, we restrict return to be in <span class="math inline">\([0,2]\)</span>. In real world, return is in <span class="math inline">\([0,\infty)\)</span>). Now suppose that our information set at time <span class="math inline">\(t\)</span> is <span class="math display">\[
+\mathcal{F}_t = \{\varnothing, [0,1], (1,2], \Omega\}
+\]</span> In other words, at time <span class="math inline">\(t\)</span>, we only know whether the return is in <span class="math inline">\([0,1]\)</span> or <span class="math inline">\((1,2]\)</span>. What is the distribution of <span class="math inline">\(\mathbb{E}[R_{t+1}|\mathcal{F}_t]\)</span>?</p>
+<p>Since, in <span class="math inline">\(\mathcal{F}_t\)</span>, we only know whether the probabilities of two events <span class="math inline">\([0,1]\)</span> and <span class="math inline">\((1,2]\)</span>, the probability distribution of <span class="math inline">\(\mathbb{E}[R_{t+1}|\mathcal{F}_t]\)</span> must follows <span class="math display">\[
+\mathbb{E}[R_{t+1}|\mathcal{F}_t] =
+\begin{cases}
+c_1 \qquad \text{if } \omega \in [0,1] \\
+c_2 \qquad \text{if } \omega \in (1,2]
+\end{cases}
+\]</span> where <span class="math inline">\(\mathbb{P}(\omega \in [0,1]) = \mathbb{P}(\omega \in (1,2]) = \frac{1}{2}\)</span>. To find <span class="math inline">\(c_1\)</span> and <span class="math inline">\(c_2\)</span>, we use the definition of conditional expectation <span class="math display">\[
+\begin{cases}
+\int_{[0,1]} \mathbb{E}[R_{t+1}|\mathcal{F}_t](\omega) \, d\mathbb{P}(\omega) = \int_{[0,1]} R_{t+1}(\omega) \, d\mathbb{P}(\omega) \\
+\int_{(1,2]} \mathbb{E}[R_{t+1}|\mathcal{F}_t](\omega) \, d\mathbb{P}(\omega) = \int_{(1,2]} R_{t+1}(\omega) \, d\mathbb{P}(\omega)
+\end{cases}
+\]</span> Plug in <span class="math inline">\(c_1\)</span> and <span class="math inline">\(c_2\)</span>, we have <span class="math display">\[
+\begin{cases}
+c_1 \cdot \mathbb{P}(\omega \in [0,1]) = \int_{[0,1]} R_{t+1}(\omega) \, d\mathbb{P}(\omega) = \frac{1}{4} \\
+c_2 \cdot \mathbb{P}(\omega \in (1,2]) = \int_{(1,2]} R_{t+1}(\omega) \, d\mathbb{P}(\omega) = \frac{3}{4}
+\end{cases}
+\]</span> where the second equality in each equation follows from the expectation of a uniform distribution, e.g. <span class="math display">\[
+\int_{[0,1]} R_{t+1}(\omega) \, d\mathbb{P}(\omega) = \int_{[0,1]} R_{t+1} d\left(\frac{R_{t+1}}{2}\right) = \frac{1}{4}R_{t+1}^2\Big|_0^1 = \frac{1}{4}
+\]</span> Therefore, we have <span class="math display">\[
+\begin{cases}
+c_1 = \frac{1}{2} \\
+c_2 = \frac{3}{2}
+\end{cases}
+\]</span></p>
+</div>
+<p>Given a probability space <span class="math inline">\((\Omega, \mathcal{F}, \mathbb{P})\)</span>, we can derive some useful properties of conditional expectation. We denote <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> be random variables, and <span class="math inline">\(\mathcal{H}\)</span> and <span class="math inline">\(\mathcal{G}\)</span> are <span class="math inline">\(\sigma\)</span>-algebras with <span class="math inline">\(\mathcal{H} \subseteq \mathcal{G} \subseteq \mathcal{F}\)</span>. The following properties hold:</p>
+<ol type="1">
+<li><strong>Linearity</strong>: If <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are random variables, and <span class="math inline">\(a,b \in \mathbb{R}\)</span>, then <span class="math display">\[
+\mathbb{E}[aX + bY|\mathcal{G}] = a\mathbb{E}[X|\mathcal{G}] + b\mathbb{E}[Y|\mathcal{G}], \qquad \text{for } a,b \in \mathbb{R}.
+\]</span></li>
+<li><strong>Taking out what is known</strong>: If <span class="math inline">\(Y\)</span> is integrable and <span class="math inline">\(X\)</span> is bounded and <span class="math inline">\(\mathcal{G}\)</span>-measurable, then <span class="math display">\[
+\mathbb{E}[XY|\mathcal{G}] = X\mathbb{E}[Y|\mathcal{G}].
+\]</span></li>
+<li><strong>Law of iterated expectation</strong>: If <span class="math inline">\(\mathcal{H} \subseteq \mathcal{G}\)</span>, <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are random variables, then <span class="math display">\[
+\mathbb{E}[\mathbb{E}[X|\mathcal{G}]|\mathcal{H}] = \mathbb{E}[X|\mathcal{H}].
+\]</span></li>
+</ol>
+<p>Let’s explain and prove them one by one using the definition</p>
+<p>Linearity is pretty straightforward. For <span class="math inline">\(\mathbb{E}[aX + bY|\mathcal{G}]\)</span>, we have <span class="math display">\[
+\begin{aligned}
+&amp;\int_A \mathbb{E}[aX + bY|\mathcal{G}](\omega) \, d\mathbb{P}(\omega)  \quad \text{for all } A \in \mathcal{G} \\
+&amp;= \int_A (aX + bY)(\omega) \, d\mathbb{P}(\omega) \quad \text{for all } A \in \mathcal{G}\\
+&amp;= a\int_A X(\omega) \, d\mathbb{P}(\omega) + b\int_A Y(\omega) \, d\mathbb{P}(\omega) \quad \text{for all } A \in \mathcal{G}\\
+&amp;= a\int_A \mathbb{E}[X|\mathcal{G}](\omega) \, d\mathbb{P}(\omega) + b\int_A \mathbb{E}[Y|\mathcal{G}](\omega) \, d\mathbb{P}(\omega) \quad \text{for all } A \in \mathcal{G}
+\end{aligned}
+\]</span></p>
+<p>“Taking out what is known” is hard to prove but easy to understand (so we omit the proof). In taking out what is known, <span class="math inline">\(X\)</span> is <span class="math inline">\(\mathcal{G}\)</span>-measurable. We defined <span class="math inline">\(\mathcal{G}\)</span>-measurable in <a href="probability-space.html#def-measurability" class="quarto-xref">Definition&nbsp;<span>4.8</span></a>. In short, <span class="math inline">\(X\)</span> is <span class="math inline">\(\mathcal{G}\)</span>-measurable if its value is determined by the information in <span class="math inline">\(\mathcal{G}\)</span>. Notice that <span class="math inline">\(X\)</span> need not be a constant; it is simply known once we condition on <span class="math inline">\(\mathcal{G}\)</span>. For example, in asset pricing <span class="math inline">\(R_t\)</span> is known at time <span class="math inline">\(t\)</span>, so it is <span class="math inline">\(\mathcal{F}_t\)</span>-measurable. Therefore, we can take it out of the conditional expectation: <span class="math display">\[
+\mathbb{E}(R_t R_{t+1}|\mathcal{F}_t) = R_t \mathbb{E}(R_{t+1}|\mathcal{F}_t),
+\]</span></p>
+<p>Law of iterated expectation is a very important property in asset pricing. To understand it, we can think about the following question: at time <span class="math inline">\(t\)</span>, we want to know what will be our best prediction of <span class="math inline">\(R_{t+2}\)</span> at <span class="math inline">\(t+1\)</span>? Suppose nothing news happens in the period from <span class="math inline">\(t\)</span> to <span class="math inline">\(t+1\)</span>, our best prediction of <span class="math inline">\(R_{t+2}\)</span> at <span class="math inline">\(t+1\)</span> is the same as our best prediction of <span class="math inline">\(R_{t+2}\)</span> at <span class="math inline">\(t\)</span>. This is the law of iterated expectation. The inner expectation <span class="math inline">\(\mathbb{E}(R_{t+2}|\mathcal{F}_{t+1})\)</span> is the best prediction of <span class="math inline">\(R_{t+2}\)</span> at <span class="math inline">\(t+1\)</span>, and the outer expectation <span class="math inline">\(\mathbb{E}[\mathbb{E}(R_{t+2}|\mathcal{F}_{t+1})|\mathcal{F}_t]\)</span> is the best prediction of <span class="math inline">\(\mathbb{E}(R_{t+2}|\mathcal{F}_{t+1})\)</span> at <span class="math inline">\(t\)</span>. The law of iterated expectation says that the best prediction of future’s best prediction is the same as today’s best prediction.</p>
+<p>Let’s prove the law of iterated expectation. We have <span class="math display">\[
+\int_A \mathbb{E}[\mathbb{E}[X|\mathcal{G}]|\mathcal{H}](\omega) \, d\mathbb{P}(\omega) = \int_A \mathbb{E}[X|\mathcal{G}](\omega) \, d\mathbb{P}(\omega) \quad \text{for all } A \in \mathcal{H}
+\]</span> By definition of conditional expectation, <span class="math display">\[
+\int_A \mathbb{E}[X|\mathcal{G}](\omega) \, d\mathbb{P}(\omega) = \int_A X(\omega) \, d\mathbb{P}(\omega) \quad \text{for all } A \in \mathcal{G}
+\]</span> Since <span class="math inline">\(\mathcal{H} \subseteq \mathcal{G}\)</span>, <span class="math inline">\(A \in \mathcal{G}\)</span> implies <span class="math inline">\(A \in \mathcal{H}\)</span>. Therefore, the above equation holds for all <span class="math inline">\(A \in \mathcal{H}\)</span>, <span class="math display">\[
+\begin{aligned}
+\int_A \mathbb{E}[X|\mathcal{G}](\omega) \, d\mathbb{P}(\omega)
+&amp;= \int_A X(\omega) \, d\mathbb{P}(\omega) \quad \text{for all } A \in \mathcal{H} \\
+&amp;= \int_A \mathbb{E}[X|\mathcal{H}](\omega) \, d\mathbb{P}(\omega) \quad \text{for all } A \in \mathcal{H}
+\end{aligned}
+\]</span> Plugging this into the first equation, we have <span class="math display">\[
+\mathbb{E}[\mathbb{E}[X|\mathcal{G}]|\mathcal{H}] = \mathbb{E}[X|\mathcal{H}]
+\]</span></p>
+</section>
+<section id="markov-process" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="markov-process"><span class="header-section-number">7.2</span> Markov Process</h2>
+<p>We start with the discrete-time case, where time moves in steps <span class="math inline">\(t=0,1,2,\dots\)</span>. A <strong>discrete-time Markov chain</strong> is a stochastic process whose future depends on the past only through the current state. Once we know where the process is now, the earlier history no longer helps predict the next state.</p>
+<div id="def-discrete-time-markov-chain" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 7.4</strong></span> Let <span class="math inline">\(\{X_t\}_{t=0}^{\infty}\)</span> be a stochastic process taking values in a finite or countable state space <span class="math inline">\(S\)</span>. The process is a <strong>discrete-time Markov chain</strong> if, for all states <span class="math inline">\(i_0,\dots,i_t,j\in S\)</span>, <span class="math display">\[
+\mathbb{P}(X_{t+1}=j\mid X_t=i_t,X_{t-1}=i_{t-1},\dots,X_0=i_0)
+=
+\mathbb{P}(X_{t+1}=j\mid X_t=i_t),
+\]</span> whenever the conditional probability is well-defined.</p>
+</div>
+<p>This is called the <strong>Markov property</strong>. It does not say that the future is independent of the present. It says that the future is conditionally independent of the past once the present is known. In finance, this is a useful modeling simplification: tomorrow’s regime, credit rating, or interest-rate state may depend on today’s state, but not directly on the entire path by which we arrived there.</p>
+<p>If the transition probabilities do not depend on time, the chain is called <strong>time-homogeneous</strong>. In that case, we write <span class="math display">\[
+p_{ij}=\mathbb{P}(X_{t+1}=j\mid X_t=i),
+\]</span> where <span class="math inline">\(p_{ij}\)</span> is the probability of moving from state <span class="math inline">\(i\)</span> to state <span class="math inline">\(j\)</span> in one step. The transition probabilities are collected in the <strong>transition matrix</strong> <span class="math display">\[
+\boldsymbol{P}
+=
+\begin{bmatrix}
+p_{11} &amp; p_{12} &amp; \cdots &amp; p_{1m}\\
+p_{21} &amp; p_{22} &amp; \cdots &amp; p_{2m}\\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots\\
+p_{m1} &amp; p_{m2} &amp; \cdots &amp; p_{mm}
+\end{bmatrix}
+\]</span> when the state space is <span class="math inline">\(S=\{1,\dots,m\}\)</span>. Each row is a probability distribution, so <span class="math display">\[
+p_{ij}\ge 0,
+\qquad
+\sum_{j=1}^m p_{ij}=1
+\quad \text{for each } i.
+\]</span></p>
+<p>Suppose <span class="math inline">\(\boldsymbol{\pi}_t\)</span> is a row vector containing the distribution of <span class="math inline">\(X_t\)</span>: <span class="math display">\[
+\boldsymbol{\pi}_t
+=
+\begin{bmatrix}
+\mathbb{P}(X_t=1) &amp; \cdots &amp; \mathbb{P}(X_t=m)
+\end{bmatrix}.
+\]</span> Then the distribution one step later is <span class="math display">\[
+\boldsymbol{\pi}_{t+1}=\boldsymbol{\pi}_t\boldsymbol{P}.
+\]</span> Iterating forward, <span class="math display">\[
+\boldsymbol{\pi}_{t+n}=\boldsymbol{\pi}_t\boldsymbol{P}^n.
+\]</span> Thus, discrete-time Markov chains turn dynamic probability questions into matrix multiplication.</p>
+<p>The entries of <span class="math inline">\(\boldsymbol{P}^n\)</span> have a direct probabilistic meaning: <span class="math display">\[
+(\boldsymbol{P}^n)_{ij}=\mathbb{P}(X_{t+n}=j\mid X_t=i).
+\]</span> To go from state <span class="math inline">\(i\)</span> to state <span class="math inline">\(j\)</span> in two steps, for example, the chain can pass through any intermediate state <span class="math inline">\(k\)</span>: <span class="math display">\[
+\mathbb{P}(X_{t+2}=j\mid X_t=i)
+=
+\sum_{k\in S}
+\mathbb{P}(X_{t+1}=k\mid X_t=i)
+\mathbb{P}(X_{t+2}=j\mid X_{t+1}=k).
+\]</span></p>
+<p>Another important object is the <strong>stationary distribution</strong>.</p>
+<div id="def-stationary-distribution" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 7.5</strong></span> A probability row vector <span class="math inline">\(\boldsymbol{\pi}\)</span> is a <strong>stationary distribution</strong> for a transition matrix <span class="math inline">\(\boldsymbol{P}\)</span> if <span class="math display">\[
+\boldsymbol{\pi}=\boldsymbol{\pi}\boldsymbol{P}.
+\]</span></p>
+</div>
+<p>If <span class="math inline">\(X_t\)</span> has stationary distribution <span class="math inline">\(\boldsymbol{\pi}\)</span>, then <span class="math display">\[
+\boldsymbol{\pi}_{t+1}=\boldsymbol{\pi}\boldsymbol{P}=\boldsymbol{\pi}.
+\]</span> In other words, once the chain has the stationary distribution, its distribution does not change over time. Algebraically, <span class="math inline">\(\boldsymbol{\pi}\)</span> is a left eigenvector of <span class="math inline">\(\boldsymbol{P}\)</span> with eigenvalue <span class="math inline">\(1\)</span>, normalized so that its entries sum to one.</p>
+<p>The idea of a continuous-time Markov process is exactly the same as in discrete time: conditional on the current state, the past contains no additional information about the future. The difference is that time now moves continuously. Instead of observing the process only at dates <span class="math inline">\(0,1,2,\dots\)</span>, we can observe it at any time <span class="math inline">\(t\ge 0\)</span>.</p>
+<p>Before giving the definition, we need to be careful about notation. Strictly speaking, we have defined <strong>conditional expectation</strong> given a <span class="math inline">\(\sigma\)</span>-algebra, not “conditional probability given a <span class="math inline">\(\sigma\)</span>-algebra” as a new primitive object. The notation <span class="math display">\[
+\mathbb{P}(A\mid \mathcal{G})
+\]</span> means the conditional expectation of the indicator of the event <span class="math inline">\(A\)</span>: <span class="math display">\[
+\mathbb{P}(A\mid \mathcal{G})
+:=
+\mathbb{E}[\mathbf{1}_A\mid \mathcal{G}].
+\]</span> Therefore, <span class="math display">\[
+\mathbb{P}(X_t\in B\mid \mathcal{F}_s)
+\]</span> means <span class="math display">\[
+\mathbb{E}[\mathbf{1}_{\{X_t\in B\}}\mid \mathcal{F}_s].
+\]</span> This is a random variable measurable with respect to <span class="math inline">\(\mathcal{F}_s\)</span>. Similarly, <span class="math display">\[
+\mathbb{P}(X_t\in B\mid X_s)
+\]</span> means <span class="math display">\[
+\mathbb{E}[\mathbf{1}_{\{X_t\in B\}}\mid \sigma(X_s)],
+\]</span> where <span class="math inline">\(\sigma(X_s)\)</span> is the information generated by the current state <span class="math inline">\(X_s\)</span>.</p>
+<div id="def-continuous-time-markov-process" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 7.6</strong></span> A <strong>continuous-time Markov process</strong> <span class="math inline">\(\{X_{t}\}_{t\geq 0}\)</span> is a stochastic process adapted to a filtration <span class="math inline">\(\{\mathcal {F}_t\}_{t\geq 0}\)</span> such that, for all <span class="math inline">\(0 \leq s \leq t\)</span> and every Borel set <span class="math inline">\(B\in\mathcal B(\mathbb R)\)</span>, <span class="math display">\[
+\mathbb{E}[\mathbf{1}_{\{X_t\in B\}}\mid \mathcal{F}_s]
+=
+\mathbb{E}[\mathbf{1}_{\{X_t\in B\}}\mid \sigma(X_s)].
+\]</span> Equivalently, using the shorthand above, <span class="math display">\[
+\mathbb{P}(X_t\in B\mid \mathcal{F}_s)
+=
+\mathbb{P}(X_t\in B\mid X_s).
+\]</span></p>
+</div>
+<p>The definition says that the conditional distribution of the future state <span class="math inline">\(X_t\)</span>, given all information available at time <span class="math inline">\(s\)</span>, depends only on the current state <span class="math inline">\(X_s\)</span>. The full history in <span class="math inline">\(\mathcal{F}_s\)</span> adds no extra predictive information once <span class="math inline">\(X_s\)</span> is known.</p>
+</section>
+<section id="brownian-motion" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="brownian-motion"><span class="header-section-number">7.3</span> Brownian motion</h2>
+<p>Brownian motion is a continuous-time stochastic process that is widely used in finance. It satisfies the Markov property.</p>
+<div id="def-brownian-motion" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 7.7</strong></span> A <strong>standard Brownian motion</strong> (or Wiener process) <span class="math inline">\(\{Z_t\}_{t \ge 0}\)</span> is a process with:</p>
+<ol type="1">
+<li><span class="math inline">\(Z_0 = 0\)</span>;</li>
+<li><strong>independent increments</strong>: for <span class="math inline">\(s &lt; t\)</span>, <span class="math inline">\(Z_t - Z_s\)</span> is independent of the past <span class="math inline">\(\mathcal{F}_s\)</span>;</li>
+<li><strong>normal increments</strong>: <span class="math inline">\(Z_t - Z_s \sim \mathcal{N}(0,\ t - s)\)</span> — variance grows with elapsed time;</li>
+<li><strong>continuous paths</strong>: <span class="math inline">\(Z_t\)</span> is almost surely continuous.</li>
+</ol>
+</div>
+<p>The first three properties are the defining features of Brownian motion. The fourth property is a technical condition that ensures the process has no jumps, but we will not explain it in detail here.</p>
+<p>We can prove the Markov property of Brownian motion using the definition. Let <span class="math inline">\(B\)</span> be a Borel set. Remember that the conditional probability notation below means conditional expectation of an indicator. For <span class="math inline">\(s &lt; t\)</span>, we have <span class="math display">\[
+\mathbb{E}(\mathbf{1}_{\{Z_t \in B\}} \mid \mathcal{F}_s) = \mathbb{E}(\mathbf{1}_{\{Z_t - Z_s + Z_s \in B\}} \mid \mathcal{F}_s).
+\]</span> Since <span class="math inline">\(Z_t - Z_s\)</span> is independent of <span class="math inline">\(\mathcal{F}_s\)</span> and <span class="math inline">\(Z_s\)</span> is <span class="math inline">\(\mathcal{F}_s\)</span>-measurable, the conditional distribution of <span class="math inline">\(Z_t-Z_s+Z_s\)</span> given <span class="math inline">\(\mathcal{F}_s\)</span> depends on <span class="math inline">\(\mathcal{F}_s\)</span> only through the known value of <span class="math inline">\(Z_s\)</span>. Therefore, <span class="math display">\[
+\mathbb{E}(\mathbf{1}_{\{Z_t \in B\}} \mid \mathcal{F}_s) = \mathbb{E}(\mathbf{1}_{\{Z_t - Z_s + Z_s \in B\}} \mid \sigma(Z_s)) = \mathbb{E}(\mathbf{1}_{\{Z_t \in B\}} \mid Z_s).
+\]</span></p>
+<div id="cell-fig-brownian-motion" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">1</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>T, n_steps, n_paths <span class="op">=</span> <span class="fl">1.0</span>, <span class="dv">500</span>, <span class="dv">6</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>dt <span class="op">=</span> T <span class="op">/</span> n_steps</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> np.linspace(<span class="dv">0</span>, T, n_steps <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># increments ~ N(0, dt); cumulative sum gives the paths</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>dW <span class="op">=</span> rng.normal(<span class="dv">0</span>, np.sqrt(dt), size<span class="op">=</span>(n_paths, n_steps))</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>Z <span class="op">=</span> np.concatenate([np.zeros((n_paths, <span class="dv">1</span>)), np.cumsum(dW, axis<span class="op">=</span><span class="dv">1</span>)], axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="fl">3.8</span>))</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> path <span class="kw">in</span> Z:</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    ax.plot(t, path, lw<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>ax.axhline(<span class="dv">0</span>, color<span class="op">=</span><span class="st">"0.7"</span>, lw<span class="op">=</span><span class="fl">0.8</span>)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># +/- one standard deviation band, sd = sqrt(t)</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>ax.plot(t, <span class="dv">2</span><span class="op">*</span>np.sqrt(t), <span class="st">"-"</span>, lw<span class="op">=</span><span class="dv">1</span>, label<span class="op">=</span><span class="vs">r"</span><span class="dv">$</span><span class="er">\</span><span class="vs">pm2</span><span class="dv">\s</span><span class="vs">qrt{t}</span><span class="dv">$</span><span class="vs">"</span>, color<span class="op">=</span><span class="st">'black'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>ax.plot(t, <span class="op">-</span><span class="dv">2</span><span class="op">*</span>np.sqrt(t), <span class="st">"-"</span>, lw<span class="op">=</span><span class="dv">1</span>, color<span class="op">=</span><span class="st">'black'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="vs">r"</span><span class="dv">$</span><span class="vs">t</span><span class="dv">$</span><span class="vs">"</span>)<span class="op">;</span> ax.set_ylabel(<span class="vs">r"</span><span class="dv">$</span><span class="vs">Z_t</span><span class="dv">\s</span><span class="vs">im</span><span class="dv">\m</span><span class="vs">athcal{N}</span><span class="kw">(</span><span class="vs">0,t</span><span class="kw">)</span><span class="dv">$</span><span class="vs">"</span>)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>ax.legend(loc<span class="op">=</span><span class="st">"upper left"</span>)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-brownian-motion" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" width="602" height="341">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-brownian-motion-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="continuous-time_files/figure-html/fig-brownian-motion-output-1.png" id="fig-brownian-motion" class="quarto-figure quarto-figure-center anchored figure-img" width="602" height="341">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-brownian-motion-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7.1
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="exm-brownian-motion-moments" class="theorem example">
+<p><span class="theorem-title"><strong>Example 7.2</strong></span> Calculate the following two moments of Brownian motion <span class="math inline">\(Z_t\)</span>:</p>
+<ol type="1">
+<li><span class="math inline">\(\mathbb{E}[Z_t - Z_s]\)</span>, where <span class="math inline">\(s &lt; t\)</span></li>
+<li><span class="math inline">\(\mathbb{E}[(Z_t - Z_s)^2]\)</span>, where <span class="math inline">\(s &lt; t\)</span></li>
+</ol>
+We use the definition <span class="math display">\[Z_t - Z_s \sim \mathcal{N}(0, t-s)$. The first moment is the mean of the normal distribution, and the second moment is the variance of the normal distribution.
+\]</span>
+<span class="math display">\[\begin{aligned}
+\mathbb{E}[Z_t - Z_s] &amp;= 0 \\
+\mathbb{E}[(Z_t - Z_s)^2] &amp;= t - s
+\end{aligned}\]</span>
+<p>$$</p>
+</div>
+<div id="exm-brownian-motion-quadratic-variation" class="theorem example">
+<p><span class="theorem-title"><strong>Example 7.3</strong></span> Calculate the <strong>quadratic variation</strong> of <span class="math inline">\(Z_t\)</span> over the interval <span class="math inline">\([0,T]\)</span>. <span class="math display">\[
+[Z]_T = \lim_{n \to \infty} \sum_{i=0}^{n-1} (Z_{t_{i+1}} - Z_{t_i})^2
+\]</span> where <span class="math inline">\(0 = t_0 &lt; t_1 &lt; \dots &lt; t_n = T\)</span> is a partition of the interval <span class="math inline">\([0,T]\)</span>. <span class="math inline">\(n\to\infty\)</span> means that the partition becomes finer and finer.</p>
+<p>It is beyond the scope of this course to rigorously calculate the quadratic variation of Brownian motion. Instead, we calculate it by assuming that the partition is uniform, i.e.&nbsp;<span class="math inline">\(t_i = \frac{i}{n}T\)</span>, so <span class="math inline">\(t_{i+1} - t_i = \frac{T}{n}\)</span>. Then we use the law of large numbers. Using the definition of Brownian motion, we have <span class="math display">\[
+(Z_{t_{i+1}} - Z_{t_i}) \sim \mathcal{N}(0, t_{i+1} - t_i).
+\]</span> By uniform partition, we have <span class="math inline">\(t_{i+1} - t_i = \frac{T}{n}\)</span>. Therefore, we can write <span class="math display">\[
+(Z_{t_{i+1}} - Z_{t_i})^2 = \frac{T}{n} \left(\frac{Z_{t_{i+1}} - Z_{t_i}}{\sqrt{T/n}}\right)^2
+\]</span> Denote <span class="math inline">\(Y_i = \frac{Z_{t_{i+1}} - Z_{t_i}}{\sqrt{T/n}}\)</span>. We have <span class="math inline">\(Y_i \sim \mathcal{N}(0, 1)\)</span> and <span class="math inline">\(Y_i\)</span> are independent for different <span class="math inline">\(i\)</span> because of the independent increments property of Brownian motion. Therefore, we can write <span class="math display">\[
+\sum_{i=0}^{n-1} (Z_{t_{i+1}} - Z_{t_i})^2 = T \left(\frac{1}{n} \sum_{i=0}^{n-1} Y_i^2\right)
+\]</span> By the law of large numbers, <span class="math display">\[
+\lim_{n \to \infty} \frac{1}{n} \sum_{i=0}^{n-1} Y_i^2 \to \mathbb{E}[Y_i^2] = 1.
+\]</span> Therefore, we have <span class="math display">\[
+[Z]_T = \lim_{n \to \infty} \sum_{i=0}^{n-1} (Z_{t_{i+1}} - Z_{t_i})^2 = T.
+\]</span></p>
+</div>
+<p>The above example is a very important result in stochastic calculus. In an informal way, we write <span class="math display">\[
+(dZ_t)^2 = dt
+\]</span> This result is used in the derivation of Itô’s lemma, which is a fundamental result in stochastic calculus.</p>
+</section>
+<section id="ito-integral" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="ito-integral"><span class="header-section-number">7.4</span> It^{o} Integral</h2>
+<p>In this section, we briefly introduce the Itô integral in an intuitive way. In basic calculus, we define the integral of a function <span class="math inline">\(f(z)\)</span> over an interval <span class="math inline">\([0,T]\)</span> as the limit of a Riemann sum: <span class="math display">\[
+\int_0^T f(z) dz
+\]</span> where <span class="math inline">\(f(z)\)</span> is a deterministic function and <span class="math inline">\(z\)</span> is a deterministic variable. In stochastic calculus, we want to define the integral of a stochastic process <span class="math inline">\(X_t\)</span> with respect to a Brownian motion <span class="math inline">\(Z_t\)</span> over an interval <span class="math inline">\([0,T]\)</span>: <span class="math display">\[
+\int_0^T X_t dZ_t
+\]</span> The Itô integral is one of the most important concepts in stochastic calculus. It is the continuous-time analog of the discrete-time sum <span class="math display">\[
+\sum_{t=0}^{T-1} X_t (Z_{t+1}-Z_t),
+\]</span> Where <span class="math inline">\(X_t\)</span> is an adapted process and <span class="math inline">\(Z_t\)</span> is a Brownian motion. The intuitive idea is keeping <span class="math inline">\(X_t\)</span> constant over the interval <span class="math inline">\([t, t+1]\)</span> and multiplying it by the increment of Brownian motion <span class="math inline">\(Z_{t+1}-Z_t\)</span>.</p>
+<!-- Now we consider the derivative of $f(Z_t)$ with respect to $t$. In basic calculus, we have
+$$
+\frac{df(Z_t)}{dt} = \frac{df(Z_t)}{dZ_t} \frac{dZ_t}{dt} = f'(Z_t) \frac{dZ_t}{dt}
+$$
+However, as we have seen in @exm-brownian-motion-quadratic-variation, $(dZ_t)^2 = dt$, the second order term is not negligible. 
+$$
+\frac{df(Z_t)}{dt} = \frac{df(Z_t)}{dZ_t} \frac{dZ_t}{dt} + \frac{1}{2} \frac{d^2f(Z_t)}{dZ_t^2} \frac{(dZ_t)^2}{dt} = f'(Z_t) \frac{dZ_t}{dt} + \frac{1}{2} f''(Z_t)
+$$ -->
+
+
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
