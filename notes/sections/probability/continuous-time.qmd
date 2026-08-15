@@ -369,7 +369,7 @@ $$
 $$
 This result is used in the derivation of Itô's lemma, which is a fundamental result in stochastic calculus.
 
-## It\^{o} Integral
+## Itô Integral
 
 In this section, we briefly introduce the Itô integral in an intuitive way. In basic calculus, we define the integral of a function $f(z)$ over an interval $[0,T]$ as the limit of a Riemann sum:
 $$
@@ -385,11 +385,240 @@ $$
 $$ 
 Where $X_t$ is an adapted process and $Z_t$ is a Brownian motion. The intuitive idea is keeping $X_t$ constant over the interval $[t, t+1]$ and multiplying it by the increment of Brownian motion $Z_{t+1}-Z_t$.
 
-<!-- Now we consider the derivative of $f(Z_t)$ with respect to $t$. In basic calculus, we have
+Now we consider the derivative of $f(Z_t)$ with respect to $Z_t$. In basic calculus, we have
 $$
-\frac{df(Z_t)}{dt} = \frac{df(Z_t)}{dZ_t} \frac{dZ_t}{dt} = f'(Z_t) \frac{dZ_t}{dt}
+df(Z_t) = f'(Z_t) dZ_t
 $$
 However, as we have seen in @exm-brownian-motion-quadratic-variation, $(dZ_t)^2 = dt$, the second order term is not negligible. 
 $$
-\frac{df(Z_t)}{dt} = \frac{df(Z_t)}{dZ_t} \frac{dZ_t}{dt} + \frac{1}{2} \frac{d^2f(Z_t)}{dZ_t^2} \frac{(dZ_t)^2}{dt} = f'(Z_t) \frac{dZ_t}{dt} + \frac{1}{2} f''(Z_t)
-$$ -->
+df(Z_t) = f'(Z_t) dZ_t + \frac{1}{2} f''(Z_t) (dZ_t)^2 = f'(Z_t) dZ_t + \frac{1}{2} f''(Z_t) dt
+$$
+
+::: {#def-ito-lemma}
+Let $f(t, Z_t)$ be a twice continuously differentiable function of $t$ and $Z_t$. Then the differential of $f(t, Z_t)$ is given by  
+$$
+df(t, Z_t) = \frac{\partial f}{\partial t} dt + \frac{\partial f}{\partial Z_t} dZ_t + \frac{1}{2} \frac{\partial^2 f}{\partial Z_t^2} dt
+$$
+:::
+
+Note that we will not rigorously define "$dZ_t$". The only thing you need to remember is 
+$$
+(dZ_t)^2 = dt 
+$$
+and take the second order term into account when calculating the differential of a function of $Z_t$.
+
+::: {#exm-geometric-brownian-motion}
+Let $S_t$ be the price of a stock at time $t$, and let $Z_t$ be a standard Brownian motion. Then the process $S_t$ is said to follow a geometric Brownian motion if it satisfies the stochastic differential equation
+$$
+dS_t = \mu S_t dt + \sigma S_t dZ_t,
+$$
+where $\mu$ and $\sigma$ are constants.
+
+Question: What is the solution of $S_T$? What is the expected value of $S_T$?
+
+Let's apply Itô's lemma to $f(t, Z_t) = \ln S_t$. We have
+$$
+\begin{aligned}
+d\ln S_t &= \frac{1}{S_t} dS_t - \frac{1}{2} \frac{1}{S_t^2} (dS_t)^2 \\
+&= \frac{1}{S_t} (\mu S_t dt + \sigma S_t dZ_t) - \frac{1}{2} \frac{1}{S_t^2} (\sigma S_t dZ_t)^2 \\
+&= \mu dt + \sigma dZ_t - \frac{1}{2} \sigma^2 dt \\
+&= (\mu - \frac{1}{2} \sigma^2) dt + \sigma dZ_t
+\end{aligned}
+$$
+Take the integral on both sides, we have
+$$
+\begin{aligned}
+\int_0^T d\ln S_t &= \int_0^T (\mu - \frac{1}{2} \sigma^2) dt + \int_0^T \sigma dZ_t \\
+\ln S_t \big|_0^T &= (\mu - \frac{1}{2} \sigma^2) T + \sigma Z_T \\
+\ln S_T &= \ln S_0 + (\mu - \frac{1}{2} \sigma^2) T + \sigma Z_T
+\end{aligned}
+$$
+Therefore,
+$$
+S_T = S_0 e^{(\mu - \frac{1}{2} \sigma^2) T + \sigma Z_T}
+$$
+
+To find the expected value of $S_T$, we note that the distribution of $S_T$ is lognormal as $Z_T \sim \mathcal{N}(0, T)$. Therefore, we have
+$$
+\mathbb{E}[S_T] = S_0 e^{(\mu - \frac{1}{2} \sigma^2) T} \mathbb{E}[e^{\sigma Z_T}] = S_0 e^{(\mu - \frac{1}{2} \sigma^2) T} e^{\frac{1}{2} \sigma^2 T} = S_0 e^{\mu T}
+$$
+:::
+
+## No Arbitrage
+In @sec-finance-basic-knowledge, we have introduced the concept of no arbitrage and binomial tree model. In binomial tree model, we have 2 states in each period. In continuous time, we can have infinite states in each period. 
+
+Let's consider the following example. In the world, we only one shock $Z_t$. Suppose we have a stock following a geometric Brownian motion 
+$$
+dS_t = \mu S_t dt + \sigma S_t dZ_t
+$$
+and a risk-free bond following
+$$
+dB_t = r B_t dt
+$$
+Now we consider a third security. Since there's only one shock $Z_t$ in the world, the third security must be a function of $Z_t$. Therefore, we can write
+$$
+dP_t = f(t, P_t) dt + g(t, P_t) dZ_t
+$$
+where $f$ and $g$ are some functions. 
+
+By no arbitrage, if $g(t, P_t) = \sigma P_t$, then 
+$$
+f(t, P_t) = \mu P_t. 
+$$
+Otherwise, if $f(t, P_t) > \mu P_t$, we can arbitrage by shorting the stock and longing the third security. 
+
+The key difference between discrete time and continuous time is that in discrete time, we replicate payoffs in one period. In continuous time, we replicate payoffs in period of $dt$.
+
+Let's consider to replicate the third security by the stock and the bond. We can buy $\Delta_t$ shares of the stock such that 
+$$
+\Delta_t S_t = g(t, P_t)
+$$
+
+
+
+In @sec-finance-basic-knowledge, we introduced the concepts of no arbitrage and the binomial tree model. In the binomial tree model, there are two possible states in each period. In continuous time, uncertainty can instead have a continuum of possible realizations.
+
+Let's consider the following example. Suppose that there is only one source of uncertainty in the economy, represented by a Brownian motion $Z_t$. We have a stock whose price follows a geometric Brownian motion,
+$$
+dS_t=\mu S_t\,dt+\sigma S_t\,dZ_t,
+$$
+and a risk-free bond satisfying
+$$
+dB_t=rB_t\,dt.
+$$
+Now consider a third security with price $P_t$. Since all uncertainty in the economy is generated by $Z_t$, suppose that $P_t$ follows an Itô process driven by the same Brownian motion:
+$$
+dP_t=f(t,P_t)\,dt+g(t,P_t)\,dZ_t,
+$$
+where $f$ and $g$ are some functions.
+
+Applying the same idea as in the binomial tree model, we want to construct a portfolio of the stock and the risk-free bond that replicates the third security. The difference is that in the binomial tree model we match payoffs across states one period later, whereas in continuous time we match the security's value and risk exposure over an infinitesimal interval $dt$.
+
+Let $\Delta_t$ denote the number of shares of stock and let $\beta_t$ denote the number of units of the risk-free bond. The value of the replicating portfolio is
+$$
+V_t=\Delta_tS_t+\beta_tB_t.
+$$
+Its change in value is
+$$
+dV_t=\Delta_t\,dS_t+\beta_t\,dB_t.
+$$
+Substituting the dynamics of $S_t$ and $B_t$,
+$$
+dV_t = \Delta_t(\mu S_t\,dt+\sigma S_t\,dZ_t)+\beta_t rB_t\,dt =
+\left(\Delta_t\mu S_t+r\beta_tB_t\right)dt+\Delta_t\sigma S_t\,dZ_t.
+$$
+To replicate $P_t$, we first need the portfolio to have the same current value:
+$$
+V_t=P_t \qquad\text{or equivalently,}\qquad \Delta_tS_t+\beta_tB_t=P_t.
+$$
+Second, the portfolio must have the same exposure to the Brownian shock $dZ_t$. Hence,
+$$
+\Delta_t\sigma S_t=g(t,P_t).
+$$
+This determines the stock position:
+$$
+\Delta_t=\frac{g(t,P_t)}{\sigma S_t}.
+$$
+Rearranging the value-matching condition, we can solve for the bond position:
+$$
+\beta_tB_t=P_t-\Delta_tS_t=P_t-\frac{g(t,P_t)}{\sigma}.
+$$
+Now consider the drift of this replicating portfolio. Substituting these positions into $dV_t$, we obtain
+$$
+\begin{aligned}
+dV_t
+&=\left[\Delta_t\mu S_t+r\beta_tB_t\right]dt + g(t,P_t)dZ_t\\
+&=\left[\frac{\mu}{\sigma}g(t,P_t)+r\left(P_t-\frac{g(t,P_t)}{\sigma}\right)\right]dt + g(t,P_t)dZ_t\\
+&=\left[rP_t+\frac{\mu-r}{\sigma}g(t,P_t)\right]dt + g(t,P_t)dZ_t.
+\end{aligned}
+$$
+Now compare this with the dynamics of the third security:
+$$
+dP_t=f(t,P_t)\,dt+g(t,P_t)\,dZ_t.
+$$
+Since $V_t=P_t$ and the two securities have exactly the same exposure to the only source of shock $dZ_t$, no arbitrage requires their drifts to be the same as well. Therefore,
+$$
+f(t,P_t)=rP_t+\frac{\mu-r}{\sigma}g(t,P_t).
+$$
+The term $\frac{\mu-r}{\sigma}$ is called the **price of risk**. We are more familar with its other name -- **Sharpe ratio**. This equation is important. The functions $f$ and $g$ cannot be chosen independently. Once the security's exposure $g(t,P_t)$ to the aggregate Brownian shock is given, no arbitrage determines its expected return $f(t,P_t)$.
+
+::: {#exm-sdf}
+Define another geometric Brownian motion
+$$
+d\Lambda_t = -r\Lambda_t\,dt-\frac{\mu-r}{\sigma}\Lambda_t\,dZ_t.
+$$
+What is $\mathbb{E}(d(\Lambda_tP_t))$?
+
+Applying Itô's lemma (taking both the first and second derivatives), we have
+$$
+d(\Lambda_tP_t) = \Lambda_t\,dP_t + \frac{1}{2} d\Lambda_t\,dP_t + P_t\,d\Lambda_t + \frac{1}{2} dP_t\,d\Lambda_t = \Lambda_t\,dP_t + P_t\,d\Lambda_t + d\Lambda_t\,dP_t
+$$
+We compute the terms one by one. The first term is
+$$
+\begin{aligned}
+\Lambda_t\,dP_t 
+&= \Lambda_t\left(f(t,P_t)\,dt+g(t,P_t)\,dZ_t\right) \\
+&= \Lambda_t f(t,P_t)\,dt + \Lambda_t g(t,P_t)\,dZ_t
+\end{aligned}
+$$
+The second term is
+$$
+\begin{aligned}
+P_t\,d\Lambda_t 
+&= P_t\left(-r\Lambda_t\,dt-\frac{\mu-r}{\sigma}\Lambda_t\,dZ_t\right) \\
+&= -rP_t\Lambda_t\,dt-\frac{\mu-r}{\sigma}P_t\Lambda_t\,dZ_t
+\end{aligned}
+$$
+The third term is
+$$
+\begin{aligned}
+d\Lambda_t\,dP_t 
+&= \left(-r\Lambda_t\,dt-\frac{\mu-r}{\sigma}\Lambda_t\,dZ_t\right)\left(f(t,P_t)\,dt+g(t,P_t)\,dZ_t\right)\\
+&= -\frac{\mu-r}{\sigma}\Lambda_t g(t,P_t)\,dt
+\end{aligned}
+$$
+The second equality follows from the fact that $(dt)^2=0$, $dt\,dZ_t=0$, and $(dZ_t)^2=dt$. Therefore, we have
+$$
+d(\Lambda_tP_t) = \Lambda_t f(t,P_t)\,dt + \Lambda_t g(t,P_t)\,dZ_t -rP_t\Lambda_t\,dt-\frac{\mu-r}{\sigma}P_t\Lambda_t\,dZ_t -\frac{\mu-r}{\sigma}\Lambda_t g(t,P_t)\,dt
+$$
+As $dZ_t\sim\mathcal{N}(0,dt)$, we have $\mathbb{E}(dZ_t)=0$. Therefore, taking expectation on both sides, we have
+$$
+\mathbb{E}[d(\Lambda_tP_t)] = \Lambda_t\left[f(t,P_t)-rP_t-\frac{\mu-r}{\sigma}g(t,P_t)\right]dt
+$$
+Recall that by no arbitrage, we have $f(t,P_t)=rP_t+\frac{\mu-r}{\sigma}g(t,P_t)$. Therefore, we have 
+$$
+\mathbb{E}[d(\Lambda_tP_t)] = 0
+$$
+:::
+
+The above example shows that a fairly priced security satisfies the following property: 
+$$
+\mathbb{E}[d(\Lambda_tP_t)] = 0
+$$
+where 
+$$
+\frac{d\Lambda_t}{\Lambda_t} = -r\,dt-\frac{\mu-r}{\sigma}\,dZ_t
+$$
+
+::: {#exm-risk-neutral-measure}
+Define a new Brownian motion $Z_t^{\mathbb Q}$ by
+$$
+dZ_t^{\mathbb Q} = dZ_t + \frac{\mu-r}{\sigma}\,dt
+$$
+What is the dynamics of $P_t$ under the new Brownian motion $Z_t^{\mathbb Q}$?
+
+Plugging in $dZ_t = dZ_t^{\mathbb Q} - \frac{\mu-r}{\sigma}\,dt$ into the dynamics of $P_t$, we have
+$$
+\begin{aligned}
+dP_t &= f(t,P_t)\,dt + g(t,P_t)\,dZ_t \\
+&= f(t,P_t)\,dt + g(t,P_t)\left(dZ_t^{\mathbb Q} - \frac{\mu-r}{\sigma}\,dt\right) \\
+&= \left[f(t,P_t) - \frac{\mu-r}{\sigma}g(t,P_t)\right]dt + g(t,P_t)\,dZ_t^{\mathbb Q}
+\end{aligned}
+$$
+By no arbitrage, we have $f(t,P_t) = rP_t + \frac{\mu-r}{\sigma}g(t,P_t)$. Therefore, we have
+$$
+dP_t = rP_t\,dt + g(t,P_t)\,dZ_t^{\mathbb Q}
+$$
+:::
+
+The above example shows that under the new Brownian motion $Z_t^{\mathbb Q}$, the expected return of the security is equal to the risk-free rate. 

@@ -606,69 +606,6 @@ r_{t:t+2}&=\log\left(\frac{S_{t+2}}{S_t}\right) \\
 \end{aligned}
 $$
 
-::: {#exm-future-pricing}
-Suppose the current gold price is $S_0$. The log risk-free rate is $r^f$. Without any market frictions, by no arbitrage, the future price of gold at time excercise at $T$ is
-$$
-F = S_0 e^{r^f T}.
-$$
-
-```{python}
-#| fig-align: center
-import matplotlib.pyplot as plt
-from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
-
-# Create a clean diagram that can be pasted into Quarto/Python workflows
-fig, ax = plt.subplots(figsize=(6, 4))
-ax.set_xlim(0, 6)
-ax.set_ylim(0, 4)
-ax.axis("off")
-
-# Box settings
-box_w, box_h = 1, 1
-left_x, right_x = 0.1, 4.9
-top_y, bottom_y = 2.9, 0.1
-
-def add_box(x, y, label):
-    box = FancyBboxPatch(
-        (x, y), box_w, box_h,
-        boxstyle="round,pad=0.02",
-        linewidth=2,
-        facecolor="white",
-        edgecolor="black"
-    )
-    ax.add_patch(box)
-    ax.text(x + box_w/2, y + box_h/2, label,
-            ha="center", va="center", fontsize=14)
-
-add_box(left_x, top_y, "$S_0$")
-add_box(right_x, top_y, "$S_0 e^{r^f T}$")
-add_box(left_x, bottom_y, "1 unit\n gold")
-add_box(right_x, bottom_y, "1 unit\n gold")
-
-def connect(p1, p2, text, text_offset=(0, 0)):
-    arrow = FancyArrowPatch(
-        p1, p2,
-        arrowstyle="->",
-        mutation_scale=18,
-        linewidth=2,
-        color="black"
-    )
-    ax.add_patch(arrow)
-    mx = (p1[0] + p2[0]) / 2 + text_offset[0]
-    my = (p1[1] + p2[1]) / 2 + text_offset[1]
-    ax.text(mx, my, text, ha="center", va="center", fontsize=14)
-
-# Horizontal and vertical connections
-connect((left_x + box_w, top_y + box_h/2), (right_x, top_y + box_h/2), r"Save at $r^f$", (0, 0.2))
-connect((left_x + box_w, bottom_y + box_h/2), (right_x, bottom_y + box_h/2), r"Hold for $T$", (0, 0.2))
-connect((left_x + box_w/2, top_y), (left_x + box_w/2, bottom_y + box_h), r"$-S_0$", (-0.4, 0))
-connect((right_x + box_w/2, bottom_y + box_h), (right_x + box_w/2, top_y), r"$+F$", (0.35, 0))
-
-plt.tight_layout()
-plt.show()
-```
-:::
-
 ::: {#exm-option}
 Suppose the current stock price is $S_{t}$. The log risk-free rate is $r^f$. A European call option with strike price $K$ and maturity $t+1$ gives the holder the right to buy one share of stock at time $t+1$ for price $K$. The payoff of the option at maturity is
 $$

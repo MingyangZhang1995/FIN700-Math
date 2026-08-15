@@ -9,6 +9,9 @@ book:
   repo-url: https://github.com/MingyangZhang1995/FIN700-Math
   chapters:
     - index.qmd
+    - part: "Basic Knowledge in Finance"
+      chapters:
+        - notes/sections/finance/basic-knowledge.qmd
     - part: "Linear Algebra"
       chapters:
         - notes/sections/linear-algebra/vectors.qmd
@@ -23,6 +26,7 @@ book:
     - part: "Statistics"
       chapters:
         - notes/sections/statistics/introduction.qmd
+
 
 bibliography: references.bib
 

@@ -1,0 +1,541 @@
+# Basic Knowledge in Finance {#sec-finance-basic-knowledge}
+
+Before we dive into the details of financial instruments and markets, it is important to understand some basic concepts in finance. Suppose $S_t$ is the price of a stock at time $t$, and $S_{t+1}$ is the price at time $t+1$. 
+
+1. **Total return**: $\frac{S_{t+1}-S_t}{S_t}$
+2. **Net return**: $\frac{S_{t+1}-S_t}{S_t} - 1$
+3. **Log return**: $\ln\frac{S_{t+1}}{S_t}$
+
+In finance research, total return and log return are more commonly used than net return. In fixed income, net return is also commonly used especially in textbooks.
+
+## Fixed Income
+
+### APR and EAR
+**APR** (Annual Percentage Rate) is the annualized return without compounding. **EAR** (Effective Annual Rate) is the annualized return with compounding. For example, if the bank states an APR of 12%. With monthly compounding, the EAR is $(1+0.12/12)^{12}-1 \approx 12.68\%$. With continuous compounding (paying interest at every instant), the EAR is $\lim_{n\to\infty}(1+0.12/n)^n-1 = e^{0.12}-1 \approx 12.75\%$. The equation 
+$$
+\lim_{n\to\infty}(1+r/n)^n = e^r
+$$
+is one of the definition of $e$.
+
+The **present value (PV)** of a future cash flow is the amount that cash flow is worth today, given an appropriate discount rate. For deterministic cash flows $CF_{t_i}$ paid at dates $t_i$, the value is
+$$
+\begin{aligned}
+PV &= \sum_{i=1}^n \frac{CF_{t_i}}{(1+r_{t_i})^{t_i}} \qquad \text{(for discrete compounding $r_{t_i}$)} \\
+PV &= \sum_{i=1}^n CF_{t_i} e^{-r_{t_i} t_i} \qquad \text{(for continuous compounding $r_{t_i}$)}
+\end{aligned}
+$$
+
+
+### Bonds, Annuities, and Perpetuities
+```{python}
+#| fig-align: center
+#| label: fig-cashflow-plot
+import matplotlib.pyplot as plt
+import numpy as np
+
+def cashflow_chart(ax, cashflows, labels):
+    """
+    cashflows: list or array of cash flow values
+               cashflows[0] is at t=0, cashflows[1] at t=1, etc.
+    """
+    t = np.arange(len(cashflows))
+
+    # Horizontal axis (t) and vertical axis (F)
+    ax.axhline(0, color='black', linewidth=1.5)
+
+    # Arrows for cash flows
+    for ti, Fi, label in zip(t, cashflows, labels):
+        ax.annotate(
+            '',
+            xy=(ti, Fi),
+            xytext=(ti, 0),
+            arrowprops=dict(arrowstyle='-|>', linewidth=2, color='black')
+        )
+        ax.text(ti, Fi + 0.05 * max(1, max(abs(np.array(cashflows)))), label, fontsize=12, ha='center', va='bottom')
+      
+
+    # Ticks and labels
+    ax.set_xticks(t)
+    ax.set_xticklabels([str(i) for i in t])
+    ax.set_yticks([])
+
+    # Axis labels only
+    ax.text(len(cashflows) - 1 + 0.25, -0.05 * max(1, max(abs(np.array(cashflows)))),
+            't', fontsize=14, ha='left', va='top')
+
+    # Clean up
+    ax.set_xlim(0., len(cashflows) - 0.5)
+    y_margin = max(1, max(abs(np.array(cashflows)))) * 0.3
+    ax.set_ylim(min(0, min(cashflows)) - y_margin, max(0, max(cashflows)) + y_margin)
+    ax.spines[['top', 'right', 'left', 'bottom']].set_visible(False)
+    ax.spines['bottom'].set_position('zero')
+
+# Example: F0 positive, later cash flows negative
+fig, axs = plt.subplots(4, 1, figsize=(5, 8))
+cashflows = [0, 5, 5, 5, 15]
+labels = ['', 'C', 'C', 'C', 'C+F']
+cashflow_chart(ax=axs[0], cashflows=cashflows, labels= labels)
+axs[0].set_title('Coupon Bond', fontsize=14)
+
+cashflows = [0, 0, 0, 0, 10]
+labels = ['', '', '', '', 'F']
+cashflow_chart(ax=axs[1], cashflows=cashflows, labels= labels)
+axs[1].set_title('Zero-Coupon Bond', fontsize=14)
+
+cashflows = [0, 8, 8, 8, 8]
+labels = ['', 'C', 'C', 'C', 'C']
+cashflow_chart(ax=axs[2], cashflows=cashflows, labels= labels)
+axs[2].set_title('Annuity', fontsize=14)
+
+cashflows = [0, 8, 8, 8, 0]
+labels = ['', 'C', 'C', 'C', '']
+cashflow_chart(ax=axs[3], cashflows=cashflows, labels= labels)
+# plot "..." to indicate continuation of cash flows
+axs[3].annotate('...', xy=(4, 4), xytext=(4, 4), fontsize=30, ha='center', va='bottom')
+axs[3].set_title('Perpetuity', fontsize=14)
+
+plt.tight_layout()
+plt.show()
+```
+
+A **coupon bond** pays periodic coupon payments and returns its face value (or principal) at maturity. If the coupon payment is $C$, the face value is $F$, and the maturity is $n$ periods away, assuming a constant per-period discount rate of $r$, the price of the bond is
+$$
+P = \sum_{k=1}^{n} \frac{C}{(1+r)^k} + \frac{F}{(1+r)^n}
+$$
+Coupon payments are often expressed as a percentage of the face value, called the **coupon rate**. For example, a bond with a face value of 1000 and a coupon payment of 50 per year has a coupon rate of 5\%. Note that the coupon price is not necessarily equal to the market interest rate, so the bond may trade at a premium or discount to its face value. 
+
+A **zero-coupon bond** makes only the maturity payment, so its price is 
+$$
+P=\frac{F}{(1+r)^{n}}
+$$
+
+A finite stream of equal payments is an **annuity**; an infinite stream of equal payments is a **perpetuity**. For a perpetuity with payment $C$ each period and a constant per-period discount rate $r$, its value is $C/r$. This can be derived from the geometric series formula.
+$$
+P = \sum_{k=1}^{\infty} \frac{C}{(1+r)^k} = C \sum_{k=1}^{\infty} \left(\frac{1}{1+r}\right)^k = C \frac{1/(1+r)}{1-1/(1+r)} = \frac{C}{r}
+$$
+
+As we have seen, the price of a bond is a function of discount rates. *When the discount rate raises, the bond price falls, and vice versa.*
+
+US federal government bonds are often referred to as **Treasuries**. Treasury bills (T-bills) are zero-coupon bonds with maturities of one year or less. Treasury notes (T-notes) have maturities of 2 to 10 years, and Treasury bonds (T-bonds) have maturities of 20 to 30 years. Treasuries pay coupons semiannually. For example, a 10-year Treasury note with a face value of \$1000 and a coupon rate of 5\% pays \$25 every six months for 10 years, and \$1000 at maturity. 
+
+### Yield to maturity, spot rates, forward rates, and the yield curve
+
+The **yield to maturity (YTM)** is the single discount rate that makes the present value of a bond's promised cash flows equal to its market price. Suppose a bond has price $P$, coupon $C$, face value $F$, and maturity $n$. Its YTM $y$ satisfies
+$$
+P = \sum_{k=1}^{n} \frac{C}{(1+y)^k} + \frac{F}{(1+y)^n}
+$$
+
+The **yield curve** plots interest rates against maturity. Its shape summarizes the market's term structure of interest rates and may be upward sloping, flat, or inverted. Here's the [US Treasury yield curve](https://www.ustreasuryyieldcurve.com/#google_vignette)
+
+In general, we do not have a closed-form solution for $y$, so it is usually solved numerically. A common numerical method is the Newton-Raphson method, which iteratively updates the estimate of $y$ using
+$$
+y_{k+1} = y_k - \frac{f(y_k)}{f'(y_k)}
+$$
+where $f(y) = \sum_{k=1}^{n} \frac{C}{(1+y)^k} + \frac{F}{(1+y)^n} - P$ and $f'(y)$ is its derivative with respect to $y$. 
+![Newton-Raphson Method](NewtonIteration_Ani.gif){fig-align="center"}
+
+In the below example, we use the Newton-Raphson method to find the YTM of a bond with a market price of \$900, a coupon of \$50, a face value of \$1000, and a maturity of 10 years. The initial guess for YTM is 5\% (0.05). The function returns the estimated YTM, as well as the path of estimates and function values during the iterations. As we can see, the YTM converges to approximately 6.4\% after only 4 iterations. The path of estimates and function values shows how the method converges to the root of the equation. 
+
+```{python}
+# Example implementation of the Newton-Raphson method for finding YTM
+import numpy as np
+
+def P(y, C, F, n):
+    """Calculate the price of a bond given yield y, coupon C, face value F, and maturity n."""
+    return sum(C / (1 + y)**k for k in range(1, n + 1)) + F / (1 + y)**n
+
+def P_prime(y, C, F, n):
+    """Calculate the derivative of the bond price with respect to yield y."""
+    return sum(-k * C / (1 + y)**(k + 1) for k in range(1, n + 1)) - n * F / (1 + y)**(n + 1)
+
+def newton_raphson_ytm(P_market, C, F, n, y0=0.05, tol=1e-6, max_iter=100):
+    """Find the yield to maturity using the Newton-Raphson method."""
+    y_path = [y0]
+    f_path = [P(y0, C, F, n) - P_market]
+    y = y0
+    for i in range(max_iter):
+        price = P(y, C, F, n)
+        price_derivative = P_prime(y, C, F, n)
+        y_new = y - (price - P_market) / price_derivative
+        y_path.append(y_new)
+        f_path.append(P(y_new, C, F, n) - P_market)
+        if abs(y_new - y) < tol:
+            break
+        y = y_new
+    return y, y_path, f_path
+
+y, y_path, f_path = newton_raphson_ytm(P_market=900, C=50, F=1000, n=10)
+
+# save 2-digit precision for display
+y_path = [f"{yi:.2e}" for yi in y_path]
+f_path = [f"{fi:.2e}" for fi in f_path]
+print(f"YTM: {y: .3f}")
+print(f"y path: {y_path}")
+print(f"f path: {f_path}")
+```
+
+Newton-Raphson method is a powerful numerical technique for finding roots of equations. It is not limited to scalar functions but can also be extended to systems of equations. Suppose we have a system of equations $F(\boldsymbol{x}) = 0$, where $F(\boldsymbol{x})$ and $\boldsymbol{x}$ are vectors. The Newton-Raphson update rule becomes
+$$
+\boldsymbol{x}_{k+1} = \boldsymbol{x}_k - J_F(\boldsymbol{x}_k)^{-1} F(\boldsymbol{x}_k)
+$$
+where $J_F(\boldsymbol{x}_k)$ is the Jacobian matrix of $F$ evaluated at $\boldsymbol{x}_k$. 
+
+The **spot rate** for maturity $T$ is the rate implied by a zero-coupon bond paying at $T$. Spot rates therefore provide the discount factors used to value individual cash flows. A **forward rate** is the interest rate agreed today for borrowing or lending over a future interval. With annual compounding, the forward rate from $T_1$ to $T_2$ satisfies
+$$
+(1+s_{0,T_2})^{T_2} = (1+s_{0,T_1})^{T_1}(1+f_{T_1,T_2})^{T_2-T_1}.
+$$
+
+
+### Duration and convexity
+
+Duration and convexity are measures of interest-rate sensitivity. Mathematically, they are the first and second derivatives of the bond price with respect to interest rates. Suppose a bond has price $P(r)$ as a function of interest rate $r$. Then, by Taylor expansion, for a small change $\Delta r$ in interest rate, the change and percentage change in bond price can be
+$$
+P(r+\Delta r) \approx P(r) + P'(r)\Delta r + \frac{1}{2}P''(r)(\Delta r)^2.
+$$
+$$
+\frac{P(r+\Delta r)}{P(r)} \approx 1 + \frac{P'(r)}{P(r)}\Delta r + \frac{1}{2}\frac{P''(r)}{P(r)}(\Delta r)^2.
+$$
+We can define **modified duration** and **convexity** as
+$$
+D_{\mathrm{mod}} = -\frac{P'(r)}{P(r)}, \qquad \mathrm{Convexity} = \frac{P''(r)}{P(r)}.
+$$
+Note that $P'(r)<0$ for a valid bond price function, so we add a negative sign to make duration positive. 
+
+Historically, the term "duration" was first introduced by Frederick Macaulay in 1938. The **Macaulay duration** is the cash-flow-weighted average of time until payment,
+$$
+D_{\mathrm{Mac}} = \frac{\sum_{k=1}^{n} t_k PV(CF_{t_k})}{P}.
+$$
+For a bond with constant per-period discount rate $r$, and $m$ compounding periods per year, the relationship between Macaulay duration and modified duration is
+$$
+D_{\mathrm{mod}} = \frac{D_{\mathrm{Mac}}}{1+r/m}.
+$$
+
+### Credit spreads, default probabilities, and recovery rates
+
+A **credit spread** is the difference between the yield on a risky bond and the yield on a comparable risk-free bond. 
+$$
+\text{Credit Spread} = y - r^f.
+$$
+It can compensate investors for expected default losses, uncertainty about losses, liquidity risk, and other risk premia; it is not necessarily a pure measure of default risk.
+
+**Credit rating** is a measure of the creditworthiness of a borrower, typically assigned by credit rating agencies such as Moody's, S&P, and Fitch. Credit ratings range from AAA (highest) to D (default). For example, the credit spread of [BAA-AAA](https://fred.stlouisfed.org/graph/?g=f09) (Moody's) is a widely used measure of credit risk in the market. The spread peaks during crisis periods, such as the 2008 financial crisis and the COVID-19 pandemic in 2020.
+
+The **recovery rate** $R$ is the fraction of a claim recovered after default, so the loss-given-default is $LGD=1-R$. In a simple one-period model, the expected default loss as a fraction of exposure is approximately
+$$
+PD\times LGD = PD(1-R),
+$$
+where $PD$ is the probability of default over the period.
+
+### Credit default swap
+
+**Credit default swap (CDS)** is an "insurance" contract on the credit risk of a reference entity. The protection buyer pays a periodic fee to the protection seller until the contract expires or a specified credit event occurs, such as default or bankruptcy. In exchange, the seller compensates the buyer for the loss on a reference obligation after the credit event. A CDS does not require the buyer to own the underlying bond, so it can be used either to hedge credit exposure or to take a view on an issuer's credit risk.
+
+The contract is specified by its **notional amount** $N$, maturity, reference entity, credit events, and recovery convention. The **CDS spread** $s$ is the annualized fee paid by the buyer, expressed in basis points (bps) of notional. For example, a CDS spread of 100 bps on a notional amount of $\$10$ million corresponds to an annual premium of approximately $0.01 \times \$10$ million = $\$100{,}000$, usually paid quarterly. The actual payment for a period of length $\Delta_i$ is approximately $Ns\Delta_i$.
+
+There are two legs to a CDS:
+
+1. The **premium leg** consists of the fee payments made by the protection buyer. They stop after a credit event, and the buyer generally also pays an accrued premium for the part of the payment period before the event.
+2. The **protection leg** is the payment made by the seller after a credit event. Under a recovery-of-par convention, the payment is approximately $N(1-R)$. 
+
+At the fair spread, the present value of the two legs is equal. 
+$$
+PV_{\mathrm{premium}} = PV_{\mathrm{protection}}
+$$
+This expression makes the basic economics clear: a higher probability of default or a lower recovery rate increases the fair CDS spread. In standard CDS pricing and market conventions, the assumed recovery rate is 40\% for investment-grade corporate reference entities. Therefore, CDS spreads are often used as a measure of credit risk in the market. A higher CDS spread indicates a higher perceived credit risk of the reference entity.
+
+
+
+## Derivatives
+
+**Derivatives** are financial contracts whose value depends on an underlying asset, rate, index, currency, or credit event. They are used to hedge risks, obtain leveraged exposure, or discover prices. The main instruments are forwards and futures, swaps, and options. Credit default swap (CDS) discussed above is also a derivative. A central pricing idea is **no arbitrage**: two strategies with the same future cash flows should have the same price. Actually, the **no-arbitrage** principle is the most fundamental concept in finance. 
+
+In this section, we will mainly use log returns. 
+
+### Forward and futures
+
+A **forward contract** is an agreement made today to buy or sell an underlying asset at a specified price $F$ on a future date $T$. $F$ is called the **forward price**. 
+
+- The long position agrees to buy the asset at $F$, 
+- the short position agrees to sell the asset at $F$.
+  
+The payoff of a forward contract at time $T$ is
+
+- long position: $S_T-F$,
+- short position: $F-S_T$.
+  
+Let's see an example of forward pricing. In this example, we will implement the no arbitrage principle.
+
+::: {#exm-future-pricing}
+Suppose the current gold price is $S_0$. The log risk-free rate is $r^f$. Without any market frictions, by no arbitrage, the future price of gold with exercise time $T$ is
+$$
+F = S_0 e^{r^f T}.
+$$
+The below figure explains the no-arbitrage principle. Suppose at time $0$, we have $S_0$ dollars. We have two choices: 
+
+1. Buy 1 unit of gold at $S_0$; enter short position of a forward contract with forward price $F$.
+2. Save $S_0$ dollars at the risk-free rate $r^f$.
+
+In strategy 1, at time 0, we pay $S_0$ dollars to buy 1 unit of gold. At time $T$, we sell the gold at the forward price $F$. In strategy 2, at time 0, we save $S_0$ dollars. At time $T$, we have $S_0 e^{r^f T}$ dollars. 
+
+By the no-arbitrage principle, as the initial investment is the same and no risk is involved, the final payoff should be the same. Therefore, we have
+$$
+F = S_0 e^{r^f T}.
+$$
+```{python}
+#| fig-align: center
+import matplotlib.pyplot as plt
+from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
+
+# Create a clean diagram that can be pasted into Quarto/Python workflows
+fig, ax = plt.subplots(figsize=(6, 4))
+ax.set_xlim(0, 6)
+ax.set_ylim(0, 4)
+ax.axis("off")
+
+# Box settings
+box_w, box_h = 1, 1
+left_x, right_x = 0.1, 4.9
+top_y, bottom_y = 2.9, 0.1
+
+def add_box(x, y, label):
+    box = FancyBboxPatch(
+        (x, y), box_w, box_h,
+        boxstyle="round,pad=0.02",
+        linewidth=2,
+        facecolor="white",
+        edgecolor="black"
+    )
+    ax.add_patch(box)
+    ax.text(x + box_w/2, y + box_h/2, label,
+            ha="center", va="center", fontsize=14)
+
+add_box(left_x, top_y, "$S_0$")
+add_box(right_x, top_y, "$S_0 e^{r^f T}$")
+add_box(left_x, bottom_y, "1 unit\n gold")
+add_box(right_x, bottom_y, "1 unit\n gold")
+
+def connect(p1, p2, text, text_offset=(0, 0)):
+    arrow = FancyArrowPatch(
+        p1, p2,
+        arrowstyle="->",
+        mutation_scale=18,
+        linewidth=2,
+        color="black"
+    )
+    ax.add_patch(arrow)
+    mx = (p1[0] + p2[0]) / 2 + text_offset[0]
+    my = (p1[1] + p2[1]) / 2 + text_offset[1]
+    ax.text(mx, my, text, ha="center", va="center", fontsize=14)
+
+# Horizontal and vertical connections
+connect((left_x + box_w, top_y + box_h/2), (right_x, top_y + box_h/2), r"Save at $r^f$", (0, 0.2))
+connect((left_x + box_w, bottom_y + box_h/2), (right_x, bottom_y + box_h/2), r"Hold for $T$", (0, 0.2))
+connect((left_x + box_w/2, top_y), (left_x + box_w/2, bottom_y + box_h), r"$-S_0$", (-0.4, 0))
+connect((right_x + box_w/2, bottom_y + box_h), (right_x + box_w/2, top_y), r"$+F$", (0.35, 0))
+
+plt.tight_layout()
+plt.show()
+```
+:::
+
+A **futures contract** is similar to a forward but is standardized and traded on an exchange. Futures are marked to market daily: gains and losses are settled through the margin account rather than being exchanged only at maturity. 
+
+### Interest-rate swaps
+
+An **interest-rate swap** exchanges interest payments on a notional principal. In a plain-vanilla swap, one party pays a fixed rate and receives a floating reference rate, while the other party does the reverse. The notional is usually not exchanged. 
+
+For example, a 5-year interest-rate swap with a notional of \$10 million. Each 6-month period, $A$ pays a fixed rate of 3\% and receives the 6-month SOFR rate, while $B$ pays the 6-month SOFR rate and receives 3\%. In dollar value, $A$ pays $10{,}000{,}000 \times 0.03/2 = 150{,}000$ and receives $10{,}000{,}000 \times \text{SOFR}/2$. The fixed rate is set at initiation, which is called the **swap rate**. 
+```{mermaid}
+%%| fig-align: center
+flowchart LR
+    A[A] -->|3%| B[B]
+    B[B] -->|SOFR| A[A]
+```
+
+At initiation, the swap rate is selected so that the present value of the fixed leg equals the present value of the floating leg. After initiation, changes in interest rates change the value of the swap.
+
+In the past, LIBOR (London Interbank Offered Rate) was widely used as the floating reference rate globally. However, due to manipulation scandals, LIBOR is being phased out by 2023. Different regions have adopted different alternative reference rates. For example, the US has adopted SOFR (Secured Overnight Financing Rate), the UK has adopted SONIA (Sterling Overnight Index Average), and the Eurozone has adopted €STR (Euro Short-Term Rate). These rates are based on actual transactions and are considered more robust and reliable than LIBOR.
+
+### Options
+
+An **option** gives its buyer a right, but not an obligation, to trade an underlying asset at a strike price $K$ by or at a future date. A call gives the right to buy, and a put gives the right to sell. At expiration, the payoffs are
+$$
+\max(S_T-K,0),
+\qquad
+\max(K-S_T,0).
+$$
+The buyer pays an upfront **premium** for this asymmetric payoff; the option seller receives the premium and takes on the corresponding obligation. A European option can be exercised only at expiration, whereas an American option can be exercised at any time before expiration. Option investors can also sell options to earn the premium instead of exercising the option. 
+
+The first four panels of the below figure plot the payoffs of a call option, a put option at strike price $K=50$.
+
+```{python}
+# | fig-align: center
+
+import numpy as np  
+import matplotlib.pyplot as plt
+
+# stock price
+S = np.linspace(0, 100, 1000)
+# payoff of a call option
+K = 50
+payoff_call = np.maximum(S - K, 0)
+# payoff of a put option
+payoff_put = np.maximum(K - S, 0)
+# payoff of a risk-free bond
+payoff_bond = np.ones_like(S)*50
+
+plt.rcParams.update({'font.size': 16})
+# plot 
+fig, ax = plt.subplots(3,2, figsize=(10,15))
+ax[0,0].plot(S, payoff_call, color='red', linewidth=2)
+ax[0,0].set_title("Long a Call")
+ax[0,0].set_xlabel('S')
+ax[0,0].set_xlim(0,100)
+ax[0,0].set_ylim(-60,60)
+ax[0,0].axvline(x=K, color='grey', linestyle='--')
+ax[0,0].axhline(y=K, color='grey', linestyle='--')
+ax[0,0].axhline(y=-K, color='grey', linestyle='--')
+ax[0,0].axhline(y=0, color='grey', linestyle='--')
+ax[0,0].set_xticks([0, K, 100])
+ax[0,0].set_yticks([-50, 0, 50])
+
+ax[0,1].plot(S, payoff_put, color='red', linewidth=2)
+ax[0,1].set_title("Long a Put")
+ax[0,1].set_xlabel('S')
+ax[0,1].set_xlim(0,100)
+ax[0,1].set_ylim(-60,60)
+ax[0,1].axvline(x=K, color='grey', linestyle='--')
+ax[0,1].axhline(y=K, color='grey', linestyle='--')
+ax[0,1].axhline(y=-K, color='grey', linestyle='--')
+ax[0,1].axhline(y=0, color='grey', linestyle='--')
+ax[0,1].set_xticks([0, K, 100])
+ax[0,1].set_yticks([-50, 0, 50])
+
+ax[1,0].plot(S, -payoff_call, color='red', linewidth=2)
+ax[1,0].set_title("Short a Call")
+ax[1,0].set_xlabel('S')
+ax[1,0].set_xlim(0,100)
+ax[1,0].set_ylim(-60,60)
+ax[1,0].axvline(x=K, color='grey', linestyle='--')
+ax[1,0].axhline(y=K, color='grey', linestyle='--')
+ax[1,0].axhline(y=-K, color='grey', linestyle='--')
+ax[1,0].axhline(y=0, color='grey', linestyle='--')
+ax[1,0].set_xticks([0, K, 100])
+ax[1,0].set_yticks([-50, 0, 50])
+
+ax[1,1].plot(S, -payoff_put, color='red', linewidth=2)
+ax[1,1].set_title("Short a Put")
+ax[1,1].set_xlabel('S')
+ax[1,1].set_xlim(0,100)
+ax[1,1].set_ylim(-60,60)
+ax[1,1].axvline(x=K, color='grey', linestyle='--')
+ax[1,1].axhline(y=K, color='grey', linestyle='--')
+ax[1,1].axhline(y=-K, color='grey', linestyle='--')
+ax[1,1].axhline(y=0, color='grey', linestyle='--')
+ax[1,1].set_xticks([0, K, 100])
+ax[1,1].set_yticks([-50, 0, 50])
+
+ax[2,0].plot(S, payoff_bond, color='red', linewidth=2)
+ax[2,0].set_title("Risk-free bond")
+ax[2,0].set_xlabel('S')
+ax[2,0].set_xlim(0,100)
+ax[2,0].set_ylim(0,100)
+ax[2,0].axhline(y=50, color='grey', linestyle='--')
+ax[2,0].set_yticks([0, 50, 100])
+ax[2,0].set_xticks([0, 50, 100])
+
+ax[2,1].plot(S, S, color='red', linewidth=2)
+ax[2,1].set_title("Stock")
+ax[2,1].set_xlabel('S')
+ax[2,1].set_xlim(0,100)
+ax[2,1].set_ylim(0,100)
+ax[2,1].set_yticks([0, 50, 100])
+ax[2,1].set_xticks([0, 50, 100])
+
+plt.tight_layout()
+plt.show()
+```
+
+### Put-call parity
+
+In the above figure, the last two panels show the payoff of a risk-free bond and a stock. The risk-free bond pays $K$ at expiration, while the stock pays $S_T$. We can combine a long call and a short put to create a synthetic long position in the stock. The payoff of this portfolio is
+$$
+\max(S_T-K,0)-\max(K-S_T,0)=S_T-K.
+$$
+Again, by no arbitrage, as there's no risk involved, the price of the LHS portfolio should equal the price of the RHS portfolio. This leads to the put-call parity relationship.
+
+For European call and put options with the same strike $K$ and maturity $T$ on a non-dividend-paying stock, **put–call parity** is
+$$
+C-P=S_0-Ke^{-rT},
+$$
+where $C$ and $P$ are the option prices. 
+
+### Binomial tree model
+
+Consider the following example. There are two possible states. A stock is currently priced at $S_0$. In one period, it can either go up to $uS_0$ or down to $dS_0$. The risk-free rate is $r$. We want to price a third security that pays $f_u$ in the first state and $f_d$ in the second state. 
+
+```{mermaid}
+graph LR
+  subgraph G ["&nbsp;"]
+  direction LR
+    SG["$$S_0$$"] --> SG1["$$uS_0$$"] 
+    SG["$$S_0$$"] --> SG2["$$dS_0$$"] 
+  end
+  style G fill:none,stroke:none
+
+  subgraph B ["&nbsp;"]
+  direction LR
+    SB["$$B$$"] --> SB1["$$e^{rT}B$$"] 
+    SB["$$B$$"] --> SB2["$$e^{rT}B$$"] 
+  end
+  style B fill:none,stroke:none
+
+  subgraph P ["&nbsp;"]
+  direction LR
+    Po["$$f_0=?$$"] --> Po1["$$f_u$$"] 
+    Po["$$f_0=?$$"] --> Po2["$$f_d$$"]
+  end
+  style P fill:none,stroke:none
+  %% G B side by side
+  G ~~~ B ~~~ P
+```
+
+Again, the key idea is no arbitrage. We can replicate the payoff of the third security by a portfolio of the stock and a risk-free bond. Let $\Delta$ be the share of stock and $B$ be the amount of bond. The portfolio value at time 0 is
+$$
+\Delta S_0 + B 
+$$ 
+At time $T$, the portfolio value is
+$$
+\Delta u S_0 + e^{rT}B
+\qquad \text{or} \qquad
+\Delta d S_0 + e^{rT}B.
+$$
+To replicate the payoff of the third security, we need
+$$
+\begin{cases}
+\Delta u S_0 + e^{rT}B = f_u,\\
+\Delta d S_0 + e^{rT}B = f_d.
+\end{cases}
+$$
+Solving for $\Delta$ and $B$, we have
+$$
+\Delta = \frac{f_u - f_d}{(u-d)S_0}, \qquad
+B = \frac{u f_d - d f_u}{(u-d)e^{rT}}.
+$$
+Therefore, the price of the third security is
+$$
+f_0 = \Delta S_0 + B = e^{-rT}\left(\frac{u - e^{rT}}{u-d}f_d + \frac{e^{rT} - d}{u-d}f_u\right).
+$$
+
+Suppose the third security is a call option with strike $K$. Then, $f_u = \max(uS_0-K,0)$ and $f_d = \max(dS_0-K,0)$. We can use the above formula to price the call option. The same method can be used to price a put option.
+
+
+## Corporate finance
+Corporate finance is impossible to cover in a single chapter. We will only cover firm valuation.
+
+### Firm valuation
+Cash-flow analysis
+Free cash flow
+Cost of capital and WACC
+Comparable-company and precedent-transaction valuation
+Modigliani–Miller propositions

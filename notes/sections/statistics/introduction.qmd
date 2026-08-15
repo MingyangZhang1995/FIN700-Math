@@ -1,0 +1,14 @@
+# Introduction to Statistics and Basic Machine Learning
+
+## Linear Regression
+Most statistical model (supervised learning) asks the following question: given a set of independent variables $\boldsymbol{X}$, how can we predict the dependent variable $\boldsymbol{y}$? Mathematically, we can express this question as follows:
+$$  
+\mathbb{E}(\boldsymbol{y} \mid \boldsymbol{X})=f(\boldsymbol{X}).
+$$
+Different statistical models have different functional forms of $f(\cdot)$. For example, the linear regression model assumes that $f(\cdot)$ is a linear function of $\boldsymbol{X}$, while the logistic regression model assumes that $f(\cdot)$ is a logistic function of $\boldsymbol{X}$. More advanced machine learning models, such as random forest and neural networks, assume that $f(\cdot)$ is a non-linear function of $\boldsymbol{X}$. 
+
+Linear regression is the most basic and widely used statistical model. It is also the foundation of many advanced machine learning models. Same as the definition in @sec-la-regression, the linear regression model can be expressed as follows:
+$$
+\underset{(n \times 1)}{\boldsymbol{y}}=\underbrace{\underset{(n \times K)}{\boldsymbol{X}} \underset{(K \times 1)}{\boldsymbol{\beta}}}_{(n \times 1)}+\underset{(n \times 1)}{\boldsymbol{\varepsilon}} .
+$$
+The first assumption is 
