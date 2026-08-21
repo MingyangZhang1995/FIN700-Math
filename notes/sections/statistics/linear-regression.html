@@ -106,6 +106,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script src="../../../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../../../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../../../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -148,7 +151,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/sections/statistics/introduction.html">Statistics</a></li><li class="breadcrumb-item"><a href="../../../notes/sections/statistics/introduction.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Introduction to Statistics and Basic Machine Learning</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/sections/statistics/linear-regression.html">Statistics</a></li><li class="breadcrumb-item"><a href="../../../notes/sections/statistics/linear-regression.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Introduction to Statistics and Basic Machine Learning</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -274,7 +277,7 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../notes/sections/statistics/introduction.html" class="sidebar-item-text sidebar-link active">
+  <a href="../../../notes/sections/statistics/linear-regression.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Introduction to Statistics and Basic Machine Learning</span></span></a>
   </div>
 </li>
@@ -307,17 +310,14 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#estimation" id="toc-estimation" class="nav-link" data-scroll-target="#estimation">Estimation</a></li>
   </ul></li>
-  <li><a href="#neural-networks" id="toc-neural-networks" class="nav-link" data-scroll-target="#neural-networks"><span class="header-section-number">9.4</span> Neural Networks</a>
-  <ul class="collapse">
-  <li><a href="#activation-functions" id="toc-activation-functions" class="nav-link" data-scroll-target="#activation-functions">Activation Functions</a></li>
-  </ul></li>
+  <li><a href="#neural-networks" id="toc-neural-networks" class="nav-link" data-scroll-target="#neural-networks"><span class="header-section-number">9.4</span> Neural Networks</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/sections/statistics/introduction.html">Statistics</a></li><li class="breadcrumb-item"><a href="../../../notes/sections/statistics/introduction.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Introduction to Statistics and Basic Machine Learning</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/sections/statistics/linear-regression.html">Statistics</a></li><li class="breadcrumb-item"><a href="../../../notes/sections/statistics/linear-regression.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Introduction to Statistics and Basic Machine Learning</span></a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Introduction to Statistics and Basic Machine Learning</span></h1>
 </div>
@@ -358,8 +358,8 @@ window.Quarto = {
 \]</span> Rearranging the above equation, we have <span id="eq-beta"><span class="math display">\[
 \boldsymbol{\beta} = \mathbb{E}(\boldsymbol{x}\boldsymbol{x}^\top)^{-1}\mathbb{E}(\boldsymbol{x}y)
 \tag{9.2}\]</span></span></p>
-<p>Note that we use <span class="math inline">\(\boldsymbol{\beta}\)</span> instead of <span class="math inline">\(\hat{\boldsymbol{\beta}}\)</span> because we are using the population moment condition to derive the population parameter <span class="math inline">\(\boldsymbol{\beta}\)</span>. Under <a href="#eq-linear-regression-assumption1" class="quarto-xref">Equation&nbsp;<span>9.1</span></a>, this is the true value of <span class="math inline">\(\boldsymbol{\beta}\)</span>, not the estimated value.</p>
-<p>Let’s check the derivation of <a href="#eq-beta" class="quarto-xref">Equation&nbsp;<span>9.2</span></a> again. What assumption did we implicitly make when we rearranged the equation? We implicitly assumed that <span class="math inline">\(\mathbb{E}(\boldsymbol{x}\boldsymbol{x}^\top)\)</span> is invertible (or equivalently, <span class="math inline">\(\mathbb{E}(\boldsymbol{x}\boldsymbol{x}^\top)\)</span> is positive definite). This is the second assumption of linear regression.</p>
+<p>Note that we use <span class="math inline">\(\boldsymbol{\beta}\)</span> instead of <span class="math inline">\(\hat{\boldsymbol{\beta}}\)</span> because we are using the population moment condition to derive the population parameter <span class="math inline">\(\boldsymbol{\beta}\)</span>. Under <a href="#eq-linear-regression-assumption1" class="quarto-xref">Equation&nbsp;<span class="quarto-unresolved-ref">eq-linear-regression-assumption1</span></a>, this is the true value of <span class="math inline">\(\boldsymbol{\beta}\)</span>, not the estimated value.</p>
+<p>Let’s check the derivation of <a href="#eq-beta" class="quarto-xref">Equation&nbsp;<span class="quarto-unresolved-ref">eq-beta</span></a> again. What assumption did we implicitly make when we rearranged the equation? We implicitly assumed that <span class="math inline">\(\mathbb{E}(\boldsymbol{x}\boldsymbol{x}^\top)\)</span> is invertible (or equivalently, <span class="math inline">\(\mathbb{E}(\boldsymbol{x}\boldsymbol{x}^\top)\)</span> is positive definite). This is the second assumption of linear regression.</p>
 <p>Last thing to note, in population model, <span class="math inline">\(\boldsymbol{\beta}\)</span> is a fixed parameter and has no distribution.</p>
 </section>
 <section id="sample-model-of-linear-regression" class="level3">
@@ -369,7 +369,7 @@ y_i = \boldsymbol{x}_i^\top\boldsymbol{\beta} + \varepsilon_i, \quad i = 1, 2, \
 \tag{9.3}\]</span></span></p>
 <p>The sample model of linear regression can be expressed as follows in matrix form: <span class="math display">\[
 \underset{N\times 1}{\boldsymbol{y}} = \underset{N \times (K+1)}{\boldsymbol{X}}\underset{(K+1)\times 1}{\boldsymbol{\beta}} + \underset{N \times 1}{\boldsymbol{\varepsilon}},
-\]</span> Note that each observation <span class="math inline">\((y_i, \boldsymbol{x}_i)\)</span> is a pair of random variables drawn from the population model in <a href="#eq-linear-regression-sample-model" class="quarto-xref">Equation&nbsp;<span>9.3</span></a>. Before the sample is observed, both <span class="math inline">\(\boldsymbol{y}\)</span> and <span class="math inline">\(\boldsymbol{X}\)</span> are random. After the data are collected, they are the realized data matrix and outcome vector.</p>
+\]</span> Note that each observation <span class="math inline">\((y_i, \boldsymbol{x}_i)\)</span> is a pair of random variables drawn from the population model in <a href="#eq-linear-regression-sample-model" class="quarto-xref">Equation&nbsp;<span class="quarto-unresolved-ref">eq-linear-regression-sample-model</span></a>. Before the sample is observed, both <span class="math inline">\(\boldsymbol{y}\)</span> and <span class="math inline">\(\boldsymbol{X}\)</span> are random. After the data are collected, they are the realized data matrix and outcome vector.</p>
 <p>The population moment condition suggests a sample estimating equation. The sample estimator of <span class="math inline">\(\mathbb{E}(\varepsilon\boldsymbol{x})\)</span> is <span class="math display">\[
 \frac{1}{N}\sum_{i=1}^N \varepsilon_i\boldsymbol{x}_i = \frac{1}{N}\boldsymbol{X}^\top\boldsymbol{\varepsilon}.
 \]</span> Note that we say <span class="math inline">\(\frac{1}{N}\sum_{i=1}^N \varepsilon_i\boldsymbol{x}_i\)</span> is the sample estimator of <span class="math inline">\(\mathbb{E}(\varepsilon\boldsymbol{x})\)</span> because it is unbiased: <span class="math display">\[
@@ -546,7 +546,7 @@ y_i = \boldsymbol{x}_i^\top\boldsymbol{\beta} + \varepsilon_i, \quad i = 1, 2, \
 \end{aligned}
 \]</span> The second equatlity follows from the moment condition <span class="math inline">\(\boldsymbol{Z}^\top\hat{\boldsymbol{e}} = \boldsymbol{0}\)</span>.</p>
 <p>In the below code, I generated a random dataset with 3000 categories and 30,000 observations. I then estimated the linear regression coefficients using both the traditional OLS method with dummy variables and the absorbing method. The traditional OLS method took significantly longer to compute than the absorbing method. The reason is that the traditional OLS method stacks the independent variables and the dummy variables together into one matrix, which is extremely hard to invert. However, absorbing method firstly defines a sparse matrix for the dummy variables and then uses the Frisch-Waugh-Lovell theorem to transform the independent variables and dependent variable before estimating the coefficients. Technically, it is much faster to invert a sparse matrix than a dense matrix.</p>
-<div id="e431d5ca" class="cell" data-execution_count="1">
+<div id="04f38d1b" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -602,12 +602,12 @@ y_i = \boldsymbol{x}_i^\top\boldsymbol{\beta} + \varepsilon_i, \quad i = 1, 2, \
 <span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Time for estimating OLS with absorbing: </span><span class="sc">{</span>mean_time_absorb<span class="sc">:.2f}</span><span class="ss"> seconds (± </span><span class="sc">{</span>std_time_absorb<span class="sc">:.2f}</span><span class="ss">) from </span><span class="sc">{</span>reps_absorb<span class="sc">}</span><span class="ss"> repetitions"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Time for estimating OLS with dummy variables: 24.77 seconds (± 8.12) from 5 repetitions
-Time for estimating OLS with absorbing: 0.26 seconds (± 0.03) from 10 repetitions</code></pre>
+<pre><code>Time for estimating OLS with dummy variables: 16.60 seconds (± 3.10) from 5 repetitions
+Time for estimating OLS with absorbing: 0.27 seconds (± 0.05) from 10 repetitions</code></pre>
 </div>
 </div>
 <p>In the below figures, I plot the scatter plot of <span class="math inline">\(y\)</span> against <span class="math inline">\(x\)</span> on the left and the scatter plot of <span class="math inline">\(\tilde{y}\)</span> against <span class="math inline">\(\tilde{x}\)</span> on the right. The left figure is a messy plot because the category fixed effect <span class="math inline">\(\alpha_c\)</span> is not removed, so the relationship between <span class="math inline">\(y\)</span> and <span class="math inline">\(x\)</span> is obscured. The right figure is a clean plot showing the relationship between <span class="math inline">\(y\)</span> and <span class="math inline">\(x\)</span> after removing the category fixed effect <span class="math inline">\(\alpha_c\)</span>.</p>
-<div id="7f184957" class="cell" data-execution_count="2">
+<div id="5c9559d8" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -630,7 +630,7 @@ Time for estimating OLS with absorbing: 0.26 seconds (± 0.03) from 10 repetitio
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="introduction_files/figure-html/cell-3-output-1.png" width="957" height="452" class="figure-img"></p>
+<p><img src="linear-regression_files/figure-html/cell-3-output-1.png" width="957" height="452" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -638,7 +638,7 @@ Time for estimating OLS with absorbing: 0.26 seconds (± 0.03) from 10 repetitio
 </section>
 <section id="ordinary-least-squares-ols" class="level3">
 <h3 class="anchored" data-anchor-id="ordinary-least-squares-ols">Ordinary Least Squares (OLS)</h3>
-<p>Ordinary Least Squares (OLS) is a method for estimating linear regression. However, OLS is not the only method for estimating linear regression. As we have seen, the OLS estimator is derived from the moment condition <span class="math inline">\(\mathbb{E}(\varepsilon\boldsymbol{x}) = \boldsymbol{0}\)</span>. In general, we can use any method that satisfies the moment condition to estimate the linear regression coefficients. OLS is just one of the many methods that satisfy the moment condition and is the most commonly used method. As we have seen OLS in <a href="../linear-algebra/decompositions.html" class="quarto-xref"><span>Chapter 4</span></a>, we skip the OLS derivation here.</p>
+<p>Ordinary Least Squares (OLS) is a method for estimating linear regression. However, OLS is not the only method for estimating linear regression. As we have seen, the OLS estimator is derived from the moment condition <span class="math inline">\(\mathbb{E}(\varepsilon\boldsymbol{x}) = \boldsymbol{0}\)</span>. In general, we can use any method that satisfies the moment condition to estimate the linear regression coefficients. OLS is just one of the many methods that satisfy the moment condition and is the most commonly used method. As we have seen OLS in <a href="#sec-la-decomp" class="quarto-xref"><span class="quarto-unresolved-ref">sec-la-decomp</span></a>, we skip the OLS derivation here.</p>
 </section>
 </section>
 <section id="logistic-regression" class="level2" data-number="9.2">
@@ -742,628 +742,69 @@ f(\boldsymbol{x}) = b_2 + \beta_2 \text{logistic}(b_1 + \boldsymbol{x}^\top\bold
 <li>It first does a logistic regression on the input <span class="math inline">\(\boldsymbol{x}\)</span> with coefficients <span class="math inline">\(\boldsymbol{\beta}_1\)</span> and adds an intercept term <span class="math inline">\(b_1\)</span>. In math, we can write it as <span class="math inline">\(H = \text{logistic}(b_1 + \boldsymbol{x}^\top\boldsymbol{\beta}_1)\)</span>, where <span class="math inline">\(H\)</span> is the output of the first layer. The input size per sample is K, and the output size per sample is 1.</li>
 <li>It applies a linear transformation to the output of the first layer <span class="math inline">\(H\)</span> and adds an intercept term <span class="math inline">\(b_2\)</span>. The input size per sample is 1, and the output size per sample is 1.</li>
 </ol>
-<p>The below figure shows the architecture of the neural network in <a href="#eq-neural-network-1" class="quarto-xref">Equation&nbsp;<span>9.7</span></a>. The input layer has three nodes (<span class="math inline">\(K=3\)</span>), the hidden layer has one node representing the output of the first layer <span class="math inline">\(H\)</span>, and the output layer has one node representing the output of the neural network <span class="math inline">\(O\)</span>.</p>
+<p>The below figure shows the architecture of the neural network in <a href="#eq-neural-network-1" class="quarto-xref">Equation&nbsp;<span class="quarto-unresolved-ref">eq-neural-network-1</span></a>. The input layer has three nodes (<span class="math inline">\(K=3\)</span>), the hidden layer has one node representing the output of the first layer <span class="math inline">\(H\)</span>, and the output layer has one node representing the output of the neural network <span class="math inline">\(O\)</span>.</p>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode dot code-with-copy"><code class="sourceCode dot"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">digraph</span> <span class="va">NeuralNetwork</span> <span class="ot">{</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">graph</span><span class="co"> </span><span class="ot">[</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="at">rankdir</span><span class="ot">=</span><span class="va">LR</span><span class="co">,</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="va">splines</span><span class="ot">=</span><span class="va">false</span><span class="co">,</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="at">nodesep</span><span class="ot">=</span><span class="dv">0.2</span><span class="co">,</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="at">ranksep</span><span class="ot">=</span><span class="dv">1.15</span><span class="co">,</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="at">bgcolor</span><span class="ot">=</span><span class="st">"transparent"</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="ot">];</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="kw">node</span><span class="co"> </span><span class="ot">[</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="at">shape</span><span class="ot">=</span><span class="va">circle</span><span class="co">,</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="va">fixedsize</span><span class="ot">=</span><span class="va">true</span><span class="co">,</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="at">width</span><span class="ot">=</span><span class="dv">0.58</span><span class="co">,</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="at">fontsize</span><span class="ot">=</span><span class="dv">12</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="ot">];</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="kw">edge</span><span class="co"> </span><span class="ot">[</span><span class="at">arrowsize</span><span class="ot">=</span><span class="dv">0.7</span><span class="ot">];</span></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="kw">subgraph</span><span class="co"> </span><span class="va">cluster_input</span><span class="co"> </span><span class="ot">{</span></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="at">label</span><span class="ot">=</span><span class="st">"Input Layer"</span><span class="ot">;</span></span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="ot">{</span><span class="co"> </span><span class="at">rank</span><span class="ot">=</span><span class="va">same</span><span class="ot">;</span><span class="co"> </span><span class="va">I1</span><span class="ot">;</span><span class="co"> </span><span class="va">I2</span><span class="ot">;</span><span class="co"> </span><span class="va">I3</span><span class="ot">;</span><span class="co"> </span><span class="ot">}</span></span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="va">I1</span><span class="co"> </span><span class="ot">[</span><span class="at">label</span><span class="ot">=</span><span class="co">&lt;</span><span class="va">x</span><span class="co">&lt;</span><span class="va">SUB</span><span class="co">&gt;</span><span class="dv">1</span><span class="co">&lt;/</span><span class="va">SUB</span><span class="co">&gt;&gt;, </span><span class="va">sortv</span><span class="ot">=</span><span class="dv">1</span><span class="ot">];</span></span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="va">I2</span><span class="co"> </span><span class="ot">[</span><span class="at">label</span><span class="ot">=</span><span class="co">&lt;</span><span class="va">x</span><span class="co">&lt;</span><span class="va">SUB</span><span class="co">&gt;</span><span class="dv">2</span><span class="co">&lt;/</span><span class="va">SUB</span><span class="co">&gt;&gt;, </span><span class="va">sortv</span><span class="ot">=</span><span class="dv">2</span><span class="ot">];</span></span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="va">I3</span><span class="co"> </span><span class="ot">[</span><span class="at">label</span><span class="ot">=</span><span class="co">&lt;</span><span class="va">x</span><span class="co">&lt;</span><span class="va">SUB</span><span class="co">&gt;</span><span class="dv">3</span><span class="co">&lt;/</span><span class="va">SUB</span><span class="co">&gt;&gt;, </span><span class="va">sortv</span><span class="ot">=</span><span class="dv">3</span><span class="ot">];</span></span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="ot">}</span></span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="kw">subgraph</span><span class="co"> </span><span class="va">cluster_hidden</span><span class="co"> </span><span class="ot">{</span></span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="at">label</span><span class="ot">=</span><span class="st">"Hidden Layer"</span><span class="ot">;</span></span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="ot">{</span><span class="co"> </span><span class="at">rank</span><span class="ot">=</span><span class="va">same</span><span class="ot">;</span><span class="co"> </span><span class="va">H1</span><span class="ot">;}</span></span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="va">H1</span><span class="co"> </span><span class="ot">[</span><span class="at">label</span><span class="ot">=</span><span class="co">&lt;</span><span class="va">H</span><span class="co">&lt;</span><span class="va">SUB</span><span class="co">&gt;</span><span class="dv">1</span><span class="co">&lt;/</span><span class="va">SUB</span><span class="co">&gt;&gt;, </span><span class="va">sortv</span><span class="ot">=</span><span class="dv">1</span><span class="ot">];</span></span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="ot">}</span></span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="kw">subgraph</span><span class="co"> </span><span class="va">cluster_output</span><span class="co"> </span><span class="ot">{</span></span>
-<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="at">label</span><span class="ot">=</span><span class="st">"Output Layer"</span><span class="ot">;</span></span>
-<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="va">O1</span><span class="co"> </span><span class="ot">[</span><span class="at">label</span><span class="ot">=</span><span class="st">"O"</span><span class="ot">];</span></span>
-<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="ot">}</span></span>
-<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">I1</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">H1</span><span class="ot">;</span></span>
-<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">I2</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">H1</span><span class="ot">;</span></span>
-<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">I3</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">H1</span><span class="ot">;</span></span>
-<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">H1</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">O1</span><span class="ot">;</span></span>
-<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a><span class="ot">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>graph LR</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>   subgraph Input Layer</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>      I1(($$x_1$$))</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>      I2(($$x_2$$))</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>      I3(($$x_3$$))</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>   end</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>   subgraph Hidden Layer</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>      H1(($$H$$))</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>   end</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>   subgraph Output Layer</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>      O1(($$O$$))</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>   end</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>   I1 --&gt; H1</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>   I2 --&gt; H1</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>   I3 --&gt; H1</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>   H1 --&gt; O1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<svg width="672" height="480" viewbox="0.00 0.00 407.00 219.00" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
-<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 215)">
-<title>NeuralNetwork</title>
-<g id="clust1" class="cluster">
-<title>cluster_input</title>
-<polygon fill="transparent" stroke="black" points="0,-8 0,-203 81,-203 81,-8 0,-8"></polygon>
-<text text-anchor="middle" x="40.5" y="-186.4" font-family="Times,serif" font-size="14.00">Input Layer</text>
-</g>
-<g id="clust3" class="cluster">
-<title>cluster_hidden</title>
-<polygon fill="transparent" stroke="black" points="148,-64 148,-147 241,-147 241,-64 148,-64"></polygon>
-<text text-anchor="middle" x="194.5" y="-130.4" font-family="Times,serif" font-size="14.00">Hidden Layer</text>
-</g>
-<g id="clust5" class="cluster">
-<title>cluster_output</title>
-<polygon fill="transparent" stroke="black" points="308,-64 308,-147 399,-147 399,-64 308,-64"></polygon>
-<text text-anchor="middle" x="353.5" y="-130.4" font-family="Times,serif" font-size="14.00">Output Layer</text>
-</g>
-<!-- I1 -->
-<g id="node1" class="node">
-<title>I1</title>
-<ellipse fill="none" stroke="black" cx="40" cy="-149" rx="21" ry="21"></ellipse>
-<text text-anchor="start" x="34" y="-146.4" font-family="Times,serif" font-size="12.00">x</text>
-<text text-anchor="start" x="40" y="-146.4" font-family="Times,serif" baseline-shift="sub" font-size="12.00">1</text>
-</g>
-<!-- H1 -->
-<g id="node4" class="node">
-<title>H1</title>
-<ellipse fill="none" stroke="black" cx="194" cy="-93" rx="21" ry="21"></ellipse>
-<text text-anchor="start" x="186.67" y="-90.4" font-family="Times,serif" font-size="12.00">H</text>
-<text text-anchor="start" x="195.33" y="-90.4" font-family="Times,serif" baseline-shift="sub" font-size="12.00">1</text>
-</g>
-<!-- I1&#45;&gt;H1 -->
-<g id="edge1" class="edge">
-<title>I1-&gt;H1</title>
-<path fill="none" stroke="black" d="M59.94,-142.02C86.91,-132.09 136.46,-113.83 166.89,-102.62"></path>
-<polygon fill="black" stroke="black" points="168.1,-104.79 173.82,-100.07 166.4,-100.19 168.1,-104.79"></polygon>
-</g>
-<!-- I2 -->
-<g id="node2" class="node">
-<title>I2</title>
-<ellipse fill="none" stroke="black" cx="40" cy="-93" rx="21" ry="21"></ellipse>
-<text text-anchor="start" x="34" y="-90.4" font-family="Times,serif" font-size="12.00">x</text>
-<text text-anchor="start" x="40" y="-90.4" font-family="Times,serif" baseline-shift="sub" font-size="12.00">2</text>
-</g>
-<!-- I2&#45;&gt;H1 -->
-<g id="edge2" class="edge">
-<title>I2-&gt;H1</title>
-<path fill="none" stroke="black" d="M61.18,-93C87.99,-93 135.42,-93 165.49,-93"></path>
-<polygon fill="black" stroke="black" points="165.73,-95.45 172.73,-93 165.73,-90.55 165.73,-95.45"></polygon>
-</g>
-<!-- I3 -->
-<g id="node3" class="node">
-<title>I3</title>
-<ellipse fill="none" stroke="black" cx="40" cy="-37" rx="21" ry="21"></ellipse>
-<text text-anchor="start" x="34" y="-34.4" font-family="Times,serif" font-size="12.00">x</text>
-<text text-anchor="start" x="40" y="-34.4" font-family="Times,serif" baseline-shift="sub" font-size="12.00">3</text>
-</g>
-<!-- I3&#45;&gt;H1 -->
-<g id="edge3" class="edge">
-<title>I3-&gt;H1</title>
-<path fill="none" stroke="black" d="M59.94,-43.98C86.91,-53.91 136.46,-72.17 166.89,-83.38"></path>
-<polygon fill="black" stroke="black" points="166.4,-85.81 173.82,-85.93 168.1,-81.21 166.4,-85.81"></polygon>
-</g>
-<!-- O1 -->
-<g id="node5" class="node">
-<title>O1</title>
-<ellipse fill="none" stroke="black" cx="353" cy="-93" rx="21" ry="21"></ellipse>
-<text text-anchor="middle" x="353" y="-89.4" font-family="Times,serif" font-size="12.00">O</text>
-</g>
-<!-- H1&#45;&gt;O1 -->
-<g id="edge4" class="edge">
-<title>H1-&gt;O1</title>
-<path fill="none" stroke="black" d="M215.2,-93C243.11,-93 293.54,-93 324.76,-93"></path>
-<polygon fill="black" stroke="black" points="324.87,-95.45 331.87,-93 324.87,-90.55 324.87,-95.45"></polygon>
-</g>
-</g>
-</svg>
+<pre class="mermaid mermaid-js">graph LR
+   subgraph Input Layer
+      I1(($$x_1$$))
+      I2(($$x_2$$))
+      I3(($$x_3$$))
+   end
+   
+   subgraph Hidden Layer
+      H1(($$H$$))
+   end
+   
+   subgraph Output Layer
+      O1(($$O$$))
+   end
+
+   I1 --&gt; H1
+   I2 --&gt; H1
+   I3 --&gt; H1
+   
+   H1 --&gt; O1
+</pre>
 </div>
 <p></p></figure><p></p>
 </div>
 </div>
 </div>
-<p>Sometimes, we do multiple logistic regressions in the first layer. For example, we can have two logistic regressions in the first layer: <span class="math display">\[
+<p>Some times, we do multiple logistic regressions in the first layer. For example, we can have two logistic regressions in the first layer: <span class="math display">\[
 \begin{aligned}
 H_1 &amp;= \text{logistic}(b_{11} + \boldsymbol{x}^\top\boldsymbol{\beta}_{11}), \\
 H_2 &amp;= \text{logistic}(b_{12} + \boldsymbol{x}^\top\boldsymbol{\beta}_{12})
 \end{aligned}
-\]</span> And then, we can apply a linear transformation to the outputs of the first layer <span class="math inline">\(H_1\)</span> and <span class="math inline">\(H_2\)</span> and add an intercept term <span class="math inline">\(b_2\)</span>. The output of the neural network is: <span class="math display">\[
-O = b_2 + \beta_{21} H_1 + \beta_{22} H_2
-\]</span> The following figure shows the architecture</p>
-<div class="cell" data-layout-align="center">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode dot code-with-copy"><code class="sourceCode dot"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">digraph</span> <span class="va">NeuralNetwork</span> <span class="ot">{</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">graph</span><span class="co"> </span><span class="ot">[</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="at">rankdir</span><span class="ot">=</span><span class="va">LR</span><span class="co">,</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="va">splines</span><span class="ot">=</span><span class="va">false</span><span class="co">,</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="at">nodesep</span><span class="ot">=</span><span class="dv">0.2</span><span class="co">,</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="at">ranksep</span><span class="ot">=</span><span class="dv">1.15</span><span class="co">,</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="at">bgcolor</span><span class="ot">=</span><span class="st">"transparent"</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="ot">];</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="kw">node</span><span class="co"> </span><span class="ot">[</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="at">shape</span><span class="ot">=</span><span class="va">circle</span><span class="co">,</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="va">fixedsize</span><span class="ot">=</span><span class="va">true</span><span class="co">,</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="at">width</span><span class="ot">=</span><span class="dv">0.58</span><span class="co">,</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="at">fontsize</span><span class="ot">=</span><span class="dv">12</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="ot">];</span></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="kw">edge</span><span class="co"> </span><span class="ot">[</span><span class="at">arrowsize</span><span class="ot">=</span><span class="dv">0.7</span><span class="ot">];</span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="kw">subgraph</span><span class="co"> </span><span class="va">cluster_input</span><span class="co"> </span><span class="ot">{</span></span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="at">label</span><span class="ot">=</span><span class="st">"Input Layer"</span><span class="ot">;</span></span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="ot">{</span><span class="co"> </span><span class="at">rank</span><span class="ot">=</span><span class="va">same</span><span class="ot">;</span><span class="co"> </span><span class="va">I1</span><span class="ot">;</span><span class="co"> </span><span class="va">I2</span><span class="ot">;</span><span class="co"> </span><span class="va">I3</span><span class="ot">;</span><span class="co"> </span><span class="ot">}</span></span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="va">I1</span><span class="co"> </span><span class="ot">[</span><span class="at">label</span><span class="ot">=</span><span class="co">&lt;</span><span class="va">x</span><span class="co">&lt;</span><span class="va">SUB</span><span class="co">&gt;</span><span class="dv">1</span><span class="co">&lt;/</span><span class="va">SUB</span><span class="co">&gt;&gt;, </span><span class="va">sortv</span><span class="ot">=</span><span class="dv">1</span><span class="ot">];</span></span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="va">I2</span><span class="co"> </span><span class="ot">[</span><span class="at">label</span><span class="ot">=</span><span class="co">&lt;</span><span class="va">x</span><span class="co">&lt;</span><span class="va">SUB</span><span class="co">&gt;</span><span class="dv">2</span><span class="co">&lt;/</span><span class="va">SUB</span><span class="co">&gt;&gt;, </span><span class="va">sortv</span><span class="ot">=</span><span class="dv">2</span><span class="ot">];</span></span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="va">I3</span><span class="co"> </span><span class="ot">[</span><span class="at">label</span><span class="ot">=</span><span class="co">&lt;</span><span class="va">x</span><span class="co">&lt;</span><span class="va">SUB</span><span class="co">&gt;</span><span class="dv">3</span><span class="co">&lt;/</span><span class="va">SUB</span><span class="co">&gt;&gt;, </span><span class="va">sortv</span><span class="ot">=</span><span class="dv">3</span><span class="ot">];</span></span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="ot">}</span></span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="kw">subgraph</span><span class="co"> </span><span class="va">cluster_hidden</span><span class="co"> </span><span class="ot">{</span></span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="at">label</span><span class="ot">=</span><span class="st">"Hidden Layer"</span><span class="ot">;</span></span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="ot">{</span><span class="co"> </span><span class="at">rank</span><span class="ot">=</span><span class="va">same</span><span class="ot">;</span><span class="co"> </span><span class="va">H1</span><span class="ot">;</span><span class="co"> </span><span class="va">H2</span><span class="ot">;</span><span class="co"> </span><span class="ot">}</span></span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="va">H1</span><span class="co"> </span><span class="ot">[</span><span class="at">label</span><span class="ot">=</span><span class="co">&lt;</span><span class="va">H</span><span class="co">&lt;</span><span class="va">SUB</span><span class="co">&gt;</span><span class="dv">1</span><span class="co">&lt;/</span><span class="va">SUB</span><span class="co">&gt;&gt;, </span><span class="va">sortv</span><span class="ot">=</span><span class="dv">1</span><span class="ot">];</span></span>
-<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="va">H2</span><span class="co"> </span><span class="ot">[</span><span class="at">label</span><span class="ot">=</span><span class="co">&lt;</span><span class="va">H</span><span class="co">&lt;</span><span class="va">SUB</span><span class="co">&gt;</span><span class="dv">2</span><span class="co">&lt;/</span><span class="va">SUB</span><span class="co">&gt;&gt;, </span><span class="va">sortv</span><span class="ot">=</span><span class="dv">2</span><span class="ot">];</span></span>
-<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="ot">}</span></span>
-<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="kw">subgraph</span><span class="co"> </span><span class="va">cluster_output</span><span class="co"> </span><span class="ot">{</span></span>
-<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="at">label</span><span class="ot">=</span><span class="st">"Output Layer"</span><span class="ot">;</span></span>
-<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="va">O1</span><span class="co"> </span><span class="ot">[</span><span class="at">label</span><span class="ot">=</span><span class="st">"O"</span><span class="ot">];</span></span>
-<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="ot">}</span></span>
-<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">I1</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">H1</span><span class="ot">;</span></span>
-<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">I2</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">H1</span><span class="ot">;</span></span>
-<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">I3</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">H1</span><span class="ot">;</span></span>
-<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">I1</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">H2</span><span class="ot">;</span></span>
-<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">I2</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">H2</span><span class="ot">;</span></span>
-<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">I3</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">H2</span><span class="ot">;</span></span>
-<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">H1</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">O1</span><span class="ot">;</span></span>
-<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">H2</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">O1</span><span class="ot">;</span></span>
-<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a><span class="ot">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<svg width="672" height="480" viewbox="0.00 0.00 407.00 219.00" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
-<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 215)">
-<title>NeuralNetwork</title>
-<g id="clust1" class="cluster">
-<title>cluster_input</title>
-<polygon fill="transparent" stroke="black" points="0,-8 0,-203 81,-203 81,-8 0,-8"></polygon>
-<text text-anchor="middle" x="40.5" y="-186.4" font-family="Times,serif" font-size="14.00">Input Layer</text>
-</g>
-<g id="clust3" class="cluster">
-<title>cluster_hidden</title>
-<polygon fill="transparent" stroke="black" points="148,-8 148,-147 241,-147 241,-8 148,-8"></polygon>
-<text text-anchor="middle" x="194.5" y="-130.4" font-family="Times,serif" font-size="14.00">Hidden Layer</text>
-</g>
-<g id="clust5" class="cluster">
-<title>cluster_output</title>
-<polygon fill="transparent" stroke="black" points="308,-36 308,-119 399,-119 399,-36 308,-36"></polygon>
-<text text-anchor="middle" x="353.5" y="-102.4" font-family="Times,serif" font-size="14.00">Output Layer</text>
-</g>
-<!-- I1 -->
-<g id="node1" class="node">
-<title>I1</title>
-<ellipse fill="none" stroke="black" cx="40" cy="-93" rx="21" ry="21"></ellipse>
-<text text-anchor="start" x="34" y="-90.4" font-family="Times,serif" font-size="12.00">x</text>
-<text text-anchor="start" x="40" y="-90.4" font-family="Times,serif" baseline-shift="sub" font-size="12.00">1</text>
-</g>
-<!-- H1 -->
-<g id="node4" class="node">
-<title>H1</title>
-<ellipse fill="none" stroke="black" cx="194" cy="-93" rx="21" ry="21"></ellipse>
-<text text-anchor="start" x="186.67" y="-90.4" font-family="Times,serif" font-size="12.00">H</text>
-<text text-anchor="start" x="195.33" y="-90.4" font-family="Times,serif" baseline-shift="sub" font-size="12.00">1</text>
-</g>
-<!-- I1&#45;&gt;H1 -->
-<g id="edge1" class="edge">
-<title>I1-&gt;H1</title>
-<path fill="none" stroke="black" d="M61.18,-93C87.99,-93 135.42,-93 165.49,-93"></path>
-<polygon fill="black" stroke="black" points="165.73,-95.45 172.73,-93 165.73,-90.55 165.73,-95.45"></polygon>
-</g>
-<!-- H2 -->
-<g id="node5" class="node">
-<title>H2</title>
-<ellipse fill="none" stroke="black" cx="194" cy="-37" rx="21" ry="21"></ellipse>
-<text text-anchor="start" x="186.67" y="-34.4" font-family="Times,serif" font-size="12.00">H</text>
-<text text-anchor="start" x="195.33" y="-34.4" font-family="Times,serif" baseline-shift="sub" font-size="12.00">2</text>
-</g>
-<!-- I1&#45;&gt;H2 -->
-<g id="edge4" class="edge">
-<title>I1-&gt;H2</title>
-<path fill="none" stroke="black" d="M59.94,-86.02C86.91,-76.09 136.46,-57.83 166.89,-46.62"></path>
-<polygon fill="black" stroke="black" points="168.1,-48.79 173.82,-44.07 166.4,-44.19 168.1,-48.79"></polygon>
-</g>
-<!-- I2 -->
-<g id="node2" class="node">
-<title>I2</title>
-<ellipse fill="none" stroke="black" cx="40" cy="-37" rx="21" ry="21"></ellipse>
-<text text-anchor="start" x="34" y="-34.4" font-family="Times,serif" font-size="12.00">x</text>
-<text text-anchor="start" x="40" y="-34.4" font-family="Times,serif" baseline-shift="sub" font-size="12.00">2</text>
-</g>
-<!-- I2&#45;&gt;H1 -->
-<g id="edge2" class="edge">
-<title>I2-&gt;H1</title>
-<path fill="none" stroke="black" d="M59.94,-43.98C86.91,-53.91 136.46,-72.17 166.89,-83.38"></path>
-<polygon fill="black" stroke="black" points="166.4,-85.81 173.82,-85.93 168.1,-81.21 166.4,-85.81"></polygon>
-</g>
-<!-- I2&#45;&gt;H2 -->
-<g id="edge5" class="edge">
-<title>I2-&gt;H2</title>
-<path fill="none" stroke="black" d="M61.18,-37C87.99,-37 135.42,-37 165.49,-37"></path>
-<polygon fill="black" stroke="black" points="165.73,-39.45 172.73,-37 165.73,-34.55 165.73,-39.45"></polygon>
-</g>
-<!-- I3 -->
-<g id="node3" class="node">
-<title>I3</title>
-<ellipse fill="none" stroke="black" cx="40" cy="-149" rx="21" ry="21"></ellipse>
-<text text-anchor="start" x="34" y="-146.4" font-family="Times,serif" font-size="12.00">x</text>
-<text text-anchor="start" x="40" y="-146.4" font-family="Times,serif" baseline-shift="sub" font-size="12.00">3</text>
-</g>
-<!-- I3&#45;&gt;H1 -->
-<g id="edge3" class="edge">
-<title>I3-&gt;H1</title>
-<path fill="none" stroke="black" d="M59.94,-142.02C86.91,-132.09 136.46,-113.83 166.89,-102.62"></path>
-<polygon fill="black" stroke="black" points="168.1,-104.79 173.82,-100.07 166.4,-100.19 168.1,-104.79"></polygon>
-</g>
-<!-- I3&#45;&gt;H2 -->
-<g id="edge6" class="edge">
-<title>I3-&gt;H2</title>
-<path fill="none" stroke="black" d="M57.27,-137.01C84.55,-116.91 139.58,-76.36 170.53,-53.55"></path>
-<polygon fill="black" stroke="black" points="172.21,-55.36 176.39,-49.24 169.3,-51.42 172.21,-55.36"></polygon>
-</g>
-<!-- O1 -->
-<g id="node6" class="node">
-<title>O1</title>
-<ellipse fill="none" stroke="black" cx="353" cy="-65" rx="21" ry="21"></ellipse>
-<text text-anchor="middle" x="353" y="-61.4" font-family="Times,serif" font-size="12.00">O</text>
-</g>
-<!-- H1&#45;&gt;O1 -->
-<g id="edge7" class="edge">
-<title>H1-&gt;O1</title>
-<path fill="none" stroke="black" d="M214.88,-89.45C242.84,-84.47 293.85,-75.37 325.15,-69.79"></path>
-<polygon fill="black" stroke="black" points="325.82,-72.16 332.28,-68.52 324.96,-67.33 325.82,-72.16"></polygon>
-</g>
-<!-- H2&#45;&gt;O1 -->
-<g id="edge8" class="edge">
-<title>H2-&gt;O1</title>
-<path fill="none" stroke="black" d="M214.88,-40.55C242.84,-45.53 293.85,-54.63 325.15,-60.21"></path>
-<polygon fill="black" stroke="black" points="324.96,-62.67 332.28,-61.48 325.82,-57.84 324.96,-62.67"></polygon>
-</g>
-</g>
-</svg>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
-<p>Using the same idea, we can have multiple hidden layers in the neural network. For example, in the following figure, we can have two layers of logistic regressions, where the first hidden layer has three logistic regressions and the second hidden layer has two logistic regressions.</p>
-<div class="cell" data-layout-align="center">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode dot code-with-copy"><code class="sourceCode dot"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">digraph</span> <span class="va">NeuralNetwork</span> <span class="ot">{</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">graph</span><span class="co"> </span><span class="ot">[</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="at">rankdir</span><span class="ot">=</span><span class="va">LR</span><span class="co">,</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="va">splines</span><span class="ot">=</span><span class="va">false</span><span class="co">,</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="at">nodesep</span><span class="ot">=</span><span class="dv">0.2</span><span class="co">,</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="at">ranksep</span><span class="ot">=</span><span class="dv">1.15</span><span class="co">,</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="at">bgcolor</span><span class="ot">=</span><span class="st">"transparent"</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="ot">];</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="kw">node</span><span class="co"> </span><span class="ot">[</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="at">shape</span><span class="ot">=</span><span class="va">circle</span><span class="co">,</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="va">fixedsize</span><span class="ot">=</span><span class="va">true</span><span class="co">,</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="at">width</span><span class="ot">=</span><span class="dv">0.58</span><span class="co">,</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="at">fontsize</span><span class="ot">=</span><span class="dv">12</span></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="ot">];</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="kw">edge</span><span class="co"> </span><span class="ot">[</span><span class="at">arrowsize</span><span class="ot">=</span><span class="dv">0.7</span><span class="ot">];</span></span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="kw">subgraph</span><span class="co"> </span><span class="va">cluster_input</span><span class="co"> </span><span class="ot">{</span></span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="at">label</span><span class="ot">=</span><span class="st">"Input Layer"</span><span class="ot">;</span></span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="ot">{</span><span class="co"> </span><span class="at">rank</span><span class="ot">=</span><span class="va">same</span><span class="ot">;</span><span class="co"> </span><span class="va">I1</span><span class="ot">;</span><span class="co"> </span><span class="va">I2</span><span class="ot">;</span><span class="co"> </span><span class="va">I3</span><span class="ot">;</span><span class="co"> </span><span class="ot">}</span></span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="va">I1</span><span class="co"> </span><span class="ot">[</span><span class="at">label</span><span class="ot">=</span><span class="co">&lt;</span><span class="va">x</span><span class="co">&lt;</span><span class="va">SUB</span><span class="co">&gt;</span><span class="dv">1</span><span class="co">&lt;/</span><span class="va">SUB</span><span class="co">&gt;&gt;, </span><span class="va">sortv</span><span class="ot">=</span><span class="dv">1</span><span class="ot">];</span></span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="va">I2</span><span class="co"> </span><span class="ot">[</span><span class="at">label</span><span class="ot">=</span><span class="co">&lt;</span><span class="va">x</span><span class="co">&lt;</span><span class="va">SUB</span><span class="co">&gt;</span><span class="dv">2</span><span class="co">&lt;/</span><span class="va">SUB</span><span class="co">&gt;&gt;, </span><span class="va">sortv</span><span class="ot">=</span><span class="dv">2</span><span class="ot">];</span></span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="va">I3</span><span class="co"> </span><span class="ot">[</span><span class="at">label</span><span class="ot">=</span><span class="co">&lt;</span><span class="va">x</span><span class="co">&lt;</span><span class="va">SUB</span><span class="co">&gt;</span><span class="dv">3</span><span class="co">&lt;/</span><span class="va">SUB</span><span class="co">&gt;&gt;, </span><span class="va">sortv</span><span class="ot">=</span><span class="dv">3</span><span class="ot">];</span></span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="ot">}</span></span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="kw">subgraph</span><span class="co"> </span><span class="va">cluster_hidden1</span><span class="co"> </span><span class="ot">{</span></span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="at">label</span><span class="ot">=</span><span class="st">"Hidden Layer 1"</span><span class="ot">;</span></span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="ot">{</span><span class="co"> </span><span class="at">rank</span><span class="ot">=</span><span class="va">same</span><span class="ot">;</span><span class="co"> </span><span class="va">H11</span><span class="ot">;</span><span class="co"> </span><span class="va">H12</span><span class="ot">;</span><span class="co"> </span><span class="va">H13</span><span class="ot">;</span><span class="co"> </span><span class="ot">}</span></span>
-<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="va">H11</span><span class="co"> </span><span class="ot">[</span><span class="at">label</span><span class="ot">=</span><span class="co">&lt;</span><span class="va">H</span><span class="co">&lt;</span><span class="va">SUP</span><span class="co">&gt;</span><span class="ot">(</span><span class="dv">1</span><span class="ot">)</span><span class="co">&lt;/</span><span class="va">SUP</span><span class="co">&gt;&lt;</span><span class="va">SUB</span><span class="co">&gt;</span><span class="dv">1</span><span class="co">&lt;/</span><span class="va">SUB</span><span class="co">&gt;&gt;, </span><span class="va">sortv</span><span class="ot">=</span><span class="dv">1</span><span class="ot">];</span></span>
-<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="va">H12</span><span class="co"> </span><span class="ot">[</span><span class="at">label</span><span class="ot">=</span><span class="co">&lt;</span><span class="va">H</span><span class="co">&lt;</span><span class="va">SUP</span><span class="co">&gt;</span><span class="ot">(</span><span class="dv">1</span><span class="ot">)</span><span class="co">&lt;/</span><span class="va">SUP</span><span class="co">&gt;&lt;</span><span class="va">SUB</span><span class="co">&gt;</span><span class="dv">2</span><span class="co">&lt;/</span><span class="va">SUB</span><span class="co">&gt;&gt;, </span><span class="va">sortv</span><span class="ot">=</span><span class="dv">2</span><span class="ot">];</span></span>
-<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="va">H13</span><span class="co"> </span><span class="ot">[</span><span class="at">label</span><span class="ot">=</span><span class="co">&lt;</span><span class="va">H</span><span class="co">&lt;</span><span class="va">SUP</span><span class="co">&gt;</span><span class="ot">(</span><span class="dv">1</span><span class="ot">)</span><span class="co">&lt;/</span><span class="va">SUP</span><span class="co">&gt;&lt;</span><span class="va">SUB</span><span class="co">&gt;</span><span class="dv">3</span><span class="co">&lt;/</span><span class="va">SUB</span><span class="co">&gt;&gt;, </span><span class="va">sortv</span><span class="ot">=</span><span class="dv">3</span><span class="ot">];</span></span>
-<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="ot">}</span></span>
-<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="kw">subgraph</span><span class="co"> </span><span class="va">cluster_hidden2</span><span class="co"> </span><span class="ot">{</span></span>
-<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="at">label</span><span class="ot">=</span><span class="st">"Hidden Layer 2"</span><span class="ot">;</span></span>
-<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="ot">{</span><span class="co"> </span><span class="at">rank</span><span class="ot">=</span><span class="va">same</span><span class="ot">;</span><span class="co"> </span><span class="va">H21</span><span class="ot">;</span><span class="co"> </span><span class="va">H22</span><span class="ot">;</span><span class="co"> </span><span class="ot">}</span></span>
-<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="va">H21</span><span class="co"> </span><span class="ot">[</span><span class="at">label</span><span class="ot">=</span><span class="co">&lt;</span><span class="va">H</span><span class="co">&lt;</span><span class="va">SUP</span><span class="co">&gt;</span><span class="ot">(</span><span class="dv">2</span><span class="ot">)</span><span class="co">&lt;/</span><span class="va">SUP</span><span class="co">&gt;&lt;</span><span class="va">SUB</span><span class="co">&gt;</span><span class="dv">1</span><span class="co">&lt;/</span><span class="va">SUB</span><span class="co">&gt;&gt;, </span><span class="va">sortv</span><span class="ot">=</span><span class="dv">1</span><span class="ot">];</span></span>
-<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="va">H22</span><span class="co"> </span><span class="ot">[</span><span class="at">label</span><span class="ot">=</span><span class="co">&lt;</span><span class="va">H</span><span class="co">&lt;</span><span class="va">SUP</span><span class="co">&gt;</span><span class="ot">(</span><span class="dv">2</span><span class="ot">)</span><span class="co">&lt;/</span><span class="va">SUP</span><span class="co">&gt;&lt;</span><span class="va">SUB</span><span class="co">&gt;</span><span class="dv">2</span><span class="co">&lt;/</span><span class="va">SUB</span><span class="co">&gt;&gt;, </span><span class="va">sortv</span><span class="ot">=</span><span class="dv">2</span><span class="ot">];</span></span>
-<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="ot">}</span></span>
-<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="kw">subgraph</span><span class="co"> </span><span class="va">cluster_output</span><span class="co"> </span><span class="ot">{</span></span>
-<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="at">label</span><span class="ot">=</span><span class="st">"Output Layer"</span><span class="ot">;</span></span>
-<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="va">O1</span><span class="co"> </span><span class="ot">[</span><span class="at">label</span><span class="ot">=</span><span class="st">"O"</span><span class="ot">];</span></span>
-<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="ot">}</span></span>
-<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a><span class="co">  // Fully connect each pair of consecutive layers.</span></span>
-<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="ot">{</span><span class="co"> </span><span class="va">I1</span><span class="co"> </span><span class="va">I2</span><span class="co"> </span><span class="va">I3</span><span class="co"> </span><span class="ot">}</span><span class="co">    </span><span class="ot">-&gt;</span><span class="co"> </span><span class="ot">{</span><span class="co"> </span><span class="va">H11</span><span class="co"> </span><span class="va">H12</span><span class="co"> </span><span class="va">H13</span><span class="co"> </span><span class="ot">};</span></span>
-<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="ot">{</span><span class="co"> </span><span class="va">H11</span><span class="co"> </span><span class="va">H12</span><span class="co"> </span><span class="va">H13</span><span class="co"> </span><span class="ot">}</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="ot">{</span><span class="co"> </span><span class="va">H21</span><span class="co"> </span><span class="va">H22</span><span class="co"> </span><span class="ot">};</span></span>
-<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="ot">{</span><span class="co"> </span><span class="va">H21</span><span class="co"> </span><span class="va">H22</span><span class="co"> </span><span class="ot">}</span><span class="co">     </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">O1</span><span class="ot">;</span></span>
-<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a><span class="ot">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<svg width="672" height="480" viewbox="0.00 0.00 587.00 219.00" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
-<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 215)">
-<title>NeuralNetwork</title>
-<g id="clust3" class="cluster">
-<title>cluster_hidden1</title>
-<polygon fill="transparent" stroke="black" points="148,-8 148,-203 251,-203 251,-8 148,-8"></polygon>
-<text text-anchor="middle" x="199.5" y="-186.4" font-family="Times,serif" font-size="14.00">Hidden Layer 1</text>
-</g>
-<g id="clust7" class="cluster">
-<title>cluster_output</title>
-<polygon fill="transparent" stroke="black" points="488,-36 488,-119 579,-119 579,-36 488,-36"></polygon>
-<text text-anchor="middle" x="533.5" y="-102.4" font-family="Times,serif" font-size="14.00">Output Layer</text>
-</g>
-<g id="clust5" class="cluster">
-<title>cluster_hidden2</title>
-<polygon fill="transparent" stroke="black" points="318,-22 318,-161 421,-161 421,-22 318,-22"></polygon>
-<text text-anchor="middle" x="369.5" y="-144.4" font-family="Times,serif" font-size="14.00">Hidden Layer 2</text>
-</g>
-<g id="clust1" class="cluster">
-<title>cluster_input</title>
-<polygon fill="transparent" stroke="black" points="0,-8 0,-203 81,-203 81,-8 0,-8"></polygon>
-<text text-anchor="middle" x="40.5" y="-186.4" font-family="Times,serif" font-size="14.00">Input Layer</text>
-</g>
-<!-- I1 -->
-<g id="node1" class="node">
-<title>I1</title>
-<ellipse fill="none" stroke="black" cx="40" cy="-93" rx="21" ry="21"></ellipse>
-<text text-anchor="start" x="34" y="-90.4" font-family="Times,serif" font-size="12.00">x</text>
-<text text-anchor="start" x="40" y="-90.4" font-family="Times,serif" baseline-shift="sub" font-size="12.00">1</text>
-</g>
-<!-- H11 -->
-<g id="node4" class="node">
-<title>H11</title>
-<ellipse fill="none" stroke="black" cx="199" cy="-93" rx="21" ry="21"></ellipse>
-<text text-anchor="start" x="184.67" y="-90.4" font-family="Times,serif" font-size="12.00">H</text>
-<text text-anchor="start" x="193.34" y="-90.4" font-family="Times,serif" baseline-shift="super" font-size="12.00">(1)</text>
-<text text-anchor="start" x="207.33" y="-90.4" font-family="Times,serif" baseline-shift="sub" font-size="12.00">1</text>
-</g>
-<!-- I1&#45;&gt;H11 -->
-<g id="edge1" class="edge">
-<title>I1-&gt;H11</title>
-<path fill="none" stroke="black" d="M61.2,-93C89.11,-93 139.54,-93 170.76,-93"></path>
-<polygon fill="black" stroke="black" points="170.87,-95.45 177.87,-93 170.87,-90.55 170.87,-95.45"></polygon>
-</g>
-<!-- H12 -->
-<g id="node5" class="node">
-<title>H12</title>
-<ellipse fill="none" stroke="black" cx="199" cy="-37" rx="21" ry="21"></ellipse>
-<text text-anchor="start" x="184.67" y="-34.4" font-family="Times,serif" font-size="12.00">H</text>
-<text text-anchor="start" x="193.34" y="-34.4" font-family="Times,serif" baseline-shift="super" font-size="12.00">(1)</text>
-<text text-anchor="start" x="207.33" y="-34.4" font-family="Times,serif" baseline-shift="sub" font-size="12.00">2</text>
-</g>
-<!-- I1&#45;&gt;H12 -->
-<g id="edge2" class="edge">
-<title>I1-&gt;H12</title>
-<path fill="none" stroke="black" d="M59.94,-86.25C87.99,-76.24 140.67,-57.45 172.22,-46.2"></path>
-<polygon fill="black" stroke="black" points="173.22,-48.44 178.99,-43.78 171.58,-43.82 173.22,-48.44"></polygon>
-</g>
-<!-- H13 -->
-<g id="node6" class="node">
-<title>H13</title>
-<ellipse fill="none" stroke="black" cx="199" cy="-149" rx="21" ry="21"></ellipse>
-<text text-anchor="start" x="184.67" y="-146.4" font-family="Times,serif" font-size="12.00">H</text>
-<text text-anchor="start" x="193.34" y="-146.4" font-family="Times,serif" baseline-shift="super" font-size="12.00">(1)</text>
-<text text-anchor="start" x="207.33" y="-146.4" font-family="Times,serif" baseline-shift="sub" font-size="12.00">3</text>
-</g>
-<!-- I1&#45;&gt;H13 -->
-<g id="edge3" class="edge">
-<title>I1-&gt;H13</title>
-<path fill="none" stroke="black" d="M59.94,-99.75C87.99,-109.76 140.67,-128.55 172.22,-139.8"></path>
-<polygon fill="black" stroke="black" points="171.58,-142.18 178.99,-142.22 173.22,-137.56 171.58,-142.18"></polygon>
-</g>
-<!-- I2 -->
-<g id="node2" class="node">
-<title>I2</title>
-<ellipse fill="none" stroke="black" cx="40" cy="-37" rx="21" ry="21"></ellipse>
-<text text-anchor="start" x="34" y="-34.4" font-family="Times,serif" font-size="12.00">x</text>
-<text text-anchor="start" x="40" y="-34.4" font-family="Times,serif" baseline-shift="sub" font-size="12.00">2</text>
-</g>
-<!-- I2&#45;&gt;H11 -->
-<g id="edge4" class="edge">
-<title>I2-&gt;H11</title>
-<path fill="none" stroke="black" d="M59.94,-43.75C87.99,-53.76 140.67,-72.55 172.22,-83.8"></path>
-<polygon fill="black" stroke="black" points="171.58,-86.18 178.99,-86.22 173.22,-81.56 171.58,-86.18"></polygon>
-</g>
-<!-- I2&#45;&gt;H12 -->
-<g id="edge5" class="edge">
-<title>I2-&gt;H12</title>
-<path fill="none" stroke="black" d="M61.2,-37C89.11,-37 139.54,-37 170.76,-37"></path>
-<polygon fill="black" stroke="black" points="170.87,-39.45 177.87,-37 170.87,-34.55 170.87,-39.45"></polygon>
-</g>
-<!-- I2&#45;&gt;H13 -->
-<g id="edge6" class="edge">
-<title>I2-&gt;H13</title>
-<path fill="none" stroke="black" d="M57.51,-48.77C85.7,-68.89 143.19,-109.9 175.2,-132.73"></path>
-<polygon fill="black" stroke="black" points="174.12,-134.98 181.24,-137.05 176.97,-130.99 174.12,-134.98"></polygon>
-</g>
-<!-- I3 -->
-<g id="node3" class="node">
-<title>I3</title>
-<ellipse fill="none" stroke="black" cx="40" cy="-149" rx="21" ry="21"></ellipse>
-<text text-anchor="start" x="34" y="-146.4" font-family="Times,serif" font-size="12.00">x</text>
-<text text-anchor="start" x="40" y="-146.4" font-family="Times,serif" baseline-shift="sub" font-size="12.00">3</text>
-</g>
-<!-- I3&#45;&gt;H11 -->
-<g id="edge7" class="edge">
-<title>I3-&gt;H11</title>
-<path fill="none" stroke="black" d="M59.94,-142.25C87.99,-132.24 140.67,-113.45 172.22,-102.2"></path>
-<polygon fill="black" stroke="black" points="173.22,-104.44 178.99,-99.78 171.58,-99.82 173.22,-104.44"></polygon>
-</g>
-<!-- I3&#45;&gt;H12 -->
-<g id="edge8" class="edge">
-<title>I3-&gt;H12</title>
-<path fill="none" stroke="black" d="M57.51,-137.23C85.7,-117.11 143.19,-76.1 175.2,-53.27"></path>
-<polygon fill="black" stroke="black" points="176.97,-55.01 181.24,-48.95 174.12,-51.02 176.97,-55.01"></polygon>
-</g>
-<!-- I3&#45;&gt;H13 -->
-<g id="edge9" class="edge">
-<title>I3-&gt;H13</title>
-<path fill="none" stroke="black" d="M61.2,-149C89.11,-149 139.54,-149 170.76,-149"></path>
-<polygon fill="black" stroke="black" points="170.87,-151.45 177.87,-149 170.87,-146.55 170.87,-151.45"></polygon>
-</g>
-<!-- H21 -->
-<g id="node7" class="node">
-<title>H21</title>
-<ellipse fill="none" stroke="black" cx="369" cy="-107" rx="21" ry="21"></ellipse>
-<text text-anchor="start" x="354.67" y="-104.4" font-family="Times,serif" font-size="12.00">H</text>
-<text text-anchor="start" x="363.34" y="-104.4" font-family="Times,serif" baseline-shift="super" font-size="12.00">(2)</text>
-<text text-anchor="start" x="377.33" y="-104.4" font-family="Times,serif" baseline-shift="sub" font-size="12.00">1</text>
-</g>
-<!-- H11&#45;&gt;H21 -->
-<g id="edge10" class="edge">
-<title>H11-&gt;H21</title>
-<path fill="none" stroke="black" d="M220.26,-94.69C250.37,-97.2 306.96,-101.91 340.69,-104.72"></path>
-<polygon fill="black" stroke="black" points="340.75,-107.19 347.92,-105.33 341.15,-102.3 340.75,-107.19"></polygon>
-</g>
-<!-- H22 -->
-<g id="node8" class="node">
-<title>H22</title>
-<ellipse fill="none" stroke="black" cx="369" cy="-51" rx="21" ry="21"></ellipse>
-<text text-anchor="start" x="354.67" y="-48.4" font-family="Times,serif" font-size="12.00">H</text>
-<text text-anchor="start" x="363.34" y="-48.4" font-family="Times,serif" baseline-shift="super" font-size="12.00">(2)</text>
-<text text-anchor="start" x="377.33" y="-48.4" font-family="Times,serif" baseline-shift="sub" font-size="12.00">2</text>
-</g>
-<!-- H11&#45;&gt;H22 -->
-<g id="edge11" class="edge">
-<title>H11-&gt;H22</title>
-<path fill="none" stroke="black" d="M219.6,-88.1C249.82,-80.54 307.84,-66.04 341.69,-57.58"></path>
-<polygon fill="black" stroke="black" points="342.33,-59.94 348.52,-55.87 341.14,-55.19 342.33,-59.94"></polygon>
-</g>
-<!-- H12&#45;&gt;H21 -->
-<g id="edge12" class="edge">
-<title>H12-&gt;H21</title>
-<path fill="none" stroke="black" d="M218.62,-44.76C248.77,-57.32 308.32,-82.13 342.43,-96.34"></path>
-<polygon fill="black" stroke="black" points="341.89,-98.78 349.3,-99.21 343.78,-94.25 341.89,-98.78"></polygon>
-</g>
-<!-- H12&#45;&gt;H22 -->
-<g id="edge13" class="edge">
-<title>H12-&gt;H22</title>
-<path fill="none" stroke="black" d="M220.26,-38.69C250.37,-41.2 306.96,-45.91 340.69,-48.72"></path>
-<polygon fill="black" stroke="black" points="340.75,-51.19 347.92,-49.33 341.15,-46.3 340.75,-51.19"></polygon>
-</g>
-<!-- H13&#45;&gt;H21 -->
-<g id="edge14" class="edge">
-<title>H13-&gt;H21</title>
-<path fill="none" stroke="black" d="M219.6,-144.1C249.82,-136.54 307.84,-122.04 341.69,-113.58"></path>
-<polygon fill="black" stroke="black" points="342.33,-115.94 348.52,-111.87 341.14,-111.19 342.33,-115.94"></polygon>
-</g>
-<!-- H13&#45;&gt;H22 -->
-<g id="edge15" class="edge">
-<title>H13-&gt;H22</title>
-<path fill="none" stroke="black" d="M217.66,-138.7C247.99,-121.01 309.99,-84.84 344.14,-64.92"></path>
-<polygon fill="black" stroke="black" points="345.76,-66.81 350.58,-61.16 343.29,-62.58 345.76,-66.81"></polygon>
-</g>
-<!-- O1 -->
-<g id="node9" class="node">
-<title>O1</title>
-<ellipse fill="none" stroke="black" cx="533" cy="-65" rx="21" ry="21"></ellipse>
-<text text-anchor="middle" x="533" y="-61.4" font-family="Times,serif" font-size="12.00">O</text>
-</g>
-<!-- H21&#45;&gt;O1 -->
-<g id="edge16" class="edge">
-<title>H21-&gt;O1</title>
-<path fill="none" stroke="black" d="M389.54,-101.93C418.49,-94.43 472.84,-80.34 505.4,-71.9"></path>
-<polygon fill="black" stroke="black" points="506.23,-74.21 512.39,-70.08 505,-69.47 506.23,-74.21"></polygon>
-</g>
-<!-- H22&#45;&gt;O1 -->
-<g id="edge17" class="edge">
-<title>H22-&gt;O1</title>
-<path fill="none" stroke="black" d="M390.19,-52.74C419.09,-55.24 472.32,-59.84 504.7,-62.64"></path>
-<polygon fill="black" stroke="black" points="504.88,-65.12 512.06,-63.28 505.3,-60.23 504.88,-65.12"></polygon>
-</g>
-</g>
-</svg>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
-<p>Neural networks is also flexible. It does not necessarily have output size of 1. For example, we can have a neural network with output size of 3, such as a more complicated version of softmax regression.</p>
-<section id="activation-functions" class="level3">
-<h3 class="anchored" data-anchor-id="activation-functions">Activation Functions</h3>
-<p>Activation functions are used in neural networks to introduce non-linearity into the model. Without activation functions, a neural network would simply be a linear regression model, regardless of the number of layers. Activation functions allow the network to learn complex patterns in the data. In the above examples, we use the logistic function as the activation function. However, there are many other activation functions that can be used in neural networks. Some commonly used activation functions are:</p>
-<div id="fbc62793" class="cell" data-execution_count="3">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">100</span>)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> logistic(x):</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">1</span> <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> np.exp(<span class="op">-</span>x))</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> tanh(x):</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.tanh(x)</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> relu(x):</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.maximum(<span class="dv">0</span>, x)</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">3</span>))</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">0</span>].plot(x, logistic(x))</span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">0</span>].set_title(<span class="vs">r'logistic: </span><span class="dv">$</span><span class="ch">\f</span><span class="vs">rac</span><span class="op">{1}</span><span class="vs">{1 </span><span class="op">+</span><span class="vs"> e</span><span class="dv">^</span><span class="vs">{-x}}</span><span class="dv">$</span><span class="vs">'</span>)</span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">1</span>].plot(x, tanh(x))</span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">1</span>].set_title(<span class="vs">r'tanh: </span><span class="dv">$</span><span class="ch">\f</span><span class="vs">rac{e</span><span class="dv">^</span><span class="vs">x - e</span><span class="dv">^</span><span class="vs">{-x}}{e</span><span class="dv">^</span><span class="vs">x </span><span class="op">+</span><span class="vs"> e</span><span class="dv">^</span><span class="vs">{-x}}</span><span class="dv">$</span><span class="vs">'</span>)</span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">2</span>].plot(x, relu(x))</span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">2</span>].set_title(<span class="vs">r'ReLU: </span><span class="dv">$\m</span><span class="vs">ax</span><span class="kw">(</span><span class="vs">0, x</span><span class="kw">)</span><span class="dv">$</span><span class="vs">'</span>)</span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="introduction_files/figure-html/cell-4-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="856" height="278"></p>
-</figure>
-</div>
-</div>
-</div>
+\]</span></p>
 
 
-</section>
 </section>
 <section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr>

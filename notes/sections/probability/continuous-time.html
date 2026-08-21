@@ -296,6 +296,7 @@ window.Quarto = {
   <li><a href="#brownian-motion" id="toc-brownian-motion" class="nav-link" data-scroll-target="#brownian-motion"><span class="header-section-number">8.3</span> Brownian motion</a></li>
   <li><a href="#itô-integral" id="toc-itô-integral" class="nav-link" data-scroll-target="#itô-integral"><span class="header-section-number">8.4</span> Itô Integral</a></li>
   <li><a href="#no-arbitrage" id="toc-no-arbitrage" class="nav-link" data-scroll-target="#no-arbitrage"><span class="header-section-number">8.5</span> No Arbitrage</a></li>
+  <li><a href="#black-scholes-merton-model" id="toc-black-scholes-merton-model" class="nav-link" data-scroll-target="#black-scholes-merton-model"><span class="header-section-number">8.6</span> Black-Scholes-Merton Model</a></li>
   </ul>
 </nav>
     </div>
@@ -549,7 +550,7 @@ p_{ij}\ge 0,
 <span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-display">
-<div id="fig-brownian-motion" class="quarto-float quarto-figure quarto-figure-center anchored" height="341" width="602" data-fig-align="center">
+<div id="fig-brownian-motion" class="quarto-float quarto-figure quarto-figure-center anchored" width="602" height="341" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-brownian-motion-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="continuous-time_files/figure-html/fig-brownian-motion-output-1.png" id="fig-brownian-motion" class="quarto-figure quarto-figure-center anchored figure-img" width="602" height="341">
@@ -567,13 +568,12 @@ Figure&nbsp;8.1
 <li><span class="math inline">\(\mathbb{E}[Z_t - Z_s]\)</span>, where <span class="math inline">\(s &lt; t\)</span></li>
 <li><span class="math inline">\(\mathbb{E}[(Z_t - Z_s)^2]\)</span>, where <span class="math inline">\(s &lt; t\)</span></li>
 </ol>
-We use the definition <span class="math display">\[Z_t - Z_s \sim \mathcal{N}(0, t-s)$. The first moment is the mean of the normal distribution, and the second moment is the variance of the normal distribution.
-\]</span>
-<span class="math display">\[\begin{aligned}
+<p>We use the definition <span class="math inline">\(Z_t - Z_s \sim \mathcal{N}(0, t-s)\)</span>. The first moment is the mean of the normal distribution, and the second moment is the variance of the normal distribution. <span class="math display">\[
+\begin{aligned}
 \mathbb{E}[Z_t - Z_s] &amp;= 0 \\
 \mathbb{E}[(Z_t - Z_s)^2] &amp;= t - s
-\end{aligned}\]</span>
-<p>$$</p>
+\end{aligned}
+\]</span></p>
 </div>
 <div id="exm-brownian-motion-quadratic-variation" class="theorem example">
 <p><span class="theorem-title"><strong>Example 8.3</strong></span> Calculate the <strong>quadratic variation</strong> of <span class="math inline">\(Z_t\)</span> over the interval <span class="math inline">\([0,T]\)</span>. <span class="math display">\[
@@ -698,7 +698,7 @@ dP_t=f(t,P_t)\,dt+g(t,P_t)\,dZ_t.
 f(t,P_t)=rP_t+\frac{\mu-r}{\sigma}g(t,P_t).
 \]</span> The term <span class="math inline">\(\frac{\mu-r}{\sigma}\)</span> is called the <strong>price of risk</strong>. We are more familar with its other name – <strong>Sharpe ratio</strong>. This equation is important. The functions <span class="math inline">\(f\)</span> and <span class="math inline">\(g\)</span> cannot be chosen independently. Once the security’s exposure <span class="math inline">\(g(t,P_t)\)</span> to the aggregate Brownian shock is given, no arbitrage determines its expected return <span class="math inline">\(f(t,P_t)\)</span>.</p>
 <div id="exm-sdf" class="theorem example">
-<p><span class="theorem-title"><strong>Example 8.5</strong></span> Define another geometric Brownian motion <span class="math display">\[
+<p><span class="theorem-title"><strong>Example 8.5 (Stochastic Discount Factor)</strong></span> Define another geometric Brownian motion <span class="math display">\[
 d\Lambda_t = -r\Lambda_t\,dt-\frac{\mu-r}{\sigma}\Lambda_t\,dZ_t.
 \]</span> What is <span class="math inline">\(\mathbb{E}(d(\Lambda_tP_t))\)</span>?</p>
 <p>Applying Itô’s lemma (taking both the first and second derivatives), we have <span class="math display">\[
@@ -735,7 +735,7 @@ d(\Lambda_tP_t) = \Lambda_t f(t,P_t)\,dt + \Lambda_t g(t,P_t)\,dZ_t -rP_t\Lambda
 \frac{d\Lambda_t}{\Lambda_t} = -r\,dt-\frac{\mu-r}{\sigma}\,dZ_t
 \]</span></p>
 <div id="exm-risk-neutral-measure" class="theorem example">
-<p><span class="theorem-title"><strong>Example 8.6</strong></span> Define a new Brownian motion <span class="math inline">\(Z_t^{\mathbb Q}\)</span> by <span class="math display">\[
+<p><span class="theorem-title"><strong>Example 8.6 (Risk-neutral measure)</strong></span> Define a new Brownian motion <span class="math inline">\(Z_t^{\mathbb Q}\)</span> by <span class="math display">\[
 dZ_t^{\mathbb Q} = dZ_t + \frac{\mu-r}{\sigma}\,dt
 \]</span> What is the dynamics of <span class="math inline">\(P_t\)</span> under the new Brownian motion <span class="math inline">\(Z_t^{\mathbb Q}\)</span>?</p>
 <p>Plugging in <span class="math inline">\(dZ_t = dZ_t^{\mathbb Q} - \frac{\mu-r}{\sigma}\,dt\)</span> into the dynamics of <span class="math inline">\(P_t\)</span>, we have <span class="math display">\[
@@ -749,6 +749,23 @@ dP_t = rP_t\,dt + g(t,P_t)\,dZ_t^{\mathbb Q}
 \]</span></p>
 </div>
 <p>The above example shows that under the new Brownian motion <span class="math inline">\(Z_t^{\mathbb Q}\)</span>, the expected return of the security is equal to the risk-free rate.</p>
+</section>
+<section id="black-scholes-merton-model" class="level2" data-number="8.6">
+<h2 data-number="8.6" class="anchored" data-anchor-id="black-scholes-merton-model"><span class="header-section-number">8.6</span> Black-Scholes-Merton Model</h2>
+<p>Now we are ready to introduce the Black-Scholes-Merton model. Black-Scholes-Merton model is a continuous-time model for pricing options. It assumes that the stock price follows a geometric Brownian motion and the risk-free rate is constant. <span class="math display">\[
+dS_t = \mu S_t dt + \sigma S_t dZ_t \quad \text{and} \quad dB_t = r B_t dt
+\]</span> Options are derivatives whose payoff depends on the price of the underlying stock. Therefore, we can write the price of an option as a function of the stock price and time: <span class="math inline">\(C(t, S_t)\)</span>. Note that we need to include time <span class="math inline">\(t\)</span> as an argument because the option has a maturity date. By Itô’s lemma, we have <span class="math display">\[
+\begin{aligned}
+dC(t, S_t)
+&amp;= \frac{\partial C}{\partial t} dt + \frac{\partial C}{\partial S_t} dS_t + \frac{1}{2} \frac{\partial^2 C}{\partial S_t^2} (dS_t)^2 \\
+&amp;= \frac{\partial C}{\partial t} dt + \frac{\partial C}{\partial S_t} (\mu S_t dt + \sigma S_t dZ_t) + \frac{1}{2} \frac{\partial^2 C}{\partial S_t^2} (\sigma^2 S_t^2 dt) \\
+&amp;= \left[\frac{\partial C}{\partial t} + \mu S_t \frac{\partial C}{\partial S_t} + \frac{1}{2} \sigma^2 S_t^2 \frac{\partial^2 C}{\partial S_t^2}\right] dt + \sigma S_t \frac{\partial C}{\partial S_t} dZ_t
+\end{aligned}
+\]</span> As we mentioned before, if there is no arbitrage, the expected return of the option must satisfy the following equation: <span class="math display">\[
+\frac{\partial C}{\partial t} + \mu S_t \frac{\partial C}{\partial S_t} + \frac{1}{2} \sigma^2 S_t^2 \frac{\partial^2 C}{\partial S_t^2} = rC_t + \frac{\mu-r}{\sigma}\sigma S_t \frac{\partial C}{\partial S_t}
+\]</span> Rearranging the terms, we have the famous Black-Scholes-Merton partial differential equation: <span class="math display">\[
+\frac{\partial C}{\partial t} + \frac{1}{2} \sigma^2 S_t^2 \frac{\partial^2 C}{\partial S_t^2} + r S_t \frac{\partial C}{\partial S_t} - rC = 0
+\]</span></p>
 
 
 </section>
