@@ -326,7 +326,7 @@ Calculate the following two moments of Brownian motion $Z_t$:
 1. $\mathbb{E}[Z_t - Z_s]$, where $s < t$
 2. $\mathbb{E}[(Z_t - Z_s)^2]$, where $s < t$
 
-We use the definition $$Z_t - Z_s \sim \mathcal{N}(0, t-s)$. The first moment is the mean of the normal distribution, and the second moment is the variance of the normal distribution. 
+We use the definition $Z_t - Z_s \sim \mathcal{N}(0, t-s)$. The first moment is the mean of the normal distribution, and the second moment is the variance of the normal distribution. 
 $$
 \begin{aligned}
 \mathbb{E}[Z_t - Z_s] &= 0 \\
@@ -543,6 +543,7 @@ $$
 The term $\frac{\mu-r}{\sigma}$ is called the **price of risk**. We are more familar with its other name -- **Sharpe ratio**. This equation is important. The functions $f$ and $g$ cannot be chosen independently. Once the security's exposure $g(t,P_t)$ to the aggregate Brownian shock is given, no arbitrage determines its expected return $f(t,P_t)$.
 
 ::: {#exm-sdf}
+## Stochastic Discount Factor
 Define another geometric Brownian motion
 $$
 d\Lambda_t = -r\Lambda_t\,dt-\frac{\mu-r}{\sigma}\Lambda_t\,dZ_t.
@@ -601,6 +602,7 @@ $$
 $$
 
 ::: {#exm-risk-neutral-measure}
+## Risk-neutral measure
 Define a new Brownian motion $Z_t^{\mathbb Q}$ by
 $$
 dZ_t^{\mathbb Q} = dZ_t + \frac{\mu-r}{\sigma}\,dt
@@ -622,3 +624,27 @@ $$
 :::
 
 The above example shows that under the new Brownian motion $Z_t^{\mathbb Q}$, the expected return of the security is equal to the risk-free rate. 
+
+## Black-Scholes-Merton Model
+
+Now we are ready to introduce the Black-Scholes-Merton model. Black-Scholes-Merton model is a continuous-time model for pricing options. It assumes that the stock price follows a geometric Brownian motion and the risk-free rate is constant. 
+$$
+dS_t = \mu S_t dt + \sigma S_t dZ_t \quad \text{and} \quad dB_t = r B_t dt
+$$
+Options are derivatives whose payoff depends on the price of the underlying stock. Therefore, we can write the price of an option as a function of the stock price and time: $C(t, S_t)$. Note that we need to include time $t$ as an argument because the option has a maturity date. By Itô's lemma, we have
+$$
+\begin{aligned}
+dC(t, S_t) 
+&= \frac{\partial C}{\partial t} dt + \frac{\partial C}{\partial S_t} dS_t + \frac{1}{2} \frac{\partial^2 C}{\partial S_t^2} (dS_t)^2 \\
+&= \frac{\partial C}{\partial t} dt + \frac{\partial C}{\partial S_t} (\mu S_t dt + \sigma S_t dZ_t) + \frac{1}{2} \frac{\partial^2 C}{\partial S_t^2} (\sigma^2 S_t^2 dt) \\
+&= \left[\frac{\partial C}{\partial t} + \mu S_t \frac{\partial C}{\partial S_t} + \frac{1}{2} \sigma^2 S_t^2 \frac{\partial^2 C}{\partial S_t^2}\right] dt + \sigma S_t \frac{\partial C}{\partial S_t} dZ_t
+\end{aligned}
+$$
+As we mentioned before, if there is no arbitrage, the expected return of the option must satisfy the following equation:
+$$
+\frac{\partial C}{\partial t} + \mu S_t \frac{\partial C}{\partial S_t} + \frac{1}{2} \sigma^2 S_t^2 \frac{\partial^2 C}{\partial S_t^2} = rC_t + \frac{\mu-r}{\sigma}\sigma S_t \frac{\partial C}{\partial S_t}
+$$
+Rearranging the terms, we have the famous Black-Scholes-Merton partial differential equation:
+$$
+\frac{\partial C}{\partial t} + \frac{1}{2} \sigma^2 S_t^2 \frac{\partial^2 C}{\partial S_t^2} + r S_t \frac{\partial C}{\partial S_t} - rC = 0
+$$
