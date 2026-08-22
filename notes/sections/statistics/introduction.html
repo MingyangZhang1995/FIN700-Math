@@ -310,7 +310,9 @@ window.Quarto = {
   <li><a href="#neural-networks" id="toc-neural-networks" class="nav-link" data-scroll-target="#neural-networks"><span class="header-section-number">9.4</span> Neural Networks</a>
   <ul class="collapse">
   <li><a href="#activation-functions" id="toc-activation-functions" class="nav-link" data-scroll-target="#activation-functions">Activation Functions</a></li>
+  <li><a href="#large-language-models-llms" id="toc-large-language-models-llms" class="nav-link" data-scroll-target="#large-language-models-llms">Large Language Models (LLMs)</a></li>
   </ul></li>
+  <li><a href="#bayesian-statistics" id="toc-bayesian-statistics" class="nav-link" data-scroll-target="#bayesian-statistics"><span class="header-section-number">9.5</span> Bayesian Statistics</a></li>
   </ul>
 </nav>
     </div>
@@ -546,7 +548,7 @@ y_i = \boldsymbol{x}_i^\top\boldsymbol{\beta} + \varepsilon_i, \quad i = 1, 2, \
 \end{aligned}
 \]</span> The second equatlity follows from the moment condition <span class="math inline">\(\boldsymbol{Z}^\top\hat{\boldsymbol{e}} = \boldsymbol{0}\)</span>.</p>
 <p>In the below code, I generated a random dataset with 3000 categories and 30,000 observations. I then estimated the linear regression coefficients using both the traditional OLS method with dummy variables and the absorbing method. The traditional OLS method took significantly longer to compute than the absorbing method. The reason is that the traditional OLS method stacks the independent variables and the dummy variables together into one matrix, which is extremely hard to invert. However, absorbing method firstly defines a sparse matrix for the dummy variables and then uses the Frisch-Waugh-Lovell theorem to transform the independent variables and dependent variable before estimating the coefficients. Technically, it is much faster to invert a sparse matrix than a dense matrix.</p>
-<div id="e431d5ca" class="cell" data-execution_count="1">
+<div id="4bdf613b" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -602,12 +604,12 @@ y_i = \boldsymbol{x}_i^\top\boldsymbol{\beta} + \varepsilon_i, \quad i = 1, 2, \
 <span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Time for estimating OLS with absorbing: </span><span class="sc">{</span>mean_time_absorb<span class="sc">:.2f}</span><span class="ss"> seconds (± </span><span class="sc">{</span>std_time_absorb<span class="sc">:.2f}</span><span class="ss">) from </span><span class="sc">{</span>reps_absorb<span class="sc">}</span><span class="ss"> repetitions"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Time for estimating OLS with dummy variables: 24.77 seconds (± 8.12) from 5 repetitions
+<pre><code>Time for estimating OLS with dummy variables: 20.30 seconds (± 1.26) from 5 repetitions
 Time for estimating OLS with absorbing: 0.26 seconds (± 0.03) from 10 repetitions</code></pre>
 </div>
 </div>
 <p>In the below figures, I plot the scatter plot of <span class="math inline">\(y\)</span> against <span class="math inline">\(x\)</span> on the left and the scatter plot of <span class="math inline">\(\tilde{y}\)</span> against <span class="math inline">\(\tilde{x}\)</span> on the right. The left figure is a messy plot because the category fixed effect <span class="math inline">\(\alpha_c\)</span> is not removed, so the relationship between <span class="math inline">\(y\)</span> and <span class="math inline">\(x\)</span> is obscured. The right figure is a clean plot showing the relationship between <span class="math inline">\(y\)</span> and <span class="math inline">\(x\)</span> after removing the category fixed effect <span class="math inline">\(\alpha_c\)</span>.</p>
-<div id="7f184957" class="cell" data-execution_count="2">
+<div id="43555adc" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -1326,7 +1328,7 @@ O = b_2 + \beta_{21} H_1 + \beta_{22} H_2
 <section id="activation-functions" class="level3">
 <h3 class="anchored" data-anchor-id="activation-functions">Activation Functions</h3>
 <p>Activation functions are used in neural networks to introduce non-linearity into the model. Without activation functions, a neural network would simply be a linear regression model, regardless of the number of layers. Activation functions allow the network to learn complex patterns in the data. In the above examples, we use the logistic function as the activation function. However, there are many other activation functions that can be used in neural networks. Some commonly used activation functions are:</p>
-<div id="fbc62793" class="cell" data-execution_count="3">
+<div id="8365ea1b" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -1361,9 +1363,68 @@ O = b_2 + \beta_{21} H_1 + \beta_{22} H_2
 </div>
 </div>
 </div>
-
-
 </section>
+<section id="large-language-models-llms" class="level3">
+<h3 class="anchored" data-anchor-id="large-language-models-llms">Large Language Models (LLMs)</h3>
+<p>Please watch the videos by 3Blue1Brown. His videos will be much better than my explanation. In his videos, he explains the architecture of GPT (Generative Pre-trained Transformer). I would not say “highly recommend”. I would say “must watch” if you want to understand how LLMs work. The seminal paper is “Attention is All You Need” by Google Brain. The paper introduces the transformer architecture, which includes two key components: the attention mechanism and the encoder-decoder structure. GPT borrows the attention mechanism from the transformer architecture and simplifies the encoder-decoder structure to a decoder-only structure. Please watch the following videos by 3Blue1Brown to understand how LLMs work:</p>
+<ol type="1">
+<li><a href="https://www.youtube.com/watch?v=wjZofJX0v4M&amp;list=PLZHQObOWTQDM4E-dwvbnQTiyKDO-y9T2t&amp;index=4">Transformers, the tech behind LLMs | Deep Learning Chapter 5</a></li>
+<li><a href="https://www.youtube.com/watch?v=eMlx5fFNoYc&amp;list=PLZHQObOWTQDM4E-dwvbnQTiyKDO-y9T2t&amp;index=3">Attention in transformers, step-by-step | Deep Learning Chapter 6</a></li>
+<li><a href="https://www.youtube.com/watch?v=9-Jl0dxWQs8&amp;list=PLZHQObOWTQDM4E-dwvbnQTiyKDO-y9T2t&amp;index=2">How might LLMs store facts | Deep Learning Chapter 7</a></li>
+</ol>
+<p>For training LLMs, the seminal paper is <a href="https://arxiv.org/abs/2203.02155">Training language models to follow instructions with human feedback</a> by OpenAI. They introduce the concept of reinforcement learning with human feedback (RLHF) to train LLMs. They introduced the canonical three-stage training process for LLMs:</p>
+<ol type="1">
+<li>Pre-training: The model is trained on a large corpus of text data using unsupervised learning to learn the statistical properties of language.</li>
+<li>Fine-tuning: The model is fine-tuned on a smaller, task-specific dataset. The dataset consists of input-output pairs, where the input is a prompt and the output is the desired response.</li>
+<li>Reinforcement learning with human feedback (RLHF): The model produces multiple responses to a given prompt, and human annotators rank the responses based on their quality. The model is then trained to maximize the reward from the human feedback using reinforcement learning.</li>
+</ol>
+<p>The term “reinforcement learning” might be confusing. However, the key idea is very simple. The model is trained to maximize the reward function or minimize the loss function, without any sample data. The sample data is generated by the model itself. In RLHF, the LLM generates multiple responses to a given prompt, and human annotators rank the responses based on their quality.</p>
+</section>
+</section>
+<section id="bayesian-statistics" class="level2" data-number="9.5">
+<h2 data-number="9.5" class="anchored" data-anchor-id="bayesian-statistics"><span class="header-section-number">9.5</span> Bayesian Statistics</h2>
+<p>In finance, we rarely use Bayesian statistics in empirical work. However, Bayesian statistics is widely used in modeling, such as in asset pricing models with sentiment. As bayesian updates is considered the rational belief updating process, so it is widely used in modeling to describe how investors update their beliefs about the market. If there’s sentiment, investors may update their beliefs deviating from the bayesian updating process.</p>
+<p>Bayesian statistics treats an unknown parameter as a random variable. Before observing data, uncertainty about a parameter <span class="math inline">\(\theta\)</span> is described by a <strong>prior</strong> distribution <span class="math inline">\(p(\theta)\)</span>. After observing data <span class="math inline">\(\boldsymbol{y}\)</span>, Bayes’ rule combines the prior with the likelihood: <span class="math display">\[
+p(\theta\mid\boldsymbol{y})
+=\frac{p(\boldsymbol{y}\mid\theta)p(\theta)}{p(\boldsymbol{y})}
+\propto p(\boldsymbol{y}\mid\theta)p(\theta).
+\]</span> The resulting <strong>posterior</strong> distribution summarizes what we know about <span class="math inline">\(\theta\)</span> after seeing the data.</p>
+<p>Let’s use a simple example to illustrate the idea of Bayesian statistics. Suppose we want to estimate the mean return of a stock. We have some prior belief about the mean return <span class="math display">\[
+\mu\sim\mathcal{N}(\mu_0,\sigma_0^2),
+\]</span> meaning that we believe the mean return is normally distributed with mean <span class="math inline">\(\mu_0\)</span> and variance <span class="math inline">\(\sigma_0^2\)</span>. If we are very confident about our prior belief, then <span class="math inline">\(\sigma_0^2\)</span> is small. If we are not very confident about our prior belief, then <span class="math inline">\(\sigma_0^2\)</span> is large.</p>
+<p>Now we hear a analyst’s forecasts about the stock. We can combine our prior belief with the analyst’s forecasts to update our belief about the mean return. The analyst’s forecasts can be modeled as a normal distribution with mean <span class="math inline">\(\mu\)</span> and variance <span class="math inline">\(\sigma_a^2\)</span>: <span class="math display">\[
+y\mid\mu\sim\mathcal{N}(\mu,\sigma_a^2).
+\]</span> This means that suppose the true mean return is <span class="math inline">\(\mu\)</span>, then the analyst’s forecasts <span class="math inline">\(y\)</span> are normally distributed around <span class="math inline">\(\mu\)</span> with variance <span class="math inline">\(\sigma_a^2\)</span>. If the analyst’s forecasts is very accurate, then <span class="math inline">\(\sigma_a^2\)</span> is small. If the analyst’s forecasts is not very accurate, then <span class="math inline">\(\sigma_a^2\)</span> is large.</p>
+<p>We need to find a way to combine our prior belief and the analyst’s forecasts. Intuitively, if we are very confident about our prior belief, then we should give more weight to our prior belief. If we are not very confident about our prior belief but the analyst’s forecasts is very accurate, then we should give more weight to the analyst’s forecasts. We shall see that Bayesian statistics provides a formal way to combine our prior belief and the analyst’s forecasts, and the resulting posterior distribution reflects our intuition.</p>
+<p>Based on Bayes’ rule, the posterior distribution of <span class="math inline">\(\mu\)</span> given the analyst’s forecasts <span class="math inline">\(y\)</span> is <span class="math display">\[
+p(\mu\mid y)= \frac{p(y\mid\mu)p(\mu)}{p(y)} \propto p(y\mid\mu)p(\mu).
+\]</span> The reason we can ignore the denominator <span class="math inline">\(p(y)\)</span> is that it does not depend on <span class="math inline">\(\mu\)</span>. Let’s calculate the right-hand side of the above equation. <span class="math display">\[
+\begin{aligned}
+p(y\mid\mu)p(\mu)
+&amp;= \frac{1}{\sqrt{2\pi\sigma_a^2}}\exp\left(-\frac{(y-\mu)^2}{2\sigma_a^2}\right) \cdot \frac{1}{\sqrt{2\pi\sigma_0^2}}\exp\left(-\frac{(\mu-\mu_0)^2}{2\sigma_0^2}\right)\\
+&amp;\propto \exp\left(-\frac{(\mu-y)^2}{2\sigma_a^2}-\frac{(\mu-\mu_0)^2}{2\sigma_0^2}\right)\\
+&amp;\propto \exp\left(-\frac{1}{2}\frac{(\mu-\phi)^2}{\sigma^2}\right)\\
+\end{aligned}
+\]</span> where <span class="math display">\[
+\phi = \frac{\sigma_0^2}{\sigma_0^2+\sigma_a^2}y + \frac{\sigma_a^2}{\sigma_0^2+\sigma_a^2}\mu_0, \qquad \sigma^2 = \frac{\sigma_0^2\sigma_a^2}{\sigma_0^2+\sigma_a^2}.
+\]</span> Firstly, the posterior distribution is also a normal distribution. Secondly, the posterior mean <span class="math inline">\(\phi\)</span> is a weighted average of the prior mean <span class="math inline">\(\mu_0\)</span> and the analyst’s forecasts <span class="math inline">\(y\)</span>. If we are very confident about our prior belief (e.g.&nbsp;<span class="math inline">\(\sigma_0^2=0\)</span>), then the posterior mean is equal to the prior mean <span class="math inline">\(\mu_0\)</span>. If we are not very confident about our prior belief but the analyst’s forecasts is very accurate (e.g.&nbsp;<span class="math inline">\(\sigma_a^2=0\)</span>), then the posterior mean is equal to the analyst’s forecasts <span class="math inline">\(y\)</span>. Thirdly, the posterior variance <span class="math inline">\(\sigma^2\)</span> is smaller than both the prior variance <span class="math inline">\(\sigma_0^2\)</span> and the analyst’s forecasts variance <span class="math inline">\(\sigma_a^2\)</span>. This means that after observing the analyst’s forecasts, we are more confident about our belief about the mean return.</p>
+<p>Now suppose we have <span class="math inline">\(N\)</span> independent observations <span class="math inline">\(y_1,\ldots,y_N\)</span> with known variance <span class="math inline">\(\sigma_a^2\)</span>: <span class="math display">\[
+y_i\mid\mu\sim\mathcal{N}(\mu,\sigma_a^2),
+\]</span> How do we combine our prior belief and the <span class="math inline">\(N\)</span> observations to update our belief about the mean return? The posterior distribution of <span class="math inline">\(\mu\)</span> given the <span class="math inline">\(N\)</span> observations is <span class="math display">\[
+p(\mu\mid y_1,\ldots,y_N) \propto p(y_1,\ldots,y_N\mid\mu)p(\mu).
+\]</span> Here, as the observations are independent, we have <span class="math display">\[
+p(y_1,\ldots,y_N\mid\mu) = \prod_{i=1}^N p(y_i\mid\mu) = \prod_{i=1}^N \frac{1}{\sqrt{2\pi\sigma_a^2}}\exp\left(-\frac{(y_i-\mu)^2}{2\sigma_a^2}\right) = \frac{1}{(2\pi\sigma_a^2)^{N/2}}\exp\left(-\frac{\sum_{i=1}^N(y_i-\mu)^2}{2\sigma_a^2}\right).
+\]</span> We call this likelihood function – given the prior distribution, what is the probability of observing the data? The posterior distribution is then <span class="math display">\[
+\begin{aligned}
+p(\mu\mid y_1,\ldots,y_N)
+&amp;\propto \exp\left(-\frac{\sum_{i=1}^N(y_i-\mu)^2}{2\sigma_a^2}-\frac{(\mu-\mu_0)^2}{2\sigma_0^2}\right) \\
+&amp;\propto \exp\left(-\frac{1}{2}\frac{(\mu-\phi)^2}{\sigma^2}\right)
+\end{aligned}
+\]</span> where <span class="math display">\[
+\phi = \frac{\sigma_0^2}{\sigma_0^2+N\sigma_a^2}\sum_{i=1}^N y_i + \frac{N\sigma_a^2}{\sigma_0^2+N\sigma_a^2}\mu_0, \qquad \sigma^2 = \frac{\sigma_0^2\sigma_a^2}{\sigma_0^2+N\sigma_a^2}.
+\]</span></p>
+
+
 </section>
 <section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr>
