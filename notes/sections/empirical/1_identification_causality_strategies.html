@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>2&nbsp; Vectors and Vector Spaces – FIN700: Mathematics for PhD Finance</title>
+<title>Identification, Causality, and Identification Strategies – FIN700: Mathematics for PhD Finance</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -68,8 +68,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../../">
-<link href="../../../notes/sections/linear-algebra/linear-maps.html" rel="next">
-<link href="../../../notes/sections/finance/basic-knowledge.html" rel="prev">
+<link href="../../../notes/sections/statistics/introduction.html" rel="prev">
 <script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../../../site_libs/quarto-html/popper.min.js"></script>
@@ -152,7 +151,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/sections/linear-algebra/vectors.html">Linear Algebra</a></li><li class="breadcrumb-item"><a href="../../../notes/sections/linear-algebra/vectors.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Vectors and Vector Spaces</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/sections/empirical/1_identification_causality_strategies.html">Empirical Methods</a></li><li class="breadcrumb-item"><a href="../../../notes/sections/empirical/1_identification_causality_strategies.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Identification, Causality, and Identification Strategies</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -214,7 +213,7 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../notes/sections/linear-algebra/vectors.html" class="sidebar-item-text sidebar-link active">
+  <a href="../../../notes/sections/linear-algebra/vectors.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Vectors and Vector Spaces</span></span></a>
   </div>
 </li>
@@ -295,7 +294,7 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../notes/sections/empirical/1_identification_causality_strategies.html" class="sidebar-item-text sidebar-link">
+  <a href="../../../notes/sections/empirical/1_identification_causality_strategies.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Identification, Causality, and Identification Strategies</span></span></a>
   </div>
 </li>
@@ -311,17 +310,34 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#sec-la-vector-spaces" id="toc-sec-la-vector-spaces" class="nav-link active" data-scroll-target="#sec-la-vector-spaces"><span class="header-section-number">2.1</span> Vector spaces</a></li>
-  <li><a href="#sec-la-vector-operations" id="toc-sec-la-vector-operations" class="nav-link" data-scroll-target="#sec-la-vector-operations"><span class="header-section-number">2.2</span> Vector operations</a></li>
+  <li><a href="#begin-with-the-question-not-the-command" id="toc-begin-with-the-question-not-the-command" class="nav-link active" data-scroll-target="#begin-with-the-question-not-the-command">Begin with the question, not the command</a></li>
+  <li><a href="#the-data-generating-process-dgp" id="toc-the-data-generating-process-dgp" class="nav-link" data-scroll-target="#the-data-generating-process-dgp">The data generating process (DGP)</a>
+  <ul class="collapse">
+  <li><a href="#a-simple-dgp-for-voluntary-training" id="toc-a-simple-dgp-for-voluntary-training" class="nav-link" data-scroll-target="#a-simple-dgp-for-voluntary-training">A simple DGP for voluntary training</a></li>
+  </ul></li>
+  <li><a href="#variation-and-identification" id="toc-variation-and-identification" class="nav-link" data-scroll-target="#variation-and-identification">Variation and identification</a></li>
+  <li><a href="#causality" id="toc-causality" class="nav-link" data-scroll-target="#causality">Causality</a>
+  <ul class="collapse">
+  <li><a href="#causality-means-intervention-not-prediction" id="toc-causality-means-intervention-not-prediction" class="nav-link" data-scroll-target="#causality-means-intervention-not-prediction">Causality means intervention, not prediction</a></li>
+  </ul></li>
+  <li><a href="#dgps-can-get-very-meaty" id="toc-dgps-can-get-very-meaty" class="nav-link" data-scroll-target="#dgps-can-get-very-meaty">DGPs can get very meaty…</a></li>
+  <li><a href="#adding-more-controls" id="toc-adding-more-controls" class="nav-link" data-scroll-target="#adding-more-controls">Adding more controls?</a>
+  <ul class="collapse">
+  <li><a href="#the-experimental-ideal" id="toc-the-experimental-ideal" class="nav-link" data-scroll-target="#the-experimental-ideal">The experimental ideal</a></li>
+  </ul></li>
+  <li><a href="#the-front-door-method" id="toc-the-front-door-method" class="nav-link" data-scroll-target="#the-front-door-method">The front-door method</a>
+  <ul class="collapse">
+  <li><a href="#the-conditions-to-audit" id="toc-the-conditions-to-audit" class="nav-link" data-scroll-target="#the-conditions-to-audit">The conditions to audit</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/sections/linear-algebra/vectors.html">Linear Algebra</a></li><li class="breadcrumb-item"><a href="../../../notes/sections/linear-algebra/vectors.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Vectors and Vector Spaces</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/sections/empirical/1_identification_causality_strategies.html">Empirical Methods</a></li><li class="breadcrumb-item"><a href="../../../notes/sections/empirical/1_identification_causality_strategies.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Identification, Causality, and Identification Strategies</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span id="sec-la-vectors" class="quarto-section-identifier"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Vectors and Vector Spaces</span></span></h1>
+<h1 class="title"><span id="sec-1_identification_causality_strategies" class="quarto-section-identifier">Identification, Causality, and Identification Strategies</span></h1>
 </div>
 
 
@@ -338,231 +354,307 @@ window.Quarto = {
 </header>
 
 
-<p>Linear algebra is, at its heart, the study of linear maps — functions between spaces that respect addition and scaling. Before we can talk about such maps, however, we need the spaces they act on. That is the job of this chapter: we build up the notion of a <em>vector space</em> .</p>
-<section id="sec-la-vector-spaces" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="sec-la-vector-spaces"><span class="header-section-number">2.1</span> Vector spaces</h2>
-<p>Fix a positive integer <span class="math inline">\(n\)</span>. The set <span class="math inline">\(\mathbb{R}^n = \left\{ \boldsymbol{x} = (x_1, x_2, \dots, x_n) : x_i \in \mathbb{R} \right\}\)</span> is the collection of all ordered lists of <span class="math inline">\(n\)</span> real numbers. We call its elements <strong>vectors</strong> and write them in bold, <span class="math inline">\(\boldsymbol{x}\)</span>, reserving plain italics <span class="math inline">\(x_i\)</span> for the individual <strong>components</strong>. By convention a vector is a <em>column</em>, <span class="math display">\[
-\boldsymbol{x} = \begin{pmatrix} x_1 \\ x_2 \\ \vdots \\ x_n \end{pmatrix},
-\]</span> and we write <span class="math inline">\(\boldsymbol{x}^\top = (x_1, \dots, x_n)\)</span> for the corresponding row when it is convenient to save space on the page.</p>
-<p>Two operations make <span class="math inline">\(\mathbb{R}^n\)</span> more than a bare set. We can add two vectors component-wise, <span class="math display">\[
-\boldsymbol{x} + \boldsymbol{y} = (x_1 + y_1, \dots, x_n + y_n),
-\]</span> and we can scale a vector by a real number <span class="math inline">\(\alpha\)</span> (a <strong>scalar</strong>), <span class="math display">\[
-\alpha \boldsymbol{x} = (\alpha x_1, \dots, \alpha x_n).
-\]</span> Both results are again vectors in <span class="math inline">\(\mathbb{R}^n\)</span>. Combining the two operations gives the single most important construction in the subject.</p>
-<div id="def-linear-combination" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 2.1</strong></span> A <strong>linear combination</strong> of vectors <span class="math inline">\(\boldsymbol{v}_1, \dots, \boldsymbol{v}_k\)</span> is any vector of the form <span class="math display">\[
-\alpha_1 \boldsymbol{v}_1 + \alpha_2 \boldsymbol{v}_2 + \cdots + \alpha_k \boldsymbol{v}_k,
-\qquad \alpha_1, \dots, \alpha_k \in \mathbb{R}.
+<p>As empiricists, our job is to answer questions using data and techniques. With that being said, everything starts with research questions.</p>
+<section id="begin-with-the-question-not-the-command" class="level2">
+<h2 class="anchored" data-anchor-id="begin-with-the-question-not-the-command">Begin with the question, not the command</h2>
+<p>Suppose workers who complete a voluntary training program earn more than workers who do not. A regression can summarize that difference. It cannot, by itself, tell us whether the program raised earnings.</p>
+<p>The causal question is counterfactual:</p>
+<blockquote class="blockquote">
+<p>How much would the same worker’s earnings change if the worker completed the program rather than not completing it?</p>
+</blockquote>
+<p>Let <span class="math inline">\(Y_i(1)\)</span> denote worker <span class="math inline">\(i\)</span>’s earnings with training and <span class="math inline">\(Y_i(0)\)</span> earnings without training. The individual treatment effect is</p>
+<p><span class="math display">\[
+\tau_i=Y_i(1)-Y_i(0).
 \]</span></p>
+<p>We never observe both potential outcomes for the same worker at the same time. If worker <span class="math inline">\(i\)</span> participates, we observe <span class="math inline">\(Y_i(1)\)</span> but not <span class="math inline">\(Y_i(0)\)</span>. If the worker does not participate, we observe <span class="math inline">\(Y_i(0)\)</span> but not <span class="math inline">\(Y_i(1)\)</span>. Empirical design is the search for a credible substitute for this missing counterfactual.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
 </div>
-<p>In finance, a portfolio can be expressed as a linear combination. If <span class="math inline">\(\boldsymbol{r}_1, \dots, \boldsymbol{r}_k\)</span> are the return vectors of <span class="math inline">\(k\)</span> assets and <span class="math inline">\(w_1, \dots, w_k\)</span> are portfolio weights,then <span class="math display">\[
-\boldsymbol{r}_{\text{p}} = w_1 \boldsymbol{r}_1 + \cdots + w_k \boldsymbol{r}_k
-\]</span> is the return vector of the portfolio.</p>
-<div id="def-vector-space" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 2.2</strong></span> A <strong>vector space</strong> (over <span class="math inline">\(\mathbb{R}\)</span>) is a set <span class="math inline">\(V\)</span> on which two binary operations are defined:</p>
-<ol type="1">
-<li><strong>addition</strong>: <span class="math display">\[
-\text{if } \boldsymbol{u}, \boldsymbol{v} \in V \text{, then } \boldsymbol{u} + \boldsymbol{v} \in V
-\]</span></li>
-<li><strong>scalar multiplication</strong>: <span class="math display">\[
-\text{if } \alpha \in \mathbb{R} \text{ and } \boldsymbol{u} \in V \text{, then } \alpha \boldsymbol{u} \in V
-\]</span></li>
-</ol>
-<p>which satisfy the following axioms:</p>
-<ol type="1">
-<li><span class="math inline">\((\boldsymbol{u} + \boldsymbol{v}) + \boldsymbol{w} = \boldsymbol{u} + (\boldsymbol{v} + \boldsymbol{w})\)</span>.</li>
-<li><span class="math inline">\(\boldsymbol{u} + \boldsymbol{v} = \boldsymbol{v} + \boldsymbol{u}\)</span>.</li>
-<li>There exists <span class="math inline">\(\boldsymbol{0} \in V\)</span>, such that <span class="math inline">\(\boldsymbol{v} + \boldsymbol{0} = \boldsymbol{v}\)</span>.</li>
-<li>For all <span class="math inline">\(\boldsymbol{v}\)</span>, there exists <span class="math inline">\(-\boldsymbol{v} \in V\)</span> with <span class="math inline">\(\boldsymbol{v} + (-\boldsymbol{v}) = \boldsymbol{0}\)</span>.</li>
-<li><span class="math inline">\(\alpha(\beta \boldsymbol{v}) = (\alpha\beta)\boldsymbol{v}\)</span>.</li>
-<li><span class="math inline">\(1\,\boldsymbol{v} = \boldsymbol{v}\)</span>.</li>
-<li><span class="math inline">\(\alpha(\boldsymbol{u} + \boldsymbol{v}) = \alpha\boldsymbol{u} + \alpha\boldsymbol{v}\)</span>.</li>
-<li><span class="math inline">\((\alpha + \beta)\boldsymbol{v} = \alpha\boldsymbol{v} + \beta\boldsymbol{v}\)</span>.</li>
-</ol>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>From research question to identification
 </div>
-<p>The list looks long, but every axiom simply says that addition and scaling behave the way the notation already tempts you to assume. One checks directly that <span class="math inline">\(\mathbb{R}^n\)</span>, with the componentwise operations above, satisfies all eight; it is the prototype we keep in mind. The value of the abstract definition is that it is satisfied by many other sets as well.</p>
-<p>Inside a vector space, the interesting subsets are those that are themselves closed under the two operations — take a linear combination of members and you never leave the subset.</p>
-<div id="def-subspace" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 2.3</strong></span> A subset <span class="math inline">\(W \subseteq V\)</span> is a <strong>subspace</strong> if it is nonempty and closed under addition and scalar multiplication: whenever <span class="math inline">\(\boldsymbol{u}, \boldsymbol{v} \in W\)</span> and <span class="math inline">\(\alpha \in \mathbb{R}\)</span>, both <span class="math inline">\(\boldsymbol{u} + \boldsymbol{v} \in W\)</span> and <span class="math inline">\(\alpha \boldsymbol{u} \in W\)</span>.</p>
 </div>
-<div id="def-span" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 2.4</strong></span> The <strong>span</strong> of <span class="math inline">\(\boldsymbol{v}_1, \dots, \boldsymbol{v}_k\)</span> is the set of all their linear combinations, <span class="math display">\[
-\operatorname{span}(\boldsymbol{v}_1, \dots, \boldsymbol{v}_k)
-  = \{ \alpha_1 \boldsymbol{v}_1 + \cdots + \alpha_k \boldsymbol{v}_k : \alpha_i \in \mathbb{R} \}.
-\]</span> If this set is all of <span class="math inline">\(V\)</span>, we say the vectors <strong>span</strong> <span class="math inline">\(V\)</span>.</p>
+<div class="callout-body-container callout-body">
+<p>A research question connects theory to hypotheses; identification establishes the extent to which we are testing those hypotheses rather than something else.</p>
+<p>Identification is often complicated because the data generating process (DGP) is often complicated.</p>
 </div>
-<p>Spanning asks whether a list is large enough to reach every vector. The complementary question is whether it is efficient — whether any vector is redundant, expressible through the others.</p>
-<div id="def-linear-independence" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 2.5</strong></span> The vectors <span class="math inline">\(\boldsymbol{v}_1, \dots, \boldsymbol{v}_k\)</span> are <strong>linearly independent</strong> if the only linear combination equal to <span class="math inline">\(\boldsymbol{0}\)</span> is the trivial one: <span class="math display">\[
-\alpha_1 \boldsymbol{v}_1 + \cdots + \alpha_k \boldsymbol{v}_k = \boldsymbol{0}
-\quad\Longrightarrow\quad
-\alpha_1 = \cdots = \alpha_k = 0.
-\]</span> Otherwise they are <strong>linearly dependent</strong>, and some vector among them is a linear combination of the rest.</p>
 </div>
-<p>Independence is exactly what makes representations unique, which is the property we actually care about.</p>
-<div id="exm-multicollinearity" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.1</strong></span> In linear regression <span class="math inline">\(y=\boldsymbol{X}\beta\)</span>, we always want to avoid <em>perfect multicollinearity</em>, a situation where the exogenous variables <span class="math inline">\(\boldsymbol{X}\)</span> are linearly dependent. For example, if there is a constant in the regression, the maximum number of dummy variables for a <span class="math inline">\(N\)</span>-category variable is <span class="math inline">\(N-1\)</span>. Otherwise, the summation of dummies is equal to 1 (the constant).</p>
-</div>
-<div id="thm-unique-coordinates" class="theorem">
-<p><span class="theorem-title"><strong>Theorem 2.1</strong></span> If <span class="math inline">\(\boldsymbol{v}_1, \dots, \boldsymbol{v}_k\)</span> are linearly independent, then every vector in their span is a linear combination of them in <strong>exactly one</strong> way.</p>
-</div>
-<div class="proof">
-<p><span class="proof-title"><em>Proof</em>. </span>Suppose some <span class="math inline">\(\boldsymbol{x}\)</span> in the span had two representations, <span class="math display">\[
-\boldsymbol{x} = \sum_i \alpha_i \boldsymbol{v}_i = \sum_i \beta_i \boldsymbol{v}_i.
-\]</span> Subtracting gives <span class="math inline">\(\sum_i (\alpha_i - \beta_i)\boldsymbol{v}_i = \boldsymbol{0}\)</span>. By independence, <span class="math inline">\(\alpha_i = \beta_i\)</span> for all <span class="math inline">\(i\)</span>; the two representations coincide.</p>
-</div>
-<div id="def-basis" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 2.6</strong></span> A <strong>basis</strong> of vector space <span class="math inline">\(V\)</span> is a list of vectors that is linearly independent and spans <span class="math inline">\(V\)</span>.</p>
-</div>
-<div id="exm-standard-basis" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.2</strong></span> In <span class="math inline">\(\mathbb{R}^n\)</span> the <strong>standard basis</strong> is <span class="math inline">\(\boldsymbol{e}_1, \dots, \boldsymbol{e}_n\)</span>, where <span class="math inline">\(\boldsymbol{e}_i\)</span> has a <span class="math inline">\(1\)</span> in position <span class="math inline">\(i\)</span> and <span class="math inline">\(0\)</span> elsewhere. For example, in <span class="math inline">\(\mathbb{R}^2\)</span>, the standard basis is <span class="math inline">\([1,0]', [0,1]'\)</span>.</p>
-</div>
-<div id="exm-arrow-debreu-securities" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.3</strong></span> Suppose there are two possible states: good or bad. Security <span class="math inline">\(G\)</span> pays $1 in the good state and $0 in the bad state. Security <span class="math inline">\(B\)</span> pays $1 in the bad state and $0 in the good state. An investor could form any portfolio by trading only <span class="math inline">\(G\)</span> and <span class="math inline">\(B\)</span>.</p>
+</section>
+<section id="the-data-generating-process-dgp" class="level2">
+<h2 class="anchored" data-anchor-id="the-data-generating-process-dgp">The data generating process (DGP)</h2>
+<p>Broadly speaking, the <strong>data generating process (DGP)</strong> is the set of laws governing what we observe.</p>
+<p>If you let go of a ball, it drops to the ground. That’s what we observe. GRAVITY is part of the DGP for that ball—the underlying law.</p>
+<p>For our purposes, a <strong>DGP</strong> is the collection of economic, behavioral, institutional, and measurement processes that produce the data we observe.</p>
+<p>The DGP exists whether or not we model it correctly.</p>
+<section id="a-simple-dgp-for-voluntary-training" class="level3">
+<h3 class="anchored" data-anchor-id="a-simple-dgp-for-voluntary-training">A simple DGP for voluntary training</h3>
+<p>The diagram below shows one reason a raw comparison can be misleading.</p>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>graph LR</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  subgraph G ["&amp;nbsp;"]</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  direction LR</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    SG["$$S_G$$"] --&gt; SG1["$$1$$"] </span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    SG["$$S_G$$"] --&gt; SG2["$$0$$"] </span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  end</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  style G fill:none,stroke:none</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  subgraph B ["&amp;nbsp;"]</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  direction LR</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    SB["$$S_B$$"] --&gt; SB1["$$0$$"] </span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    SB["$$S_B$$"] --&gt; SB2["$$1$$"]</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  end</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  style B fill:none,stroke:none</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  subgraph P ["&amp;nbsp;"]</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  direction LR</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    Po["$$\alpha S_G + \beta S_B$$"] --&gt; Po1["$$\alpha$$"] </span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    Po["$$\alpha S_G + \beta S_B$$"] --&gt; Po2["$$\beta$$"]</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  end</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  style P fill:none,stroke:none</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  %% G B side by side</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  G ~~~ B ~~~ P</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>flowchart LR</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  M[Motivation and prior skill] --&gt; D[Training participation]</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  M --&gt; Y[Future earnings]</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  L[Local labor demand] --&gt; D</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  L --&gt; Y</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  D --&gt; Y</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">graph LR
-  subgraph G ["&amp;nbsp;"]
-  direction LR
-    SG["$$S_G$$"] --&gt; SG1["$$1$$"] 
-    SG["$$S_G$$"] --&gt; SG2["$$0$$"] 
-  end
-  style G fill:none,stroke:none
-
-  subgraph B ["&amp;nbsp;"]
-  direction LR
-    SB["$$S_B$$"] --&gt; SB1["$$0$$"] 
-    SB["$$S_B$$"] --&gt; SB2["$$1$$"]
-  end
-  style B fill:none,stroke:none
-
-  subgraph P ["&amp;nbsp;"]
-  direction LR
-    Po["$$\alpha S_G + \beta S_B$$"] --&gt; Po1["$$\alpha$$"] 
-    Po["$$\alpha S_G + \beta S_B$$"] --&gt; Po2["$$\beta$$"]
-  end
-  style P fill:none,stroke:none
-
-  %% G B side by side
-  G ~~~ B ~~~ P
+<pre class="mermaid mermaid-js">flowchart LR
+  M[Motivation and prior skill] --&gt; D[Training participation]
+  M --&gt; Y[Future earnings]
+  L[Local labor demand] --&gt; D
+  L --&gt; Y
+  D --&gt; Y
 </pre>
 </div>
 <p></p></figure><p></p>
 </div>
 </div>
 </div>
-<p>Similarly, suppose there are <span class="math inline">\(N\)</span> possible states, and <span class="math inline">\(N\)</span> securities that pay exactly one unit of value (e.g., $1) at a specific future state of the world. An investor could form any portfolio by trading only these <span class="math inline">\(N\)</span> securities.</p>
-<p>In finance, a security that pays exactly one unit of value at a specific future state of the world is called <strong>Arrow-Debreu security</strong>. Suppose there exits <span class="math inline">\(N\)</span> possible states and <span class="math inline">\(N\)</span> independent Arrow-Debreu securities in the market, then the market is <strong>complete</strong>. If there are less than <span class="math inline">\(N\)</span> independent Arrow-Debreu securities in the market, the market is <strong>incomplete</strong>.</p>
-</div>
+<p>The raw difference combines all three paths. One possible specification is</p>
+<p><span class="math display">\[
+Y_i=\alpha+\tau D_i+\beta M_i+\gamma L_i+\varepsilon_i,
+\]</span></p>
+<p>where <span class="math inline">\(D_i\)</span> indicates training, <span class="math inline">\(M_i\)</span> represents motivation and prior skill, and <span class="math inline">\(L_i\)</span> represents local labor demand. If <span class="math inline">\(M_i\)</span> or <span class="math inline">\(L_i\)</span> is omitted and correlated with <span class="math inline">\(D_i\)</span>, the difference in mean earnings need not equal <span class="math inline">\(\tau\)</span>.</p>
+<p>The equation does not solve the problem. It makes the problem visible. The empirical design still needs a reason why the treatment variation used in estimation is unrelated to the <strong>unobserved</strong> determinants inside the error term.</p>
 </section>
-<section id="sec-la-vector-operations" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="sec-la-vector-operations"><span class="header-section-number">2.2</span> Vector operations</h2>
-<div id="def-inner-product" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 2.7</strong></span> The <strong>inner product</strong> (or dot product) of <span class="math inline">\(\boldsymbol{x}, \boldsymbol{y} \in \mathbb{R}^n\)</span> is the scalar <span class="math display">\[
-\langle \boldsymbol{x}, \boldsymbol{y} \rangle = \boldsymbol{x}^\top \boldsymbol{y} = \sum_{i=1}^n x_i y_i .
-\]</span></p>
-</div>
-<p>The inner product is</p>
+</section>
+<section id="variation-and-identification" class="level2">
+<h2 class="anchored" data-anchor-id="variation-and-identification">Variation and identification</h2>
+<p>Variables change across people, firms, places, and time for many reasons. A causal design rarely uses all of that variation. It isolates a particular component and argues that this component changes treatment while leaving the untreated potential outcome comparable.</p>
+<p><strong>Where is your variation?</strong> The task of answering our research question is really the task of finding relevant variation.</p>
+<p><strong>Identification</strong>: The process of finding the relevant variation and isolating just the part of interest is called identification.</p>
+<p>Before running any command, complete this sentence:</p>
+<blockquote class="blockquote">
+<p>My estimate compares <strong>[units]</strong> using variation in treatment created by <strong>[institution or rule]</strong>. Without treatment, their outcomes would be comparable because <strong>[assumption]</strong>. The estimate applies to <strong>[population and margin]</strong>.</p>
+</blockquote>
+</section>
+<section id="causality" class="level2">
+<h2 class="anchored" data-anchor-id="causality">Causality</h2>
+<p>We care about causality because many of the research questions we are interested in are causal in nature.</p>
+<section id="causality-means-intervention-not-prediction" class="level3">
+<h3 class="anchored" data-anchor-id="causality-means-intervention-not-prediction">Causality means intervention, not prediction</h3>
+<p>We say X causes Y if, were we to intervene on X, the <strong>distribution</strong> of Y would also change.</p>
+<p>Compare three statements:</p>
 <ol type="1">
-<li><strong>symmetric</strong>: <span class="math inline">\(\langle \boldsymbol{x}, \boldsymbol{y}\rangle = \langle \boldsymbol{y}, \boldsymbol{x}\rangle\)</span>,</li>
-<li><strong>linear in each argument</strong>: <span class="math inline">\(\langle \alpha\boldsymbol{x} + \beta\boldsymbol{y}, \boldsymbol{z}\rangle = \alpha\langle \boldsymbol{x}, \boldsymbol{z}\rangle + \beta\langle\boldsymbol{y}, \boldsymbol{z}\rangle\)</span></li>
-<li><strong>positive definite</strong>: <span class="math inline">\(\langle \boldsymbol{x}, \boldsymbol{x}\rangle \ge 0\)</span>, with equality only when <span class="math inline">\(\boldsymbol{x} = \boldsymbol{0}\)</span>. Positive definiteness is what lets us define a length.</li>
+<li>Workers who complete training earn more.</li>
+<li>Training completion predicts earnings.</li>
+<li>Completing training raises earnings.</li>
 </ol>
-<div id="def-norm" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 2.8</strong></span> The <strong>(Euclidean) norm</strong> of <span class="math inline">\(\boldsymbol{x}\)</span> is <span class="math inline">\(\lVert \boldsymbol{x} \rVert = \sqrt{\langle\boldsymbol{x}, \boldsymbol{x}\rangle} = \bigl(\sum_i x_i^2\bigr)^{1/2}\)</span>, and the <strong>distance</strong> between <span class="math inline">\(\boldsymbol{x}\)</span> and <span class="math inline">\(\boldsymbol{y}\)</span> is <span class="math inline">\(\lVert \boldsymbol{x} - \boldsymbol{y}\rVert\)</span>.</p>
-</div>
-<p>Scaling behaves as it should, <span class="math inline">\(\lVert \alpha \boldsymbol{x}\rVert = |\alpha|\,\lVert \boldsymbol{x}\rVert\)</span>, and <span class="math inline">\(\lVert \boldsymbol{x}\rVert = 0\)</span> only for <span class="math inline">\(\boldsymbol{x} = \boldsymbol{0}\)</span>.</p>
-<div id="def-orthogonal" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 2.9</strong></span> Vectors <span class="math inline">\(\boldsymbol{x}\)</span> and <span class="math inline">\(\boldsymbol{y}\)</span> are <strong>orthogonal</strong>, written <span class="math inline">\(\boldsymbol{x} \perp \boldsymbol{y}\)</span>, if <span class="math inline">\(\langle \boldsymbol{x}, \boldsymbol{y}\rangle = 0\)</span>.</p>
-</div>
-<div id="thm-projection-line" class="theorem">
-<p><span class="theorem-title"><strong>Theorem 2.2</strong></span> The <strong>orthogonal projection</strong> of <span class="math inline">\(\boldsymbol{y}\)</span> onto <span class="math inline">\(\operatorname{span}(\boldsymbol{x})\)</span> is <span class="math display">\[
-\operatorname{proj}_{\boldsymbol{x}}(\boldsymbol{y}) = \frac{\langle \boldsymbol{y}, \boldsymbol{x}\rangle}{\langle \boldsymbol{x}, \boldsymbol{x}\rangle}\, \boldsymbol{x}.
+<p>The first two describe an observed relationship. The third is directional and causal: it claims that changing training status would change earnings. Evidence for statements 1 or 2 is not automatically evidence for statement 3.</p>
+<section id="from-intervention-to-conditional-independence" class="level4">
+<h4 class="anchored" data-anchor-id="from-intervention-to-conditional-independence">From intervention to conditional independence</h4>
+<p>The intervention language becomes an identification condition in the potential-outcomes framework. Let <span class="math inline">\(D_i \in \{0,1\}\)</span> denote treatment status. If treatment is randomly assigned, then</p>
+<p><span class="math display">\[
+\{Y_i(1),Y_i(0)\} \perp D_i.
 \]</span></p>
-</div>
-<p>Let’s now understand why orthogonal is defined by inner product equal to zero. In the meantime, let’s also show the orthogonal projection theorem.</p>
-<div id="44bb3b9a" class="cell" data-execution_count="1">
+<p>This independence statement says that treatment assignment reveals nothing about either potential outcome. The treated and control groups therefore have the same distributions of outcomes they would experience under either treatment state. With consistency, random assignment allows the observed difference in means to identify the average treatment effect:</p>
+<p><span class="math display">\[
+E[Y_i \mid D_i=1]-E[Y_i \mid D_i=0]
+=E[Y_i(1)-Y_i(0)].
+\]</span></p>
+<p>In observational studies, the corresponding assumption is often <strong>conditional independence</strong>:</p>
+<p><span class="math display">\[
+\{Y_i(1),Y_i(0)\} \perp D_i \mid X_i,
+\]</span></p>
+<p>where <span class="math inline">\(X_i\)</span> contains observed pre-treatment characteristics. Within groups having the same <span class="math inline">\(X_i\)</span>, treatment assignment must be unrelated to both potential outcomes. This does <strong>not</strong> assert that the observed outcome <span class="math inline">\(Y_i\)</span> is independent of treatment; a causal effect means that <span class="math inline">\(Y_i\)</span> may change when <span class="math inline">\(D_i\)</span> changes. Identification also requires overlap, <span class="math inline">\(0&lt;P(D_i=1\mid X_i)&lt;1\)</span>, so that treated and untreated units can be compared at relevant values of <span class="math inline">\(X_i\)</span>. Conditional independence is a substantive claim about the assignment process, not something the observed data can establish on their own.</p>
+</section>
+<section id="shorts-and-ice-cream" class="level4">
+<h4 class="anchored" data-anchor-id="shorts-and-ice-cream">Shorts and ice cream</h4>
+<p>The number of people wearing shorts is much higher on days when people eat ice cream.</p>
+<p>Is there any causal relationship?</p>
+<p>If we are able to swap out someone’s pants for shorts…</p>
+</section>
+</section>
+</section>
+<section id="dgps-can-get-very-meaty" class="level2">
+<h2 class="anchored" data-anchor-id="dgps-can-get-very-meaty">DGPs can get very meaty…</h2>
+<div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.array([<span class="fl">2.</span>,<span class="fl">1.</span>])</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> np.array([<span class="fl">1.</span>,<span class="fl">2.</span>])</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> np.dot(y, x)<span class="op">/</span>np.dot(x,x)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">5</span>))</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>ax.quiver(<span class="dv">0</span>, <span class="dv">0</span> , x[<span class="dv">0</span>], x[<span class="dv">1</span>], angles<span class="op">=</span><span class="st">"xy"</span>, scale_units<span class="op">=</span><span class="st">"xy"</span>, scale<span class="op">=</span><span class="dv">1</span>, )</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>ax.text(x[<span class="dv">0</span>], x[<span class="dv">1</span>]<span class="op">-</span><span class="fl">0.1</span>, <span class="vs">r"</span><span class="dv">$\b</span><span class="vs">oldsymbol{x}</span><span class="dv">$</span><span class="vs">"</span>)</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>ax.quiver(<span class="dv">0</span>, <span class="dv">0</span> , y[<span class="dv">0</span>], y[<span class="dv">1</span>], angles<span class="op">=</span><span class="st">"xy"</span>, scale_units<span class="op">=</span><span class="st">"xy"</span>, scale<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>ax.text(y[<span class="dv">0</span>]<span class="op">-</span><span class="fl">0.1</span>, y[<span class="dv">1</span>], <span class="vs">r"</span><span class="dv">$\b</span><span class="vs">oldsymbol{y}</span><span class="dv">$</span><span class="vs">"</span>)</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>ax.quiver(<span class="dv">0</span>, <span class="dv">0</span> , (t<span class="op">*</span>x)[<span class="dv">0</span>], (t<span class="op">*</span>x)[<span class="dv">1</span>], angles<span class="op">=</span><span class="st">"xy"</span>, scale_units<span class="op">=</span><span class="st">"xy"</span>, scale<span class="op">=</span><span class="dv">1</span>, color<span class="op">=</span><span class="st">'tab:red'</span>)</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>ax.text((t<span class="op">*</span>x)[<span class="dv">0</span>], (t<span class="op">*</span>x)[<span class="dv">1</span>]<span class="op">-</span><span class="fl">0.1</span>, <span class="vs">r"</span><span class="dv">$</span><span class="vs">t</span><span class="dv">\b</span><span class="vs">oldsymbol{x}</span><span class="dv">$</span><span class="vs">"</span>)</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>ax.quiver((t<span class="op">*</span>x)[<span class="dv">0</span>], (t<span class="op">*</span>x)[<span class="dv">1</span>], (y<span class="op">-</span>t<span class="op">*</span>x)[<span class="dv">0</span>], (y<span class="op">-</span>t<span class="op">*</span>x)[<span class="dv">1</span>], angles<span class="op">=</span><span class="st">"xy"</span>, scale_units<span class="op">=</span><span class="st">"xy"</span>, scale<span class="op">=</span><span class="dv">1</span>, color<span class="op">=</span><span class="st">'tab:red'</span>)</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>ax.text(y[<span class="dv">0</span>]<span class="op">+</span><span class="fl">0.05</span>, y[<span class="dv">1</span>], <span class="vs">r"</span><span class="dv">$\b</span><span class="vs">oldsymbol{y} - t</span><span class="dv">\b</span><span class="vs">oldsymbol{x}</span><span class="dv">$</span><span class="vs">"</span>)</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>ax.plot([<span class="op">-</span><span class="fl">0.5</span>, <span class="dv">0</span>], [<span class="op">-</span><span class="fl">0.25</span>, <span class="dv">0</span>], linestyle<span class="op">=</span><span class="st">'--'</span>, color<span class="op">=</span><span class="st">'black'</span>)</span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>ax.plot([<span class="dv">2</span>, <span class="fl">2.5</span>], [<span class="dv">1</span>, <span class="fl">1.25</span>], linestyle<span class="op">=</span><span class="st">'--'</span>, color<span class="op">=</span><span class="st">'black'</span>)</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Axes settings</span></span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>ax.set_xlim(<span class="op">-</span><span class="fl">0.5</span>, <span class="fl">2.5</span>)</span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="op">-</span><span class="fl">0.5</span>, <span class="fl">2.5</span>)</span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>ax.set_axis_off()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>flowchart LR</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  U[Motivation and prior skill] --&gt; D[Training]</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  U --&gt; Y[Earnings]</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  D --&gt; K[Job-relevant skills]</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  K --&gt; Y</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  D --&gt; Y</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  D --&gt; I[Internship shortlist]</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  R[Recruiter recommendation] --&gt; I</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  R --&gt; Y</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="vectors_files/figure-html/cell-2-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="391" height="389"></p>
-</figure>
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  U[Motivation and prior skill] --&gt; D[Training]
+  U --&gt; Y[Earnings]
+  D --&gt; K[Job-relevant skills]
+  K --&gt; Y
+  D --&gt; Y
+  D --&gt; I[Internship shortlist]
+  R[Recruiter recommendation] --&gt; I
+  R --&gt; Y
+</pre>
+</div>
+<p></p></figure><p></p>
 </div>
 </div>
 </div>
-<p>The projection of <span class="math inline">\(\boldsymbol{y}\)</span> onto <span class="math inline">\(\boldsymbol{x}\)</span> is the point on <span class="math inline">\(\boldsymbol{x}\)</span> that is closest to <span class="math inline">\(\boldsymbol{y}\)</span>. So we want to find <span class="math inline">\(t\)</span> such that <span class="math inline">\(t\boldsymbol{x}\)</span> is closest to <span class="math inline">\(\boldsymbol{y}\)</span>. That means we minimize the norm <span class="math display">\[
-\min_{t} \lVert \boldsymbol{y} - t \boldsymbol{x}\rVert
-\]</span> equivalently, we could minimize <span class="math inline">\(\lVert \boldsymbol{y} - t \boldsymbol{x}\rVert^2\)</span> to make our life easier. Using the definition of norm, one can show that the optimal <span class="math inline">\(t\)</span> is <span class="math display">\[
-t = \frac{\langle\boldsymbol{y},\boldsymbol{x}\rangle}{\langle\boldsymbol{x},\boldsymbol{x}\rangle}
-\]</span> Therefore, the projection of <span class="math inline">\(\boldsymbol{y}\)</span> onto <span class="math inline">\(\boldsymbol{x}\)</span> is <span class="math inline">\(t\boldsymbol{x} = \frac{\langle\boldsymbol{y},\boldsymbol{x}\rangle}{\langle\boldsymbol{x},\boldsymbol{x}\rangle}\boldsymbol{x}\)</span>.</p>
-<p>Now suppose that <span class="math inline">\(\boldsymbol{y}\perp\boldsymbol{x}\)</span>, then the projection <span class="math inline">\(t\boldsymbol{x} = \frac{\langle\boldsymbol{y},\boldsymbol{x}\rangle}{\langle\boldsymbol{x},\boldsymbol{x}\rangle}\boldsymbol{x}= 0\)</span>. Given <span class="math inline">\(\boldsymbol{x}\neq 0\)</span>, we know <span class="math inline">\(\langle\boldsymbol{x},\boldsymbol{x}\rangle &gt; 0\)</span>. Therefore, we have <span class="math inline">\(\langle\boldsymbol{y},\boldsymbol{x}\rangle =0\)</span>.</p>
-<p><strong>Note</strong>: Inner product has a broader definition than <a href="#def-inner-product" class="quarto-xref">Definition&nbsp;<span>2.7</span></a>. For example, for random variable <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>, <span class="math display">\[
-\langle X, Y \rangle = E(XY)
-\]</span> is an inner product. For function <span class="math inline">\(f(x)\)</span> and <span class="math inline">\(g(x)\)</span>, <span class="math display">\[
-\langle f, g \rangle = \int_{a}^{b}f(x)g(x)dx
-\]</span> is an inner product.</p>
+<p>The diagram makes several claims:</p>
+<ul>
+<li>motivation and prior skill affect both training and earnings;</li>
+<li>training can affect earnings directly and indirectly through skills;</li>
+<li>training and recruiter recommendations both affect who reaches an internship shortlist; and</li>
+<li>recruiter recommendations also affect earnings.</li>
+</ul>
+<p><strong>What is absent matters too</strong>. The graph assumes, among other things, that recruiter recommendations do not cause training and that training does not change motivation as defined before participation. A diagram should contain the variables and arrows central to the question, not everything in the world. Its value comes from making consequential assumptions discussable.</p>
+<p>But this is not even close to the full picture of DGPs, not to mention that unobservable factors also matter.</p>
+</section>
+<section id="adding-more-controls" class="level2">
+<h2 class="anchored" data-anchor-id="adding-more-controls">Adding more controls?</h2>
+<p>We can painstakingly list all confounders and try to control for all of them. It’s almost impossible to be exhaustive—the DGPs in social science are often very involved, and many objects are almost impossible to measure.</p>
+<p>An alternative—also arguably the cleanest approach—is a randomized controlled experiment, in which researchers step in and assign treatment to people. Why does it work?</p>
+<section id="the-experimental-ideal" class="level3">
+<h3 class="anchored" data-anchor-id="the-experimental-ideal">The experimental ideal</h3>
+<p><a href="https://doi.org/10.1515/9781400829828-007">Angrist and Pischke’s <em>Mostly Harmless Econometrics</em>, Chapter 2, “The Experimental Ideal”</a>, treats random assignment as the benchmark for causal research. The central problem is selection: people who receive treatment may differ from those who do not, even before treatment has any effect.</p>
+<p>The observed difference can be decomposed as</p>
+<p><span class="math display">\[
+E[Y_i\mid D_i=1]-E[Y_i\mid D_i=0]
+=E[Y_i(1)-Y_i(0)\mid D_i=1]
++\underbrace{E[Y_i(0)\mid D_i=1]-E[Y_i(0)\mid D_i=0]}_{\text{selection bias}}.
+\]</span></p>
+<p>The first term is the average treatment effect on the treated. The second compares treated and untreated units in the no-treatment state. It is selection bias: a difference that would exist even if nobody were treated.</p>
+<p>Random assignment breaks the connection between treatment status and the potential outcomes. In expectation, the selection-bias term is zero, so the control group supplies a credible counterfactual for the treatment group. The experimental ideal is therefore more than a preference for experiments; it is a benchmark for evaluating observational designs. For any DiD, IV, or RD design, ask: <strong>What source of variation is playing the role of random assignment, and which comparison is intended to reproduce the experimental contrast?</strong></p>
+<p>Nevertheless, experiments are not a perfect solution: the data are generated intentionally, experiments can be very costly, some are almost impossible to run, and sample sizes are usually limited…</p>
+<p>Combining institutional knowledge with observational data can help us identify variation that is as good as random under certain assumptions.</p>
+<p>Suppose an oversubscribed training program allocates offers by lottery:</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>flowchart LR</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  Z[Lottery offer] --&gt; D[Training]</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  D --&gt; Y[Earnings]</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  U[Motivation and prior skill] --&gt; D</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  U --&gt; Y</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  Z[Lottery offer] --&gt; D[Training]
+  D --&gt; Y[Earnings]
+  U[Motivation and prior skill] --&gt; D
+  U --&gt; Y
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>The raw comparison in <span class="math inline">\(D\)</span> mixes lottery-induced participation with participation driven by <span class="math inline">\(U\)</span>. The lottery supplies a distinct source of variation. If <span class="math inline">\(Z\)</span> is random, affects <span class="math inline">\(Y\)</span> only through <span class="math inline">\(D\)</span>, and actually changes participation, the variation <span class="math inline">\(Z \rightarrow D\)</span> can isolate a causal route to earnings. This is the intuition behind an instrumental-variables design.</p>
+<p>The same question guides the other toolboxes:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Design</th>
+<th>Part of treatment variation isolated</th>
+<th>Main threat</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>DiD</td>
+<td>A change associated with differential policy timing</td>
+<td>Groups would have followed different untreated trends</td>
+</tr>
+<tr class="even">
+<td>IV</td>
+<td>A change induced by an instrument</td>
+<td>The instrument affects the outcome through another route</td>
+</tr>
+<tr class="odd">
+<td>RD</td>
+<td>A discontinuous change at a cutoff</td>
+<td>Other determinants also jump or units precisely sort at the cutoff</td>
+</tr>
+</tbody>
+</table>
+<p>The source need not be literally random. But every step away from deliberate randomization requires a stronger institutional argument about why the selected variation has no open path to the outcome except through treatment. Clean identification may also be local: it can apply only to periods, places, or people whose treatment responds to that variation.</p>
+</section>
+</section>
+<section id="the-front-door-method" class="level2">
+<h2 class="anchored" data-anchor-id="the-front-door-method">The front-door method</h2>
+<p>The named <strong>front-door method</strong> is a special design, not a synonym for any strategy that isolates useful variation. It can identify an effect despite unobserved treatment–outcome confounding when a mediator reveals the entire causal channel.</p>
+<p>Consider a hypothetical version of the training problem:</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>flowchart LR</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  U[Unobserved motivation] --&gt; D[Training]</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  U --&gt; Y[Earnings]</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  D --&gt; M[Verified skill credential]</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  M --&gt; Y</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  U[Unobserved motivation] --&gt; D[Training]
+  U --&gt; Y[Earnings]
+  D --&gt; M[Verified skill credential]
+  M --&gt; Y
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>The effect of <span class="math inline">\(D\)</span> on <span class="math inline">\(Y\)</span> cannot be identified by back-door adjustment because <span class="math inline">\(U\)</span> is unobserved. The diagram nevertheless suggests two identifiable links:</p>
+<ol type="1">
+<li><span class="math inline">\(D \rightarrow M\)</span>: in this graph there is no open back-door path from training to the credential.</li>
+<li><span class="math inline">\(M \rightarrow Y\)</span>: the back-door path <span class="math inline">\(M \leftarrow D \leftarrow U \rightarrow Y\)</span> can be closed by adjusting for <span class="math inline">\(D\)</span>.</li>
+</ol>
+<p>Combining those links recovers the pathway <span class="math inline">\(D \rightarrow M \rightarrow Y\)</span>. In a simple linear model with compatible assumptions, this resembles multiplying the effect of <span class="math inline">\(D\)</span> on <span class="math inline">\(M\)</span> by the effect of <span class="math inline">\(M\)</span> on <span class="math inline">\(Y\)</span> conditional on <span class="math inline">\(D\)</span>. In general, front-door adjustment uses a distributional formula rather than an automatic product of two regression coefficients.</p>
+<section id="the-conditions-to-audit" class="level3">
+<h3 class="anchored" data-anchor-id="the-conditions-to-audit">The conditions to audit</h3>
+<p>The formal method needs all of the following:</p>
+<ol type="1">
+<li><strong>Complete mediation:</strong> every directed effect of <span class="math inline">\(D\)</span> on <span class="math inline">\(Y\)</span> passes through <span class="math inline">\(M\)</span>.</li>
+<li><strong>Identified treatment–mediator link:</strong> there is no open back-door path from <span class="math inline">\(D\)</span> to <span class="math inline">\(M\)</span>.</li>
+<li><strong>Identified mediator–outcome link:</strong> conditioning on <span class="math inline">\(D\)</span> closes every back-door path from <span class="math inline">\(M\)</span> to <span class="math inline">\(Y\)</span>.</li>
+<li><strong>Well-defined timing and measurement:</strong> treatment precedes the mediator, the mediator precedes the outcome, and each represents the intended concept.</li>
+</ol>
+<p>These requirements are demanding. In the training example, networking or confidence could give training a direct route to earnings, motivation could affect credential performance, and employers could use other signals that affect both credential receipt and earnings. Any of these additions can break the design.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>A front-door candidate is a question, not an answer
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Finding a variable between treatment and outcome is easy. Defending the claim that it carries the entire effect and has the required confounding structure is hard. Draw the extra arrows that a skeptical student proposes; if the identification no longer works, that arrow names the assumption that needs evidence.</p>
+</div>
+</div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -968,14 +1060,11 @@ t = \frac{\langle\boldsymbol{y},\boldsymbol{x}\rangle}{\langle\boldsymbol{x},\bo
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../../notes/sections/finance/basic-knowledge.html" class="pagination-link" aria-label="Basic Knowledge in Finance">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Basic Knowledge in Finance</span></span>
+      <a href="../../../notes/sections/statistics/introduction.html" class="pagination-link" aria-label="Introduction to Statistics and Basic Machine Learning">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Introduction to Statistics and Basic Machine Learning</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../../notes/sections/linear-algebra/linear-maps.html" class="pagination-link" aria-label="Linear Maps and Matrices">
-        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Linear Maps and Matrices</span></span> <i class="bi bi-arrow-right-short"></i>
-      </a>
   </div>
 </nav>
 </div> <!-- /content -->

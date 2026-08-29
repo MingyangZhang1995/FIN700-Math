@@ -68,6 +68,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../../">
+<link href="../../../notes/sections/empirical/1_identification_causality_strategies.html" rel="next">
 <link href="../../../notes/sections/probability/continuous-time.html" rel="prev">
 <script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -276,6 +277,23 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="../../../notes/sections/statistics/introduction.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Introduction to Statistics and Basic Machine Learning</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Empirical Methods</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/empirical/1_identification_causality_strategies.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Identification, Causality, and Identification Strategies</span></span></a>
   </div>
 </li>
       </ul>
@@ -548,7 +566,7 @@ y_i = \boldsymbol{x}_i^\top\boldsymbol{\beta} + \varepsilon_i, \quad i = 1, 2, \
 \end{aligned}
 \]</span> The second equatlity follows from the moment condition <span class="math inline">\(\boldsymbol{Z}^\top\hat{\boldsymbol{e}} = \boldsymbol{0}\)</span>.</p>
 <p>In the below code, I generated a random dataset with 3000 categories and 30,000 observations. I then estimated the linear regression coefficients using both the traditional OLS method with dummy variables and the absorbing method. The traditional OLS method took significantly longer to compute than the absorbing method. The reason is that the traditional OLS method stacks the independent variables and the dummy variables together into one matrix, which is extremely hard to invert. However, absorbing method firstly defines a sparse matrix for the dummy variables and then uses the Frisch-Waugh-Lovell theorem to transform the independent variables and dependent variable before estimating the coefficients. Technically, it is much faster to invert a sparse matrix than a dense matrix.</p>
-<div id="4bdf613b" class="cell" data-execution_count="1">
+<div id="b14227cb" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -604,12 +622,12 @@ y_i = \boldsymbol{x}_i^\top\boldsymbol{\beta} + \varepsilon_i, \quad i = 1, 2, \
 <span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Time for estimating OLS with absorbing: </span><span class="sc">{</span>mean_time_absorb<span class="sc">:.2f}</span><span class="ss"> seconds (± </span><span class="sc">{</span>std_time_absorb<span class="sc">:.2f}</span><span class="ss">) from </span><span class="sc">{</span>reps_absorb<span class="sc">}</span><span class="ss"> repetitions"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Time for estimating OLS with dummy variables: 20.30 seconds (± 1.26) from 5 repetitions
-Time for estimating OLS with absorbing: 0.26 seconds (± 0.03) from 10 repetitions</code></pre>
+<pre><code>Time for estimating OLS with dummy variables: 12.09 seconds (± 6.08) from 5 repetitions
+Time for estimating OLS with absorbing: 0.31 seconds (± 0.02) from 10 repetitions</code></pre>
 </div>
 </div>
 <p>In the below figures, I plot the scatter plot of <span class="math inline">\(y\)</span> against <span class="math inline">\(x\)</span> on the left and the scatter plot of <span class="math inline">\(\tilde{y}\)</span> against <span class="math inline">\(\tilde{x}\)</span> on the right. The left figure is a messy plot because the category fixed effect <span class="math inline">\(\alpha_c\)</span> is not removed, so the relationship between <span class="math inline">\(y\)</span> and <span class="math inline">\(x\)</span> is obscured. The right figure is a clean plot showing the relationship between <span class="math inline">\(y\)</span> and <span class="math inline">\(x\)</span> after removing the category fixed effect <span class="math inline">\(\alpha_c\)</span>.</p>
-<div id="43555adc" class="cell" data-execution_count="2">
+<div id="41bb36ec" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -1328,7 +1346,7 @@ O = b_2 + \beta_{21} H_1 + \beta_{22} H_2
 <section id="activation-functions" class="level3">
 <h3 class="anchored" data-anchor-id="activation-functions">Activation Functions</h3>
 <p>Activation functions are used in neural networks to introduce non-linearity into the model. Without activation functions, a neural network would simply be a linear regression model, regardless of the number of layers. Activation functions allow the network to learn complex patterns in the data. In the above examples, we use the logistic function as the activation function. However, there are many other activation functions that can be used in neural networks. Some commonly used activation functions are:</p>
-<div id="8365ea1b" class="cell" data-execution_count="3">
+<div id="01f22b39" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -1842,6 +1860,9 @@ p(\mu\mid y_1,\ldots,y_N)
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../../../notes/sections/empirical/1_identification_causality_strategies.html" class="pagination-link" aria-label="Identification, Causality, and Identification Strategies">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Identification, Causality, and Identification Strategies</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

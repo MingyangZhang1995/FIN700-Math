@@ -284,6 +284,23 @@ window.Quarto = {
 </li>
       </ul>
   </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Empirical Methods</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/empirical/1_identification_causality_strategies.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Identification, Causality, and Identification Strategies</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
@@ -434,7 +451,7 @@ PV &amp;= \sum_{i=1}^n CF_{t_i} e^{-r_{t_i} t_i} \qquad \text{(for continuous co
 <span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-display">
-<div id="fig-cashflow-plot" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" width="471" height="758">
+<div id="fig-cashflow-plot" class="quarto-float quarto-figure quarto-figure-center anchored" height="758" data-fig-align="center" width="471">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-cashflow-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="basic-knowledge_files/figure-html/fig-cashflow-plot-output-1.png" id="fig-cashflow-plot" class="quarto-figure quarto-figure-center anchored figure-img" width="471" height="758">
@@ -468,7 +485,7 @@ P = \sum_{k=1}^{n} \frac{C}{(1+y)^k} + \frac{F}{(1+y)^n}
 y_{k+1} = y_k - \frac{f(y_k)}{f'(y_k)}
 \]</span> where <span class="math inline">\(f(y) = \sum_{k=1}^{n} \frac{C}{(1+y)^k} + \frac{F}{(1+y)^n} - P\)</span> and <span class="math inline">\(f'(y)\)</span> is its derivative with respect to <span class="math inline">\(y\)</span>. <img src="NewtonIteration_Ani.gif" class="img-fluid quarto-figure quarto-figure-center" alt="Newton-Raphson Method"></p>
 <p>In the below example, we use the Newton-Raphson method to find the YTM of a bond with a market price of $900, a coupon of $50, a face value of $1000, and a maturity of 10 years. The initial guess for YTM is 5% (0.05). The function returns the estimated YTM, as well as the path of estimates and function values during the iterations. As we can see, the YTM converges to approximately 6.4% after only 4 iterations. The path of estimates and function values shows how the method converges to the root of the equation.</p>
-<div id="64c4c45d" class="cell" data-execution_count="2">
+<div id="3e93e4af" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example implementation of the Newton-Raphson method for finding YTM</span></span>
@@ -588,7 +605,7 @@ F = S_0 e^{r^f T}.
 <p>By the no-arbitrage principle, as the initial investment is the same and no risk is involved, the final payoff should be the same. Therefore, we have <span class="math display">\[
 F = S_0 e^{r^f T}.
 \]</span></p>
-<div id="b01967c9" class="cell" data-execution_count="3">
+<div id="32174cd6" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -690,7 +707,7 @@ F = S_0 e^{r^f T}.
 \max(K-S_T,0).
 \]</span> The buyer pays an upfront <strong>premium</strong> for this asymmetric payoff; the option seller receives the premium and takes on the corresponding obligation. A European option can be exercised only at expiration, whereas an American option can be exercised at any time before expiration. Option investors can also sell options to earn the premium instead of exercising the option.</p>
 <p>The first four panels of the below figure plot the payoffs of a call option, a put option at strike price <span class="math inline">\(K=50\)</span>.</p>
-<div id="cb5b4482" class="cell" data-execution_count="4">
+<div id="bd943534" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np  </span>
