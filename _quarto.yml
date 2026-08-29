@@ -26,7 +26,9 @@ book:
     - part: "Statistics"
       chapters:
         - notes/sections/statistics/introduction.qmd
-
+    - part: "Empirical Methods"
+      chapters:
+        - notes\sections\empirical\1_identification_causality_strategies.qmd
 
 bibliography: references.bib
 
@@ -44,23 +46,7 @@ format:
     html-math-method: mathjax
     code-fold: true
     fig-align: center
-  # pdf:
-  #   documentclass: scrreport
-  #   papersize: letter
-  #   echo: false          # hide source code in the PDF (figures/output still show)
-  #   geometry:
-  #     - margin=1in
-  #   fig-align: center
-  #   include-in-header:
-  #     # Math macros / packages shared across the notes.
-  #     text: |
-  #       \usepackage{amsmath,amssymb,amsthm}
-  #       % Quarto loads unicode-math for the LuaLaTeX engine, which breaks amsmath's
-  #       % \boldsymbol on Greek (e.g. \boldsymbol{\varepsilon} -> "Improper alphabetic
-  #       % constant"). Map \boldsymbol to unicode-math's \symbf, which bolds Latin and
-  #       % Greek alike. Deferred to \AtBeginDocument so unicode-math is loaded first.
-  #       \AtBeginDocument{\let\boldsymbol\symbf}
-
+    
 # Executable-code defaults. Notes use Python cells backed by the uv env.
 jupyter: python3
 execute:

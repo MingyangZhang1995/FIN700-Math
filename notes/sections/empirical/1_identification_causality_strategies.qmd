@@ -1,0 +1,231 @@
+# Identification, Causality, and Identification Strategies {#sec-1_identification_causality_strategies}
+
+As empiricists, our job is to answer questions using data and techniques. With that being said, everything starts with research questions.
+
+## Begin with the question, not the command
+
+Suppose workers who complete a voluntary training program earn more than workers who do not. A regression can summarize that difference. It cannot, by itself, tell us whether the program raised earnings.
+
+The causal question is counterfactual:
+
+> How much would the same worker's earnings change if the worker completed the program rather than not completing it?
+
+Let $Y_i(1)$ denote worker $i$'s earnings with training and $Y_i(0)$ earnings without training. The individual treatment effect is
+
+$$
+\tau_i=Y_i(1)-Y_i(0).
+$$
+
+We never observe both potential outcomes for the same worker at the same time. If worker $i$ participates, we observe $Y_i(1)$ but not $Y_i(0)$. If the worker does not participate, we observe $Y_i(0)$ but not $Y_i(1)$. Empirical design is the search for a credible substitute for this missing counterfactual.
+
+::: {.callout-important}
+## From research question to identification
+
+A research question connects theory to hypotheses; identification establishes the extent to which we are testing those hypotheses rather than something else.
+
+Identification is often complicated because the data generating process (DGP) is often complicated.
+:::
+
+## The data generating process (DGP)
+
+Broadly speaking, the **data generating process (DGP)** is the set of laws governing what we observe.
+
+If you let go of a ball, it drops to the ground. That's what we observe. GRAVITY is part of the DGP for that ball—the underlying law.
+
+For our purposes, a **DGP** is the collection of economic, behavioral, institutional, and measurement processes that produce the data we observe.
+
+The DGP exists whether or not we model it correctly.
+
+### A simple DGP for voluntary training
+
+The diagram below shows one reason a raw comparison can be misleading.
+
+```{mermaid}
+flowchart LR
+  M[Motivation and prior skill] --> D[Training participation]
+  M --> Y[Future earnings]
+  L[Local labor demand] --> D
+  L --> Y
+  D --> Y
+```
+
+The raw difference combines all three paths. One possible specification is
+
+$$
+Y_i=\alpha+\tau D_i+\beta M_i+\gamma L_i+\varepsilon_i,
+$$
+
+where $D_i$ indicates training, $M_i$ represents motivation and prior skill, and $L_i$ represents local labor demand. If $M_i$ or $L_i$ is omitted and correlated with $D_i$, the difference in mean earnings need not equal $\tau$.
+
+The equation does not solve the problem. It makes the problem visible. The empirical design still needs a reason why the treatment variation used in estimation is unrelated to the **unobserved** determinants inside the error term.
+
+## Variation and identification
+
+Variables change across people, firms, places, and time for many reasons. A causal design rarely uses all of that variation. It isolates a particular component and argues that this component changes treatment while leaving the untreated potential outcome comparable.
+
+**Where is your variation?** The task of answering our research question is really the task of finding relevant variation.
+
+**Identification**: The process of finding the relevant variation and isolating just the part of interest is called identification.
+
+Before running any command, complete this sentence:
+
+> My estimate compares **[units]** using variation in treatment created by **[institution or rule]**. Without treatment, their outcomes would be comparable because **[assumption]**. The estimate applies to **[population and margin]**.
+
+
+## Causality
+
+We care about causality because many of the research questions we are interested in are causal in nature.
+
+### Causality means intervention, not prediction
+
+We say X causes Y if, were we to intervene on X, the **distribution** of Y would also change.
+
+Compare three statements:
+
+1. Workers who complete training earn more.
+2. Training completion predicts earnings.
+3. Completing training raises earnings.
+
+The first two describe an observed relationship. The third is directional and causal: it claims that changing training status would change earnings. Evidence for statements 1 or 2 is not automatically evidence for statement 3.
+
+#### From intervention to conditional independence
+
+The intervention language becomes an identification condition in the potential-outcomes framework. Let $D_i \in \{0,1\}$ denote treatment status. If treatment is randomly assigned, then
+
+$$
+\{Y_i(1),Y_i(0)\} \perp D_i.
+$$
+
+This independence statement says that treatment assignment reveals nothing about either potential outcome. The treated and control groups therefore have the same distributions of outcomes they would experience under either treatment state. With consistency, random assignment allows the observed difference in means to identify the average treatment effect:
+
+$$
+E[Y_i \mid D_i=1]-E[Y_i \mid D_i=0]
+=E[Y_i(1)-Y_i(0)].
+$$
+
+In observational studies, the corresponding assumption is often **conditional independence**:
+
+$$
+\{Y_i(1),Y_i(0)\} \perp D_i \mid X_i,
+$$
+
+where $X_i$ contains observed pre-treatment characteristics. Within groups having the same $X_i$, treatment assignment must be unrelated to both potential outcomes. This does **not** assert that the observed outcome $Y_i$ is independent of treatment; a causal effect means that $Y_i$ may change when $D_i$ changes. Identification also requires overlap, $0<P(D_i=1\mid X_i)<1$, so that treated and untreated units can be compared at relevant values of $X_i$. Conditional independence is a substantive claim about the assignment process, not something the observed data can establish on their own.
+
+#### Shorts and ice cream
+
+The number of people wearing shorts is much higher on days when people eat ice cream.
+
+Is there any causal relationship?
+
+If we are able to swap out someone's pants for shorts...
+
+## DGPs can get very meaty...
+
+```{mermaid}
+flowchart LR
+  U[Motivation and prior skill] --> D[Training]
+  U --> Y[Earnings]
+  D --> K[Job-relevant skills]
+  K --> Y
+  D --> Y
+  D --> I[Internship shortlist]
+  R[Recruiter recommendation] --> I
+  R --> Y
+```
+
+The diagram makes several claims:
+
+- motivation and prior skill affect both training and earnings;
+- training can affect earnings directly and indirectly through skills;
+- training and recruiter recommendations both affect who reaches an internship shortlist; and
+- recruiter recommendations also affect earnings.
+
+**What is absent matters too**. The graph assumes, among other things, that recruiter recommendations do not cause training and that training does not change motivation as defined before participation. A diagram should contain the variables and arrows central to the question, not everything in the world. Its value comes from making consequential assumptions discussable.
+
+But this is not even close to the full picture of DGPs, not to mention that unobservable factors also matter.
+
+## Adding more controls?
+
+We can painstakingly list all confounders and try to control for all of them. It's almost impossible to be exhaustive—the DGPs in social science are often very involved, and many objects are almost impossible to measure.
+
+An alternative—also arguably the cleanest approach—is a randomized controlled experiment, in which researchers step in and assign treatment to people. Why does it work?
+
+### The experimental ideal
+
+[Angrist and Pischke's *Mostly Harmless Econometrics*, Chapter 2, “The Experimental Ideal”](https://doi.org/10.1515/9781400829828-007), treats random assignment as the benchmark for causal research. The central problem is selection: people who receive treatment may differ from those who do not, even before treatment has any effect.
+
+The observed difference can be decomposed as
+
+$$
+E[Y_i\mid D_i=1]-E[Y_i\mid D_i=0]
+=E[Y_i(1)-Y_i(0)\mid D_i=1]
++\underbrace{E[Y_i(0)\mid D_i=1]-E[Y_i(0)\mid D_i=0]}_{\text{selection bias}}.
+$$
+
+The first term is the average treatment effect on the treated. The second compares treated and untreated units in the no-treatment state. It is selection bias: a difference that would exist even if nobody were treated.
+
+Random assignment breaks the connection between treatment status and the potential outcomes. In expectation, the selection-bias term is zero, so the control group supplies a credible counterfactual for the treatment group. The experimental ideal is therefore more than a preference for experiments; it is a benchmark for evaluating observational designs. For any DiD, IV, or RD design, ask: **What source of variation is playing the role of random assignment, and which comparison is intended to reproduce the experimental contrast?**
+
+Nevertheless, experiments are not a perfect solution: the data are generated intentionally, experiments can be very costly, some are almost impossible to run, and sample sizes are usually limited...
+
+Combining institutional knowledge with observational data can help us identify variation that is as good as random under certain assumptions.
+
+Suppose an oversubscribed training program allocates offers by lottery:
+
+```{mermaid}
+flowchart LR
+  Z[Lottery offer] --> D[Training]
+  D --> Y[Earnings]
+  U[Motivation and prior skill] --> D
+  U --> Y
+```
+
+The raw comparison in $D$ mixes lottery-induced participation with participation driven by $U$. The lottery supplies a distinct source of variation. If $Z$ is random, affects $Y$ only through $D$, and actually changes participation, the variation $Z \rightarrow D$ can isolate a causal route to earnings. This is the intuition behind an instrumental-variables design.
+
+The same question guides the other toolboxes:
+
+| Design | Part of treatment variation isolated | Main threat |
+|---|---|---|
+| DiD | A change associated with differential policy timing | Groups would have followed different untreated trends |
+| IV | A change induced by an instrument | The instrument affects the outcome through another route |
+| RD | A discontinuous change at a cutoff | Other determinants also jump or units precisely sort at the cutoff |
+
+The source need not be literally random. But every step away from deliberate randomization requires a stronger institutional argument about why the selected variation has no open path to the outcome except through treatment. Clean identification may also be local: it can apply only to periods, places, or people whose treatment responds to that variation.
+
+## The front-door method
+
+The named **front-door method** is a special design, not a synonym for any strategy that isolates useful variation. It can identify an effect despite unobserved treatment--outcome confounding when a mediator reveals the entire causal channel.
+
+Consider a hypothetical version of the training problem:
+
+```{mermaid}
+flowchart LR
+  U[Unobserved motivation] --> D[Training]
+  U --> Y[Earnings]
+  D --> M[Verified skill credential]
+  M --> Y
+```
+
+The effect of $D$ on $Y$ cannot be identified by back-door adjustment because $U$ is unobserved. The diagram nevertheless suggests two identifiable links:
+
+1. $D \rightarrow M$: in this graph there is no open back-door path from training to the credential.
+2. $M \rightarrow Y$: the back-door path $M \leftarrow D \leftarrow U \rightarrow Y$ can be closed by adjusting for $D$.
+
+Combining those links recovers the pathway $D \rightarrow M \rightarrow Y$. In a simple linear model with compatible assumptions, this resembles multiplying the effect of $D$ on $M$ by the effect of $M$ on $Y$ conditional on $D$. In general, front-door adjustment uses a distributional formula rather than an automatic product of two regression coefficients.
+
+### The conditions to audit
+
+The formal method needs all of the following:
+
+1. **Complete mediation:** every directed effect of $D$ on $Y$ passes through $M$.
+2. **Identified treatment--mediator link:** there is no open back-door path from $D$ to $M$.
+3. **Identified mediator--outcome link:** conditioning on $D$ closes every back-door path from $M$ to $Y$.
+4. **Well-defined timing and measurement:** treatment precedes the mediator, the mediator precedes the outcome, and each represents the intended concept.
+
+These requirements are demanding. In the training example, networking or confidence could give training a direct route to earnings, motivation could affect credential performance, and employers could use other signals that affect both credential receipt and earnings. Any of these additions can break the design.
+
+::: {.callout-tip}
+## A front-door candidate is a question, not an answer
+
+Finding a variable between treatment and outcome is easy. Defending the claim that it carries the entire effect and has the required confounding structure is hard. Draw the extra arrows that a skeptical student proposes; if the identification no longer works, that arrow names the assumption that needs evidence.
+:::

@@ -1,0 +1,17 @@
+# Course Home
+
+This course begins with an introduction to reseach design and causality, then unpackages three research designs used for causal inference in empirical economics and finance:
+
+1. Identification, Causality, and Identification Strategies
+2. Difference-in-Differences (DiD)
+3. Instrumental Variables (IV)
+4. Regression Discontinuity (RD)
+
+The emphasis is on connecting an economic question to a credible comparison, stating the identifying assumptions, implementing the estimator, and presenting diagnostics that make the design auditable.
+
+## Course notes
+
+- [Identification, Causality, and Identification Strategies](notes/1_identification_causality_strategies.qmd)
+- [Difference-in-Differences](notes/2_did.qmd)
+- [Instrumental Variables](notes/3_iv.qmd)
+- [Regression Discontinuity](notes/4_rd.qmd)
