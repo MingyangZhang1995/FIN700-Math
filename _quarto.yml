@@ -3,8 +3,8 @@ project:
   output-dir: _output
 
 book:
-  title: "FIN700: Mathematics for PhD Finance"
-  author: "Mingyang Zhang"
+  title: "FIN700: Bootcamp for PhD Finance"
+  author: "Tingquan Pan, Mingyang Zhang"
   search: true
   repo-url: https://github.com/MingyangZhang1995/FIN700-Math
   chapters:
@@ -29,6 +29,8 @@ book:
     - part: "Empirical Methods"
       chapters:
         - notes\sections\empirical\1_identification_causality_strategies.qmd
+        - notes\sections\empirical\2_regression_causal_inference.qmd
+        - notes\sections\empirical\3_did.qmd
 
 bibliography: references.bib
 

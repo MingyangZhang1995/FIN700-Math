@@ -1,0 +1,662 @@
+# Difference-in-Differences {#sec-3_did}
+
+## The canonical $2\times2$ DiD design
+
+The canonical design has two groups and two periods:
+
+| Group | Pre-treatment: $t=0$ | Post-treatment: $t=1$ |
+|---|---:|---:|
+| Treated group: $G_i=1$ | untreated | treated |
+| Comparison group: $G_i=0$ | untreated | untreated |
+
+Define
+
+$$
+Post_t=\mathbb{1}\{t=1\},
+\qquad
+D_{it}=G_i\times Post_t.
+$$
+
+Only the treated group in the post period has $D_{it}=1$. This is the single cell in which treatment is observed.
+
+### Potential outcomes and the target parameter
+
+Let $Y_{it}(1)$ be unit $i$'s outcome at time $t$ under treatment and $Y_{it}(0)$ its outcome without treatment. The observed outcome is
+
+$$
+Y_{it}=D_{it}Y_{it}(1)+(1-D_{it})Y_{it}(0).
+$$
+
+The usual target is the post-period average treatment effect on the treated:
+
+$$
+\boxed{
+ATT(1)=E[Y_{i1}(1)-Y_{i1}(0)\mid G_i=1]
+}.
+$$
+
+We observe $E[Y_{i1}(1)\mid G_i=1]$ but not $E[Y_{i1}(0)\mid G_i=1]$. DiD is a method for constructing this missing post-treatment counterfactual.
+
+### No anticipation
+
+Before treatment begins, treated units must still reveal their untreated potential outcomes:
+
+$$
+Y_{i0}(1)=Y_{i0}(0)
+\qquad\text{for }G_i=1.
+$$
+
+If units change behavior before formal implementation because treatment is announced or expected, the effective treatment date should be moved earlier. Calling an affected period “pre-treatment” would otherwise contaminate the baseline.
+
+### Parallel trends
+
+The identifying assumption is that, without treatment, the two groups would have experienced the same average outcome change:
+
+$$
+\boxed{
+E[Y_{i1}(0)-Y_{i0}(0)\mid G_i=1]
+=E[Y_{i1}(0)-Y_{i0}(0)\mid G_i=0]
+}.
+$$
+
+Parallel trends allows the groups to have different outcome **levels**. It restricts their untreated **changes**.
+
+Under no anticipation and parallel trends, the treated group's missing counterfactual mean is
+
+$$
+\begin{aligned}
+E[Y_{i1}(0)\mid G_i=1]
+&=E[Y_{i0}\mid G_i=1]\\
+&\quad+
+\left(
+E[Y_{i1}\mid G_i=0]-E[Y_{i0}\mid G_i=0]
+\right).
+\end{aligned}
+$$
+
+Start from the treated group's pre-treatment level and add the change observed for the comparison group.
+
+### Identification by four means
+
+Substitute the identified counterfactual into the definition of $ATT(1)$:
+
+$$
+\boxed{
+\begin{aligned}
+ATT(1)
+&=\underbrace{
+E[Y_{i1}\mid G_i=1]-E[Y_{i0}\mid G_i=1]
+}_{\text{change for treated group}}\\
+&\quad-
+\underbrace{
+\left(
+E[Y_{i1}\mid G_i=0]-E[Y_{i0}\mid G_i=0]
+\right)
+}_{\text{change for comparison group}}.
+\end{aligned}
+} \tag{4.1}
+$$
+
+DiD removes two sources of noncausal difference:
+
+- The within-group change removes time-invariant group differences.
+- Subtracting the comparison group's change removes common time shocks.
+
+What remains is attributed to treatment under parallel trends.
+
+### A numerical example
+
+Suppose the four sample means are:
+
+| Group | Pre | Post | Change |
+|---|---:|---:|---:|
+| Treated | 10 | 18 | $18-10=8$ |
+| Comparison | 8 | 12 | $12-8=4$ |
+
+The comparison group indicates that outcomes would have risen by four even without treatment. The treated group's counterfactual post-treatment mean is therefore
+
+$$
+10+4=14.
+$$
+
+The DiD estimate is
+
+$$
+\widehat\tau_{DiD}
+=(18-10)-(12-8)=8-4=4,
+$$
+
+which is the same as comparing the observed treated post mean with its counterfactual:
+
+$$
+18-14=4.
+$$
+
+::: {.callout-tip}
+## Two equivalent ways to difference
+
+The same estimate can be calculated as a difference in changes,
+
+$$
+(18-10)-(12-8),
+$$
+
+or as a change in cross-group gaps,
+
+$$
+(18-12)-(10-8).
+$$
+
+Both equal four because subtraction can be rearranged.
+:::
+
+## Estimating the $2\times2$ design
+
+### The sample four-means estimator
+
+Replacing population expectations in Equation 4.1 with sample means gives
+
+$$
+\boxed{
+\widehat\tau_{DiD}
+=\left(\overline Y_{1,1}-\overline Y_{1,0}\right)
+-\left(\overline Y_{0,1}-\overline Y_{0,0}\right),
+}
+$$
+
+where $\overline Y_{g,t}$ is the mean outcome for group $g$ in period $t$.
+
+### Regression equivalence
+
+The same estimate is the interaction coefficient in the saturated regression
+
+$$
+Y_{it}
+=\alpha+\gamma G_i+\lambda Post_t
++\tau(G_i\times Post_t)+u_{it}.
+$$
+
+The fitted cell means are
+
+| Cell | Fitted mean |
+|---|---:|
+| Comparison, pre | $\alpha$ |
+| Treated, pre | $\alpha+\gamma$ |
+| Comparison, post | $\alpha+\lambda$ |
+| Treated, post | $\alpha+\gamma+\lambda+\tau$ |
+
+Taking the difference of differences cancels $\alpha$, $\gamma$, and $\lambda$, leaving
+
+$$
+\boxed{\tau=DiD.}
+$$
+
+In the $2\times2$ design, the four-means calculation and the saturated regression are algebraically identical. The regression is a convenient implementation; the parallel-trends assumption supplies the causal interpretation.
+
+### Unit and time fixed effects
+
+With panel data, the same model can be written as
+
+$$
+Y_{it}=\alpha_i+\lambda_t+\tau D_{it}+u_{it}.
+$$
+
+In a genuine $2\times2$ design, this two-way fixed-effects regression also returns the simple DiD estimate. Unit fixed effects absorb permanent unit differences, and time fixed effects absorb shocks common to all units.
+
+### Weights define the target
+
+If units differ in size, weighted and unweighted means answer different questions. For example:
+
+- An unweighted county analysis targets the average effect across counties.
+- A population-weighted county analysis targets an average effect across people represented by those counties.
+
+When treatment effects are heterogeneous, changing the weights changes the causal parameter. Weights should therefore be chosen to match the population named in the research question, not added mechanically because they improve a regression fit.
+
+### Inference
+
+The four cells do not represent four independent observations. Outcomes are usually correlated within units over time and may be correlated within the jurisdiction or institution that assigns treatment.
+
+A useful rule is to align clustering with the level at which treatment varies. If a state adopts a policy and counties are the observations, clustering only by county ignores common state-level shocks. With few assignment clusters, conventional cluster-robust approximations may also be unreliable and require specialized inference.
+
+## Evaluating the $2\times2$ design
+
+### Parallel trends is about the untreated counterfactual
+
+The post-treatment part of parallel trends cannot be tested because $Y_{i1}(0)$ is missing for treated units. Credibility must come from a substantive explanation of why the comparison group captures the treated group's untreated change.
+
+Ask:
+
+- Why was the treated group exposed while the comparison group was not?
+- Could that reason also predict different outcome trends?
+- Were other policies or shocks introduced at the same time?
+- Could treatment spill over to the comparison group?
+- Did the composition of either group change?
+
+### What pre-treatment trends can tell us
+
+With several pre-treatment periods, we can compare earlier changes across groups. A visible differential pre-trend is evidence against a stable parallel-trends story. Flat pre-treatment event-study estimates are useful, but they do not prove the post-treatment counterfactual assumption:
+
+- pre-trend tests may have low power;
+- short pre-periods may miss slow-moving differences;
+- anticipation may contaminate periods labeled as untreated; and
+- parallel pre-trends can coexist with a post-period confounder.
+
+Pre-trends are diagnostics and falsification tools, not a certification procedure.
+
+### Conditional parallel trends
+
+Unconditional trends may differ because treated and comparison units have different observed characteristics $X_i$. A conditional parallel-trends assumption requires equal untreated changes among units with the same covariates:
+
+$$
+\boxed{
+E[\Delta Y_i(0)\mid X_i,G_i=1]
+=E[\Delta Y_i(0)\mid X_i,G_i=0].
+}
+$$
+
+We also need overlap:
+
+$$
+0<P(G_i=1\mid X_i)<1
+$$
+
+over the covariate values represented among treated units. Without comparable untreated observations, identification depends on extrapolation.
+
+Let
+
+$$
+m_0(X_i)=E[\Delta Y_i\mid X_i,G_i=0].
+$$
+
+Under conditional parallel trends, a regression-adjustment representation is
+
+$$
+ATT
+=E[\Delta Y_i-m_0(X_i)\mid G_i=1].
+$$
+
+The comparison group's conditional change predicts how the treated group would have changed without treatment.
+
+### Estimation with covariates
+
+Three common approaches implement conditional parallel trends:
+
+| Approach | Main idea | Main modeling risk |
+|---|---|---|
+| Regression adjustment | Model untreated outcome changes as a function of $X$ | Outcome-change model may be misspecified |
+| Inverse probability weighting | Reweight comparison units to resemble treated units | Propensity-score model and weak overlap |
+| Doubly robust estimation | Combine outcome regression and propensity weighting | Requires at least one nuisance model to be correct |
+
+Covariates should generally be measured before treatment and selected because they predict untreated outcome changes or treatment assignment. Post-treatment covariates can be mediators or colliders and create bad-control bias.
+
+::: {.callout-warning}
+## A covariate is not a substitute for design
+
+Adding controls to a two-way fixed-effects regression does not automatically implement conditional parallel trends. The estimator must compare treated and untreated outcome changes at common covariate values and aggregate those comparisons for the intended treated population.
+:::
+
+## Multiple periods with one treated cohort: $2\times T$
+
+Now suppose the same treated group begins treatment in period $g$, while the comparison group remains untreated throughout. There are still two groups, but there are many periods.
+
+Define the time-specific effect
+
+$$
+ATT(t)=E[Y_{it}(1)-Y_{it}(0)\mid G_i=1],
+\qquad t\ge g.
+$$
+
+Using the last pre-treatment period $g-1$ as the baseline, each post-treatment effect is identified by a $2\times2$ building block:
+
+$$
+\boxed{
+ATT(t)
+=E[Y_{it}-Y_{i,g-1}\mid G_i=1]
+-E[Y_{it}-Y_{i,g-1}\mid G_i=0].
+} \tag{4.2}
+$$
+
+For every post period $t$, Equation 4.2 uses two groups and two effective periods: the baseline and period $t$.
+
+### Event time and event studies
+
+Define event time as
+
+$$
+e=t-g.
+$$
+
+The treatment period has $e=0$, the preceding period has $e=-1$, and the first lag has $e=1$. A saturated event-study regression for this single treated cohort is
+
+$$
+Y_{it}
+=\alpha_i+\lambda_t
++\sum_{e\ne-1}\beta_e
+\left(G_i\times\mathbb{1}\{t-g=e\}\right)
++u_{it}.
+$$
+
+The omitted period $e=-1$ is the reference period. With one treated cohort and a never-treated comparison group, each post-treatment coefficient equals the corresponding DiD building block:
+
+$$
+\beta_e=ATT(g+e),
+\qquad e\ge0,
+$$
+
+under the relevant parallel-trends and no-anticipation assumptions.
+
+For $e<-1$, the coefficients compare earlier untreated changes with the baseline. They are **pre-trend diagnostics**, not treatment effects. Joint or simultaneous confidence bands are often more informative than inspecting many pointwise tests separately.
+
+### Dynamic effects and aggregation over time
+
+Post-treatment effects may grow, fade, or reverse. Report the event-time path before compressing it into one number. If a summary is needed, define it explicitly:
+
+$$
+ATT^{post}
+=\sum_{t=g}^T \omega_t ATT(t),
+\qquad
+\omega_t\ge0,
+\qquad
+\sum_{t=g}^T\omega_t=1.
+$$
+
+Equal weights answer a different question from weights based on the treated population exposed in each period.
+
+## Staggered treatment adoption: $G\times T$
+
+In many applications, units begin treatment in different periods. Let
+
+$$
+G_i=g
+$$
+
+denote the first period in which unit $i$ is treated, and let $G_i=\infty$ denote units not treated during the observed panel.
+
+An **absorbing treatment** is one that, once started, remains in place for the rest of the observed period. A unit's treatment status may move from $0$ to $1$, but it never moves back from $1$ to $0$. For example, if a state adopts a law in 2022 and the law remains effective through the end of the dataset, the law is absorbing in that panel. Therefore,
+
+$$
+D_{it}=\mathbb{1}\{t\ge G_i\}.
+$$
+
+Each adoption date defines a cohort. The design now contains many treatment cohorts and many possible comparisons.
+
+### Group-time average treatment effects
+
+Let $Y_{it}(g)$ be the potential outcome if treatment begins in period $g$, and let $Y_{it}(\infty)$ be the outcome if treatment never begins. The fundamental building block is
+
+$$
+\boxed{
+ATT(g,t)
+=E[Y_{it}(g)-Y_{it}(\infty)\mid G_i=g].
+}
+$$
+
+This parameter asks: for the cohort first treated in $g$, what is the average effect in calendar period $t$ relative to never initiating treatment?
+
+No anticipation requires
+
+$$
+Y_{it}(g)=Y_{it}(\infty)
+\qquad\text{for }t<g.
+$$
+
+### Every $ATT(g,t)$ is built from a $2\times2$ comparison
+
+Using the last untreated period $g-1$ as the baseline and never-treated units as the comparison group,
+
+$$
+\boxed{
+\begin{aligned}
+ATT(g,t)
+&=E[Y_{it}-Y_{i,g-1}\mid G_i=g]\\
+&\quad-E[Y_{it}-Y_{i,g-1}\mid G_i=\infty],
+\qquad t\ge g.
+\end{aligned}
+} \tag{4.3}
+$$
+
+Equation 4.3 is an ordinary $2\times2$ DiD using cohort $g$, the never-treated group, baseline $g-1$, and post period $t$.
+
+### Never-treated versus not-yet-treated comparisons
+
+If later cohorts remain untreated in period $t$, they may also serve as comparisons. Under a parallel-trends assumption involving not-yet-treated units,
+
+$$
+\boxed{
+\begin{aligned}
+ATT(g,t)
+&=E[Y_{it}-Y_{i,g-1}\mid G_i=g]\\
+&\quad-E[Y_{it}-Y_{i,g-1}\mid G_i>t],
+\qquad t\ge g.
+\end{aligned}
+} \tag{4.4}
+$$
+
+The comparison-group choice is an identifying assumption, not merely a software option.
+
+| Comparison group | Advantage | Concern |
+|---|---|---|
+| Never treated | Stable membership; never exposed during the panel | May be small or systematically different from adopters |
+| Not yet treated | Uses more observations and may improve overlap | Composition changes over time; future adopters may have different trends |
+
+Once every unit is treated, no untreated comparison remains. Effects in those periods are not identified by standard DiD without additional assumptions.
+
+### Aggregating the building blocks
+
+A staggered design can produce many $ATT(g,t)$ values. A summary parameter should be a transparent weighted average:
+
+$$
+\boxed{
+ATT^{summary}
+=\sum_g\sum_{t\ge g}\omega_{g,t}ATT(g,t),
+\qquad
+\omega_{g,t}\ge0,
+\qquad
+\sum_g\sum_{t\ge g}\omega_{g,t}=1.
+}
+$$
+
+Different weights answer different questions:
+
+- **Cohort averages** summarize effects for a particular adoption group.
+- **Calendar-time averages** summarize effects in a particular period.
+- **Overall averages** summarize treated observations or treated units.
+- **Event-time averages** summarize effects after a given duration of exposure.
+
+For event time $e=t-g$,
+
+$$
+ATT(e)
+=\sum_{g:g+e\le T}\omega_g(e)ATT(g,g+e).
+$$
+
+The cohorts contributing to $ATT(e)$ may change with $e$. Long-run event-time estimates often use only early adopters, so changes across event time can reflect both treatment dynamics and changing cohort composition.
+
+## Why conventional TWFE can fail
+
+The traditional response to staggered adoption is to put every cohort and period into one static two-way fixed-effects (TWFE) regression:
+
+$$
+Y_{it}=\alpha_i+\lambda_t+\beta_{TWFE}D_{it}+u_{it}.
+$$
+
+In the canonical $2\times2$ design, there is only one treated cohort and one untreated group, so the comparison behind $\beta_{TWFE}$ is unambiguous. With staggered adoption, different cohorts switch treatment on at different dates. The regression still forces all those treatment changes into one coefficient.
+
+### Why one regression creates several comparisons
+
+Consider an early cohort $E$, a late cohort $L$, and a never-treated group $N$:
+
+| Group | Period 0 | Period 1 | Period 2 |
+|---|---:|---:|---:|
+| Early cohort $E$ | 0 | 1 | 1 |
+| Late cohort $L$ | 0 | 0 | 1 |
+| Never treated $N$ | 0 | 0 | 0 |
+
+The unit fixed effects remove permanent differences among $E$, $L$, and $N$. The time fixed effects remove changes common to all three groups. After those components are removed, OLS explains the remaining outcome changes using **every remaining change in treatment status**. Because the regression does not ask us to name a comparison group, it automatically pools several comparisons:
+
+- $E$ versus $N$ when $E$ switches on;
+- $L$ versus $N$ when $L$ switches on;
+- $E$ versus the still-untreated $L$ between periods 0 and 1; and
+- $L$ versus the already-treated $E$ between periods 1 and 2.
+
+The first three comparisons use an untreated group as the counterfactual. The last comparison is different. When $L$ becomes treated in period 2, $E$ is treated in both periods 1 and 2. Since $E$ does not switch at that moment, the regression uses its outcome change as a benchmark for the change in $L$. Thus, the already-treated early cohort acts as a control for the newly treated late cohort.
+
+### The already-treated comparison problem
+
+Write the late-versus-early comparison between periods 1 and 2 as
+
+$$
+\begin{aligned}
+\operatorname{DiD}_{L,E}^{1\to2}
+&=(Y_{L,2}-Y_{L,1})-(Y_{E,2}-Y_{E,1})\\
+&=ATT(2,2)-\{ATT(1,2)-ATT(1,1)\},
+\end{aligned}
+$$
+
+under parallel untreated trends. The first term is the late cohort's effect when it enters treatment. The bracketed term is the change in the early cohort's treatment effect between its first and second treated periods. A valid control should reveal an untreated outcome change, but the early cohort's observed change contains this treatment-effect evolution.
+
+For example, suppose the late cohort's effect in period 2 is $4$, while the early cohort's effect grows from $2$ in period 1 to $6$ in period 2. Then
+
+$$
+\operatorname{DiD}_{L,E}^{1\to2}
+=4-(6-2)=0.
+$$
+
+Both cohorts have positive treatment effects, yet this particular comparison reports zero because the late cohort's gain is offset by continued growth in the early cohort's effect. If the early effect grows by more than $4$, the comparison becomes negative.
+
+The overall TWFE coefficient averages this problematic comparison together with the cleaner comparisons. Goodman-Bacon's mechanical decomposition expresses the coefficient as a weighted average of the available $2\times2$ DiDs. Although the weights on those comparisons are positive, an already-treated comparison subtracts changes in earlier cohorts' treatment effects. Once the result is expressed in terms of the underlying $ATT(g,t)$ values, some effects can therefore receive negative or otherwise unintuitive effective weights.
+
+The problem disappears if treatment effects are constant across cohorts and do not change with exposure length: an already-treated group's treatment effect then does not change between the two comparison periods. With heterogeneous or dynamic effects, however, conventional TWFE can be far from the causal average the researcher intends to estimate.
+
+### Dynamic event-study contamination
+
+The conventional staggered-adoption event-study regression
+
+$$
+Y_{it}
+=\alpha_i+\lambda_t
++\sum_{e\ne-1}\beta_e\mathbb{1}\{t-G_i=e\}
++u_{it}
+$$
+
+does not generally solve the problem. When effect paths differ across cohorts, a coefficient for one event time can be contaminated by effects at other event times and in other cohorts. Even apparent pre-treatment coefficients may reflect heterogeneous post-treatment effects rather than genuine anticipation.
+
+### When is TWFE relatively safe?
+
+The conventional specification is easiest to interpret when:
+
+- there is one treated cohort and one never-treated group;
+- the design is genuinely $2\times2$; or
+- strong restrictions make treatment effects homogeneous across cohorts and stable over time.
+
+These conditions should be argued, not assumed because the regression includes unit and time fixed effects.
+
+::: {.callout-warning}
+## Fixed effects do not cure treatment-effect heterogeneity
+
+Unit and time fixed effects remove permanent unit differences and common period shocks. They do not determine which treated cohort is a valid comparison for another, and they do not force a single TWFE coefficient to be a sensible average of heterogeneous effects.
+:::
+
+## Modern DiD: estimate building blocks, then aggregate
+
+Modern DiD methods use a forward-engineering strategy:
+
+1. Define each interpretable $ATT(g,t)$.
+2. Choose never-treated or not-yet-treated comparisons justified by a stated parallel-trends assumption.
+3. Estimate each $2\times2$ building block, optionally conditioning on covariates.
+4. Aggregate the estimates using nonnegative weights linked to the target parameter.
+
+Several estimators implement versions of this strategy.
+
+| Approach | Core idea | Useful feature |
+|---|---|---|
+| Callaway and Sant'Anna group-time ATT | Estimate $ATT(g,t)$ separately using never-treated or not-yet-treated comparisons | Transparent comparison groups, covariates, and aggregation |
+| Sun and Abraham interaction-weighted event study | Estimate cohort-by-event-time effects and aggregate them | Avoids contamination of event-time coefficients under cohort heterogeneity |
+| Borusyak, Jaravel, and Spiess imputation | Estimate untreated outcomes using untreated observations, impute treated counterfactuals, and average treated residuals | Direct counterfactual construction and flexible aggregation |
+| de Chaisemartin and D'Haultfoeuille switcher methods | Compare units whose treatment changes with appropriate stayers | Extends naturally to some designs in which treatment can switch on and off |
+| Fully interacted regression approaches | Saturate cohort and time relationships, then form explicit group-time contrasts | Uses familiar regression tools while preserving heterogeneous effects |
+
+These methods are not interchangeable defaults. They can rely on different parallel-trends assumptions, use different comparison groups and baselines, and target different aggregates. The right choice follows from the design.
+
+### Modern event studies
+
+A modern staggered event study first estimates cohort-specific effects
+
+$$
+\widehat{ATT}(g,g+e)
+$$
+
+and then forms
+
+$$
+\widehat{ATT}(e)
+=\sum_{g:g+e\le T}
+\widehat\omega_g(e)\widehat{ATT}(g,g+e).
+$$
+
+This ordering preserves the meaning of each building block. It also makes the event-time weights and changing cohort composition visible.
+
+### Covariates in modern DiD
+
+Under conditional parallel trends and overlap, regression adjustment, inverse probability weighting, or doubly robust methods can be applied within each cohort-time comparison. Covariates enter the identification strategy for a specific $ATT(g,t)$; they are not merely appended to a global TWFE regression.
+
+### Sensitivity and heterogeneity
+
+A modern analysis should go beyond a single plot:
+
+- Report cohort-specific or event-time effects when scientifically relevant.
+- Use simultaneous confidence bands for collections of event-study coefficients.
+- Examine balance and overlap for the actual comparison groups.
+- Discuss deviations from parallel trends that are substantively plausible.
+- Use sensitivity analysis to show how conclusions change under bounded violations.
+- Explain how weighting and aggregation alter the target population.
+
+## A practical DiD workflow
+
+Before estimating, complete the following design table:
+
+| Question | Required answer |
+|---|---|
+| What is treatment? | Define exposure and whether it is absorbing, reversible, binary, or continuous |
+| When does treatment begin? | Identify effective dates, including anticipation |
+| What is the target? | State $ATT(1)$, $ATT(g,t)$, an event-time effect, or a named aggregate |
+| Who supplies the counterfactual? | Name never-treated or not-yet-treated units for every comparison |
+| Why parallel trends? | Give institutional and economic reasons, not only a statistical test |
+| Are covariates needed? | State conditional parallel trends and verify overlap |
+| How are effects aggregated? | Report the weights and the population they represent |
+| Where does dependence arise? | Choose clustering and inference at the assignment level |
+| What could invalidate the design? | Address anticipation, spillovers, composition, and concurrent shocks |
+
+Then follow an estimand-first sequence:
+
+1. Plot raw outcome paths by treatment cohort.
+2. Display the treatment-timing structure and cohort sizes.
+3. Estimate transparent $ATT(g,t)$ building blocks.
+4. Plot pre-treatment diagnostics and post-treatment dynamics separately.
+5. Aggregate only after defining the target parameter.
+6. Report point estimates with appropriate uncertainty.
+7. Conduct sensitivity and heterogeneity analyses.
+
+## Class exercises
+
+### Exercise 1: Recover the four-means DiD
+
+Using the numerical $2\times2$ table above:
+
+1. Compute the treated group's change.
+2. Compute the comparison group's change.
+3. Construct the treated group's counterfactual post-treatment mean.
+4. Verify the result using the change in cross-group gaps.
+
+### Exercise 2: Identify valid staggered comparisons
+
+Suppose cohort A is treated in 2020, cohort B in 2022, and cohort C is never treated.
+
+1. Which groups can serve as untreated comparisons for cohort A in 2021?
+2. Which groups can serve as untreated comparisons for cohort A in 2023?
+3. Why is cohort A not a clean comparison for cohort B after 2020?
+4. Which parallel-trends assumption supports each proposed comparison?
+
+## Takeaway
+
+The canonical $2\times2$ DiD is a transparent comparison of four means that identifies the ATT under no anticipation and parallel trends. Multiple periods turn the design into a collection of time-specific $2\times2$ comparisons. Staggered adoption adds treatment cohorts, comparison-group choices, and aggregation choices. Modern DiD methods preserve the logic of the simple design by estimating interpretable $ATT(g,t)$ building blocks first and aggregating them according to the causal question.

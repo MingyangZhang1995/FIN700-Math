@@ -1,0 +1,1561 @@
+# From Regression to Causal Inference
+
+## The conditional expectation function
+
+Let $Y$ be an outcome and let $X$ denote a variable, or a vector of variables, that we observe. The **conditional expectation function (CEF)** is
+
+$$
+m(x)=E[Y\mid X=x].
+$$
+
+The CEF gives the population mean of $Y$ among observations with $X=x$. Evaluating it at the random variable $X$ produces an exact decomposition:
+
+$$
+Y=E[Y\mid X]+\varepsilon,
+$$
+
+where
+
+$$
+\varepsilon=Y-E[Y\mid X].
+$$
+
+The term $E[Y\mid X]$ is the part of $Y$ that can be explained, or predicted, using $X$. The residual $\varepsilon$ is the part that remains unexplained by $X$. This definition guarantees
+
+$$
+\begin{aligned}
+E[\varepsilon\mid X]
+&=E\!\left[Y-E[Y\mid X]\mid X\right]\\
+&=E[Y\mid X]-E[Y\mid X]\\
+&=0.
+\end{aligned}
+$$
+
+### Two defining features of the CEF
+
+#### The CEF is the minimum-MSE predictor
+
+Consider the set of all functions of $X$ with finite second moments. The CEF is the functional solution to the population prediction problem
+
+$$
+m^*(\cdot)
+=\underset{g(\cdot)}{\operatorname{arg\,min}}\;
+E\!\left[(Y-g(X))^2\right]
+=E[Y\mid X=\cdot].
+$$
+
+To see why, write $Y=m(X)+\varepsilon$, where $m(X)=E[Y\mid X]$. For any candidate predictor $g(X)$,
+
+$$
+\begin{aligned}
+E[(Y-g(X))^2]
+&=E[(\varepsilon+m(X)-g(X))^2]\\
+&=E[\varepsilon^2]
+  +E[(m(X)-g(X))^2]
+  +2E[\varepsilon(m(X)-g(X))]\\
+&=E[\varepsilon^2]+E[(m(X)-g(X))^2].
+\end{aligned}
+$$
+
+The cross-product is zero because $m(X)-g(X)$ is a function of $X$ and $E[\varepsilon\mid X]=0$. The first term does not depend on $g$. The second term is nonnegative and equals zero when $g(X)=m(X)$, except possibly on values of $X$ that occur with probability zero. No other predictor based only on $X$ can have a lower population mean squared error.
+
+The same residual decomposition also separates the total variation in $Y$ into an explained part and an unexplained part. Let $\mu=E[Y]$ and recall that $Y=m(X)+\varepsilon$. Subtracting the overall mean gives
+
+$$
+Y-\mu=\{m(X)-\mu\}+\varepsilon.
+$$
+
+Square both sides and take expectations:
+
+$$
+\begin{aligned}
+\operatorname{Var}(Y)
+&=E[(Y-\mu)^2]\\
+&=E[(m(X)-\mu)^2]+E[\varepsilon^2]
+  +2E[(m(X)-\mu)\varepsilon].
+\end{aligned}
+$$
+
+The cross-product is zero. At every value of $X$, $m(X)-\mu$ is fixed and $E[\varepsilon\mid X]=0$, so positive and negative residuals cancel on average. Therefore,
+
+$$
+\operatorname{Var}(Y)
+=\operatorname{Var}(m(X))+E[\varepsilon^2].
+$$
+
+Why is $E[\varepsilon^2]$ the average conditional variance? Within a group with $X=x$, the residual is exactly the deviation from that group's mean:
+
+$$
+\varepsilon=Y-E[Y\mid X=x].
+$$
+
+Consequently,
+
+$$
+E[\varepsilon^2\mid X=x]
+=E\!\left[(Y-E[Y\mid X=x])^2\mid X=x\right]
+=\operatorname{Var}(Y\mid X=x).
+$$
+
+Taking the average across the distribution of $X$ gives $E[\varepsilon^2]=E[\operatorname{Var}(Y\mid X)]$. We have therefore derived the **law of total variance**:
+
+$$
+\operatorname{Var}(Y)
+=\operatorname{Var}\!\left(E[Y\mid X]\right)
++E\!\left[\operatorname{Var}(Y\mid X)\right].
+$$
+
+The first term measures how much the group means $E[Y\mid X=x]$ vary across values of $x$. This is the variation explained by $X$. The second term averages the within-group variation of $Y$ around each group mean. Because those within-group deviations are precisely $\varepsilon$, this second term is the variation left in the residual.
+
+#### The population CEF is unobservable
+
+Even when every observation contains both $Y_i$ and $X_i$, the population function $m(x)=E[Y\mid X=x]$ is generally unobservable because we do not observe the entire population distribution of $(Y,X)$. We observe a finite sample and use it to estimate the function:
+
+$$
+\widehat m(x)\approx E[Y\mid X=x].
+$$
+
+The estimator might be a collection of group means, a linear regression, or a flexible nonparametric method. Consequently, the population residual $\varepsilon_i=Y_i-m(X_i)$ is also unobservable. What we can calculate is an estimated residual,
+
+$$
+\widehat\varepsilon_i=Y_i-\widehat m(X_i).
+$$
+
+The distinction matters: $E[\varepsilon\mid X]=0$ is a population property of the true CEF. An estimated residual may satisfy a sample analogue because of how a particular estimator is constructed, but that does not mean we have observed the population error.
+
+### Visual intuition
+
+```{ojs}
+//| echo: false
+//| label: fig-cef-conditional-distributions
+//| fig-cap: "Conditional distributions of Y at selected values of X. Each distribution is centered on the conditional expectation function."
+
+{
+  const cef = x => 1.1 + 0.55 * x + 0.08 * x * x;
+  const sigma = 0.62;
+  const xValues = [1.2, 3.0, 4.8];
+  const curve = Array.from({length: 121}, (_, i) => {
+    const x = 0.4 + i * (5.2 / 120);
+    return {x, mean: cef(x)};
+  });
+  const distributions = xValues.flatMap(x => {
+    const mean = cef(x);
+    return Array.from({length: 81}, (_, i) => {
+      const y = mean - 2.1 + i * (4.2 / 80);
+      const density = Math.exp(-0.5 * ((y - mean) / sigma) ** 2);
+      return {
+        group: x,
+        y,
+        left: x - 0.38 * density,
+        right: x + 0.38 * density
+      };
+    });
+  });
+  const centers = xValues.map(x => ({x, mean: cef(x)}));
+
+  return Plot.plot({
+    width: 760,
+    height: 440,
+    marginLeft: 58,
+    x: {label: "X", domain: [0, 6], grid: true},
+    y: {label: "Y", domain: [0, 7], grid: true},
+    marks: [
+      Plot.areaX(distributions, {
+        x1: "left",
+        x2: "right",
+        y: "y",
+        z: "group",
+        fill: "steelblue",
+        fillOpacity: 0.28,
+        stroke: "steelblue"
+      }),
+      Plot.ruleX(xValues, {stroke: "gray", strokeDasharray: "4,4"}),
+      Plot.line(curve, {x: "x", y: "mean", stroke: "black", strokeWidth: 3}),
+      Plot.dot(centers, {x: "x", y: "mean", r: 5, fill: "crimson"}),
+      Plot.text(centers, {
+        x: "x",
+        y: "mean",
+        text: d => "E[Y|X=" + d.x.toFixed(1) + "]",
+        dy: -14,
+        fontSize: 12
+      })
+    ]
+  });
+}
+```
+
+The black curve is $m(x)=E[Y\mid X=x]$. At any fixed value $x$, imagine taking a vertical slice through the joint distribution of $(Y,X)$. Outcomes can lie above or below the curve, but their conditional distribution is centered at the point $m(x)$. The red points show those conditional means for three representative values of $x$; the blue shapes show the corresponding conditional distributions.
+
+## Linear regression as a model for the CEF
+
+The CEF $m(x)=E[Y\mid X=x]$ can have any shape. Linear regression imposes a simple parametric model on that function. Let
+
+$$
+\widetilde X=(1,X_1,\ldots,X_K)^\prime
+$$
+
+denote a vector containing an intercept and the observed regressors. The **linear CEF model** assumes
+
+$$
+E[Y\mid X]=\widetilde X^\prime\beta.
+$$
+
+Under this assumption, the CEF decomposition becomes
+
+$$
+Y=\widetilde X^\prime\beta+\varepsilon,
+\qquad E[\varepsilon\mid X]=0.
+$$
+
+Thus, $\widetilde X^\prime\beta$ is the part of $Y$ explained by the linear CEF, while $\varepsilon$ contains the remaining variation around that conditional mean.
+
+### The population least-squares problem
+
+The population linear-regression coefficient is defined as the solution to
+
+$$
+\beta_{\mathrm{LP}}
+=\underset{b\in\mathbb{R}^{K+1}}{\operatorname{arg\,min}}
+E\!\left[(Y-\widetilde X^\prime b)^2\right].
+$$
+
+This optimization searches over every linear function of the regressors and chooses the one with the smallest population mean squared prediction error. Using $Y=m(X)+\varepsilon$, where $E[\varepsilon\mid X]=0$, its objective can be decomposed as
+
+$$
+E\!\left[(Y-\widetilde X^\prime b)^2\right]
+=E[\varepsilon^2]
++E\!\left[(m(X)-\widetilde X^\prime b)^2\right].
+$$
+
+The first term cannot be reduced using any function of $X$. Linear regression therefore chooses the linear function $\widetilde X^\prime b$ that comes closest to the true CEF in the minimum-MSE sense.
+
+To derive the coefficient formula, expand the population objective:
+
+$$
+\begin{aligned}
+Q(b)
+&=E\!\left[(Y-\widetilde X^\prime b)^2\right]\\
+&=E[Y^2]-2b^\prime E[\widetilde X Y]
+  +b^\prime E[\widetilde X\widetilde X^\prime]b.
+\end{aligned}
+$$
+
+Differentiating with respect to the coefficient vector $b$ gives
+
+$$
+\frac{\partial Q(b)}{\partial b}
+=-2E[\widetilde X Y]
++2E[\widetilde X\widetilde X^\prime]b.
+$$
+
+Setting the derivative equal to zero produces the **population normal equations**:
+
+$$
+E[\widetilde X\widetilde X^\prime]\beta_{\mathrm{LP}}
+=E[\widetilde X Y],
+$$
+
+or, equivalently,
+
+$$
+E\!\left[\widetilde X
+  (Y-\widetilde X^\prime\beta_{\mathrm{LP}})
+\right]=0.
+$$
+
+The matrix $E[\widetilde X\widetilde X^\prime]$ is **invertible** when the regressors contain distinct information: no regressor is an exact linear combination of the others in the population. Intuitively, the data must provide enough independent movement in each regressor to separate its coefficient from the remaining coefficients. Under this condition, the normal equations have one—and only one—solution:
+
+$$
+\beta_{\mathrm{LP}}
+=E[\widetilde X\widetilde X^\prime]^{-1}
+ E[\widetilde X Y].
+$$
+
+If the CEF is exactly linear, then $m(X)=\widetilde X^\prime\beta$ and $\beta_{\mathrm{LP}}=\beta$. If the CEF is nonlinear, $\beta_{\mathrm{LP}}$ still exists under standard moment conditions, but it describes the **best linear predictor** of $Y$, rather than the CEF itself.
+
+::: {.callout-important}
+## A model, not a definition
+
+The CEF is defined by the population distribution of $(Y,X)$. Saying that the CEF is linear is an additional modeling assumption. Least squares always produces the best linear approximation, but that approximation equals the CEF only when the conditional mean is linear in the included regressors.
+:::
+
+### The sample least-squares problem
+
+Because the population moments are unobservable, ordinary least squares uses a sample of $n$ observations and solves
+
+$$
+\widehat\beta
+=\underset{b\in\mathbb{R}^{K+1}}{\operatorname{arg\,min}}
+\frac{1}{n}\sum_{i=1}^n
+\left(Y_i-\widetilde X_i^\prime b\right)^2.
+$$
+
+The fitted value $\widehat Y_i=\widetilde X_i^\prime\widehat\beta$ estimates the linear CEF, and the estimated residual is
+
+$$
+\widehat\varepsilon_i
+=Y_i-\widetilde X_i^\prime\widehat\beta.
+$$
+
+With an intercept included, the OLS residuals have sample mean zero. More generally, the sample first-order conditions make the residuals orthogonal to every included regressor:
+
+$$
+\frac{1}{n}\sum_{i=1}^n
+\widetilde X_i\widehat\varepsilon_i=0.
+$$
+
+To obtain the closed-form OLS formula, first arrange the $n$ observations in matrix form. The outcome vector has one row per observation:
+
+$$
+\underbrace{\mathbf y}_{n\times1}
+=
+\underbrace{
+\begin{bmatrix}
+Y_1\\Y_2\\\vdots\\Y_n
+\end{bmatrix}}_{n\times1}.
+$$
+
+Each row of the design matrix contains the intercept and the $K$ regressor values for one observation. A candidate coefficient vector $b$ contains the corresponding $K+1$ coefficients:
+
+$$
+\underbrace{\mathbf X}_{n\times(K+1)}
+=
+\begin{bmatrix}
+1&X_{11}&\cdots&X_{1K}\\
+1&X_{21}&\cdots&X_{2K}\\
+\vdots&\vdots&\ddots&\vdots\\
+1&X_{n1}&\cdots&X_{nK}
+\end{bmatrix},
+\qquad
+\underbrace{b}_{(K+1)\times1}
+=
+\begin{bmatrix}
+b_0\\b_1\\\vdots\\b_K
+\end{bmatrix}.
+$$
+
+Multiplying each row of $\mathbf X$ by $b$ produces that observation's fitted value, so the entire fitted-value vector is $\mathbf Xb$ and the residual vector is $\mathbf y-\mathbf Xb$:
+
+$$
+\underbrace{\mathbf Xb}_{n\times1}
+=
+\begin{bmatrix}
+b_0+b_1X_{11}+\cdots+b_KX_{1K}\\
+b_0+b_1X_{21}+\cdots+b_KX_{2K}\\
+\vdots\\
+b_0+b_1X_{n1}+\cdots+b_KX_{nK}
+\end{bmatrix}.
+$$
+
+The inner product of the residual vector with itself adds its squared entries. Thus, the scalar sum-of-squares objective can be written as
+
+$$
+Q_n(b)
+=\frac{1}{n}(\mathbf y-\mathbf Xb)^\prime
+ (\mathbf y-\mathbf Xb).
+$$
+
+Before differentiating, expand the product:
+
+$$
+Q_n(b)=\frac{1}{n}
+\left(\mathbf y^\prime\mathbf y
+-2b^\prime\mathbf X^\prime\mathbf y
++b^\prime\mathbf X^\prime\mathbf Xb\right).
+$$
+
+The first term does not involve $b$. The derivative of the middle term is $-2\mathbf X^\prime\mathbf y/n$, and the derivative of the last term is $2\mathbf X^\prime\mathbf Xb/n$. Hence,
+
+$$
+\frac{\partial Q_n(b)}{\partial b}
+=-\frac{2}{n}\mathbf X^\prime\mathbf y
++\frac{2}{n}\mathbf X^\prime\mathbf Xb.
+$$
+
+Setting this derivative equal to zero gives the **sample normal equations**:
+
+$$
+\mathbf X^\prime\mathbf X\widehat\beta
+=\mathbf X^\prime\mathbf y.
+$$
+
+If $\mathbf X$ has full column rank—meaning that no column of the sample design matrix is an exact linear combination of the other columns—then $\mathbf X^\prime\mathbf X$ is invertible. Premultiplying both sides of the normal equations by $(\mathbf X^\prime\mathbf X)^{-1}$ isolates $\widehat\beta$:
+
+$$
+\boxed{
+\widehat\beta
+=(\mathbf X^\prime\mathbf X)^{-1}
+ \mathbf X^\prime\mathbf y
+}.
+$$
+
+The factor $1/n$ disappears from the solution because it multiplies both sides of the first-order condition. It is useful when viewing the sample criterion as an estimate of the population mean squared error.
+
+### Simple regression with an intercept
+
+For one regressor, write
+
+$$
+Y_i=\alpha+\beta X_i+u_i.
+$$
+
+The two sample normal equations imply
+
+$$
+\widehat\alpha=\overline Y-\widehat\beta\,\overline X
+$$
+
+and
+
+$$
+\boxed{
+\widehat\beta
+=\frac{\sum_{i=1}^n(X_i-\overline X)(Y_i-\overline Y)}
+       {\sum_{i=1}^n(X_i-\overline X)^2}
+}.
+$$
+
+The population analogues are
+
+$$
+\alpha_{\mathrm{LP}}
+=E[Y]-\beta_{\mathrm{LP}}E[X]
+$$
+
+and
+
+$$
+\boxed{
+\beta_{\mathrm{LP}}
+=\frac{\operatorname{Cov}(X,Y)}{\operatorname{Var}(X)}
+}.
+$$
+
+The sample formulas replace the unknown population expectations, covariance, and variance with their empirical counterparts.
+
+### Population and sample analogues
+
+| Population object | Sample analogue |
+|---|---|
+| $E[Y]$ | $\overline Y=n^{-1}\sum_iY_i$ |
+| $E[\widetilde X Y]$ | $n^{-1}\mathbf X^\prime\mathbf y$ |
+| $E[\widetilde X\widetilde X^\prime]$ | $n^{-1}\mathbf X^\prime\mathbf X$ |
+| $\beta_{\mathrm{LP}}=E[\widetilde X\widetilde X^\prime]^{-1}E[\widetilde X Y]$ | $\widehat\beta=(\mathbf X^\prime\mathbf X)^{-1}\mathbf X^\prime\mathbf y$ |
+| $E[\widetilde X e]=0$ | $n^{-1}\mathbf X^\prime\widehat{\mathbf u}=0$ |
+
+The population coefficient is a feature of the joint distribution of $(Y,X)$. The sample coefficient is a statistic calculated from the observed data and is used to estimate that population feature. Neither formula alone gives the coefficient a causal interpretation; that requires the identifying assumptions discussed next.
+
+## Partialling out and the Frisch--Waugh--Lovell theorem
+
+Suppose our coefficient of interest is the coefficient on $D$ in the full multivariate regression
+
+$$
+Y_i=\tau D_i+W_i^\prime\gamma+u_i,
+$$
+
+where $W_i$ includes an intercept and all other controls. The coefficient $\widehat\tau$ does not use all variation in $D$. It uses only the part of $D$ that cannot be linearly explained by $W$.
+
+The **Frisch--Waugh--Lovell (FWL) theorem** makes this statement exact. The following procedure produces precisely the same coefficient on $D$ as the full regression:
+
+1. Regress $D$ on $W$ and save the residuals
+
+   $$
+   \widetilde D_i=D_i-W_i^\prime\widehat\pi.
+   $$
+
+2. Regress $Y$ on $W$ and save the residuals
+
+   $$
+   \widetilde Y_i=Y_i-W_i^\prime\widehat\delta.
+   $$
+
+3. Regress the residualized outcome $\widetilde Y$ on the residualized treatment $\widetilde D$, without adding another intercept:
+
+   $$
+   \widetilde Y_i=\tau\widetilde D_i+\widetilde u_i.
+   $$
+
+Then
+
+$$
+\boxed{
+\widehat\tau_{\mathrm{partial}}
+=\frac{\sum_{i=1}^n\widetilde D_i\widetilde Y_i}
+       {\sum_{i=1}^n\widetilde D_i^2}
+=\widehat\tau_{\mathrm{full}}
+}.
+$$
+
+Partialling out therefore converts a multivariate regression coefficient into a simple-regression coefficient after removing the linear contribution of the controls from both variables.
+
+### Seeing the FWL equivalence in matrix form
+
+The three residualization steps above can be written compactly with matrices. Stack the observations in the full model:
+
+$$
+\mathbf y=\mathbf d\tau+\mathbf W\gamma+\mathbf u.
+$$
+
+For any $n\times1$ variable $\mathbf a$, regressing $\mathbf a$ on the controls $\mathbf W$ gives fitted values $P_W\mathbf a$ and residuals $M_W\mathbf a$, where
+
+$$
+P_W=\mathbf W(\mathbf W^\prime\mathbf W)^{-1}\mathbf W^\prime,
+\qquad
+M_W=I-P_W.
+$$
+
+The projection matrix $P_W$ keeps the part predicted by the controls. The residual-maker $M_W=I-P_W$ subtracts that fitted part. Applying it to the outcome and treatment reproduces the residuals from steps 1 and 2:
+
+$$
+\widetilde{\mathbf y}=M_W\mathbf y,
+\qquad
+\widetilde{\mathbf d}=M_W\mathbf d.
+$$
+
+The key property is $M_W\mathbf W=0$: once the controls have been residualized, none of their linear contribution remains. Multiply the full model by $M_W$:
+
+$$
+\begin{aligned}
+M_W\mathbf y
+&=M_W\mathbf d\,\tau+M_W\mathbf W\gamma+M_W\mathbf u\\
+&=M_W\mathbf d\,\tau+M_W\mathbf u.
+\end{aligned}
+$$
+
+Using $\widetilde{\mathbf y}=M_W\mathbf y$ and $\widetilde{\mathbf d}=M_W\mathbf d$, this becomes a simple regression between the residualized variables:
+
+$$
+\widetilde{\mathbf y}
+=\widetilde{\mathbf d}\,\tau+\widetilde{\mathbf u}.
+$$
+
+The simple-regression OLS formula therefore gives
+
+$$
+\widehat\tau_{\mathrm{partial}}
+=\frac{\widetilde{\mathbf d}^\prime\widetilde{\mathbf y}}
+       {\widetilde{\mathbf d}^\prime\widetilde{\mathbf d}}.
+$$
+
+Why is this also the coefficient from the full regression? The full OLS fit chooses $\gamma$ so that the part explained by $\mathbf W$ is already accounted for. What remains for estimating $\tau$ is exactly the relationship between $M_W\mathbf d$ and $M_W\mathbf y$. Algebraically, $M_W$ is symmetric and $M_WM_W=M_W$, so
+
+$$
+\begin{aligned}
+\widehat\tau_{\mathrm{full}}
+&=(\mathbf d^\prime M_W\mathbf d)^{-1}
+  \mathbf d^\prime M_W\mathbf y\\
+&=(\widetilde{\mathbf d}^\prime\widetilde{\mathbf d})^{-1}
+  \widetilde{\mathbf d}^\prime\widetilde{\mathbf y}
+=\widehat\tau_{\mathrm{partial}}.
+\end{aligned}
+$$
+
+The two calculations use the same leftover variation, which is why they produce exactly the same coefficient on $D$.
+
+### What is equivalent?
+
+The full regression and the partial regression have:
+
+- exactly the same estimated coefficient on $D$;
+- exactly the same final residual vector; and
+- the same sum of squared residuals.
+
+The short partial regression does not recover the coefficients on $W$. For conventional standard errors to match the full regression, the error-variance estimate must also use the full model's residual degrees of freedom. Running the residualized regression as an ordinary one-regressor model may otherwise make software report a different degrees-of-freedom adjustment.
+
+::: {.callout-note}
+## Interpretation
+
+FWL shows that $\widehat\tau$ compares variation in $Y$ and $D$ remaining after their linear relationships with $W$ have been removed. This is the precise meaning of “holding the controls fixed” in a linear regression. FWL is an algebraic theorem, however; it does not establish that the chosen controls are sufficient or appropriate for a causal interpretation.
+:::
+
+## Precision
+
+An OLS coefficient is calculated from one sample. If we repeatedly drew new samples from the same population, the estimate would vary from sample to sample. The **sampling variance** describes this variation; a smaller variance means a more precise estimate.
+
+Consider the model
+
+$$
+\mathbf y=\mathbf X\beta+\mathbf u,
+\qquad
+E[\mathbf u\mid\mathbf X]=0.
+$$
+
+Under homoskedastic, uncorrelated disturbances,
+
+$$
+\operatorname{Var}(\mathbf u\mid\mathbf X)=\sigma^2I,
+$$
+
+the conditional variance matrix of the OLS estimator is
+
+$$
+\boxed{
+\operatorname{Var}(\widehat\beta\mid\mathbf X)
+=\sigma^2(\mathbf X^\prime\mathbf X)^{-1}
+}.
+$$
+
+Because $\sigma^2$ is unknown, the usual homoskedastic estimator replaces it with
+
+$$
+s^2
+=\frac{\sum_{i=1}^n\widehat u_i^2}{n-p},
+$$
+
+where $p$ is the number of estimated coefficients, including the intercept. The estimated standard error of coefficient $j$ is the square root of diagonal element $j$ of
+
+$$
+s^2(\mathbf X^\prime\mathbf X)^{-1}.
+$$
+
+### The variance of one coefficient
+
+FWL gives a particularly useful formula. Let $X_j$ be the regressor of interest, and let $X_{-j}$ contain the intercept and all other regressors. Regress $X_j$ on $X_{-j}$ and denote the residual by
+
+$$
+\widetilde X_{ij}
+=X_{ij}-\widehat X_{ij}.
+$$
+
+The FWL representation implies
+
+$$
+\widehat\beta_j
+=\beta_j+
+\frac{\sum_{i=1}^n\widetilde X_{ij}u_i}
+     {\sum_{i=1}^n\widetilde X_{ij}^2}.
+$$
+
+Under the classical homoskedastic assumptions,
+
+$$
+\boxed{
+\operatorname{Var}(\widehat\beta_j\mid\mathbf X)
+=\frac{\sigma^2}
+       {\sum_{i=1}^n\widetilde X_{ij}^2}
+=\frac{\sigma^2}
+       {(1-R_j^2)\sum_{i=1}^n(X_{ij}-\overline X_j)^2}
+}.
+$$
+
+Here, $R_j^2$ comes from the **auxiliary regression** of $X_j$ on all the other regressors. The term
+
+$$
+\operatorname{VIF}_j=\frac{1}{1-R_j^2}
+$$
+
+is called the **variance inflation factor**. It measures how much the other regressors inflate the variance of $\widehat\beta_j$, relative to a regression in which $X_j$ has the same total variation but is orthogonal to those regressors.
+
+### What determines precision?
+
+The coefficient-specific variance formula highlights the main forces.
+
+| Factor | Effect on precision | Reason |
+|---|---|---|
+| Unexplained variation in $Y$ | Larger $\sigma^2$ lowers precision | More outcome variation remains in the disturbance |
+| Total variation in $X_j$ | More variation raises precision | $\sum_i(X_{ij}-\overline X_j)^2$ increases |
+| Multicollinearity | A larger $R_j^2$ lowers precision | Less variation in $X_j$ remains after partialling out the other regressors |
+| Sample size | Usually raises precision | With similar observations, the usable sum of squares grows with $n$ |
+| Controls that predict $Y$ | Can raise precision | They may reduce the unexplained variance $\sigma^2$ |
+| Irrelevant regressors | Can lower precision | They may consume degrees of freedom and remove useful variation from $X_j$ without reducing outcome noise |
+| Treatment is almost determined by the controls | Lowers precision | Among observations with similar controls, there are too few treated-versus-untreated comparisons |
+| Dependence within clusters | Lowers effective precision | Many observations may contain less independent information than their raw count suggests |
+
+For a binary treatment $D$, useful treatment variation comes from comparing treated and untreated observations with similar controls. Suppose the controls nearly predict treatment—for example, almost everyone in one age-and-industry group is treated and almost no one in another is treated. After $D$ is regressed on those controls, most residuals $\widetilde D_i$ will be close to zero. The denominator $\sum_i\widetilde D_i^2$ in the variance formula is then small, so the treatment-effect estimate is imprecise. The problem is a shortage of comparable treated and untreated observations, not merely that the treated group is small.
+
+### Irrelevant regressors create a trade-off
+
+Suppose a candidate control has a zero population coefficient. Including it does not reduce omitted-variable bias because it does not belong in the outcome equation. If it is correlated with $X_j$, however, it raises $R_j^2$ in the auxiliary regression and leaves less residualized variation in $X_j$. It also costs a residual degree of freedom. Both effects can increase the standard error of $\widehat\beta_j$.
+
+By contrast, a control that strongly predicts $Y$ may reduce $\sigma^2$ enough to improve precision. This produces a trade-off:
+
+$$
+\operatorname{Var}(\widehat\beta_j\mid\mathbf X)
+=\frac{\text{unexplained outcome variance}}
+       {\text{variation in }X_j\text{ left after controlling for }X_{-j}}.
+$$
+
+Adding a control may reduce the numerator, the denominator, or both. Its net effect on precision depends on which change is larger.
+
+::: {.callout-important}
+## Precision is not identification
+
+A small standard error does not imply that a coefficient is unbiased or causal. An omitted confounder can produce a precisely estimated but incorrect coefficient. Conversely, a valid research design may identify a causal effect imprecisely when usable treatment variation is limited.
+:::
+
+### When errors are heteroskedastic or dependent
+
+The compact formula $\sigma^2(\mathbf X^\prime\mathbf X)^{-1}$ requires homoskedastic, uncorrelated disturbances. Under heteroskedasticity, the conditional variance is instead
+
+$$
+\operatorname{Var}(\widehat\beta\mid\mathbf X)
+=(\mathbf X^\prime\mathbf X)^{-1}
+ \mathbf X^\prime\Omega\mathbf X
+ (\mathbf X^\prime\mathbf X)^{-1},
+$$
+
+where $\Omega=\operatorname{Var}(\mathbf u\mid\mathbf X)$. Heteroskedasticity-robust or cluster-robust standard errors estimate an appropriate version of this sandwich variance. They change the estimated uncertainty, not the OLS point estimate.
+
+## From a regression model to a causal interpretation
+
+So far, linear regression has been presented as a model for prediction. To interpret a coefficient as a causal effect, give the regression a **structural** interpretation. For a treatment $D$ and observed controls $W$, consider
+
+$$
+Y=\alpha+\tau D+W^\prime\gamma+u,
+$$
+
+where $u$ collects all unobserved determinants of the outcome. The coefficient $\tau$ is causal only if changing $D$ while holding the other determinants fixed changes $Y$ by $\tau$. Two assumptions about $u$ help clarify what is required.
+
+### Assumption 1: zero-mean disturbance
+
+The first assumption is
+
+$$
+E[u]=0.
+$$
+
+With an intercept in the model, this assumption is **innocuous**: it is a normalization rather than a restriction on the relationship between $D$ and the unobservables. To see this, begin with a disturbance whose mean is $\mu_u=E[u]$. Then
+
+$$
+\begin{aligned}
+Y
+&=\alpha+\tau D+W^\prime\gamma+u\\
+&=(\alpha+\mu_u)+\tau D+W^\prime\gamma+(u-\mu_u).
+\end{aligned}
+$$
+
+Define $\alpha^*=\alpha+\mu_u$ and $u^*=u-\mu_u$. The same model can be written as
+
+$$
+Y=\alpha^*+\tau D+W^\prime\gamma+u^*,
+\qquad E[u^*]=0.
+$$
+
+The intercept absorbs the mean of the original disturbance, leaving every slope coefficient unchanged. In a sample OLS regression with an intercept, the corresponding first-order condition is $\sum_i\widehat u_i=0$, so the residuals have sample mean zero by construction.
+
+::: {.callout-note}
+## What zero mean does not say
+
+The condition $E[u]=0$ does not say that treated and untreated observations have comparable unobservables. Positive and negative disturbances may average to zero overall while treated observations have systematically positive disturbances and untreated observations have systematically negative ones.
+:::
+
+### Assumption 2: conditional mean independence
+
+The substantive assumption is **conditional mean independence (CMI)**:
+
+$$
+E[u\mid D,W]=E[u\mid W].
+$$
+
+CMI says that, after conditioning on $W$, the mean of the unobserved determinants of $Y$ does not vary with treatment status. If $W$ is rich enough that $E[u\mid W]=0$, this becomes the familiar regression condition
+
+$$
+E[u\mid D,W]=0.
+$$
+
+This is much stronger than $E[u]=0$. It rules out selection into treatment based on unobserved factors that also affect the outcome, after controlling for $W$.
+
+### Why CMI matters for causality
+
+Suppose the structural equation implies the potential outcome
+
+$$
+Y(d)=\alpha+\tau d+W^\prime\gamma+u,
+$$
+
+and assume that the same $u$ applies when treatment is changed by an intervention. Under CMI,
+
+$$
+\begin{aligned}
+E[Y\mid D=d,W=w]
+&=\alpha+\tau d+w^\prime\gamma+E[u\mid D=d,W=w]\\
+&=\alpha+\tau d+w^\prime\gamma+E[u\mid W=w].
+\end{aligned}
+$$
+
+Therefore, for two treatment values $d_1$ and $d_0$,
+
+$$
+E[Y\mid D=d_1,W=w]-E[Y\mid D=d_0,W=w]
+=\tau(d_1-d_0).
+$$
+
+The difference in observed conditional means now holds the mean of $u$ fixed, so it recovers the causal difference
+
+$$
+E[Y(d_1)-Y(d_0)\mid W=w]
+=\tau(d_1-d_0).
+$$
+
+Without CMI, the observed conditional comparison also contains a **selection term**:
+
+$$
+\begin{aligned}
+&E[Y\mid D=d_1,W=w]-E[Y\mid D=d_0,W=w]\\
+&\qquad=\tau(d_1-d_0)
++\underbrace{E[u\mid D=d_1,W=w]-E[u\mid D=d_0,W=w]}_{\text{selection on unobservables}}.
+\end{aligned}
+$$
+
+CMI removes this selection term. It provides the bridge from an observed regression comparison to a causal interpretation.
+
+::: {.callout-important}
+## CMI is an identifying assumption
+
+The residual defined mechanically by $u=Y-E[Y\mid D,W]$ always satisfies $E[u\mid D,W]=0$, but that fact alone is not causal. For CMI to justify a causal interpretation, $u$ must represent pre-existing, intervention-invariant determinants of the potential outcomes, and $W$ must be an appropriate set of pre-treatment controls. These requirements come from the research design and institutional setting, not from OLS itself.
+:::
+
+### Can CMI be tested using OLS residuals?
+
+In general, **CMI cannot be tested from the OLS residuals alone**. The population assumption concerns the unobserved structural disturbance:
+
+$$
+E[u\mid D,W]=0.
+$$
+
+OLS gives us estimated residuals
+
+$$
+\widehat u_i
+=Y_i-\widehat\alpha-\widehat\tau D_i-W_i^\prime\widehat\gamma,
+$$
+
+but these are constructed from the fitted regression and are not observations of the structural $u_i$. The OLS first-order conditions guarantee
+
+$$
+\sum_{i=1}^n \widehat u_i=0,
+\qquad
+\sum_{i=1}^n D_i\widehat u_i=0,
+\qquad
+\sum_{i=1}^n W_i\widehat u_i=0.
+$$
+
+These sample orthogonality conditions hold by construction whenever the intercept, $D$, and $W$ are included in the regression. Finding zero sample correlations between the residuals and the included regressors therefore provides no independent evidence for CMI.
+
+#### Why residual orthogonality is not enough
+
+Suppose the true structural equation is
+
+$$
+Y=\alpha+\tau D+u,
+$$
+
+but treatment is related to the structural disturbance, so that $\operatorname{Cov}(D,u)\ne0$. The population regression slope is then
+
+$$
+\beta_{\mathrm{LP}}
+=\tau+
+\frac{\operatorname{Cov}(D,u)}{\operatorname{Var}(D)}.
+$$
+
+The regression residual $e=Y-\alpha_{\mathrm{LP}}-\beta_{\mathrm{LP}}D$ satisfies
+
+$$
+E[De]=0
+$$
+
+by the definition of the linear projection. Nevertheless, $\beta_{\mathrm{LP}}\ne\tau$ when $\operatorname{Cov}(D,u)\ne0$. OLS has absorbed the endogenous association into the estimated slope and then made the fitted residual orthogonal to $D$. This is why an apparently well-behaved residual cannot establish causality.
+
+#### What residual diagnostics can do
+
+CMI implies the broader collection of moment restrictions
+
+$$
+E[h(D,W)u]=0
+$$
+
+for every suitable function $h(D,W)$. A residual plot or a test using transformations not included in the original regression—such as $D^2$, interactions, or flexible functions of $W$—may reveal systematic remaining patterns. Such evidence can reject the proposed conditional-mean model.
+
+However, a failure to find a pattern does not prove CMI. Any diagnostic examines only a limited set of functions, has finite-sample power limitations, and cannot show that omitted determinants are unrelated to treatment. Residual diagnostics are useful for detecting misspecification; the causal validity of CMI must ultimately be supported by the research design, institutional knowledge, or an external source of treatment variation.
+
+::: {.callout-tip}
+## How to interpret a residual diagnostic
+
+- **A detected residual pattern:** evidence against the proposed conditional-mean specification.
+- **No detected residual pattern:** the diagnostic did not find a violation; CMI has not been verified.
+- **Residuals orthogonal to included regressors:** an algebraic property of OLS, not a test of causal exogeneity.
+:::
+
+## Common threats to causal interpretation
+
+Many regression biases can be understood through one simple equation. Suppose the causal model is
+
+$$
+Y=\alpha+\tau D+q,
+$$
+
+where $q$ contains every other determinant of $Y$. The population coefficient from a simple regression of $Y$ on $D$ is
+
+$$
+\begin{aligned}
+\beta_{\mathrm{obs}}
+&=\frac{\operatorname{Cov}(D,Y)}{\operatorname{Var}(D)}\\
+&=\tau+
+\frac{\operatorname{Cov}(D,q)}{\operatorname{Var}(D)}.
+\end{aligned}
+$$
+
+Thus,
+
+$$
+\boxed{
+\text{observed regression coefficient}
+=\text{causal effect}+\text{bias}
+}.
+$$
+
+The coefficient equals the causal effect when the variation in $D$ is unrelated to the other determinants of $Y$. The problems below describe different reasons why that condition can fail—or why the regression may estimate the wrong causal object.
+
+### Omitted-variable bias
+
+Suppose the correct model is
+
+$$
+Y=\alpha+\tau D+\gamma Z+u,
+\qquad E[u\mid D,Z]=0,
+$$
+
+but we omit $Z$ and regress $Y$ only on $D$. The resulting population slope is
+
+$$
+\boxed{
+\widetilde\tau
+=\tau+
+\gamma\frac{\operatorname{Cov}(D,Z)}{\operatorname{Var}(D)}
+}.
+$$
+
+Omitted-variable bias requires both of the following:
+
+1. $Z$ affects $Y$, so $\gamma\ne0$.
+2. $Z$ is related to $D$, so $\operatorname{Cov}(D,Z)\ne0$.
+
+For example, suppose $D$ is job training, $Y$ is earnings, and $Z$ is prior ability. If ability raises earnings and people with greater ability are more likely to take training, both terms are positive and the training coefficient is biased upward. If either link is zero, omitting $Z$ creates no bias in this simple model.
+
+### Measurement-error bias
+
+Suppose the true regressor is $D^*$, but we observe it with error:
+
+$$
+D=D^*+v.
+$$
+
+Let the outcome model be
+
+$$
+Y=\alpha+\tau D^*+u,
+$$
+
+and assume **classical measurement error**: $v$ has mean zero and is unrelated to $D^*$ and $u$. Then
+
+$$
+\operatorname{Cov}(D,Y)
+=\tau\operatorname{Var}(D^*)
+$$
+
+but
+
+$$
+\operatorname{Var}(D)
+=\operatorname{Var}(D^*)+\operatorname{Var}(v).
+$$
+
+Consequently,
+
+$$
+\boxed{
+\operatorname{plim}\widehat\tau
+=\underbrace{
+\frac{\operatorname{Var}(D^*)}
+     {\operatorname{Var}(D^*)+\operatorname{Var}(v)}
+}_{\lambda\in(0,1)}\tau
+}.
+$$
+
+Random noise adds variation to the observed regressor without adding corresponding comovement with the outcome. The slope is therefore multiplied by the reliability ratio $\lambda$ and is **attenuated toward zero**.
+
+::: {.callout-note}
+## The direction is not universal
+
+Attenuation toward zero is the result for classical measurement error in a single regressor. Correlated, systematic, or differential measurement error—and measurement error in multivariate models—can generate bias in other directions. Classical measurement error in $Y$ generally increases uncertainty but does not bias the slope.
+:::
+
+### Simultaneity bias
+
+Simultaneity arises when $D$ affects $Y$ while $Y$ also helps determine $D$. Consider
+
+$$
+Y=\tau D+u
+$$
+
+and
+
+$$
+D=\delta Y+v.
+$$
+
+Substituting the first equation into the second gives
+
+$$
+D
+=\frac{\delta u+v}{1-\delta\tau}.
+$$
+
+When $\delta\ne0$, $D$ contains part of the outcome disturbance $u$, so
+
+$$
+\operatorname{Cov}(D,u)\ne0
+$$
+
+and
+
+$$
+\operatorname{plim}\widehat\tau
+=\tau+
+\frac{\operatorname{Cov}(D,u)}{\operatorname{Var}(D)}.
+$$
+
+For example, investment may raise firm value, but firms expecting stronger performance may also invest more. A regression of value on investment mixes the effect of investment on value with the reverse response of investment to expected value. More observations do not remove this bias; an external source of variation or credible timing restriction is needed to separate the directions.
+
+### Bad controls
+
+A variable is not automatically a good control merely because it predicts $Y$. A control can be harmful when it is caused by treatment or when conditioning on it creates an association between treatment and unobservables.
+
+#### Controlling for a mediator changes the estimand
+
+Suppose treatment affects a mediator $M$, which then affects the outcome:
+
+$$
+M=aD+v,
+$$
+
+$$
+Y=cD+bM+u.
+$$
+
+Increasing $D$ by one unit changes $Y$ directly by $c$ and indirectly through $M$ by $ab$. The total causal effect is
+
+$$
+\boxed{\text{total effect}=c+ab}.
+$$
+
+A regression that controls for $M$ estimates the direct effect $c$, not the total effect $c+ab$. If the research question asks for the total effect, $M$ is a bad control because it blocks part of the causal pathway.
+
+#### Controlling for a collider creates an association
+
+Why is a variable that predicts both treatment and the outcome sometimes a harmful control? Consider a hiring example:
+
+- $D$ is an independently assigned training credential;
+- $U$ is unobserved interview strength;
+- $C$ is the applicant's total hiring score; and
+- both the credential and interview strength raise the score.
+
+In the full applicant pool, the randomly assigned credential $D$ is independent of interview strength $U$. Now compare applicants with the **same total score** $C$. Among these applicants, someone with more credential points can have fewer interview-strength points, while someone with fewer credential points must compensate with greater interview strength. Holding the common result $C$ fixed therefore creates a negative relationship between $D$ and $U$, even though none existed before.
+
+This structure is called a **collider** because the two causal arrows collide at $C$:
+
+$$
+D\longrightarrow C\longleftarrow U.
+$$
+
+A simple numerical model makes the mechanism transparent. Suppose the score is
+
+$$
+C=D+U,
+$$
+
+and later job performance is
+
+$$
+Y=\tau D+\gamma U+\varepsilon.
+$$
+
+Before conditioning on $C$, the independence of $D$ and $U$ protects the comparison: credential holders are not systematically stronger or weaker interviewees. Once we control for the total score, however, $U=C-D$. For example, among applicants with $C=10$, an applicant with $D=6$ must have $U=4$, whereas one with $D=2$ must have $U=8$. Substituting $U=C-D$ into the outcome equation gives
+
+$$
+Y=(\tau-\gamma)D+\gamma C+\varepsilon.
+$$
+
+The coefficient on $D$ conditional on $C$ is $\tau-\gamma$, rather than $\tau$. The extra term $-\gamma$ appears because, at a fixed score, a one-unit increase in $D$ mechanically implies a one-unit decrease in $U$. Because $U$ also affects performance, the regression wrongly attributes this induced difference in $U$ to $D$. Conditioning on the collider creates the very association we wanted to avoid.
+
+::: {.callout-important}
+## Choose controls from the causal story
+
+Good prediction is not a sufficient rule for selecting controls. To estimate a total treatment effect, controls should generally be determined before treatment and should block confounding paths without blocking causal pathways or opening collider paths.
+:::
+
+### Selection bias
+
+Selection bias occurs when the observations included in the analysis are a selected subset of the target population. Let
+
+$$
+Y=\alpha+\tau D+u,
+$$
+
+but suppose $Y$ is observed only when $S=1$. Within the selected sample,
+
+$$
+\begin{aligned}
+&E[Y\mid D=1,S=1]-E[Y\mid D=0,S=1]\\
+&\qquad=\tau
++\underbrace{
+E[u\mid D=1,S=1]-E[u\mid D=0,S=1]
+}_{\text{selection bias}}.
+\end{aligned}
+$$
+
+If selection depends on both treatment and unobserved outcome determinants—for example,
+
+$$
+S=1\{aD+bu+\eta>0\},
+$$
+
+then conditioning on $S=1$ generally makes $D$ and $u$ related, even if they were unrelated in the full population.
+
+For example, suppose training affects employment and ability affects both employment and wages, but wages are observed only for employed people. Comparing wages among employed trainees and employed nontrainees conditions on employment, a common consequence of training and ability. The selected wage comparison need not recover the effect of training in the target population.
+
+Selection can arise from survey nonresponse, attrition, survivorship, sample restrictions, or observing an outcome only after a particular event. Random sampling from the target population avoids this problem; a larger selected sample does not.
+
+### Comparing the threats
+
+| Threat | What goes wrong? | Characteristic expression |
+|---|---|---|
+| Omitted variable | A common cause of $D$ and $Y$ is left in the disturbance | $\gamma\operatorname{Cov}(D,Z)/\operatorname{Var}(D)$ |
+| Measurement error | The observed regressor contains noise | $\operatorname{plim}\widehat\tau=\lambda\tau$ under classical error |
+| Simultaneity | $D$ responds to $Y$ or its disturbance | $\operatorname{Cov}(D,u)\ne0$ |
+| Mediator control | A causal pathway from $D$ to $Y$ is blocked | estimated direct effect $c$ instead of total effect $c+ab$ |
+| Collider control | Conditioning creates a relationship between $D$ and $U$ | coefficient becomes $\tau-\gamma$ in the example |
+| Sample selection | Inclusion in the sample depends jointly on $D$ and outcome determinants | $E[u\mid D=1,S=1]\ne E[u\mid D=0,S=1]$ |
+
+These problems cannot be diagnosed or repaired mechanically by looking only at regression fit. The appropriate response depends on the data-generating process: measure confounders, improve measurement, exploit timing or instruments, avoid post-treatment controls, or address the selection mechanism. The research design determines which strategy is credible.
+
+## Panel data and fixed effects
+
+**Panel data** follow the same observational units over multiple periods. The unit might be a person, firm, county, school, or country. We write
+
+$$
+Y_{it},\qquad X_{it},
+$$
+
+where $i=1,\ldots,N$ indexes units and $t=1,\ldots,T$ indexes time. Unlike a repeated cross-section, a panel lets us observe how $X$ and $Y$ change **within the same unit**.
+
+This repeated structure can address an important source of omitted-variable bias: unobserved characteristics that differ across units but remain constant over time.
+
+### The unit fixed-effects model
+
+Consider
+
+$$
+Y_{it}=\alpha_i+\beta X_{it}+u_{it}.
+$$
+
+The term $\alpha_i$ is a **unit fixed effect**. It collects every characteristic of unit $i$ that does not change over time, whether observed or unobserved. For a worker, it might include persistent ability or background; for a firm, it might include location, founding culture, or a durable technology advantage.
+
+The fixed effect may be correlated with the regressor:
+
+$$
+\operatorname{Cov}(X_{it},\alpha_i)\ne0.
+$$
+
+If we instead estimate the pooled regression
+
+$$
+Y_{it}=\alpha+\beta X_{it}+e_{it},
+\qquad e_{it}=(\alpha_i-\alpha)+u_{it},
+$$
+
+then $X_{it}$ is correlated with the composite disturbance $e_{it}$. Pooled OLS generally suffers from omitted-variable bias.
+
+### The within transformation
+
+For each unit, calculate its time averages:
+
+$$
+\overline Y_i=\frac{1}{T}\sum_{t=1}^T Y_{it},
+\qquad
+\overline X_i=\frac{1}{T}\sum_{t=1}^T X_{it},
+\qquad
+\overline u_i=\frac{1}{T}\sum_{t=1}^T u_{it}.
+$$
+
+Averaging the fixed-effects model over time gives
+
+$$
+\overline Y_i
+=\alpha_i+\beta\overline X_i+\overline u_i.
+$$
+
+Subtract this unit average from each observation:
+
+$$
+\boxed{
+Y_{it}-\overline Y_i
+=\beta(X_{it}-\overline X_i)
++(u_{it}-\overline u_i)
+}.
+$$
+
+The fixed effect disappears because $\alpha_i-\alpha_i=0$. OLS applied to these demeaned variables is called the **within estimator**. With one regressor,
+
+$$
+\boxed{
+\widehat\beta_{\mathrm{FE}}
+=\frac{\sum_i\sum_t
+  (X_{it}-\overline X_i)(Y_{it}-\overline Y_i)}
+ {\sum_i\sum_t(X_{it}-\overline X_i)^2}
+}.
+$$
+
+This coefficient uses only within-unit comovement. A unit whose $X$ never changes contributes no identifying variation to $\widehat\beta_{\mathrm{FE}}$.
+
+### An intuitive comparison
+
+Suppose we study whether worker training raises earnings. Workers with greater persistent ability may take more training and earn more, creating an upward-biased cross-sectional comparison.
+
+- **Pooled OLS asks:** Do workers with more training earn more than workers with less training?
+- **Worker fixed effects ask:** When a given worker receives more training than usual, do that worker's earnings also rise relative to their usual level?
+
+The second comparison removes every worker characteristic that is constant over time. It does not require us to observe or measure those characteristics individually.
+
+### Fixed effects as unit indicators
+
+The same estimator can be obtained by including a separate indicator for every unit:
+
+$$
+Y_{it}
+=\beta X_{it}
++\delta_1\mathbb{1}\{i=1\}
++\cdots
++\delta_N\mathbb{1}\{i=N\}
++u_{it},
+$$
+
+with one indicator or the common intercept omitted to avoid perfect multicollinearity. This is the **least-squares dummy-variable estimator**. The FWL theorem explains the equivalence: residualizing $X$ and $Y$ with respect to the unit indicators is exactly the within transformation.
+
+### Time fixed effects
+
+Units may also share shocks in a given period. A recession, regulation, technological change, or aggregate price movement could affect every unit. Add a time fixed effect $\lambda_t$:
+
+$$
+Y_{it}=\alpha_i+\lambda_t+\beta X_{it}+u_{it}.
+$$
+
+This is a **two-way fixed-effects model**:
+
+- $\alpha_i$ absorbs all time-invariant differences across units;
+- $\lambda_t$ absorbs shocks common to all units in period $t$; and
+- $\beta$ is identified by within-unit changes in $X$ after removing common time changes.
+
+In a balanced panel, start by subtracting unit $i$'s time mean, $Z_{it}-\overline Z_i$. To remove the remaining common time component, we need the cross-sectional mean of this already unit-demeaned variable:
+
+$$
+\frac{1}{N}\sum_{i=1}^N
+\left(Z_{it}-\overline Z_i\right)
+=\overline Z_t-\overline Z.
+$$
+
+Therefore, removing that time component gives
+
+$$
+\begin{aligned}
+\ddot Z_{it}
+&=(Z_{it}-\overline Z_i)
+  -(\overline Z_t-\overline Z)\\
+&=Z_{it}-\overline Z_i-\overline Z_t+\overline Z.
+\end{aligned}
+$$
+
+The overall mean $\overline Z$ is added back because it appears in both the unit mean and the time mean. Subtracting both means removes the overall level twice; adding it once restores the extra copy that was removed. Here, $\overline Z_i$ is unit $i$'s time mean, $\overline Z_t$ is the cross-sectional mean in period $t$, and $\overline Z$ is the overall mean. The two-way fixed-effects regression is equivalent to
+
+$$
+\ddot Y_{it}=\beta\ddot X_{it}+\ddot u_{it}.
+$$
+
+### What fixed effects remove—and what they do not
+
+| Fixed effects remove | Fixed effects do not automatically remove |
+|---|---|
+| Time-invariant unit characteristics | Time-varying omitted variables |
+| Permanent differences in outcome levels | Simultaneity or reverse causality |
+| With time effects, shocks common to all units | Unit-specific time-varying shocks |
+| Any observed time-invariant unit controls | Measurement error, selection bias, or bad controls |
+
+Because unit fixed effects absorb all time-invariant variables, the separate coefficient on a time-invariant regressor cannot be estimated in the same model. For example, worker fixed effects prevent us from separately estimating a coefficient on a worker characteristic that never changes during the panel.
+
+### Assumption for causal interpretation
+
+Removing $\alpha_i$ is useful, but it does not make the remaining variation in $X_{it}$ exogenous. A common sufficient condition for the static fixed-effects estimator is **strict exogeneity**:
+
+$$
+E[u_{it}\mid X_{i1},X_{i2},\ldots,X_{iT},\alpha_i]=0
+\qquad\text{for every }t.
+$$
+
+This condition says that the period-$t$ disturbance is mean independent of the unit's regressor values in every period—past, present, and future—after accounting for the fixed effect. It rules out:
+
+- contemporaneous omitted shocks that affect both $X_{it}$ and $Y_{it}$;
+- feedback from today's outcome shock to future values of $X$; and
+- anticipatory changes in $X$ made in response to future outcome shocks.
+
+Fixed effects can therefore eliminate bias from time-invariant confounders while leaving bias from time-varying confounders or simultaneity.
+
+::: {.callout-important}
+## Fixed effects are not a complete research design
+
+The identifying comparison must still be explained. Ask what causes $X$ to change within a unit, whether those changes coincide with other unit-specific shocks, and whether the outcome could influence future treatment. Fixed effects make certain comparisons possible; institutional knowledge determines whether those comparisons are causal.
+:::
+
+### Precision and inference in panels
+
+Fixed effects discard between-unit variation and rely on within-unit changes. If $X_{it}$ changes little within units, $\widehat\beta_{\mathrm{FE}}$ can be imprecise even when the panel is large.
+
+Disturbances for the same unit are also often correlated over time. Conventional standard errors that treat all $NT$ observations as independent may therefore be too small. A common default is to cluster standard errors at the unit level, allowing arbitrary heteroskedasticity and serial dependence within each unit.
+
+## Natural experiments and the potential-outcomes framework
+
+Regression describes conditional means, but causal questions compare outcomes under alternative interventions. The **potential-outcomes framework** makes that comparison explicit.
+
+Suppose treatment is binary, with $D_i=1$ for a treated unit and $D_i=0$ for an untreated unit. Each unit has two potential outcomes:
+
+$$
+Y_i(1)=\text{unit }i\text{'s outcome if treated},
+$$
+
+$$
+Y_i(0)=\text{unit }i\text{'s outcome if untreated}.
+$$
+
+The individual treatment effect is
+
+$$
+\tau_i=Y_i(1)-Y_i(0).
+$$
+
+We observe only the potential outcome associated with the treatment actually received:
+
+$$
+\boxed{
+Y_i=D_iY_i(1)+(1-D_i)Y_i(0)
+}.
+$$
+
+For a treated unit, we observe $Y_i(1)$ but not $Y_i(0)$; for an untreated unit, we observe $Y_i(0)$ but not $Y_i(1)$. This is the **fundamental problem of causal inference**: an individual causal effect cannot be calculated directly because the two potential outcomes are never jointly observed.
+
+### ATE and ATT
+
+The **average treatment effect (ATE)** is the average effect in the target population:
+
+$$
+\boxed{
+\operatorname{ATE}
+=E[Y(1)-Y(0)]
+}.
+$$
+
+The **average treatment effect on the treated (ATT)** is the average effect among units that actually receive treatment:
+
+$$
+\boxed{
+\operatorname{ATT}
+=E[Y(1)-Y(0)\mid D=1]
+}.
+$$
+
+ATE and ATT need not be equal. If treatment effects vary and units with especially large gains are more likely to select treatment, the treated group can have a larger average effect than the population.
+
+### Why random assignment identifies the ATE
+
+Under random assignment,
+
+$$
+D\ \perp\!\!\!\perp\ \{Y(1),Y(0)\},
+$$
+
+with positive probabilities of both treatment states. Assignment is unrelated to either potential outcome, so
+
+$$
+E[Y(1)\mid D=1]=E[Y(1)]
+$$
+
+and
+
+$$
+E[Y(0)\mid D=0]=E[Y(0)].
+$$
+
+Therefore,
+
+$$
+\begin{aligned}
+E[Y\mid D=1]-E[Y\mid D=0]
+&=E[Y(1)]-E[Y(0)]\\
+&=\operatorname{ATE}.
+\end{aligned}
+$$
+
+Random assignment makes the treated and untreated groups have the same distribution of $Y(0)$ in the population. Differences that remain in a finite sample arise from chance and are reflected in sampling uncertainty.
+
+### Why ATE equals ATT under random assignment
+
+Random assignment is also independent of the individual treatment effect, because $Y(1)-Y(0)$ is a function of the two potential outcomes. Hence,
+
+$$
+\begin{aligned}
+\operatorname{ATT}
+&=E[Y(1)-Y(0)\mid D=1]\\
+&=E[Y(1)-Y(0)]\\
+&=\operatorname{ATE}.
+\end{aligned}
+$$
+
+This equality is a population implication of random assignment. In a particular finite randomized sample, the average effect among the units assigned to treatment can differ from the full-sample average effect by chance when effects are heterogeneous; randomization makes the corresponding estimator unbiased over possible assignments.
+
+### Natural experiments
+
+In a randomized controlled experiment, researchers deliberately assign treatment. A **natural experiment** arises when an external rule, event, or institution generates treatment variation that is plausibly unrelated to potential outcomes. Examples of assignment mechanisms include lotteries, administrative rules, policy boundaries, or abrupt changes in eligibility.
+
+The key claim is not that the setting is unusual or that treatment occurs in nature. The key claim is that the relevant variation is **as if randomly assigned**:
+
+$$
+D\ \perp\!\!\!\perp\ \{Y(1),Y(0)\}
+$$
+
+for the population and comparison generated by the mechanism, possibly after conditioning on predetermined variables.
+
+Natural experiments require a case-specific argument. Researchers must explain who controls the assignment mechanism, whether units can manipulate exposure, whether the mechanism affects outcomes through other channels, and which population is represented by the resulting comparison. Some designs identify an ATE, while others identify a local or conditional treatment effect.
+
+::: {.callout-important}
+## Assignment, treatment, and compliance
+
+An external mechanism may randomly assign an **offer** or **eligibility** without perfectly determining treatment received. In that case, the offer can serve as an instrument rather than treatment itself. The relevant causal estimand may then be a local average treatment effect, a topic developed with instrumental variables.
+:::
+
+### Two simple-difference estimators
+
+Two tempting estimators use only one dimension of comparison. The cross-sectional difference compares groups at a point in time; the time-series difference compares periods for a unit or group. Placing them side by side makes clear why each can be misleading on its own.
+
+#### The cross-sectional simple difference
+
+The most direct cross-sectional comparison is the difference between the observed means of treated and untreated units:
+
+$$
+\Delta_{\mathrm{CS}}
+=E[Y\mid D=1]-E[Y\mid D=0].
+$$
+
+Because treated units reveal $Y(1)$ and untreated units reveal $Y(0)$,
+
+$$
+\Delta_{\mathrm{CS}}
+=E[Y(1)\mid D=1]-E[Y(0)\mid D=0].
+$$
+
+Add and subtract $E[Y(0)\mid D=1]$:
+
+$$
+\boxed{
+\begin{aligned}
+\Delta_{\mathrm{CS}}
+&=\underbrace{
+E[Y(1)-Y(0)\mid D=1]
+}_{\mathrm{ATT}}\\
+&\quad+
+\underbrace{
+E[Y(0)\mid D=1]-E[Y(0)\mid D=0]
+}_{\text{selection bias}}.
+\end{aligned}
+}
+$$
+
+The selection term compares the treated and untreated groups under the same untreated state. It asks: even without treatment, would the groups have had different average outcomes? If so, the observed difference mixes the treatment effect with pre-existing differences between the groups.
+
+In a sample, the **cross-sectional simple-difference estimator** is
+
+$$
+\boxed{
+\widehat\Delta_{\mathrm{CS}}
+=\overline Y_1-\overline Y_0
+=\frac{1}{n_1}\sum_{i:D_i=1}Y_i
+-\frac{1}{n_0}\sum_{i:D_i=0}Y_i
+}.
+$$
+
+This is also the OLS coefficient on $D_i$ in the regression
+
+$$
+Y_i=\alpha+\tau D_i+e_i.
+$$
+
+Without a credible assignment mechanism, however, a precisely estimated difference in means is still only an association.
+
+#### The time-series simple difference
+
+Suppose a unit or group is untreated before a policy and treated afterward. The before--after comparison is
+
+$$
+\boxed{
+\Delta_{\mathrm{TS}}
+=E[Y_{\mathrm{post}}]-E[Y_{\mathrm{pre}}]
+}.
+$$
+
+If treatment begins between the two periods, this comparison can be decomposed by adding and subtracting the post-period outcome that would have occurred without treatment:
+
+$$
+\boxed{
+\begin{aligned}
+\Delta_{\mathrm{TS}}
+&=\underbrace{
+E[Y_{\mathrm{post}}(1)-Y_{\mathrm{post}}(0)]
+}_{\text{treatment effect}}\\
+&\quad+
+\underbrace{
+E[Y_{\mathrm{post}}(0)-Y_{\mathrm{pre}}(0)]
+}_{\text{untreated time change}}.
+\end{aligned}
+}
+$$
+
+The before--after difference identifies the treatment effect only if the untreated outcome would not have changed between periods, or if its change is known. Economic growth, seasonality, inflation, aggregate shocks, aging, and changes in sample composition can all contaminate a simple time-series difference.
+
+The sample estimator is
+
+$$
+\widehat\Delta_{\mathrm{TS}}
+=\overline Y_{\mathrm{post}}-\overline Y_{\mathrm{pre}}.
+$$
+
+This estimator removes a fixed level difference but does not separate treatment from other changes occurring at the same time.
+
+### From simple differences to difference-in-differences
+
+The two simple differences fail for complementary reasons:
+
+- The cross-sectional difference may contain permanent selection differences between treated and untreated groups.
+- The time-series difference may contain common changes over time unrelated to treatment.
+
+Difference-in-differences combines both comparisons:
+
+$$
+\boxed{
+\widehat\tau_{\mathrm{DiD}}
+=\left(\overline Y_{T,\mathrm{post}}-\overline Y_{T,\mathrm{pre}}\right)
+-\left(\overline Y_{C,\mathrm{post}}-\overline Y_{C,\mathrm{pre}}\right)
+}.
+$$
+
+The change in the control group is used to estimate the time change that the treated group would have experienced without treatment. The central identifying assumption is **parallel trends**:
+
+$$
+E[Y_{\mathrm{post}}(0)-Y_{\mathrm{pre}}(0)\mid D=1]
+=E[Y_{\mathrm{post}}(0)-Y_{\mathrm{pre}}(0)\mid D=0].
+$$
+
+Under parallel trends and the usual consistency and no-anticipation conditions, DiD identifies the ATT. The next chapter develops this estimator, its regression representation, diagnostics, and extensions.
+
+::: {.callout-tip}
+## Chapter takeaway
+
+Regression becomes causal only when the variation identifying a coefficient has a credible counterfactual interpretation. Random assignment supplies that counterfactual directly. Natural experiments seek externally generated variation that approximates random assignment. Panel fixed effects remove stable differences, and DiD goes one step further by using a comparison group's change to estimate the treated group's missing untreated trend.
+:::
+

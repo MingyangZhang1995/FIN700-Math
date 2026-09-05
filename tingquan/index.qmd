@@ -1,6 +1,6 @@
 # Course Home
 
-This course begins with an introduction to reseach design and causality, then unpackages three research designs used for causal inference in empirical economics and finance:
+This course begins with an introduction to research design and causality, then unpackages three research designs used for causal inference in empirical economics and finance:
 
 1. Identification, Causality, and Identification Strategies
 2. Difference-in-Differences (DiD)
