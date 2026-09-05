@@ -1,0 +1,1573 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Difference-in-Differences – FIN700: Bootcamp for PhD Finance</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../notes/sections/empirical/2_regression_causal_inference.html" rel="prev">
+<script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-9e3e5b9121e68b3f077afb32f2c64d95.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/sections/empirical/1_identification_causality_strategies.html">Empirical Methods</a></li><li class="breadcrumb-item"><a href="../../../notes/sections/empirical/3_did.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Difference-in-Differences</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../../../">FIN700: Bootcamp for PhD Finance</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/MingyangZhang1995/FIN700-Math" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Basic Knowledge in Finance</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/finance/basic-knowledge.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Basic Knowledge in Finance</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Linear Algebra</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/linear-algebra/vectors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Vectors and Vector Spaces</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/linear-algebra/linear-maps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Linear Maps and Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/linear-algebra/decompositions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrix Calculus and Projection</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Probability Theory</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/probability/probability-space.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Probability Spaces and Random Variables</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/probability/expectation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Distributions, Expectation, and Dependence</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/probability/common-distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Common Probability Distributions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/probability/continuous-time.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Stochastic Processes and a Introduction to Continuous Time</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Statistics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/statistics/introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Introduction to Statistics and Basic Machine Learning</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Empirical Methods</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/empirical/1_identification_causality_strategies.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Identification, Causality, and Identification Strategies</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/empirical/2_regression_causal_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">From Regression to Causal Inference</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/empirical/3_did.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Difference-in-Differences</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#the-canonical-2times2-did-design" id="toc-the-canonical-2times2-did-design" class="nav-link active" data-scroll-target="#the-canonical-2times2-did-design">The canonical <span class="math inline">\(2\times2\)</span> DiD design</a>
+  <ul class="collapse">
+  <li><a href="#potential-outcomes-and-the-target-parameter" id="toc-potential-outcomes-and-the-target-parameter" class="nav-link" data-scroll-target="#potential-outcomes-and-the-target-parameter">Potential outcomes and the target parameter</a></li>
+  <li><a href="#no-anticipation" id="toc-no-anticipation" class="nav-link" data-scroll-target="#no-anticipation">No anticipation</a></li>
+  <li><a href="#parallel-trends" id="toc-parallel-trends" class="nav-link" data-scroll-target="#parallel-trends">Parallel trends</a></li>
+  <li><a href="#identification-by-four-means" id="toc-identification-by-four-means" class="nav-link" data-scroll-target="#identification-by-four-means">Identification by four means</a></li>
+  <li><a href="#a-numerical-example" id="toc-a-numerical-example" class="nav-link" data-scroll-target="#a-numerical-example">A numerical example</a></li>
+  </ul></li>
+  <li><a href="#estimating-the-2times2-design" id="toc-estimating-the-2times2-design" class="nav-link" data-scroll-target="#estimating-the-2times2-design">Estimating the <span class="math inline">\(2\times2\)</span> design</a>
+  <ul class="collapse">
+  <li><a href="#the-sample-four-means-estimator" id="toc-the-sample-four-means-estimator" class="nav-link" data-scroll-target="#the-sample-four-means-estimator">The sample four-means estimator</a></li>
+  <li><a href="#regression-equivalence" id="toc-regression-equivalence" class="nav-link" data-scroll-target="#regression-equivalence">Regression equivalence</a></li>
+  <li><a href="#unit-and-time-fixed-effects" id="toc-unit-and-time-fixed-effects" class="nav-link" data-scroll-target="#unit-and-time-fixed-effects">Unit and time fixed effects</a></li>
+  <li><a href="#weights-define-the-target" id="toc-weights-define-the-target" class="nav-link" data-scroll-target="#weights-define-the-target">Weights define the target</a></li>
+  <li><a href="#inference" id="toc-inference" class="nav-link" data-scroll-target="#inference">Inference</a></li>
+  </ul></li>
+  <li><a href="#evaluating-the-2times2-design" id="toc-evaluating-the-2times2-design" class="nav-link" data-scroll-target="#evaluating-the-2times2-design">Evaluating the <span class="math inline">\(2\times2\)</span> design</a>
+  <ul class="collapse">
+  <li><a href="#parallel-trends-is-about-the-untreated-counterfactual" id="toc-parallel-trends-is-about-the-untreated-counterfactual" class="nav-link" data-scroll-target="#parallel-trends-is-about-the-untreated-counterfactual">Parallel trends is about the untreated counterfactual</a></li>
+  <li><a href="#what-pre-treatment-trends-can-tell-us" id="toc-what-pre-treatment-trends-can-tell-us" class="nav-link" data-scroll-target="#what-pre-treatment-trends-can-tell-us">What pre-treatment trends can tell us</a></li>
+  <li><a href="#conditional-parallel-trends" id="toc-conditional-parallel-trends" class="nav-link" data-scroll-target="#conditional-parallel-trends">Conditional parallel trends</a></li>
+  <li><a href="#estimation-with-covariates" id="toc-estimation-with-covariates" class="nav-link" data-scroll-target="#estimation-with-covariates">Estimation with covariates</a></li>
+  </ul></li>
+  <li><a href="#multiple-periods-with-one-treated-cohort-2times-t" id="toc-multiple-periods-with-one-treated-cohort-2times-t" class="nav-link" data-scroll-target="#multiple-periods-with-one-treated-cohort-2times-t">Multiple periods with one treated cohort: <span class="math inline">\(2\times T\)</span></a>
+  <ul class="collapse">
+  <li><a href="#event-time-and-event-studies" id="toc-event-time-and-event-studies" class="nav-link" data-scroll-target="#event-time-and-event-studies">Event time and event studies</a></li>
+  <li><a href="#dynamic-effects-and-aggregation-over-time" id="toc-dynamic-effects-and-aggregation-over-time" class="nav-link" data-scroll-target="#dynamic-effects-and-aggregation-over-time">Dynamic effects and aggregation over time</a></li>
+  </ul></li>
+  <li><a href="#staggered-treatment-adoption-gtimes-t" id="toc-staggered-treatment-adoption-gtimes-t" class="nav-link" data-scroll-target="#staggered-treatment-adoption-gtimes-t">Staggered treatment adoption: <span class="math inline">\(G\times T\)</span></a>
+  <ul class="collapse">
+  <li><a href="#group-time-average-treatment-effects" id="toc-group-time-average-treatment-effects" class="nav-link" data-scroll-target="#group-time-average-treatment-effects">Group-time average treatment effects</a></li>
+  <li><a href="#every-attgt-is-built-from-a-2times2-comparison" id="toc-every-attgt-is-built-from-a-2times2-comparison" class="nav-link" data-scroll-target="#every-attgt-is-built-from-a-2times2-comparison">Every <span class="math inline">\(ATT(g,t)\)</span> is built from a <span class="math inline">\(2\times2\)</span> comparison</a></li>
+  <li><a href="#never-treated-versus-not-yet-treated-comparisons" id="toc-never-treated-versus-not-yet-treated-comparisons" class="nav-link" data-scroll-target="#never-treated-versus-not-yet-treated-comparisons">Never-treated versus not-yet-treated comparisons</a></li>
+  <li><a href="#aggregating-the-building-blocks" id="toc-aggregating-the-building-blocks" class="nav-link" data-scroll-target="#aggregating-the-building-blocks">Aggregating the building blocks</a></li>
+  </ul></li>
+  <li><a href="#why-conventional-twfe-can-fail" id="toc-why-conventional-twfe-can-fail" class="nav-link" data-scroll-target="#why-conventional-twfe-can-fail">Why conventional TWFE can fail</a>
+  <ul class="collapse">
+  <li><a href="#why-one-regression-creates-several-comparisons" id="toc-why-one-regression-creates-several-comparisons" class="nav-link" data-scroll-target="#why-one-regression-creates-several-comparisons">Why one regression creates several comparisons</a></li>
+  <li><a href="#the-already-treated-comparison-problem" id="toc-the-already-treated-comparison-problem" class="nav-link" data-scroll-target="#the-already-treated-comparison-problem">The already-treated comparison problem</a></li>
+  <li><a href="#dynamic-event-study-contamination" id="toc-dynamic-event-study-contamination" class="nav-link" data-scroll-target="#dynamic-event-study-contamination">Dynamic event-study contamination</a></li>
+  <li><a href="#when-is-twfe-relatively-safe" id="toc-when-is-twfe-relatively-safe" class="nav-link" data-scroll-target="#when-is-twfe-relatively-safe">When is TWFE relatively safe?</a></li>
+  </ul></li>
+  <li><a href="#modern-did-estimate-building-blocks-then-aggregate" id="toc-modern-did-estimate-building-blocks-then-aggregate" class="nav-link" data-scroll-target="#modern-did-estimate-building-blocks-then-aggregate">Modern DiD: estimate building blocks, then aggregate</a>
+  <ul class="collapse">
+  <li><a href="#modern-event-studies" id="toc-modern-event-studies" class="nav-link" data-scroll-target="#modern-event-studies">Modern event studies</a></li>
+  <li><a href="#covariates-in-modern-did" id="toc-covariates-in-modern-did" class="nav-link" data-scroll-target="#covariates-in-modern-did">Covariates in modern DiD</a></li>
+  <li><a href="#sensitivity-and-heterogeneity" id="toc-sensitivity-and-heterogeneity" class="nav-link" data-scroll-target="#sensitivity-and-heterogeneity">Sensitivity and heterogeneity</a></li>
+  </ul></li>
+  <li><a href="#a-practical-did-workflow" id="toc-a-practical-did-workflow" class="nav-link" data-scroll-target="#a-practical-did-workflow">A practical DiD workflow</a></li>
+  <li><a href="#class-exercises" id="toc-class-exercises" class="nav-link" data-scroll-target="#class-exercises">Class exercises</a>
+  <ul class="collapse">
+  <li><a href="#exercise-1-recover-the-four-means-did" id="toc-exercise-1-recover-the-four-means-did" class="nav-link" data-scroll-target="#exercise-1-recover-the-four-means-did">Exercise 1: Recover the four-means DiD</a></li>
+  <li><a href="#exercise-2-identify-valid-staggered-comparisons" id="toc-exercise-2-identify-valid-staggered-comparisons" class="nav-link" data-scroll-target="#exercise-2-identify-valid-staggered-comparisons">Exercise 2: Identify valid staggered comparisons</a></li>
+  </ul></li>
+  <li><a href="#takeaway" id="toc-takeaway" class="nav-link" data-scroll-target="#takeaway">Takeaway</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/sections/empirical/1_identification_causality_strategies.html">Empirical Methods</a></li><li class="breadcrumb-item"><a href="../../../notes/sections/empirical/3_did.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Difference-in-Differences</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-3_did" class="quarto-section-identifier">Difference-in-Differences</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="the-canonical-2times2-did-design" class="level2">
+<h2 class="anchored" data-anchor-id="the-canonical-2times2-did-design">The canonical <span class="math inline">\(2\times2\)</span> DiD design</h2>
+<p>The canonical design has two groups and two periods:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Group</th>
+<th style="text-align: right;">Pre-treatment: <span class="math inline">\(t=0\)</span></th>
+<th style="text-align: right;">Post-treatment: <span class="math inline">\(t=1\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Treated group: <span class="math inline">\(G_i=1\)</span></td>
+<td style="text-align: right;">untreated</td>
+<td style="text-align: right;">treated</td>
+</tr>
+<tr class="even">
+<td>Comparison group: <span class="math inline">\(G_i=0\)</span></td>
+<td style="text-align: right;">untreated</td>
+<td style="text-align: right;">untreated</td>
+</tr>
+</tbody>
+</table>
+<p>Define</p>
+<p><span class="math display">\[
+Post_t=\mathbb{1}\{t=1\},
+\qquad
+D_{it}=G_i\times Post_t.
+\]</span></p>
+<p>Only the treated group in the post period has <span class="math inline">\(D_{it}=1\)</span>. This is the single cell in which treatment is observed.</p>
+<section id="potential-outcomes-and-the-target-parameter" class="level3">
+<h3 class="anchored" data-anchor-id="potential-outcomes-and-the-target-parameter">Potential outcomes and the target parameter</h3>
+<p>Let <span class="math inline">\(Y_{it}(1)\)</span> be unit <span class="math inline">\(i\)</span>’s outcome at time <span class="math inline">\(t\)</span> under treatment and <span class="math inline">\(Y_{it}(0)\)</span> its outcome without treatment. The observed outcome is</p>
+<p><span class="math display">\[
+Y_{it}=D_{it}Y_{it}(1)+(1-D_{it})Y_{it}(0).
+\]</span></p>
+<p>The usual target is the post-period average treatment effect on the treated:</p>
+<p><span class="math display">\[
+\boxed{
+ATT(1)=E[Y_{i1}(1)-Y_{i1}(0)\mid G_i=1]
+}.
+\]</span></p>
+<p>We observe <span class="math inline">\(E[Y_{i1}(1)\mid G_i=1]\)</span> but not <span class="math inline">\(E[Y_{i1}(0)\mid G_i=1]\)</span>. DiD is a method for constructing this missing post-treatment counterfactual.</p>
+</section>
+<section id="no-anticipation" class="level3">
+<h3 class="anchored" data-anchor-id="no-anticipation">No anticipation</h3>
+<p>Before treatment begins, treated units must still reveal their untreated potential outcomes:</p>
+<p><span class="math display">\[
+Y_{i0}(1)=Y_{i0}(0)
+\qquad\text{for }G_i=1.
+\]</span></p>
+<p>If units change behavior before formal implementation because treatment is announced or expected, the effective treatment date should be moved earlier. Calling an affected period “pre-treatment” would otherwise contaminate the baseline.</p>
+</section>
+<section id="parallel-trends" class="level3">
+<h3 class="anchored" data-anchor-id="parallel-trends">Parallel trends</h3>
+<p>The identifying assumption is that, without treatment, the two groups would have experienced the same average outcome change:</p>
+<p><span class="math display">\[
+\boxed{
+E[Y_{i1}(0)-Y_{i0}(0)\mid G_i=1]
+=E[Y_{i1}(0)-Y_{i0}(0)\mid G_i=0]
+}.
+\]</span></p>
+<p>Parallel trends allows the groups to have different outcome <strong>levels</strong>. It restricts their untreated <strong>changes</strong>.</p>
+<p>Under no anticipation and parallel trends, the treated group’s missing counterfactual mean is</p>
+<p><span class="math display">\[
+\begin{aligned}
+E[Y_{i1}(0)\mid G_i=1]
+&amp;=E[Y_{i0}\mid G_i=1]\\
+&amp;\quad+
+\left(
+E[Y_{i1}\mid G_i=0]-E[Y_{i0}\mid G_i=0]
+\right).
+\end{aligned}
+\]</span></p>
+<p>Start from the treated group’s pre-treatment level and add the change observed for the comparison group.</p>
+</section>
+<section id="identification-by-four-means" class="level3">
+<h3 class="anchored" data-anchor-id="identification-by-four-means">Identification by four means</h3>
+<p>Substitute the identified counterfactual into the definition of <span class="math inline">\(ATT(1)\)</span>:</p>
+<p><span class="math display">\[
+\boxed{
+\begin{aligned}
+ATT(1)
+&amp;=\underbrace{
+E[Y_{i1}\mid G_i=1]-E[Y_{i0}\mid G_i=1]
+}_{\text{change for treated group}}\\
+&amp;\quad-
+\underbrace{
+\left(
+E[Y_{i1}\mid G_i=0]-E[Y_{i0}\mid G_i=0]
+\right)
+}_{\text{change for comparison group}}.
+\end{aligned}
+} \tag{4.1}
+\]</span></p>
+<p>DiD removes two sources of noncausal difference:</p>
+<ul>
+<li>The within-group change removes time-invariant group differences.</li>
+<li>Subtracting the comparison group’s change removes common time shocks.</li>
+</ul>
+<p>What remains is attributed to treatment under parallel trends.</p>
+</section>
+<section id="a-numerical-example" class="level3">
+<h3 class="anchored" data-anchor-id="a-numerical-example">A numerical example</h3>
+<p>Suppose the four sample means are:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Group</th>
+<th style="text-align: right;">Pre</th>
+<th style="text-align: right;">Post</th>
+<th style="text-align: right;">Change</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Treated</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;"><span class="math inline">\(18-10=8\)</span></td>
+</tr>
+<tr class="even">
+<td>Comparison</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;"><span class="math inline">\(12-8=4\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The comparison group indicates that outcomes would have risen by four even without treatment. The treated group’s counterfactual post-treatment mean is therefore</p>
+<p><span class="math display">\[
+10+4=14.
+\]</span></p>
+<p>The DiD estimate is</p>
+<p><span class="math display">\[
+\widehat\tau_{DiD}
+=(18-10)-(12-8)=8-4=4,
+\]</span></p>
+<p>which is the same as comparing the observed treated post mean with its counterfactual:</p>
+<p><span class="math display">\[
+18-14=4.
+\]</span></p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Two equivalent ways to difference
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The same estimate can be calculated as a difference in changes,</p>
+<p><span class="math display">\[
+(18-10)-(12-8),
+\]</span></p>
+<p>or as a change in cross-group gaps,</p>
+<p><span class="math display">\[
+(18-12)-(10-8).
+\]</span></p>
+<p>Both equal four because subtraction can be rearranged.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="estimating-the-2times2-design" class="level2">
+<h2 class="anchored" data-anchor-id="estimating-the-2times2-design">Estimating the <span class="math inline">\(2\times2\)</span> design</h2>
+<section id="the-sample-four-means-estimator" class="level3">
+<h3 class="anchored" data-anchor-id="the-sample-four-means-estimator">The sample four-means estimator</h3>
+<p>Replacing population expectations in Equation 4.1 with sample means gives</p>
+<p><span class="math display">\[
+\boxed{
+\widehat\tau_{DiD}
+=\left(\overline Y_{1,1}-\overline Y_{1,0}\right)
+-\left(\overline Y_{0,1}-\overline Y_{0,0}\right),
+}
+\]</span></p>
+<p>where <span class="math inline">\(\overline Y_{g,t}\)</span> is the mean outcome for group <span class="math inline">\(g\)</span> in period <span class="math inline">\(t\)</span>.</p>
+</section>
+<section id="regression-equivalence" class="level3">
+<h3 class="anchored" data-anchor-id="regression-equivalence">Regression equivalence</h3>
+<p>The same estimate is the interaction coefficient in the saturated regression</p>
+<p><span class="math display">\[
+Y_{it}
+=\alpha+\gamma G_i+\lambda Post_t
++\tau(G_i\times Post_t)+u_{it}.
+\]</span></p>
+<p>The fitted cell means are</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Cell</th>
+<th style="text-align: right;">Fitted mean</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Comparison, pre</td>
+<td style="text-align: right;"><span class="math inline">\(\alpha\)</span></td>
+</tr>
+<tr class="even">
+<td>Treated, pre</td>
+<td style="text-align: right;"><span class="math inline">\(\alpha+\gamma\)</span></td>
+</tr>
+<tr class="odd">
+<td>Comparison, post</td>
+<td style="text-align: right;"><span class="math inline">\(\alpha+\lambda\)</span></td>
+</tr>
+<tr class="even">
+<td>Treated, post</td>
+<td style="text-align: right;"><span class="math inline">\(\alpha+\gamma+\lambda+\tau\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Taking the difference of differences cancels <span class="math inline">\(\alpha\)</span>, <span class="math inline">\(\gamma\)</span>, and <span class="math inline">\(\lambda\)</span>, leaving</p>
+<p><span class="math display">\[
+\boxed{\tau=DiD.}
+\]</span></p>
+<p>In the <span class="math inline">\(2\times2\)</span> design, the four-means calculation and the saturated regression are algebraically identical. The regression is a convenient implementation; the parallel-trends assumption supplies the causal interpretation.</p>
+</section>
+<section id="unit-and-time-fixed-effects" class="level3">
+<h3 class="anchored" data-anchor-id="unit-and-time-fixed-effects">Unit and time fixed effects</h3>
+<p>With panel data, the same model can be written as</p>
+<p><span class="math display">\[
+Y_{it}=\alpha_i+\lambda_t+\tau D_{it}+u_{it}.
+\]</span></p>
+<p>In a genuine <span class="math inline">\(2\times2\)</span> design, this two-way fixed-effects regression also returns the simple DiD estimate. Unit fixed effects absorb permanent unit differences, and time fixed effects absorb shocks common to all units.</p>
+</section>
+<section id="weights-define-the-target" class="level3">
+<h3 class="anchored" data-anchor-id="weights-define-the-target">Weights define the target</h3>
+<p>If units differ in size, weighted and unweighted means answer different questions. For example:</p>
+<ul>
+<li>An unweighted county analysis targets the average effect across counties.</li>
+<li>A population-weighted county analysis targets an average effect across people represented by those counties.</li>
+</ul>
+<p>When treatment effects are heterogeneous, changing the weights changes the causal parameter. Weights should therefore be chosen to match the population named in the research question, not added mechanically because they improve a regression fit.</p>
+</section>
+<section id="inference" class="level3">
+<h3 class="anchored" data-anchor-id="inference">Inference</h3>
+<p>The four cells do not represent four independent observations. Outcomes are usually correlated within units over time and may be correlated within the jurisdiction or institution that assigns treatment.</p>
+<p>A useful rule is to align clustering with the level at which treatment varies. If a state adopts a policy and counties are the observations, clustering only by county ignores common state-level shocks. With few assignment clusters, conventional cluster-robust approximations may also be unreliable and require specialized inference.</p>
+</section>
+</section>
+<section id="evaluating-the-2times2-design" class="level2">
+<h2 class="anchored" data-anchor-id="evaluating-the-2times2-design">Evaluating the <span class="math inline">\(2\times2\)</span> design</h2>
+<section id="parallel-trends-is-about-the-untreated-counterfactual" class="level3">
+<h3 class="anchored" data-anchor-id="parallel-trends-is-about-the-untreated-counterfactual">Parallel trends is about the untreated counterfactual</h3>
+<p>The post-treatment part of parallel trends cannot be tested because <span class="math inline">\(Y_{i1}(0)\)</span> is missing for treated units. Credibility must come from a substantive explanation of why the comparison group captures the treated group’s untreated change.</p>
+<p>Ask:</p>
+<ul>
+<li>Why was the treated group exposed while the comparison group was not?</li>
+<li>Could that reason also predict different outcome trends?</li>
+<li>Were other policies or shocks introduced at the same time?</li>
+<li>Could treatment spill over to the comparison group?</li>
+<li>Did the composition of either group change?</li>
+</ul>
+</section>
+<section id="what-pre-treatment-trends-can-tell-us" class="level3">
+<h3 class="anchored" data-anchor-id="what-pre-treatment-trends-can-tell-us">What pre-treatment trends can tell us</h3>
+<p>With several pre-treatment periods, we can compare earlier changes across groups. A visible differential pre-trend is evidence against a stable parallel-trends story. Flat pre-treatment event-study estimates are useful, but they do not prove the post-treatment counterfactual assumption:</p>
+<ul>
+<li>pre-trend tests may have low power;</li>
+<li>short pre-periods may miss slow-moving differences;</li>
+<li>anticipation may contaminate periods labeled as untreated; and</li>
+<li>parallel pre-trends can coexist with a post-period confounder.</li>
+</ul>
+<p>Pre-trends are diagnostics and falsification tools, not a certification procedure.</p>
+</section>
+<section id="conditional-parallel-trends" class="level3">
+<h3 class="anchored" data-anchor-id="conditional-parallel-trends">Conditional parallel trends</h3>
+<p>Unconditional trends may differ because treated and comparison units have different observed characteristics <span class="math inline">\(X_i\)</span>. A conditional parallel-trends assumption requires equal untreated changes among units with the same covariates:</p>
+<p><span class="math display">\[
+\boxed{
+E[\Delta Y_i(0)\mid X_i,G_i=1]
+=E[\Delta Y_i(0)\mid X_i,G_i=0].
+}
+\]</span></p>
+<p>We also need overlap:</p>
+<p><span class="math display">\[
+0&lt;P(G_i=1\mid X_i)&lt;1
+\]</span></p>
+<p>over the covariate values represented among treated units. Without comparable untreated observations, identification depends on extrapolation.</p>
+<p>Let</p>
+<p><span class="math display">\[
+m_0(X_i)=E[\Delta Y_i\mid X_i,G_i=0].
+\]</span></p>
+<p>Under conditional parallel trends, a regression-adjustment representation is</p>
+<p><span class="math display">\[
+ATT
+=E[\Delta Y_i-m_0(X_i)\mid G_i=1].
+\]</span></p>
+<p>The comparison group’s conditional change predicts how the treated group would have changed without treatment.</p>
+</section>
+<section id="estimation-with-covariates" class="level3">
+<h3 class="anchored" data-anchor-id="estimation-with-covariates">Estimation with covariates</h3>
+<p>Three common approaches implement conditional parallel trends:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Approach</th>
+<th>Main idea</th>
+<th>Main modeling risk</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Regression adjustment</td>
+<td>Model untreated outcome changes as a function of <span class="math inline">\(X\)</span></td>
+<td>Outcome-change model may be misspecified</td>
+</tr>
+<tr class="even">
+<td>Inverse probability weighting</td>
+<td>Reweight comparison units to resemble treated units</td>
+<td>Propensity-score model and weak overlap</td>
+</tr>
+<tr class="odd">
+<td>Doubly robust estimation</td>
+<td>Combine outcome regression and propensity weighting</td>
+<td>Requires at least one nuisance model to be correct</td>
+</tr>
+</tbody>
+</table>
+<p>Covariates should generally be measured before treatment and selected because they predict untreated outcome changes or treatment assignment. Post-treatment covariates can be mediators or colliders and create bad-control bias.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>A covariate is not a substitute for design
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Adding controls to a two-way fixed-effects regression does not automatically implement conditional parallel trends. The estimator must compare treated and untreated outcome changes at common covariate values and aggregate those comparisons for the intended treated population.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="multiple-periods-with-one-treated-cohort-2times-t" class="level2">
+<h2 class="anchored" data-anchor-id="multiple-periods-with-one-treated-cohort-2times-t">Multiple periods with one treated cohort: <span class="math inline">\(2\times T\)</span></h2>
+<p>Now suppose the same treated group begins treatment in period <span class="math inline">\(g\)</span>, while the comparison group remains untreated throughout. There are still two groups, but there are many periods.</p>
+<p>Define the time-specific effect</p>
+<p><span class="math display">\[
+ATT(t)=E[Y_{it}(1)-Y_{it}(0)\mid G_i=1],
+\qquad t\ge g.
+\]</span></p>
+<p>Using the last pre-treatment period <span class="math inline">\(g-1\)</span> as the baseline, each post-treatment effect is identified by a <span class="math inline">\(2\times2\)</span> building block:</p>
+<p><span class="math display">\[
+\boxed{
+ATT(t)
+=E[Y_{it}-Y_{i,g-1}\mid G_i=1]
+-E[Y_{it}-Y_{i,g-1}\mid G_i=0].
+} \tag{4.2}
+\]</span></p>
+<p>For every post period <span class="math inline">\(t\)</span>, Equation 4.2 uses two groups and two effective periods: the baseline and period <span class="math inline">\(t\)</span>.</p>
+<section id="event-time-and-event-studies" class="level3">
+<h3 class="anchored" data-anchor-id="event-time-and-event-studies">Event time and event studies</h3>
+<p>Define event time as</p>
+<p><span class="math display">\[
+e=t-g.
+\]</span></p>
+<p>The treatment period has <span class="math inline">\(e=0\)</span>, the preceding period has <span class="math inline">\(e=-1\)</span>, and the first lag has <span class="math inline">\(e=1\)</span>. A saturated event-study regression for this single treated cohort is</p>
+<p><span class="math display">\[
+Y_{it}
+=\alpha_i+\lambda_t
++\sum_{e\ne-1}\beta_e
+\left(G_i\times\mathbb{1}\{t-g=e\}\right)
++u_{it}.
+\]</span></p>
+<p>The omitted period <span class="math inline">\(e=-1\)</span> is the reference period. With one treated cohort and a never-treated comparison group, each post-treatment coefficient equals the corresponding DiD building block:</p>
+<p><span class="math display">\[
+\beta_e=ATT(g+e),
+\qquad e\ge0,
+\]</span></p>
+<p>under the relevant parallel-trends and no-anticipation assumptions.</p>
+<p>For <span class="math inline">\(e&lt;-1\)</span>, the coefficients compare earlier untreated changes with the baseline. They are <strong>pre-trend diagnostics</strong>, not treatment effects. Joint or simultaneous confidence bands are often more informative than inspecting many pointwise tests separately.</p>
+</section>
+<section id="dynamic-effects-and-aggregation-over-time" class="level3">
+<h3 class="anchored" data-anchor-id="dynamic-effects-and-aggregation-over-time">Dynamic effects and aggregation over time</h3>
+<p>Post-treatment effects may grow, fade, or reverse. Report the event-time path before compressing it into one number. If a summary is needed, define it explicitly:</p>
+<p><span class="math display">\[
+ATT^{post}
+=\sum_{t=g}^T \omega_t ATT(t),
+\qquad
+\omega_t\ge0,
+\qquad
+\sum_{t=g}^T\omega_t=1.
+\]</span></p>
+<p>Equal weights answer a different question from weights based on the treated population exposed in each period.</p>
+</section>
+</section>
+<section id="staggered-treatment-adoption-gtimes-t" class="level2">
+<h2 class="anchored" data-anchor-id="staggered-treatment-adoption-gtimes-t">Staggered treatment adoption: <span class="math inline">\(G\times T\)</span></h2>
+<p>In many applications, units begin treatment in different periods. Let</p>
+<p><span class="math display">\[
+G_i=g
+\]</span></p>
+<p>denote the first period in which unit <span class="math inline">\(i\)</span> is treated, and let <span class="math inline">\(G_i=\infty\)</span> denote units not treated during the observed panel.</p>
+<p>An <strong>absorbing treatment</strong> is one that, once started, remains in place for the rest of the observed period. A unit’s treatment status may move from <span class="math inline">\(0\)</span> to <span class="math inline">\(1\)</span>, but it never moves back from <span class="math inline">\(1\)</span> to <span class="math inline">\(0\)</span>. For example, if a state adopts a law in 2022 and the law remains effective through the end of the dataset, the law is absorbing in that panel. Therefore,</p>
+<p><span class="math display">\[
+D_{it}=\mathbb{1}\{t\ge G_i\}.
+\]</span></p>
+<p>Each adoption date defines a cohort. The design now contains many treatment cohorts and many possible comparisons.</p>
+<section id="group-time-average-treatment-effects" class="level3">
+<h3 class="anchored" data-anchor-id="group-time-average-treatment-effects">Group-time average treatment effects</h3>
+<p>Let <span class="math inline">\(Y_{it}(g)\)</span> be the potential outcome if treatment begins in period <span class="math inline">\(g\)</span>, and let <span class="math inline">\(Y_{it}(\infty)\)</span> be the outcome if treatment never begins. The fundamental building block is</p>
+<p><span class="math display">\[
+\boxed{
+ATT(g,t)
+=E[Y_{it}(g)-Y_{it}(\infty)\mid G_i=g].
+}
+\]</span></p>
+<p>This parameter asks: for the cohort first treated in <span class="math inline">\(g\)</span>, what is the average effect in calendar period <span class="math inline">\(t\)</span> relative to never initiating treatment?</p>
+<p>No anticipation requires</p>
+<p><span class="math display">\[
+Y_{it}(g)=Y_{it}(\infty)
+\qquad\text{for }t&lt;g.
+\]</span></p>
+</section>
+<section id="every-attgt-is-built-from-a-2times2-comparison" class="level3">
+<h3 class="anchored" data-anchor-id="every-attgt-is-built-from-a-2times2-comparison">Every <span class="math inline">\(ATT(g,t)\)</span> is built from a <span class="math inline">\(2\times2\)</span> comparison</h3>
+<p>Using the last untreated period <span class="math inline">\(g-1\)</span> as the baseline and never-treated units as the comparison group,</p>
+<p><span class="math display">\[
+\boxed{
+\begin{aligned}
+ATT(g,t)
+&amp;=E[Y_{it}-Y_{i,g-1}\mid G_i=g]\\
+&amp;\quad-E[Y_{it}-Y_{i,g-1}\mid G_i=\infty],
+\qquad t\ge g.
+\end{aligned}
+} \tag{4.3}
+\]</span></p>
+<p>Equation 4.3 is an ordinary <span class="math inline">\(2\times2\)</span> DiD using cohort <span class="math inline">\(g\)</span>, the never-treated group, baseline <span class="math inline">\(g-1\)</span>, and post period <span class="math inline">\(t\)</span>.</p>
+</section>
+<section id="never-treated-versus-not-yet-treated-comparisons" class="level3">
+<h3 class="anchored" data-anchor-id="never-treated-versus-not-yet-treated-comparisons">Never-treated versus not-yet-treated comparisons</h3>
+<p>If later cohorts remain untreated in period <span class="math inline">\(t\)</span>, they may also serve as comparisons. Under a parallel-trends assumption involving not-yet-treated units,</p>
+<p><span class="math display">\[
+\boxed{
+\begin{aligned}
+ATT(g,t)
+&amp;=E[Y_{it}-Y_{i,g-1}\mid G_i=g]\\
+&amp;\quad-E[Y_{it}-Y_{i,g-1}\mid G_i&gt;t],
+\qquad t\ge g.
+\end{aligned}
+} \tag{4.4}
+\]</span></p>
+<p>The comparison-group choice is an identifying assumption, not merely a software option.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Comparison group</th>
+<th>Advantage</th>
+<th>Concern</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Never treated</td>
+<td>Stable membership; never exposed during the panel</td>
+<td>May be small or systematically different from adopters</td>
+</tr>
+<tr class="even">
+<td>Not yet treated</td>
+<td>Uses more observations and may improve overlap</td>
+<td>Composition changes over time; future adopters may have different trends</td>
+</tr>
+</tbody>
+</table>
+<p>Once every unit is treated, no untreated comparison remains. Effects in those periods are not identified by standard DiD without additional assumptions.</p>
+</section>
+<section id="aggregating-the-building-blocks" class="level3">
+<h3 class="anchored" data-anchor-id="aggregating-the-building-blocks">Aggregating the building blocks</h3>
+<p>A staggered design can produce many <span class="math inline">\(ATT(g,t)\)</span> values. A summary parameter should be a transparent weighted average:</p>
+<p><span class="math display">\[
+\boxed{
+ATT^{summary}
+=\sum_g\sum_{t\ge g}\omega_{g,t}ATT(g,t),
+\qquad
+\omega_{g,t}\ge0,
+\qquad
+\sum_g\sum_{t\ge g}\omega_{g,t}=1.
+}
+\]</span></p>
+<p>Different weights answer different questions:</p>
+<ul>
+<li><strong>Cohort averages</strong> summarize effects for a particular adoption group.</li>
+<li><strong>Calendar-time averages</strong> summarize effects in a particular period.</li>
+<li><strong>Overall averages</strong> summarize treated observations or treated units.</li>
+<li><strong>Event-time averages</strong> summarize effects after a given duration of exposure.</li>
+</ul>
+<p>For event time <span class="math inline">\(e=t-g\)</span>,</p>
+<p><span class="math display">\[
+ATT(e)
+=\sum_{g:g+e\le T}\omega_g(e)ATT(g,g+e).
+\]</span></p>
+<p>The cohorts contributing to <span class="math inline">\(ATT(e)\)</span> may change with <span class="math inline">\(e\)</span>. Long-run event-time estimates often use only early adopters, so changes across event time can reflect both treatment dynamics and changing cohort composition.</p>
+</section>
+</section>
+<section id="why-conventional-twfe-can-fail" class="level2">
+<h2 class="anchored" data-anchor-id="why-conventional-twfe-can-fail">Why conventional TWFE can fail</h2>
+<p>The traditional response to staggered adoption is to put every cohort and period into one static two-way fixed-effects (TWFE) regression:</p>
+<p><span class="math display">\[
+Y_{it}=\alpha_i+\lambda_t+\beta_{TWFE}D_{it}+u_{it}.
+\]</span></p>
+<p>In the canonical <span class="math inline">\(2\times2\)</span> design, there is only one treated cohort and one untreated group, so the comparison behind <span class="math inline">\(\beta_{TWFE}\)</span> is unambiguous. With staggered adoption, different cohorts switch treatment on at different dates. The regression still forces all those treatment changes into one coefficient.</p>
+<section id="why-one-regression-creates-several-comparisons" class="level3">
+<h3 class="anchored" data-anchor-id="why-one-regression-creates-several-comparisons">Why one regression creates several comparisons</h3>
+<p>Consider an early cohort <span class="math inline">\(E\)</span>, a late cohort <span class="math inline">\(L\)</span>, and a never-treated group <span class="math inline">\(N\)</span>:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Group</th>
+<th style="text-align: right;">Period 0</th>
+<th style="text-align: right;">Period 1</th>
+<th style="text-align: right;">Period 2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Early cohort <span class="math inline">\(E\)</span></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td>Late cohort <span class="math inline">\(L\)</span></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td>Never treated <span class="math inline">\(N\)</span></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<p>The unit fixed effects remove permanent differences among <span class="math inline">\(E\)</span>, <span class="math inline">\(L\)</span>, and <span class="math inline">\(N\)</span>. The time fixed effects remove changes common to all three groups. After those components are removed, OLS explains the remaining outcome changes using <strong>every remaining change in treatment status</strong>. Because the regression does not ask us to name a comparison group, it automatically pools several comparisons:</p>
+<ul>
+<li><span class="math inline">\(E\)</span> versus <span class="math inline">\(N\)</span> when <span class="math inline">\(E\)</span> switches on;</li>
+<li><span class="math inline">\(L\)</span> versus <span class="math inline">\(N\)</span> when <span class="math inline">\(L\)</span> switches on;</li>
+<li><span class="math inline">\(E\)</span> versus the still-untreated <span class="math inline">\(L\)</span> between periods 0 and 1; and</li>
+<li><span class="math inline">\(L\)</span> versus the already-treated <span class="math inline">\(E\)</span> between periods 1 and 2.</li>
+</ul>
+<p>The first three comparisons use an untreated group as the counterfactual. The last comparison is different. When <span class="math inline">\(L\)</span> becomes treated in period 2, <span class="math inline">\(E\)</span> is treated in both periods 1 and 2. Since <span class="math inline">\(E\)</span> does not switch at that moment, the regression uses its outcome change as a benchmark for the change in <span class="math inline">\(L\)</span>. Thus, the already-treated early cohort acts as a control for the newly treated late cohort.</p>
+</section>
+<section id="the-already-treated-comparison-problem" class="level3">
+<h3 class="anchored" data-anchor-id="the-already-treated-comparison-problem">The already-treated comparison problem</h3>
+<p>Write the late-versus-early comparison between periods 1 and 2 as</p>
+<p><span class="math display">\[
+\begin{aligned}
+\operatorname{DiD}_{L,E}^{1\to2}
+&amp;=(Y_{L,2}-Y_{L,1})-(Y_{E,2}-Y_{E,1})\\
+&amp;=ATT(2,2)-\{ATT(1,2)-ATT(1,1)\},
+\end{aligned}
+\]</span></p>
+<p>under parallel untreated trends. The first term is the late cohort’s effect when it enters treatment. The bracketed term is the change in the early cohort’s treatment effect between its first and second treated periods. A valid control should reveal an untreated outcome change, but the early cohort’s observed change contains this treatment-effect evolution.</p>
+<p>For example, suppose the late cohort’s effect in period 2 is <span class="math inline">\(4\)</span>, while the early cohort’s effect grows from <span class="math inline">\(2\)</span> in period 1 to <span class="math inline">\(6\)</span> in period 2. Then</p>
+<p><span class="math display">\[
+\operatorname{DiD}_{L,E}^{1\to2}
+=4-(6-2)=0.
+\]</span></p>
+<p>Both cohorts have positive treatment effects, yet this particular comparison reports zero because the late cohort’s gain is offset by continued growth in the early cohort’s effect. If the early effect grows by more than <span class="math inline">\(4\)</span>, the comparison becomes negative.</p>
+<p>The overall TWFE coefficient averages this problematic comparison together with the cleaner comparisons. Goodman-Bacon’s mechanical decomposition expresses the coefficient as a weighted average of the available <span class="math inline">\(2\times2\)</span> DiDs. Although the weights on those comparisons are positive, an already-treated comparison subtracts changes in earlier cohorts’ treatment effects. Once the result is expressed in terms of the underlying <span class="math inline">\(ATT(g,t)\)</span> values, some effects can therefore receive negative or otherwise unintuitive effective weights.</p>
+<p>The problem disappears if treatment effects are constant across cohorts and do not change with exposure length: an already-treated group’s treatment effect then does not change between the two comparison periods. With heterogeneous or dynamic effects, however, conventional TWFE can be far from the causal average the researcher intends to estimate.</p>
+</section>
+<section id="dynamic-event-study-contamination" class="level3">
+<h3 class="anchored" data-anchor-id="dynamic-event-study-contamination">Dynamic event-study contamination</h3>
+<p>The conventional staggered-adoption event-study regression</p>
+<p><span class="math display">\[
+Y_{it}
+=\alpha_i+\lambda_t
++\sum_{e\ne-1}\beta_e\mathbb{1}\{t-G_i=e\}
++u_{it}
+\]</span></p>
+<p>does not generally solve the problem. When effect paths differ across cohorts, a coefficient for one event time can be contaminated by effects at other event times and in other cohorts. Even apparent pre-treatment coefficients may reflect heterogeneous post-treatment effects rather than genuine anticipation.</p>
+</section>
+<section id="when-is-twfe-relatively-safe" class="level3">
+<h3 class="anchored" data-anchor-id="when-is-twfe-relatively-safe">When is TWFE relatively safe?</h3>
+<p>The conventional specification is easiest to interpret when:</p>
+<ul>
+<li>there is one treated cohort and one never-treated group;</li>
+<li>the design is genuinely <span class="math inline">\(2\times2\)</span>; or</li>
+<li>strong restrictions make treatment effects homogeneous across cohorts and stable over time.</li>
+</ul>
+<p>These conditions should be argued, not assumed because the regression includes unit and time fixed effects.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Fixed effects do not cure treatment-effect heterogeneity
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Unit and time fixed effects remove permanent unit differences and common period shocks. They do not determine which treated cohort is a valid comparison for another, and they do not force a single TWFE coefficient to be a sensible average of heterogeneous effects.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="modern-did-estimate-building-blocks-then-aggregate" class="level2">
+<h2 class="anchored" data-anchor-id="modern-did-estimate-building-blocks-then-aggregate">Modern DiD: estimate building blocks, then aggregate</h2>
+<p>Modern DiD methods use a forward-engineering strategy:</p>
+<ol type="1">
+<li>Define each interpretable <span class="math inline">\(ATT(g,t)\)</span>.</li>
+<li>Choose never-treated or not-yet-treated comparisons justified by a stated parallel-trends assumption.</li>
+<li>Estimate each <span class="math inline">\(2\times2\)</span> building block, optionally conditioning on covariates.</li>
+<li>Aggregate the estimates using nonnegative weights linked to the target parameter.</li>
+</ol>
+<p>Several estimators implement versions of this strategy.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Approach</th>
+<th>Core idea</th>
+<th>Useful feature</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Callaway and Sant’Anna group-time ATT</td>
+<td>Estimate <span class="math inline">\(ATT(g,t)\)</span> separately using never-treated or not-yet-treated comparisons</td>
+<td>Transparent comparison groups, covariates, and aggregation</td>
+</tr>
+<tr class="even">
+<td>Sun and Abraham interaction-weighted event study</td>
+<td>Estimate cohort-by-event-time effects and aggregate them</td>
+<td>Avoids contamination of event-time coefficients under cohort heterogeneity</td>
+</tr>
+<tr class="odd">
+<td>Borusyak, Jaravel, and Spiess imputation</td>
+<td>Estimate untreated outcomes using untreated observations, impute treated counterfactuals, and average treated residuals</td>
+<td>Direct counterfactual construction and flexible aggregation</td>
+</tr>
+<tr class="even">
+<td>de Chaisemartin and D’Haultfoeuille switcher methods</td>
+<td>Compare units whose treatment changes with appropriate stayers</td>
+<td>Extends naturally to some designs in which treatment can switch on and off</td>
+</tr>
+<tr class="odd">
+<td>Fully interacted regression approaches</td>
+<td>Saturate cohort and time relationships, then form explicit group-time contrasts</td>
+<td>Uses familiar regression tools while preserving heterogeneous effects</td>
+</tr>
+</tbody>
+</table>
+<p>These methods are not interchangeable defaults. They can rely on different parallel-trends assumptions, use different comparison groups and baselines, and target different aggregates. The right choice follows from the design.</p>
+<section id="modern-event-studies" class="level3">
+<h3 class="anchored" data-anchor-id="modern-event-studies">Modern event studies</h3>
+<p>A modern staggered event study first estimates cohort-specific effects</p>
+<p><span class="math display">\[
+\widehat{ATT}(g,g+e)
+\]</span></p>
+<p>and then forms</p>
+<p><span class="math display">\[
+\widehat{ATT}(e)
+=\sum_{g:g+e\le T}
+\widehat\omega_g(e)\widehat{ATT}(g,g+e).
+\]</span></p>
+<p>This ordering preserves the meaning of each building block. It also makes the event-time weights and changing cohort composition visible.</p>
+</section>
+<section id="covariates-in-modern-did" class="level3">
+<h3 class="anchored" data-anchor-id="covariates-in-modern-did">Covariates in modern DiD</h3>
+<p>Under conditional parallel trends and overlap, regression adjustment, inverse probability weighting, or doubly robust methods can be applied within each cohort-time comparison. Covariates enter the identification strategy for a specific <span class="math inline">\(ATT(g,t)\)</span>; they are not merely appended to a global TWFE regression.</p>
+</section>
+<section id="sensitivity-and-heterogeneity" class="level3">
+<h3 class="anchored" data-anchor-id="sensitivity-and-heterogeneity">Sensitivity and heterogeneity</h3>
+<p>A modern analysis should go beyond a single plot:</p>
+<ul>
+<li>Report cohort-specific or event-time effects when scientifically relevant.</li>
+<li>Use simultaneous confidence bands for collections of event-study coefficients.</li>
+<li>Examine balance and overlap for the actual comparison groups.</li>
+<li>Discuss deviations from parallel trends that are substantively plausible.</li>
+<li>Use sensitivity analysis to show how conclusions change under bounded violations.</li>
+<li>Explain how weighting and aggregation alter the target population.</li>
+</ul>
+</section>
+</section>
+<section id="a-practical-did-workflow" class="level2">
+<h2 class="anchored" data-anchor-id="a-practical-did-workflow">A practical DiD workflow</h2>
+<p>Before estimating, complete the following design table:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Question</th>
+<th>Required answer</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>What is treatment?</td>
+<td>Define exposure and whether it is absorbing, reversible, binary, or continuous</td>
+</tr>
+<tr class="even">
+<td>When does treatment begin?</td>
+<td>Identify effective dates, including anticipation</td>
+</tr>
+<tr class="odd">
+<td>What is the target?</td>
+<td>State <span class="math inline">\(ATT(1)\)</span>, <span class="math inline">\(ATT(g,t)\)</span>, an event-time effect, or a named aggregate</td>
+</tr>
+<tr class="even">
+<td>Who supplies the counterfactual?</td>
+<td>Name never-treated or not-yet-treated units for every comparison</td>
+</tr>
+<tr class="odd">
+<td>Why parallel trends?</td>
+<td>Give institutional and economic reasons, not only a statistical test</td>
+</tr>
+<tr class="even">
+<td>Are covariates needed?</td>
+<td>State conditional parallel trends and verify overlap</td>
+</tr>
+<tr class="odd">
+<td>How are effects aggregated?</td>
+<td>Report the weights and the population they represent</td>
+</tr>
+<tr class="even">
+<td>Where does dependence arise?</td>
+<td>Choose clustering and inference at the assignment level</td>
+</tr>
+<tr class="odd">
+<td>What could invalidate the design?</td>
+<td>Address anticipation, spillovers, composition, and concurrent shocks</td>
+</tr>
+</tbody>
+</table>
+<p>Then follow an estimand-first sequence:</p>
+<ol type="1">
+<li>Plot raw outcome paths by treatment cohort.</li>
+<li>Display the treatment-timing structure and cohort sizes.</li>
+<li>Estimate transparent <span class="math inline">\(ATT(g,t)\)</span> building blocks.</li>
+<li>Plot pre-treatment diagnostics and post-treatment dynamics separately.</li>
+<li>Aggregate only after defining the target parameter.</li>
+<li>Report point estimates with appropriate uncertainty.</li>
+<li>Conduct sensitivity and heterogeneity analyses.</li>
+</ol>
+</section>
+<section id="class-exercises" class="level2">
+<h2 class="anchored" data-anchor-id="class-exercises">Class exercises</h2>
+<section id="exercise-1-recover-the-four-means-did" class="level3">
+<h3 class="anchored" data-anchor-id="exercise-1-recover-the-four-means-did">Exercise 1: Recover the four-means DiD</h3>
+<p>Using the numerical <span class="math inline">\(2\times2\)</span> table above:</p>
+<ol type="1">
+<li>Compute the treated group’s change.</li>
+<li>Compute the comparison group’s change.</li>
+<li>Construct the treated group’s counterfactual post-treatment mean.</li>
+<li>Verify the result using the change in cross-group gaps.</li>
+</ol>
+</section>
+<section id="exercise-2-identify-valid-staggered-comparisons" class="level3">
+<h3 class="anchored" data-anchor-id="exercise-2-identify-valid-staggered-comparisons">Exercise 2: Identify valid staggered comparisons</h3>
+<p>Suppose cohort A is treated in 2020, cohort B in 2022, and cohort C is never treated.</p>
+<ol type="1">
+<li>Which groups can serve as untreated comparisons for cohort A in 2021?</li>
+<li>Which groups can serve as untreated comparisons for cohort A in 2023?</li>
+<li>Why is cohort A not a clean comparison for cohort B after 2020?</li>
+<li>Which parallel-trends assumption supports each proposed comparison?</li>
+</ol>
+</section>
+</section>
+<section id="takeaway" class="level2">
+<h2 class="anchored" data-anchor-id="takeaway">Takeaway</h2>
+<p>The canonical <span class="math inline">\(2\times2\)</span> DiD is a transparent comparison of four means that identifies the ATT under no anticipation and parallel trends. Multiple periods turn the design into a collection of time-specific <span class="math inline">\(2\times2\)</span> comparisons. Staggered adoption adds treatment cohorts, comparison-group choices, and aggregation choices. Modern DiD methods preserve the logic of the simple design by estimating interpretable <span class="math inline">\(ATT(g,t)\)</span> building blocks first and aggregating them according to the causal question.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../../notes/sections/empirical/2_regression_causal_inference.html" class="pagination-link" aria-label="From Regression to Causal Inference">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">From Regression to Causal Inference</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

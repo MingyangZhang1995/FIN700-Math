@@ -1,0 +1,2326 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>From Regression to Causal Inference – FIN700: Bootcamp for PhD Finance</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../notes/sections/empirical/3_did.html" rel="next">
+<link href="../../../notes/sections/empirical/1_identification_causality_strategies.html" rel="prev">
+<script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-9e3e5b9121e68b3f077afb32f2c64d95.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script type="module" src="../../../site_libs/quarto-ojs/quarto-ojs-runtime.js"></script>
+<link href="../../../site_libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/sections/empirical/1_identification_causality_strategies.html">Empirical Methods</a></li><li class="breadcrumb-item"><a href="../../../notes/sections/empirical/2_regression_causal_inference.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">From Regression to Causal Inference</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../../../">FIN700: Bootcamp for PhD Finance</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/MingyangZhang1995/FIN700-Math" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Basic Knowledge in Finance</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/finance/basic-knowledge.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Basic Knowledge in Finance</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Linear Algebra</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/linear-algebra/vectors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Vectors and Vector Spaces</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/linear-algebra/linear-maps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Linear Maps and Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/linear-algebra/decompositions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrix Calculus and Projection</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Probability Theory</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/probability/probability-space.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Probability Spaces and Random Variables</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/probability/expectation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Distributions, Expectation, and Dependence</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/probability/common-distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Common Probability Distributions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/probability/continuous-time.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Stochastic Processes and a Introduction to Continuous Time</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Statistics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/statistics/introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Introduction to Statistics and Basic Machine Learning</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Empirical Methods</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/empirical/1_identification_causality_strategies.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Identification, Causality, and Identification Strategies</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/empirical/2_regression_causal_inference.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">From Regression to Causal Inference</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/empirical/3_did.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Difference-in-Differences</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#the-conditional-expectation-function" id="toc-the-conditional-expectation-function" class="nav-link active" data-scroll-target="#the-conditional-expectation-function">The conditional expectation function</a>
+  <ul class="collapse">
+  <li><a href="#two-defining-features-of-the-cef" id="toc-two-defining-features-of-the-cef" class="nav-link" data-scroll-target="#two-defining-features-of-the-cef">Two defining features of the CEF</a></li>
+  <li><a href="#visual-intuition" id="toc-visual-intuition" class="nav-link" data-scroll-target="#visual-intuition">Visual intuition</a></li>
+  </ul></li>
+  <li><a href="#linear-regression-as-a-model-for-the-cef" id="toc-linear-regression-as-a-model-for-the-cef" class="nav-link" data-scroll-target="#linear-regression-as-a-model-for-the-cef">Linear regression as a model for the CEF</a>
+  <ul class="collapse">
+  <li><a href="#the-population-least-squares-problem" id="toc-the-population-least-squares-problem" class="nav-link" data-scroll-target="#the-population-least-squares-problem">The population least-squares problem</a></li>
+  <li><a href="#the-sample-least-squares-problem" id="toc-the-sample-least-squares-problem" class="nav-link" data-scroll-target="#the-sample-least-squares-problem">The sample least-squares problem</a></li>
+  <li><a href="#simple-regression-with-an-intercept" id="toc-simple-regression-with-an-intercept" class="nav-link" data-scroll-target="#simple-regression-with-an-intercept">Simple regression with an intercept</a></li>
+  <li><a href="#population-and-sample-analogues" id="toc-population-and-sample-analogues" class="nav-link" data-scroll-target="#population-and-sample-analogues">Population and sample analogues</a></li>
+  </ul></li>
+  <li><a href="#partialling-out-and-the-frischwaughlovell-theorem" id="toc-partialling-out-and-the-frischwaughlovell-theorem" class="nav-link" data-scroll-target="#partialling-out-and-the-frischwaughlovell-theorem">Partialling out and the Frisch–Waugh–Lovell theorem</a>
+  <ul class="collapse">
+  <li><a href="#seeing-the-fwl-equivalence-in-matrix-form" id="toc-seeing-the-fwl-equivalence-in-matrix-form" class="nav-link" data-scroll-target="#seeing-the-fwl-equivalence-in-matrix-form">Seeing the FWL equivalence in matrix form</a></li>
+  <li><a href="#what-is-equivalent" id="toc-what-is-equivalent" class="nav-link" data-scroll-target="#what-is-equivalent">What is equivalent?</a></li>
+  </ul></li>
+  <li><a href="#precision" id="toc-precision" class="nav-link" data-scroll-target="#precision">Precision</a>
+  <ul class="collapse">
+  <li><a href="#the-variance-of-one-coefficient" id="toc-the-variance-of-one-coefficient" class="nav-link" data-scroll-target="#the-variance-of-one-coefficient">The variance of one coefficient</a></li>
+  <li><a href="#what-determines-precision" id="toc-what-determines-precision" class="nav-link" data-scroll-target="#what-determines-precision">What determines precision?</a></li>
+  <li><a href="#irrelevant-regressors-create-a-trade-off" id="toc-irrelevant-regressors-create-a-trade-off" class="nav-link" data-scroll-target="#irrelevant-regressors-create-a-trade-off">Irrelevant regressors create a trade-off</a></li>
+  <li><a href="#when-errors-are-heteroskedastic-or-dependent" id="toc-when-errors-are-heteroskedastic-or-dependent" class="nav-link" data-scroll-target="#when-errors-are-heteroskedastic-or-dependent">When errors are heteroskedastic or dependent</a></li>
+  </ul></li>
+  <li><a href="#from-a-regression-model-to-a-causal-interpretation" id="toc-from-a-regression-model-to-a-causal-interpretation" class="nav-link" data-scroll-target="#from-a-regression-model-to-a-causal-interpretation">From a regression model to a causal interpretation</a>
+  <ul class="collapse">
+  <li><a href="#assumption-1-zero-mean-disturbance" id="toc-assumption-1-zero-mean-disturbance" class="nav-link" data-scroll-target="#assumption-1-zero-mean-disturbance">Assumption 1: zero-mean disturbance</a></li>
+  <li><a href="#assumption-2-conditional-mean-independence" id="toc-assumption-2-conditional-mean-independence" class="nav-link" data-scroll-target="#assumption-2-conditional-mean-independence">Assumption 2: conditional mean independence</a></li>
+  <li><a href="#why-cmi-matters-for-causality" id="toc-why-cmi-matters-for-causality" class="nav-link" data-scroll-target="#why-cmi-matters-for-causality">Why CMI matters for causality</a></li>
+  <li><a href="#can-cmi-be-tested-using-ols-residuals" id="toc-can-cmi-be-tested-using-ols-residuals" class="nav-link" data-scroll-target="#can-cmi-be-tested-using-ols-residuals">Can CMI be tested using OLS residuals?</a></li>
+  </ul></li>
+  <li><a href="#common-threats-to-causal-interpretation" id="toc-common-threats-to-causal-interpretation" class="nav-link" data-scroll-target="#common-threats-to-causal-interpretation">Common threats to causal interpretation</a>
+  <ul class="collapse">
+  <li><a href="#omitted-variable-bias" id="toc-omitted-variable-bias" class="nav-link" data-scroll-target="#omitted-variable-bias">Omitted-variable bias</a></li>
+  <li><a href="#measurement-error-bias" id="toc-measurement-error-bias" class="nav-link" data-scroll-target="#measurement-error-bias">Measurement-error bias</a></li>
+  <li><a href="#simultaneity-bias" id="toc-simultaneity-bias" class="nav-link" data-scroll-target="#simultaneity-bias">Simultaneity bias</a></li>
+  <li><a href="#bad-controls" id="toc-bad-controls" class="nav-link" data-scroll-target="#bad-controls">Bad controls</a></li>
+  <li><a href="#selection-bias" id="toc-selection-bias" class="nav-link" data-scroll-target="#selection-bias">Selection bias</a></li>
+  <li><a href="#comparing-the-threats" id="toc-comparing-the-threats" class="nav-link" data-scroll-target="#comparing-the-threats">Comparing the threats</a></li>
+  </ul></li>
+  <li><a href="#panel-data-and-fixed-effects" id="toc-panel-data-and-fixed-effects" class="nav-link" data-scroll-target="#panel-data-and-fixed-effects">Panel data and fixed effects</a>
+  <ul class="collapse">
+  <li><a href="#the-unit-fixed-effects-model" id="toc-the-unit-fixed-effects-model" class="nav-link" data-scroll-target="#the-unit-fixed-effects-model">The unit fixed-effects model</a></li>
+  <li><a href="#the-within-transformation" id="toc-the-within-transformation" class="nav-link" data-scroll-target="#the-within-transformation">The within transformation</a></li>
+  <li><a href="#an-intuitive-comparison" id="toc-an-intuitive-comparison" class="nav-link" data-scroll-target="#an-intuitive-comparison">An intuitive comparison</a></li>
+  <li><a href="#fixed-effects-as-unit-indicators" id="toc-fixed-effects-as-unit-indicators" class="nav-link" data-scroll-target="#fixed-effects-as-unit-indicators">Fixed effects as unit indicators</a></li>
+  <li><a href="#time-fixed-effects" id="toc-time-fixed-effects" class="nav-link" data-scroll-target="#time-fixed-effects">Time fixed effects</a></li>
+  <li><a href="#what-fixed-effects-removeand-what-they-do-not" id="toc-what-fixed-effects-removeand-what-they-do-not" class="nav-link" data-scroll-target="#what-fixed-effects-removeand-what-they-do-not">What fixed effects remove—and what they do not</a></li>
+  <li><a href="#assumption-for-causal-interpretation" id="toc-assumption-for-causal-interpretation" class="nav-link" data-scroll-target="#assumption-for-causal-interpretation">Assumption for causal interpretation</a></li>
+  <li><a href="#precision-and-inference-in-panels" id="toc-precision-and-inference-in-panels" class="nav-link" data-scroll-target="#precision-and-inference-in-panels">Precision and inference in panels</a></li>
+  </ul></li>
+  <li><a href="#natural-experiments-and-the-potential-outcomes-framework" id="toc-natural-experiments-and-the-potential-outcomes-framework" class="nav-link" data-scroll-target="#natural-experiments-and-the-potential-outcomes-framework">Natural experiments and the potential-outcomes framework</a>
+  <ul class="collapse">
+  <li><a href="#ate-and-att" id="toc-ate-and-att" class="nav-link" data-scroll-target="#ate-and-att">ATE and ATT</a></li>
+  <li><a href="#why-random-assignment-identifies-the-ate" id="toc-why-random-assignment-identifies-the-ate" class="nav-link" data-scroll-target="#why-random-assignment-identifies-the-ate">Why random assignment identifies the ATE</a></li>
+  <li><a href="#why-ate-equals-att-under-random-assignment" id="toc-why-ate-equals-att-under-random-assignment" class="nav-link" data-scroll-target="#why-ate-equals-att-under-random-assignment">Why ATE equals ATT under random assignment</a></li>
+  <li><a href="#natural-experiments" id="toc-natural-experiments" class="nav-link" data-scroll-target="#natural-experiments">Natural experiments</a></li>
+  <li><a href="#two-simple-difference-estimators" id="toc-two-simple-difference-estimators" class="nav-link" data-scroll-target="#two-simple-difference-estimators">Two simple-difference estimators</a></li>
+  <li><a href="#from-simple-differences-to-difference-in-differences" id="toc-from-simple-differences-to-difference-in-differences" class="nav-link" data-scroll-target="#from-simple-differences-to-difference-in-differences">From simple differences to difference-in-differences</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/sections/empirical/1_identification_causality_strategies.html">Empirical Methods</a></li><li class="breadcrumb-item"><a href="../../../notes/sections/empirical/2_regression_causal_inference.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">From Regression to Causal Inference</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">From Regression to Causal Inference</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="the-conditional-expectation-function" class="level2">
+<h2 class="anchored" data-anchor-id="the-conditional-expectation-function">The conditional expectation function</h2>
+<p>Let <span class="math inline">\(Y\)</span> be an outcome and let <span class="math inline">\(X\)</span> denote a variable, or a vector of variables, that we observe. The <strong>conditional expectation function (CEF)</strong> is</p>
+<p><span class="math display">\[
+m(x)=E[Y\mid X=x].
+\]</span></p>
+<p>The CEF gives the population mean of <span class="math inline">\(Y\)</span> among observations with <span class="math inline">\(X=x\)</span>. Evaluating it at the random variable <span class="math inline">\(X\)</span> produces an exact decomposition:</p>
+<p><span class="math display">\[
+Y=E[Y\mid X]+\varepsilon,
+\]</span></p>
+<p>where</p>
+<p><span class="math display">\[
+\varepsilon=Y-E[Y\mid X].
+\]</span></p>
+<p>The term <span class="math inline">\(E[Y\mid X]\)</span> is the part of <span class="math inline">\(Y\)</span> that can be explained, or predicted, using <span class="math inline">\(X\)</span>. The residual <span class="math inline">\(\varepsilon\)</span> is the part that remains unexplained by <span class="math inline">\(X\)</span>. This definition guarantees</p>
+<p><span class="math display">\[
+\begin{aligned}
+E[\varepsilon\mid X]
+&amp;=E\!\left[Y-E[Y\mid X]\mid X\right]\\
+&amp;=E[Y\mid X]-E[Y\mid X]\\
+&amp;=0.
+\end{aligned}
+\]</span></p>
+<section id="two-defining-features-of-the-cef" class="level3">
+<h3 class="anchored" data-anchor-id="two-defining-features-of-the-cef">Two defining features of the CEF</h3>
+<section id="the-cef-is-the-minimum-mse-predictor" class="level4">
+<h4 class="anchored" data-anchor-id="the-cef-is-the-minimum-mse-predictor">The CEF is the minimum-MSE predictor</h4>
+<p>Consider the set of all functions of <span class="math inline">\(X\)</span> with finite second moments. The CEF is the functional solution to the population prediction problem</p>
+<p><span class="math display">\[
+m^*(\cdot)
+=\underset{g(\cdot)}{\operatorname{arg\,min}}\;
+E\!\left[(Y-g(X))^2\right]
+=E[Y\mid X=\cdot].
+\]</span></p>
+<p>To see why, write <span class="math inline">\(Y=m(X)+\varepsilon\)</span>, where <span class="math inline">\(m(X)=E[Y\mid X]\)</span>. For any candidate predictor <span class="math inline">\(g(X)\)</span>,</p>
+<p><span class="math display">\[
+\begin{aligned}
+E[(Y-g(X))^2]
+&amp;=E[(\varepsilon+m(X)-g(X))^2]\\
+&amp;=E[\varepsilon^2]
+  +E[(m(X)-g(X))^2]
+  +2E[\varepsilon(m(X)-g(X))]\\
+&amp;=E[\varepsilon^2]+E[(m(X)-g(X))^2].
+\end{aligned}
+\]</span></p>
+<p>The cross-product is zero because <span class="math inline">\(m(X)-g(X)\)</span> is a function of <span class="math inline">\(X\)</span> and <span class="math inline">\(E[\varepsilon\mid X]=0\)</span>. The first term does not depend on <span class="math inline">\(g\)</span>. The second term is nonnegative and equals zero when <span class="math inline">\(g(X)=m(X)\)</span>, except possibly on values of <span class="math inline">\(X\)</span> that occur with probability zero. No other predictor based only on <span class="math inline">\(X\)</span> can have a lower population mean squared error.</p>
+<p>The same residual decomposition also separates the total variation in <span class="math inline">\(Y\)</span> into an explained part and an unexplained part. Let <span class="math inline">\(\mu=E[Y]\)</span> and recall that <span class="math inline">\(Y=m(X)+\varepsilon\)</span>. Subtracting the overall mean gives</p>
+<p><span class="math display">\[
+Y-\mu=\{m(X)-\mu\}+\varepsilon.
+\]</span></p>
+<p>Square both sides and take expectations:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\operatorname{Var}(Y)
+&amp;=E[(Y-\mu)^2]\\
+&amp;=E[(m(X)-\mu)^2]+E[\varepsilon^2]
+  +2E[(m(X)-\mu)\varepsilon].
+\end{aligned}
+\]</span></p>
+<p>The cross-product is zero. At every value of <span class="math inline">\(X\)</span>, <span class="math inline">\(m(X)-\mu\)</span> is fixed and <span class="math inline">\(E[\varepsilon\mid X]=0\)</span>, so positive and negative residuals cancel on average. Therefore,</p>
+<p><span class="math display">\[
+\operatorname{Var}(Y)
+=\operatorname{Var}(m(X))+E[\varepsilon^2].
+\]</span></p>
+<p>Why is <span class="math inline">\(E[\varepsilon^2]\)</span> the average conditional variance? Within a group with <span class="math inline">\(X=x\)</span>, the residual is exactly the deviation from that group’s mean:</p>
+<p><span class="math display">\[
+\varepsilon=Y-E[Y\mid X=x].
+\]</span></p>
+<p>Consequently,</p>
+<p><span class="math display">\[
+E[\varepsilon^2\mid X=x]
+=E\!\left[(Y-E[Y\mid X=x])^2\mid X=x\right]
+=\operatorname{Var}(Y\mid X=x).
+\]</span></p>
+<p>Taking the average across the distribution of <span class="math inline">\(X\)</span> gives <span class="math inline">\(E[\varepsilon^2]=E[\operatorname{Var}(Y\mid X)]\)</span>. We have therefore derived the <strong>law of total variance</strong>:</p>
+<p><span class="math display">\[
+\operatorname{Var}(Y)
+=\operatorname{Var}\!\left(E[Y\mid X]\right)
++E\!\left[\operatorname{Var}(Y\mid X)\right].
+\]</span></p>
+<p>The first term measures how much the group means <span class="math inline">\(E[Y\mid X=x]\)</span> vary across values of <span class="math inline">\(x\)</span>. This is the variation explained by <span class="math inline">\(X\)</span>. The second term averages the within-group variation of <span class="math inline">\(Y\)</span> around each group mean. Because those within-group deviations are precisely <span class="math inline">\(\varepsilon\)</span>, this second term is the variation left in the residual.</p>
+</section>
+<section id="the-population-cef-is-unobservable" class="level4">
+<h4 class="anchored" data-anchor-id="the-population-cef-is-unobservable">The population CEF is unobservable</h4>
+<p>Even when every observation contains both <span class="math inline">\(Y_i\)</span> and <span class="math inline">\(X_i\)</span>, the population function <span class="math inline">\(m(x)=E[Y\mid X=x]\)</span> is generally unobservable because we do not observe the entire population distribution of <span class="math inline">\((Y,X)\)</span>. We observe a finite sample and use it to estimate the function:</p>
+<p><span class="math display">\[
+\widehat m(x)\approx E[Y\mid X=x].
+\]</span></p>
+<p>The estimator might be a collection of group means, a linear regression, or a flexible nonparametric method. Consequently, the population residual <span class="math inline">\(\varepsilon_i=Y_i-m(X_i)\)</span> is also unobservable. What we can calculate is an estimated residual,</p>
+<p><span class="math display">\[
+\widehat\varepsilon_i=Y_i-\widehat m(X_i).
+\]</span></p>
+<p>The distinction matters: <span class="math inline">\(E[\varepsilon\mid X]=0\)</span> is a population property of the true CEF. An estimated residual may satisfy a sample analogue because of how a particular estimator is constructed, but that does not mean we have observed the population error.</p>
+</section>
+</section>
+<section id="visual-intuition" class="level3">
+<h3 class="anchored" data-anchor-id="visual-intuition">Visual intuition</h3>
+<div class="cell">
+<details class="code-fold hidden">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb1" data-startfrom="131" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 130;"><span id="cb1-131"><a href="#cb1-131" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb1-132"><a href="#cb1-132" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> cef <span class="op">=</span> x <span class="kw">=&gt;</span> <span class="fl">1.1</span> <span class="op">+</span> <span class="fl">0.55</span> <span class="op">*</span> x <span class="op">+</span> <span class="fl">0.08</span> <span class="op">*</span> x <span class="op">*</span> x<span class="op">;</span></span>
+<span id="cb1-133"><a href="#cb1-133" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> sigma <span class="op">=</span> <span class="fl">0.62</span><span class="op">;</span></span>
+<span id="cb1-134"><a href="#cb1-134" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> xValues <span class="op">=</span> [<span class="fl">1.2</span><span class="op">,</span> <span class="fl">3.0</span><span class="op">,</span> <span class="fl">4.8</span>]<span class="op">;</span></span>
+<span id="cb1-135"><a href="#cb1-135" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> curve <span class="op">=</span> <span class="bu">Array</span><span class="op">.</span><span class="fu">from</span>({<span class="dt">length</span><span class="op">:</span> <span class="dv">121</span>}<span class="op">,</span> (_<span class="op">,</span> i) <span class="kw">=&gt;</span> {</span>
+<span id="cb1-136"><a href="#cb1-136" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> x <span class="op">=</span> <span class="fl">0.4</span> <span class="op">+</span> i <span class="op">*</span> (<span class="fl">5.2</span> <span class="op">/</span> <span class="dv">120</span>)<span class="op">;</span></span>
+<span id="cb1-137"><a href="#cb1-137" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {x<span class="op">,</span> <span class="dt">mean</span><span class="op">:</span> <span class="fu">cef</span>(x)}<span class="op">;</span></span>
+<span id="cb1-138"><a href="#cb1-138" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb1-139"><a href="#cb1-139" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> distributions <span class="op">=</span> xValues<span class="op">.</span><span class="fu">flatMap</span>(x <span class="kw">=&gt;</span> {</span>
+<span id="cb1-140"><a href="#cb1-140" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> mean <span class="op">=</span> <span class="fu">cef</span>(x)<span class="op">;</span></span>
+<span id="cb1-141"><a href="#cb1-141" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">Array</span><span class="op">.</span><span class="fu">from</span>({<span class="dt">length</span><span class="op">:</span> <span class="dv">81</span>}<span class="op">,</span> (_<span class="op">,</span> i) <span class="kw">=&gt;</span> {</span>
+<span id="cb1-142"><a href="#cb1-142" aria-hidden="true" tabindex="-1"></a>      <span class="kw">const</span> y <span class="op">=</span> mean <span class="op">-</span> <span class="fl">2.1</span> <span class="op">+</span> i <span class="op">*</span> (<span class="fl">4.2</span> <span class="op">/</span> <span class="dv">80</span>)<span class="op">;</span></span>
+<span id="cb1-143"><a href="#cb1-143" aria-hidden="true" tabindex="-1"></a>      <span class="kw">const</span> density <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">exp</span>(<span class="op">-</span><span class="fl">0.5</span> <span class="op">*</span> ((y <span class="op">-</span> mean) <span class="op">/</span> sigma) <span class="op">**</span> <span class="dv">2</span>)<span class="op">;</span></span>
+<span id="cb1-144"><a href="#cb1-144" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> {</span>
+<span id="cb1-145"><a href="#cb1-145" aria-hidden="true" tabindex="-1"></a>        <span class="dt">group</span><span class="op">:</span> x<span class="op">,</span></span>
+<span id="cb1-146"><a href="#cb1-146" aria-hidden="true" tabindex="-1"></a>        y<span class="op">,</span></span>
+<span id="cb1-147"><a href="#cb1-147" aria-hidden="true" tabindex="-1"></a>        <span class="dt">left</span><span class="op">:</span> x <span class="op">-</span> <span class="fl">0.38</span> <span class="op">*</span> density<span class="op">,</span></span>
+<span id="cb1-148"><a href="#cb1-148" aria-hidden="true" tabindex="-1"></a>        <span class="dt">right</span><span class="op">:</span> x <span class="op">+</span> <span class="fl">0.38</span> <span class="op">*</span> density</span>
+<span id="cb1-149"><a href="#cb1-149" aria-hidden="true" tabindex="-1"></a>      }<span class="op">;</span></span>
+<span id="cb1-150"><a href="#cb1-150" aria-hidden="true" tabindex="-1"></a>    })<span class="op">;</span></span>
+<span id="cb1-151"><a href="#cb1-151" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb1-152"><a href="#cb1-152" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> centers <span class="op">=</span> xValues<span class="op">.</span><span class="fu">map</span>(x <span class="kw">=&gt;</span> ({x<span class="op">,</span> <span class="dt">mean</span><span class="op">:</span> <span class="fu">cef</span>(x)}))<span class="op">;</span></span>
+<span id="cb1-153"><a href="#cb1-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-154"><a href="#cb1-154" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb1-155"><a href="#cb1-155" aria-hidden="true" tabindex="-1"></a>    <span class="dt">width</span><span class="op">:</span> <span class="dv">760</span><span class="op">,</span></span>
+<span id="cb1-156"><a href="#cb1-156" aria-hidden="true" tabindex="-1"></a>    <span class="dt">height</span><span class="op">:</span> <span class="dv">440</span><span class="op">,</span></span>
+<span id="cb1-157"><a href="#cb1-157" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marginLeft</span><span class="op">:</span> <span class="dv">58</span><span class="op">,</span></span>
+<span id="cb1-158"><a href="#cb1-158" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"X"</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> [<span class="dv">0</span><span class="op">,</span> <span class="dv">6</span>]<span class="op">,</span> <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span>}<span class="op">,</span></span>
+<span id="cb1-159"><a href="#cb1-159" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Y"</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> [<span class="dv">0</span><span class="op">,</span> <span class="dv">7</span>]<span class="op">,</span> <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span>}<span class="op">,</span></span>
+<span id="cb1-160"><a href="#cb1-160" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb1-161"><a href="#cb1-161" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">areaX</span>(distributions<span class="op">,</span> {</span>
+<span id="cb1-162"><a href="#cb1-162" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x1</span><span class="op">:</span> <span class="st">"left"</span><span class="op">,</span></span>
+<span id="cb1-163"><a href="#cb1-163" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x2</span><span class="op">:</span> <span class="st">"right"</span><span class="op">,</span></span>
+<span id="cb1-164"><a href="#cb1-164" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y</span><span class="op">:</span> <span class="st">"y"</span><span class="op">,</span></span>
+<span id="cb1-165"><a href="#cb1-165" aria-hidden="true" tabindex="-1"></a>        <span class="dt">z</span><span class="op">:</span> <span class="st">"group"</span><span class="op">,</span></span>
+<span id="cb1-166"><a href="#cb1-166" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fill</span><span class="op">:</span> <span class="st">"steelblue"</span><span class="op">,</span></span>
+<span id="cb1-167"><a href="#cb1-167" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fillOpacity</span><span class="op">:</span> <span class="fl">0.28</span><span class="op">,</span></span>
+<span id="cb1-168"><a href="#cb1-168" aria-hidden="true" tabindex="-1"></a>        <span class="dt">stroke</span><span class="op">:</span> <span class="st">"steelblue"</span></span>
+<span id="cb1-169"><a href="#cb1-169" aria-hidden="true" tabindex="-1"></a>      })<span class="op">,</span></span>
+<span id="cb1-170"><a href="#cb1-170" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">ruleX</span>(xValues<span class="op">,</span> {<span class="dt">stroke</span><span class="op">:</span> <span class="st">"gray"</span><span class="op">,</span> <span class="dt">strokeDasharray</span><span class="op">:</span> <span class="st">"4,4"</span>})<span class="op">,</span></span>
+<span id="cb1-171"><a href="#cb1-171" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">line</span>(curve<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"x"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"mean"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"black"</span><span class="op">,</span> <span class="dt">strokeWidth</span><span class="op">:</span> <span class="dv">3</span>})<span class="op">,</span></span>
+<span id="cb1-172"><a href="#cb1-172" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">dot</span>(centers<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"x"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"mean"</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">5</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span> <span class="st">"crimson"</span>})<span class="op">,</span></span>
+<span id="cb1-173"><a href="#cb1-173" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">text</span>(centers<span class="op">,</span> {</span>
+<span id="cb1-174"><a href="#cb1-174" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x</span><span class="op">:</span> <span class="st">"x"</span><span class="op">,</span></span>
+<span id="cb1-175"><a href="#cb1-175" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y</span><span class="op">:</span> <span class="st">"mean"</span><span class="op">,</span></span>
+<span id="cb1-176"><a href="#cb1-176" aria-hidden="true" tabindex="-1"></a>        <span class="dt">text</span><span class="op">:</span> d <span class="kw">=&gt;</span> <span class="st">"E[Y|X="</span> <span class="op">+</span> d<span class="op">.</span><span class="at">x</span><span class="op">.</span><span class="fu">toFixed</span>(<span class="dv">1</span>) <span class="op">+</span> <span class="st">"]"</span><span class="op">,</span></span>
+<span id="cb1-177"><a href="#cb1-177" aria-hidden="true" tabindex="-1"></a>        <span class="dt">dy</span><span class="op">:</span> <span class="op">-</span><span class="dv">14</span><span class="op">,</span></span>
+<span id="cb1-178"><a href="#cb1-178" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fontSize</span><span class="op">:</span> <span class="dv">12</span></span>
+<span id="cb1-179"><a href="#cb1-179" aria-hidden="true" tabindex="-1"></a>      })</span>
+<span id="cb1-180"><a href="#cb1-180" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb1-181"><a href="#cb1-181" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb1-182"><a href="#cb1-182" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="fig-cef-conditional-distributions" class="cell-output cell-output-display quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cef-conditional-distributions-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div id="ojs-cell-1" data-nodetype="expression">
+
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cef-conditional-distributions-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Conditional distributions of Y at selected values of X. Each distribution is centered on the conditional expectation function.
+</figcaption>
+</figure>
+</div>
+</div>
+<p>The black curve is <span class="math inline">\(m(x)=E[Y\mid X=x]\)</span>. At any fixed value <span class="math inline">\(x\)</span>, imagine taking a vertical slice through the joint distribution of <span class="math inline">\((Y,X)\)</span>. Outcomes can lie above or below the curve, but their conditional distribution is centered at the point <span class="math inline">\(m(x)\)</span>. The red points show those conditional means for three representative values of <span class="math inline">\(x\)</span>; the blue shapes show the corresponding conditional distributions.</p>
+</section>
+</section>
+<section id="linear-regression-as-a-model-for-the-cef" class="level2">
+<h2 class="anchored" data-anchor-id="linear-regression-as-a-model-for-the-cef">Linear regression as a model for the CEF</h2>
+<p>The CEF <span class="math inline">\(m(x)=E[Y\mid X=x]\)</span> can have any shape. Linear regression imposes a simple parametric model on that function. Let</p>
+<p><span class="math display">\[
+\widetilde X=(1,X_1,\ldots,X_K)^\prime
+\]</span></p>
+<p>denote a vector containing an intercept and the observed regressors. The <strong>linear CEF model</strong> assumes</p>
+<p><span class="math display">\[
+E[Y\mid X]=\widetilde X^\prime\beta.
+\]</span></p>
+<p>Under this assumption, the CEF decomposition becomes</p>
+<p><span class="math display">\[
+Y=\widetilde X^\prime\beta+\varepsilon,
+\qquad E[\varepsilon\mid X]=0.
+\]</span></p>
+<p>Thus, <span class="math inline">\(\widetilde X^\prime\beta\)</span> is the part of <span class="math inline">\(Y\)</span> explained by the linear CEF, while <span class="math inline">\(\varepsilon\)</span> contains the remaining variation around that conditional mean.</p>
+<section id="the-population-least-squares-problem" class="level3">
+<h3 class="anchored" data-anchor-id="the-population-least-squares-problem">The population least-squares problem</h3>
+<p>The population linear-regression coefficient is defined as the solution to</p>
+<p><span class="math display">\[
+\beta_{\mathrm{LP}}
+=\underset{b\in\mathbb{R}^{K+1}}{\operatorname{arg\,min}}
+E\!\left[(Y-\widetilde X^\prime b)^2\right].
+\]</span></p>
+<p>This optimization searches over every linear function of the regressors and chooses the one with the smallest population mean squared prediction error. Using <span class="math inline">\(Y=m(X)+\varepsilon\)</span>, where <span class="math inline">\(E[\varepsilon\mid X]=0\)</span>, its objective can be decomposed as</p>
+<p><span class="math display">\[
+E\!\left[(Y-\widetilde X^\prime b)^2\right]
+=E[\varepsilon^2]
++E\!\left[(m(X)-\widetilde X^\prime b)^2\right].
+\]</span></p>
+<p>The first term cannot be reduced using any function of <span class="math inline">\(X\)</span>. Linear regression therefore chooses the linear function <span class="math inline">\(\widetilde X^\prime b\)</span> that comes closest to the true CEF in the minimum-MSE sense.</p>
+<p>To derive the coefficient formula, expand the population objective:</p>
+<p><span class="math display">\[
+\begin{aligned}
+Q(b)
+&amp;=E\!\left[(Y-\widetilde X^\prime b)^2\right]\\
+&amp;=E[Y^2]-2b^\prime E[\widetilde X Y]
+  +b^\prime E[\widetilde X\widetilde X^\prime]b.
+\end{aligned}
+\]</span></p>
+<p>Differentiating with respect to the coefficient vector <span class="math inline">\(b\)</span> gives</p>
+<p><span class="math display">\[
+\frac{\partial Q(b)}{\partial b}
+=-2E[\widetilde X Y]
++2E[\widetilde X\widetilde X^\prime]b.
+\]</span></p>
+<p>Setting the derivative equal to zero produces the <strong>population normal equations</strong>:</p>
+<p><span class="math display">\[
+E[\widetilde X\widetilde X^\prime]\beta_{\mathrm{LP}}
+=E[\widetilde X Y],
+\]</span></p>
+<p>or, equivalently,</p>
+<p><span class="math display">\[
+E\!\left[\widetilde X
+  (Y-\widetilde X^\prime\beta_{\mathrm{LP}})
+\right]=0.
+\]</span></p>
+<p>The matrix <span class="math inline">\(E[\widetilde X\widetilde X^\prime]\)</span> is <strong>invertible</strong> when the regressors contain distinct information: no regressor is an exact linear combination of the others in the population. Intuitively, the data must provide enough independent movement in each regressor to separate its coefficient from the remaining coefficients. Under this condition, the normal equations have one—and only one—solution:</p>
+<p><span class="math display">\[
+\beta_{\mathrm{LP}}
+=E[\widetilde X\widetilde X^\prime]^{-1}
+E[\widetilde X Y].
+\]</span></p>
+<p>If the CEF is exactly linear, then <span class="math inline">\(m(X)=\widetilde X^\prime\beta\)</span> and <span class="math inline">\(\beta_{\mathrm{LP}}=\beta\)</span>. If the CEF is nonlinear, <span class="math inline">\(\beta_{\mathrm{LP}}\)</span> still exists under standard moment conditions, but it describes the <strong>best linear predictor</strong> of <span class="math inline">\(Y\)</span>, rather than the CEF itself.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>A model, not a definition
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The CEF is defined by the population distribution of <span class="math inline">\((Y,X)\)</span>. Saying that the CEF is linear is an additional modeling assumption. Least squares always produces the best linear approximation, but that approximation equals the CEF only when the conditional mean is linear in the included regressors.</p>
+</div>
+</div>
+</section>
+<section id="the-sample-least-squares-problem" class="level3">
+<h3 class="anchored" data-anchor-id="the-sample-least-squares-problem">The sample least-squares problem</h3>
+<p>Because the population moments are unobservable, ordinary least squares uses a sample of <span class="math inline">\(n\)</span> observations and solves</p>
+<p><span class="math display">\[
+\widehat\beta
+=\underset{b\in\mathbb{R}^{K+1}}{\operatorname{arg\,min}}
+\frac{1}{n}\sum_{i=1}^n
+\left(Y_i-\widetilde X_i^\prime b\right)^2.
+\]</span></p>
+<p>The fitted value <span class="math inline">\(\widehat Y_i=\widetilde X_i^\prime\widehat\beta\)</span> estimates the linear CEF, and the estimated residual is</p>
+<p><span class="math display">\[
+\widehat\varepsilon_i
+=Y_i-\widetilde X_i^\prime\widehat\beta.
+\]</span></p>
+<p>With an intercept included, the OLS residuals have sample mean zero. More generally, the sample first-order conditions make the residuals orthogonal to every included regressor:</p>
+<p><span class="math display">\[
+\frac{1}{n}\sum_{i=1}^n
+\widetilde X_i\widehat\varepsilon_i=0.
+\]</span></p>
+<p>To obtain the closed-form OLS formula, first arrange the <span class="math inline">\(n\)</span> observations in matrix form. The outcome vector has one row per observation:</p>
+<p><span class="math display">\[
+\underbrace{\mathbf y}_{n\times1}
+=
+\underbrace{
+\begin{bmatrix}
+Y_1\\Y_2\\\vdots\\Y_n
+\end{bmatrix}}_{n\times1}.
+\]</span></p>
+<p>Each row of the design matrix contains the intercept and the <span class="math inline">\(K\)</span> regressor values for one observation. A candidate coefficient vector <span class="math inline">\(b\)</span> contains the corresponding <span class="math inline">\(K+1\)</span> coefficients:</p>
+<p><span class="math display">\[
+\underbrace{\mathbf X}_{n\times(K+1)}
+=
+\begin{bmatrix}
+1&amp;X_{11}&amp;\cdots&amp;X_{1K}\\
+1&amp;X_{21}&amp;\cdots&amp;X_{2K}\\
+\vdots&amp;\vdots&amp;\ddots&amp;\vdots\\
+1&amp;X_{n1}&amp;\cdots&amp;X_{nK}
+\end{bmatrix},
+\qquad
+\underbrace{b}_{(K+1)\times1}
+=
+\begin{bmatrix}
+b_0\\b_1\\\vdots\\b_K
+\end{bmatrix}.
+\]</span></p>
+<p>Multiplying each row of <span class="math inline">\(\mathbf X\)</span> by <span class="math inline">\(b\)</span> produces that observation’s fitted value, so the entire fitted-value vector is <span class="math inline">\(\mathbf Xb\)</span> and the residual vector is <span class="math inline">\(\mathbf y-\mathbf Xb\)</span>:</p>
+<p><span class="math display">\[
+\underbrace{\mathbf Xb}_{n\times1}
+=
+\begin{bmatrix}
+b_0+b_1X_{11}+\cdots+b_KX_{1K}\\
+b_0+b_1X_{21}+\cdots+b_KX_{2K}\\
+\vdots\\
+b_0+b_1X_{n1}+\cdots+b_KX_{nK}
+\end{bmatrix}.
+\]</span></p>
+<p>The inner product of the residual vector with itself adds its squared entries. Thus, the scalar sum-of-squares objective can be written as</p>
+<p><span class="math display">\[
+Q_n(b)
+=\frac{1}{n}(\mathbf y-\mathbf Xb)^\prime
+(\mathbf y-\mathbf Xb).
+\]</span></p>
+<p>Before differentiating, expand the product:</p>
+<p><span class="math display">\[
+Q_n(b)=\frac{1}{n}
+\left(\mathbf y^\prime\mathbf y
+-2b^\prime\mathbf X^\prime\mathbf y
++b^\prime\mathbf X^\prime\mathbf Xb\right).
+\]</span></p>
+<p>The first term does not involve <span class="math inline">\(b\)</span>. The derivative of the middle term is <span class="math inline">\(-2\mathbf X^\prime\mathbf y/n\)</span>, and the derivative of the last term is <span class="math inline">\(2\mathbf X^\prime\mathbf Xb/n\)</span>. Hence,</p>
+<p><span class="math display">\[
+\frac{\partial Q_n(b)}{\partial b}
+=-\frac{2}{n}\mathbf X^\prime\mathbf y
++\frac{2}{n}\mathbf X^\prime\mathbf Xb.
+\]</span></p>
+<p>Setting this derivative equal to zero gives the <strong>sample normal equations</strong>:</p>
+<p><span class="math display">\[
+\mathbf X^\prime\mathbf X\widehat\beta
+=\mathbf X^\prime\mathbf y.
+\]</span></p>
+<p>If <span class="math inline">\(\mathbf X\)</span> has full column rank—meaning that no column of the sample design matrix is an exact linear combination of the other columns—then <span class="math inline">\(\mathbf X^\prime\mathbf X\)</span> is invertible. Premultiplying both sides of the normal equations by <span class="math inline">\((\mathbf X^\prime\mathbf X)^{-1}\)</span> isolates <span class="math inline">\(\widehat\beta\)</span>:</p>
+<p><span class="math display">\[
+\boxed{
+\widehat\beta
+=(\mathbf X^\prime\mathbf X)^{-1}
+\mathbf X^\prime\mathbf y
+}.
+\]</span></p>
+<p>The factor <span class="math inline">\(1/n\)</span> disappears from the solution because it multiplies both sides of the first-order condition. It is useful when viewing the sample criterion as an estimate of the population mean squared error.</p>
+</section>
+<section id="simple-regression-with-an-intercept" class="level3">
+<h3 class="anchored" data-anchor-id="simple-regression-with-an-intercept">Simple regression with an intercept</h3>
+<p>For one regressor, write</p>
+<p><span class="math display">\[
+Y_i=\alpha+\beta X_i+u_i.
+\]</span></p>
+<p>The two sample normal equations imply</p>
+<p><span class="math display">\[
+\widehat\alpha=\overline Y-\widehat\beta\,\overline X
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\boxed{
+\widehat\beta
+=\frac{\sum_{i=1}^n(X_i-\overline X)(Y_i-\overline Y)}
+       {\sum_{i=1}^n(X_i-\overline X)^2}
+}.
+\]</span></p>
+<p>The population analogues are</p>
+<p><span class="math display">\[
+\alpha_{\mathrm{LP}}
+=E[Y]-\beta_{\mathrm{LP}}E[X]
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\boxed{
+\beta_{\mathrm{LP}}
+=\frac{\operatorname{Cov}(X,Y)}{\operatorname{Var}(X)}
+}.
+\]</span></p>
+<p>The sample formulas replace the unknown population expectations, covariance, and variance with their empirical counterparts.</p>
+</section>
+<section id="population-and-sample-analogues" class="level3">
+<h3 class="anchored" data-anchor-id="population-and-sample-analogues">Population and sample analogues</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Population object</th>
+<th>Sample analogue</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(E[Y]\)</span></td>
+<td><span class="math inline">\(\overline Y=n^{-1}\sum_iY_i\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(E[\widetilde X Y]\)</span></td>
+<td><span class="math inline">\(n^{-1}\mathbf X^\prime\mathbf y\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(E[\widetilde X\widetilde X^\prime]\)</span></td>
+<td><span class="math inline">\(n^{-1}\mathbf X^\prime\mathbf X\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\beta_{\mathrm{LP}}=E[\widetilde X\widetilde X^\prime]^{-1}E[\widetilde X Y]\)</span></td>
+<td><span class="math inline">\(\widehat\beta=(\mathbf X^\prime\mathbf X)^{-1}\mathbf X^\prime\mathbf y\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(E[\widetilde X e]=0\)</span></td>
+<td><span class="math inline">\(n^{-1}\mathbf X^\prime\widehat{\mathbf u}=0\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The population coefficient is a feature of the joint distribution of <span class="math inline">\((Y,X)\)</span>. The sample coefficient is a statistic calculated from the observed data and is used to estimate that population feature. Neither formula alone gives the coefficient a causal interpretation; that requires the identifying assumptions discussed next.</p>
+</section>
+</section>
+<section id="partialling-out-and-the-frischwaughlovell-theorem" class="level2">
+<h2 class="anchored" data-anchor-id="partialling-out-and-the-frischwaughlovell-theorem">Partialling out and the Frisch–Waugh–Lovell theorem</h2>
+<p>Suppose our coefficient of interest is the coefficient on <span class="math inline">\(D\)</span> in the full multivariate regression</p>
+<p><span class="math display">\[
+Y_i=\tau D_i+W_i^\prime\gamma+u_i,
+\]</span></p>
+<p>where <span class="math inline">\(W_i\)</span> includes an intercept and all other controls. The coefficient <span class="math inline">\(\widehat\tau\)</span> does not use all variation in <span class="math inline">\(D\)</span>. It uses only the part of <span class="math inline">\(D\)</span> that cannot be linearly explained by <span class="math inline">\(W\)</span>.</p>
+<p>The <strong>Frisch–Waugh–Lovell (FWL) theorem</strong> makes this statement exact. The following procedure produces precisely the same coefficient on <span class="math inline">\(D\)</span> as the full regression:</p>
+<ol type="1">
+<li><p>Regress <span class="math inline">\(D\)</span> on <span class="math inline">\(W\)</span> and save the residuals</p>
+<p><span class="math display">\[
+\widetilde D_i=D_i-W_i^\prime\widehat\pi.
+\]</span></p></li>
+<li><p>Regress <span class="math inline">\(Y\)</span> on <span class="math inline">\(W\)</span> and save the residuals</p>
+<p><span class="math display">\[
+\widetilde Y_i=Y_i-W_i^\prime\widehat\delta.
+\]</span></p></li>
+<li><p>Regress the residualized outcome <span class="math inline">\(\widetilde Y\)</span> on the residualized treatment <span class="math inline">\(\widetilde D\)</span>, without adding another intercept:</p>
+<p><span class="math display">\[
+\widetilde Y_i=\tau\widetilde D_i+\widetilde u_i.
+\]</span></p></li>
+</ol>
+<p>Then</p>
+<p><span class="math display">\[
+\boxed{
+\widehat\tau_{\mathrm{partial}}
+=\frac{\sum_{i=1}^n\widetilde D_i\widetilde Y_i}
+       {\sum_{i=1}^n\widetilde D_i^2}
+=\widehat\tau_{\mathrm{full}}
+}.
+\]</span></p>
+<p>Partialling out therefore converts a multivariate regression coefficient into a simple-regression coefficient after removing the linear contribution of the controls from both variables.</p>
+<section id="seeing-the-fwl-equivalence-in-matrix-form" class="level3">
+<h3 class="anchored" data-anchor-id="seeing-the-fwl-equivalence-in-matrix-form">Seeing the FWL equivalence in matrix form</h3>
+<p>The three residualization steps above can be written compactly with matrices. Stack the observations in the full model:</p>
+<p><span class="math display">\[
+\mathbf y=\mathbf d\tau+\mathbf W\gamma+\mathbf u.
+\]</span></p>
+<p>For any <span class="math inline">\(n\times1\)</span> variable <span class="math inline">\(\mathbf a\)</span>, regressing <span class="math inline">\(\mathbf a\)</span> on the controls <span class="math inline">\(\mathbf W\)</span> gives fitted values <span class="math inline">\(P_W\mathbf a\)</span> and residuals <span class="math inline">\(M_W\mathbf a\)</span>, where</p>
+<p><span class="math display">\[
+P_W=\mathbf W(\mathbf W^\prime\mathbf W)^{-1}\mathbf W^\prime,
+\qquad
+M_W=I-P_W.
+\]</span></p>
+<p>The projection matrix <span class="math inline">\(P_W\)</span> keeps the part predicted by the controls. The residual-maker <span class="math inline">\(M_W=I-P_W\)</span> subtracts that fitted part. Applying it to the outcome and treatment reproduces the residuals from steps 1 and 2:</p>
+<p><span class="math display">\[
+\widetilde{\mathbf y}=M_W\mathbf y,
+\qquad
+\widetilde{\mathbf d}=M_W\mathbf d.
+\]</span></p>
+<p>The key property is <span class="math inline">\(M_W\mathbf W=0\)</span>: once the controls have been residualized, none of their linear contribution remains. Multiply the full model by <span class="math inline">\(M_W\)</span>:</p>
+<p><span class="math display">\[
+\begin{aligned}
+M_W\mathbf y
+&amp;=M_W\mathbf d\,\tau+M_W\mathbf W\gamma+M_W\mathbf u\\
+&amp;=M_W\mathbf d\,\tau+M_W\mathbf u.
+\end{aligned}
+\]</span></p>
+<p>Using <span class="math inline">\(\widetilde{\mathbf y}=M_W\mathbf y\)</span> and <span class="math inline">\(\widetilde{\mathbf d}=M_W\mathbf d\)</span>, this becomes a simple regression between the residualized variables:</p>
+<p><span class="math display">\[
+\widetilde{\mathbf y}
+=\widetilde{\mathbf d}\,\tau+\widetilde{\mathbf u}.
+\]</span></p>
+<p>The simple-regression OLS formula therefore gives</p>
+<p><span class="math display">\[
+\widehat\tau_{\mathrm{partial}}
+=\frac{\widetilde{\mathbf d}^\prime\widetilde{\mathbf y}}
+       {\widetilde{\mathbf d}^\prime\widetilde{\mathbf d}}.
+\]</span></p>
+<p>Why is this also the coefficient from the full regression? The full OLS fit chooses <span class="math inline">\(\gamma\)</span> so that the part explained by <span class="math inline">\(\mathbf W\)</span> is already accounted for. What remains for estimating <span class="math inline">\(\tau\)</span> is exactly the relationship between <span class="math inline">\(M_W\mathbf d\)</span> and <span class="math inline">\(M_W\mathbf y\)</span>. Algebraically, <span class="math inline">\(M_W\)</span> is symmetric and <span class="math inline">\(M_WM_W=M_W\)</span>, so</p>
+<p><span class="math display">\[
+\begin{aligned}
+\widehat\tau_{\mathrm{full}}
+&amp;=(\mathbf d^\prime M_W\mathbf d)^{-1}
+  \mathbf d^\prime M_W\mathbf y\\
+&amp;=(\widetilde{\mathbf d}^\prime\widetilde{\mathbf d})^{-1}
+  \widetilde{\mathbf d}^\prime\widetilde{\mathbf y}
+=\widehat\tau_{\mathrm{partial}}.
+\end{aligned}
+\]</span></p>
+<p>The two calculations use the same leftover variation, which is why they produce exactly the same coefficient on <span class="math inline">\(D\)</span>.</p>
+</section>
+<section id="what-is-equivalent" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-equivalent">What is equivalent?</h3>
+<p>The full regression and the partial regression have:</p>
+<ul>
+<li>exactly the same estimated coefficient on <span class="math inline">\(D\)</span>;</li>
+<li>exactly the same final residual vector; and</li>
+<li>the same sum of squared residuals.</li>
+</ul>
+<p>The short partial regression does not recover the coefficients on <span class="math inline">\(W\)</span>. For conventional standard errors to match the full regression, the error-variance estimate must also use the full model’s residual degrees of freedom. Running the residualized regression as an ordinary one-regressor model may otherwise make software report a different degrees-of-freedom adjustment.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Interpretation
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>FWL shows that <span class="math inline">\(\widehat\tau\)</span> compares variation in <span class="math inline">\(Y\)</span> and <span class="math inline">\(D\)</span> remaining after their linear relationships with <span class="math inline">\(W\)</span> have been removed. This is the precise meaning of “holding the controls fixed” in a linear regression. FWL is an algebraic theorem, however; it does not establish that the chosen controls are sufficient or appropriate for a causal interpretation.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="precision" class="level2">
+<h2 class="anchored" data-anchor-id="precision">Precision</h2>
+<p>An OLS coefficient is calculated from one sample. If we repeatedly drew new samples from the same population, the estimate would vary from sample to sample. The <strong>sampling variance</strong> describes this variation; a smaller variance means a more precise estimate.</p>
+<p>Consider the model</p>
+<p><span class="math display">\[
+\mathbf y=\mathbf X\beta+\mathbf u,
+\qquad
+E[\mathbf u\mid\mathbf X]=0.
+\]</span></p>
+<p>Under homoskedastic, uncorrelated disturbances,</p>
+<p><span class="math display">\[
+\operatorname{Var}(\mathbf u\mid\mathbf X)=\sigma^2I,
+\]</span></p>
+<p>the conditional variance matrix of the OLS estimator is</p>
+<p><span class="math display">\[
+\boxed{
+\operatorname{Var}(\widehat\beta\mid\mathbf X)
+=\sigma^2(\mathbf X^\prime\mathbf X)^{-1}
+}.
+\]</span></p>
+<p>Because <span class="math inline">\(\sigma^2\)</span> is unknown, the usual homoskedastic estimator replaces it with</p>
+<p><span class="math display">\[
+s^2
+=\frac{\sum_{i=1}^n\widehat u_i^2}{n-p},
+\]</span></p>
+<p>where <span class="math inline">\(p\)</span> is the number of estimated coefficients, including the intercept. The estimated standard error of coefficient <span class="math inline">\(j\)</span> is the square root of diagonal element <span class="math inline">\(j\)</span> of</p>
+<p><span class="math display">\[
+s^2(\mathbf X^\prime\mathbf X)^{-1}.
+\]</span></p>
+<section id="the-variance-of-one-coefficient" class="level3">
+<h3 class="anchored" data-anchor-id="the-variance-of-one-coefficient">The variance of one coefficient</h3>
+<p>FWL gives a particularly useful formula. Let <span class="math inline">\(X_j\)</span> be the regressor of interest, and let <span class="math inline">\(X_{-j}\)</span> contain the intercept and all other regressors. Regress <span class="math inline">\(X_j\)</span> on <span class="math inline">\(X_{-j}\)</span> and denote the residual by</p>
+<p><span class="math display">\[
+\widetilde X_{ij}
+=X_{ij}-\widehat X_{ij}.
+\]</span></p>
+<p>The FWL representation implies</p>
+<p><span class="math display">\[
+\widehat\beta_j
+=\beta_j+
+\frac{\sum_{i=1}^n\widetilde X_{ij}u_i}
+     {\sum_{i=1}^n\widetilde X_{ij}^2}.
+\]</span></p>
+<p>Under the classical homoskedastic assumptions,</p>
+<p><span class="math display">\[
+\boxed{
+\operatorname{Var}(\widehat\beta_j\mid\mathbf X)
+=\frac{\sigma^2}
+       {\sum_{i=1}^n\widetilde X_{ij}^2}
+=\frac{\sigma^2}
+       {(1-R_j^2)\sum_{i=1}^n(X_{ij}-\overline X_j)^2}
+}.
+\]</span></p>
+<p>Here, <span class="math inline">\(R_j^2\)</span> comes from the <strong>auxiliary regression</strong> of <span class="math inline">\(X_j\)</span> on all the other regressors. The term</p>
+<p><span class="math display">\[
+\operatorname{VIF}_j=\frac{1}{1-R_j^2}
+\]</span></p>
+<p>is called the <strong>variance inflation factor</strong>. It measures how much the other regressors inflate the variance of <span class="math inline">\(\widehat\beta_j\)</span>, relative to a regression in which <span class="math inline">\(X_j\)</span> has the same total variation but is orthogonal to those regressors.</p>
+</section>
+<section id="what-determines-precision" class="level3">
+<h3 class="anchored" data-anchor-id="what-determines-precision">What determines precision?</h3>
+<p>The coefficient-specific variance formula highlights the main forces.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Factor</th>
+<th>Effect on precision</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Unexplained variation in <span class="math inline">\(Y\)</span></td>
+<td>Larger <span class="math inline">\(\sigma^2\)</span> lowers precision</td>
+<td>More outcome variation remains in the disturbance</td>
+</tr>
+<tr class="even">
+<td>Total variation in <span class="math inline">\(X_j\)</span></td>
+<td>More variation raises precision</td>
+<td><span class="math inline">\(\sum_i(X_{ij}-\overline X_j)^2\)</span> increases</td>
+</tr>
+<tr class="odd">
+<td>Multicollinearity</td>
+<td>A larger <span class="math inline">\(R_j^2\)</span> lowers precision</td>
+<td>Less variation in <span class="math inline">\(X_j\)</span> remains after partialling out the other regressors</td>
+</tr>
+<tr class="even">
+<td>Sample size</td>
+<td>Usually raises precision</td>
+<td>With similar observations, the usable sum of squares grows with <span class="math inline">\(n\)</span></td>
+</tr>
+<tr class="odd">
+<td>Controls that predict <span class="math inline">\(Y\)</span></td>
+<td>Can raise precision</td>
+<td>They may reduce the unexplained variance <span class="math inline">\(\sigma^2\)</span></td>
+</tr>
+<tr class="even">
+<td>Irrelevant regressors</td>
+<td>Can lower precision</td>
+<td>They may consume degrees of freedom and remove useful variation from <span class="math inline">\(X_j\)</span> without reducing outcome noise</td>
+</tr>
+<tr class="odd">
+<td>Treatment is almost determined by the controls</td>
+<td>Lowers precision</td>
+<td>Among observations with similar controls, there are too few treated-versus-untreated comparisons</td>
+</tr>
+<tr class="even">
+<td>Dependence within clusters</td>
+<td>Lowers effective precision</td>
+<td>Many observations may contain less independent information than their raw count suggests</td>
+</tr>
+</tbody>
+</table>
+<p>For a binary treatment <span class="math inline">\(D\)</span>, useful treatment variation comes from comparing treated and untreated observations with similar controls. Suppose the controls nearly predict treatment—for example, almost everyone in one age-and-industry group is treated and almost no one in another is treated. After <span class="math inline">\(D\)</span> is regressed on those controls, most residuals <span class="math inline">\(\widetilde D_i\)</span> will be close to zero. The denominator <span class="math inline">\(\sum_i\widetilde D_i^2\)</span> in the variance formula is then small, so the treatment-effect estimate is imprecise. The problem is a shortage of comparable treated and untreated observations, not merely that the treated group is small.</p>
+</section>
+<section id="irrelevant-regressors-create-a-trade-off" class="level3">
+<h3 class="anchored" data-anchor-id="irrelevant-regressors-create-a-trade-off">Irrelevant regressors create a trade-off</h3>
+<p>Suppose a candidate control has a zero population coefficient. Including it does not reduce omitted-variable bias because it does not belong in the outcome equation. If it is correlated with <span class="math inline">\(X_j\)</span>, however, it raises <span class="math inline">\(R_j^2\)</span> in the auxiliary regression and leaves less residualized variation in <span class="math inline">\(X_j\)</span>. It also costs a residual degree of freedom. Both effects can increase the standard error of <span class="math inline">\(\widehat\beta_j\)</span>.</p>
+<p>By contrast, a control that strongly predicts <span class="math inline">\(Y\)</span> may reduce <span class="math inline">\(\sigma^2\)</span> enough to improve precision. This produces a trade-off:</p>
+<p><span class="math display">\[
+\operatorname{Var}(\widehat\beta_j\mid\mathbf X)
+=\frac{\text{unexplained outcome variance}}
+       {\text{variation in }X_j\text{ left after controlling for }X_{-j}}.
+\]</span></p>
+<p>Adding a control may reduce the numerator, the denominator, or both. Its net effect on precision depends on which change is larger.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Precision is not identification
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A small standard error does not imply that a coefficient is unbiased or causal. An omitted confounder can produce a precisely estimated but incorrect coefficient. Conversely, a valid research design may identify a causal effect imprecisely when usable treatment variation is limited.</p>
+</div>
+</div>
+</section>
+<section id="when-errors-are-heteroskedastic-or-dependent" class="level3">
+<h3 class="anchored" data-anchor-id="when-errors-are-heteroskedastic-or-dependent">When errors are heteroskedastic or dependent</h3>
+<p>The compact formula <span class="math inline">\(\sigma^2(\mathbf X^\prime\mathbf X)^{-1}\)</span> requires homoskedastic, uncorrelated disturbances. Under heteroskedasticity, the conditional variance is instead</p>
+<p><span class="math display">\[
+\operatorname{Var}(\widehat\beta\mid\mathbf X)
+=(\mathbf X^\prime\mathbf X)^{-1}
+\mathbf X^\prime\Omega\mathbf X
+(\mathbf X^\prime\mathbf X)^{-1},
+\]</span></p>
+<p>where <span class="math inline">\(\Omega=\operatorname{Var}(\mathbf u\mid\mathbf X)\)</span>. Heteroskedasticity-robust or cluster-robust standard errors estimate an appropriate version of this sandwich variance. They change the estimated uncertainty, not the OLS point estimate.</p>
+</section>
+</section>
+<section id="from-a-regression-model-to-a-causal-interpretation" class="level2">
+<h2 class="anchored" data-anchor-id="from-a-regression-model-to-a-causal-interpretation">From a regression model to a causal interpretation</h2>
+<p>So far, linear regression has been presented as a model for prediction. To interpret a coefficient as a causal effect, give the regression a <strong>structural</strong> interpretation. For a treatment <span class="math inline">\(D\)</span> and observed controls <span class="math inline">\(W\)</span>, consider</p>
+<p><span class="math display">\[
+Y=\alpha+\tau D+W^\prime\gamma+u,
+\]</span></p>
+<p>where <span class="math inline">\(u\)</span> collects all unobserved determinants of the outcome. The coefficient <span class="math inline">\(\tau\)</span> is causal only if changing <span class="math inline">\(D\)</span> while holding the other determinants fixed changes <span class="math inline">\(Y\)</span> by <span class="math inline">\(\tau\)</span>. Two assumptions about <span class="math inline">\(u\)</span> help clarify what is required.</p>
+<section id="assumption-1-zero-mean-disturbance" class="level3">
+<h3 class="anchored" data-anchor-id="assumption-1-zero-mean-disturbance">Assumption 1: zero-mean disturbance</h3>
+<p>The first assumption is</p>
+<p><span class="math display">\[
+E[u]=0.
+\]</span></p>
+<p>With an intercept in the model, this assumption is <strong>innocuous</strong>: it is a normalization rather than a restriction on the relationship between <span class="math inline">\(D\)</span> and the unobservables. To see this, begin with a disturbance whose mean is <span class="math inline">\(\mu_u=E[u]\)</span>. Then</p>
+<p><span class="math display">\[
+\begin{aligned}
+Y
+&amp;=\alpha+\tau D+W^\prime\gamma+u\\
+&amp;=(\alpha+\mu_u)+\tau D+W^\prime\gamma+(u-\mu_u).
+\end{aligned}
+\]</span></p>
+<p>Define <span class="math inline">\(\alpha^*=\alpha+\mu_u\)</span> and <span class="math inline">\(u^*=u-\mu_u\)</span>. The same model can be written as</p>
+<p><span class="math display">\[
+Y=\alpha^*+\tau D+W^\prime\gamma+u^*,
+\qquad E[u^*]=0.
+\]</span></p>
+<p>The intercept absorbs the mean of the original disturbance, leaving every slope coefficient unchanged. In a sample OLS regression with an intercept, the corresponding first-order condition is <span class="math inline">\(\sum_i\widehat u_i=0\)</span>, so the residuals have sample mean zero by construction.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>What zero mean does not say
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The condition <span class="math inline">\(E[u]=0\)</span> does not say that treated and untreated observations have comparable unobservables. Positive and negative disturbances may average to zero overall while treated observations have systematically positive disturbances and untreated observations have systematically negative ones.</p>
+</div>
+</div>
+</section>
+<section id="assumption-2-conditional-mean-independence" class="level3">
+<h3 class="anchored" data-anchor-id="assumption-2-conditional-mean-independence">Assumption 2: conditional mean independence</h3>
+<p>The substantive assumption is <strong>conditional mean independence (CMI)</strong>:</p>
+<p><span class="math display">\[
+E[u\mid D,W]=E[u\mid W].
+\]</span></p>
+<p>CMI says that, after conditioning on <span class="math inline">\(W\)</span>, the mean of the unobserved determinants of <span class="math inline">\(Y\)</span> does not vary with treatment status. If <span class="math inline">\(W\)</span> is rich enough that <span class="math inline">\(E[u\mid W]=0\)</span>, this becomes the familiar regression condition</p>
+<p><span class="math display">\[
+E[u\mid D,W]=0.
+\]</span></p>
+<p>This is much stronger than <span class="math inline">\(E[u]=0\)</span>. It rules out selection into treatment based on unobserved factors that also affect the outcome, after controlling for <span class="math inline">\(W\)</span>.</p>
+</section>
+<section id="why-cmi-matters-for-causality" class="level3">
+<h3 class="anchored" data-anchor-id="why-cmi-matters-for-causality">Why CMI matters for causality</h3>
+<p>Suppose the structural equation implies the potential outcome</p>
+<p><span class="math display">\[
+Y(d)=\alpha+\tau d+W^\prime\gamma+u,
+\]</span></p>
+<p>and assume that the same <span class="math inline">\(u\)</span> applies when treatment is changed by an intervention. Under CMI,</p>
+<p><span class="math display">\[
+\begin{aligned}
+E[Y\mid D=d,W=w]
+&amp;=\alpha+\tau d+w^\prime\gamma+E[u\mid D=d,W=w]\\
+&amp;=\alpha+\tau d+w^\prime\gamma+E[u\mid W=w].
+\end{aligned}
+\]</span></p>
+<p>Therefore, for two treatment values <span class="math inline">\(d_1\)</span> and <span class="math inline">\(d_0\)</span>,</p>
+<p><span class="math display">\[
+E[Y\mid D=d_1,W=w]-E[Y\mid D=d_0,W=w]
+=\tau(d_1-d_0).
+\]</span></p>
+<p>The difference in observed conditional means now holds the mean of <span class="math inline">\(u\)</span> fixed, so it recovers the causal difference</p>
+<p><span class="math display">\[
+E[Y(d_1)-Y(d_0)\mid W=w]
+=\tau(d_1-d_0).
+\]</span></p>
+<p>Without CMI, the observed conditional comparison also contains a <strong>selection term</strong>:</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;E[Y\mid D=d_1,W=w]-E[Y\mid D=d_0,W=w]\\
+&amp;\qquad=\tau(d_1-d_0)
++\underbrace{E[u\mid D=d_1,W=w]-E[u\mid D=d_0,W=w]}_{\text{selection on unobservables}}.
+\end{aligned}
+\]</span></p>
+<p>CMI removes this selection term. It provides the bridge from an observed regression comparison to a causal interpretation.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>CMI is an identifying assumption
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The residual defined mechanically by <span class="math inline">\(u=Y-E[Y\mid D,W]\)</span> always satisfies <span class="math inline">\(E[u\mid D,W]=0\)</span>, but that fact alone is not causal. For CMI to justify a causal interpretation, <span class="math inline">\(u\)</span> must represent pre-existing, intervention-invariant determinants of the potential outcomes, and <span class="math inline">\(W\)</span> must be an appropriate set of pre-treatment controls. These requirements come from the research design and institutional setting, not from OLS itself.</p>
+</div>
+</div>
+</section>
+<section id="can-cmi-be-tested-using-ols-residuals" class="level3">
+<h3 class="anchored" data-anchor-id="can-cmi-be-tested-using-ols-residuals">Can CMI be tested using OLS residuals?</h3>
+<p>In general, <strong>CMI cannot be tested from the OLS residuals alone</strong>. The population assumption concerns the unobserved structural disturbance:</p>
+<p><span class="math display">\[
+E[u\mid D,W]=0.
+\]</span></p>
+<p>OLS gives us estimated residuals</p>
+<p><span class="math display">\[
+\widehat u_i
+=Y_i-\widehat\alpha-\widehat\tau D_i-W_i^\prime\widehat\gamma,
+\]</span></p>
+<p>but these are constructed from the fitted regression and are not observations of the structural <span class="math inline">\(u_i\)</span>. The OLS first-order conditions guarantee</p>
+<p><span class="math display">\[
+\sum_{i=1}^n \widehat u_i=0,
+\qquad
+\sum_{i=1}^n D_i\widehat u_i=0,
+\qquad
+\sum_{i=1}^n W_i\widehat u_i=0.
+\]</span></p>
+<p>These sample orthogonality conditions hold by construction whenever the intercept, <span class="math inline">\(D\)</span>, and <span class="math inline">\(W\)</span> are included in the regression. Finding zero sample correlations between the residuals and the included regressors therefore provides no independent evidence for CMI.</p>
+<section id="why-residual-orthogonality-is-not-enough" class="level4">
+<h4 class="anchored" data-anchor-id="why-residual-orthogonality-is-not-enough">Why residual orthogonality is not enough</h4>
+<p>Suppose the true structural equation is</p>
+<p><span class="math display">\[
+Y=\alpha+\tau D+u,
+\]</span></p>
+<p>but treatment is related to the structural disturbance, so that <span class="math inline">\(\operatorname{Cov}(D,u)\ne0\)</span>. The population regression slope is then</p>
+<p><span class="math display">\[
+\beta_{\mathrm{LP}}
+=\tau+
+\frac{\operatorname{Cov}(D,u)}{\operatorname{Var}(D)}.
+\]</span></p>
+<p>The regression residual <span class="math inline">\(e=Y-\alpha_{\mathrm{LP}}-\beta_{\mathrm{LP}}D\)</span> satisfies</p>
+<p><span class="math display">\[
+E[De]=0
+\]</span></p>
+<p>by the definition of the linear projection. Nevertheless, <span class="math inline">\(\beta_{\mathrm{LP}}\ne\tau\)</span> when <span class="math inline">\(\operatorname{Cov}(D,u)\ne0\)</span>. OLS has absorbed the endogenous association into the estimated slope and then made the fitted residual orthogonal to <span class="math inline">\(D\)</span>. This is why an apparently well-behaved residual cannot establish causality.</p>
+</section>
+<section id="what-residual-diagnostics-can-do" class="level4">
+<h4 class="anchored" data-anchor-id="what-residual-diagnostics-can-do">What residual diagnostics can do</h4>
+<p>CMI implies the broader collection of moment restrictions</p>
+<p><span class="math display">\[
+E[h(D,W)u]=0
+\]</span></p>
+<p>for every suitable function <span class="math inline">\(h(D,W)\)</span>. A residual plot or a test using transformations not included in the original regression—such as <span class="math inline">\(D^2\)</span>, interactions, or flexible functions of <span class="math inline">\(W\)</span>—may reveal systematic remaining patterns. Such evidence can reject the proposed conditional-mean model.</p>
+<p>However, a failure to find a pattern does not prove CMI. Any diagnostic examines only a limited set of functions, has finite-sample power limitations, and cannot show that omitted determinants are unrelated to treatment. Residual diagnostics are useful for detecting misspecification; the causal validity of CMI must ultimately be supported by the research design, institutional knowledge, or an external source of treatment variation.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>How to interpret a residual diagnostic
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>A detected residual pattern:</strong> evidence against the proposed conditional-mean specification.</li>
+<li><strong>No detected residual pattern:</strong> the diagnostic did not find a violation; CMI has not been verified.</li>
+<li><strong>Residuals orthogonal to included regressors:</strong> an algebraic property of OLS, not a test of causal exogeneity.</li>
+</ul>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="common-threats-to-causal-interpretation" class="level2">
+<h2 class="anchored" data-anchor-id="common-threats-to-causal-interpretation">Common threats to causal interpretation</h2>
+<p>Many regression biases can be understood through one simple equation. Suppose the causal model is</p>
+<p><span class="math display">\[
+Y=\alpha+\tau D+q,
+\]</span></p>
+<p>where <span class="math inline">\(q\)</span> contains every other determinant of <span class="math inline">\(Y\)</span>. The population coefficient from a simple regression of <span class="math inline">\(Y\)</span> on <span class="math inline">\(D\)</span> is</p>
+<p><span class="math display">\[
+\begin{aligned}
+\beta_{\mathrm{obs}}
+&amp;=\frac{\operatorname{Cov}(D,Y)}{\operatorname{Var}(D)}\\
+&amp;=\tau+
+\frac{\operatorname{Cov}(D,q)}{\operatorname{Var}(D)}.
+\end{aligned}
+\]</span></p>
+<p>Thus,</p>
+<p><span class="math display">\[
+\boxed{
+\text{observed regression coefficient}
+=\text{causal effect}+\text{bias}
+}.
+\]</span></p>
+<p>The coefficient equals the causal effect when the variation in <span class="math inline">\(D\)</span> is unrelated to the other determinants of <span class="math inline">\(Y\)</span>. The problems below describe different reasons why that condition can fail—or why the regression may estimate the wrong causal object.</p>
+<section id="omitted-variable-bias" class="level3">
+<h3 class="anchored" data-anchor-id="omitted-variable-bias">Omitted-variable bias</h3>
+<p>Suppose the correct model is</p>
+<p><span class="math display">\[
+Y=\alpha+\tau D+\gamma Z+u,
+\qquad E[u\mid D,Z]=0,
+\]</span></p>
+<p>but we omit <span class="math inline">\(Z\)</span> and regress <span class="math inline">\(Y\)</span> only on <span class="math inline">\(D\)</span>. The resulting population slope is</p>
+<p><span class="math display">\[
+\boxed{
+\widetilde\tau
+=\tau+
+\gamma\frac{\operatorname{Cov}(D,Z)}{\operatorname{Var}(D)}
+}.
+\]</span></p>
+<p>Omitted-variable bias requires both of the following:</p>
+<ol type="1">
+<li><span class="math inline">\(Z\)</span> affects <span class="math inline">\(Y\)</span>, so <span class="math inline">\(\gamma\ne0\)</span>.</li>
+<li><span class="math inline">\(Z\)</span> is related to <span class="math inline">\(D\)</span>, so <span class="math inline">\(\operatorname{Cov}(D,Z)\ne0\)</span>.</li>
+</ol>
+<p>For example, suppose <span class="math inline">\(D\)</span> is job training, <span class="math inline">\(Y\)</span> is earnings, and <span class="math inline">\(Z\)</span> is prior ability. If ability raises earnings and people with greater ability are more likely to take training, both terms are positive and the training coefficient is biased upward. If either link is zero, omitting <span class="math inline">\(Z\)</span> creates no bias in this simple model.</p>
+</section>
+<section id="measurement-error-bias" class="level3">
+<h3 class="anchored" data-anchor-id="measurement-error-bias">Measurement-error bias</h3>
+<p>Suppose the true regressor is <span class="math inline">\(D^*\)</span>, but we observe it with error:</p>
+<p><span class="math display">\[
+D=D^*+v.
+\]</span></p>
+<p>Let the outcome model be</p>
+<p><span class="math display">\[
+Y=\alpha+\tau D^*+u,
+\]</span></p>
+<p>and assume <strong>classical measurement error</strong>: <span class="math inline">\(v\)</span> has mean zero and is unrelated to <span class="math inline">\(D^*\)</span> and <span class="math inline">\(u\)</span>. Then</p>
+<p><span class="math display">\[
+\operatorname{Cov}(D,Y)
+=\tau\operatorname{Var}(D^*)
+\]</span></p>
+<p>but</p>
+<p><span class="math display">\[
+\operatorname{Var}(D)
+=\operatorname{Var}(D^*)+\operatorname{Var}(v).
+\]</span></p>
+<p>Consequently,</p>
+<p><span class="math display">\[
+\boxed{
+\operatorname{plim}\widehat\tau
+=\underbrace{
+\frac{\operatorname{Var}(D^*)}
+     {\operatorname{Var}(D^*)+\operatorname{Var}(v)}
+}_{\lambda\in(0,1)}\tau
+}.
+\]</span></p>
+<p>Random noise adds variation to the observed regressor without adding corresponding comovement with the outcome. The slope is therefore multiplied by the reliability ratio <span class="math inline">\(\lambda\)</span> and is <strong>attenuated toward zero</strong>.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>The direction is not universal
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Attenuation toward zero is the result for classical measurement error in a single regressor. Correlated, systematic, or differential measurement error—and measurement error in multivariate models—can generate bias in other directions. Classical measurement error in <span class="math inline">\(Y\)</span> generally increases uncertainty but does not bias the slope.</p>
+</div>
+</div>
+</section>
+<section id="simultaneity-bias" class="level3">
+<h3 class="anchored" data-anchor-id="simultaneity-bias">Simultaneity bias</h3>
+<p>Simultaneity arises when <span class="math inline">\(D\)</span> affects <span class="math inline">\(Y\)</span> while <span class="math inline">\(Y\)</span> also helps determine <span class="math inline">\(D\)</span>. Consider</p>
+<p><span class="math display">\[
+Y=\tau D+u
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+D=\delta Y+v.
+\]</span></p>
+<p>Substituting the first equation into the second gives</p>
+<p><span class="math display">\[
+D
+=\frac{\delta u+v}{1-\delta\tau}.
+\]</span></p>
+<p>When <span class="math inline">\(\delta\ne0\)</span>, <span class="math inline">\(D\)</span> contains part of the outcome disturbance <span class="math inline">\(u\)</span>, so</p>
+<p><span class="math display">\[
+\operatorname{Cov}(D,u)\ne0
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\operatorname{plim}\widehat\tau
+=\tau+
+\frac{\operatorname{Cov}(D,u)}{\operatorname{Var}(D)}.
+\]</span></p>
+<p>For example, investment may raise firm value, but firms expecting stronger performance may also invest more. A regression of value on investment mixes the effect of investment on value with the reverse response of investment to expected value. More observations do not remove this bias; an external source of variation or credible timing restriction is needed to separate the directions.</p>
+</section>
+<section id="bad-controls" class="level3">
+<h3 class="anchored" data-anchor-id="bad-controls">Bad controls</h3>
+<p>A variable is not automatically a good control merely because it predicts <span class="math inline">\(Y\)</span>. A control can be harmful when it is caused by treatment or when conditioning on it creates an association between treatment and unobservables.</p>
+<section id="controlling-for-a-mediator-changes-the-estimand" class="level4">
+<h4 class="anchored" data-anchor-id="controlling-for-a-mediator-changes-the-estimand">Controlling for a mediator changes the estimand</h4>
+<p>Suppose treatment affects a mediator <span class="math inline">\(M\)</span>, which then affects the outcome:</p>
+<p><span class="math display">\[
+M=aD+v,
+\]</span></p>
+<p><span class="math display">\[
+Y=cD+bM+u.
+\]</span></p>
+<p>Increasing <span class="math inline">\(D\)</span> by one unit changes <span class="math inline">\(Y\)</span> directly by <span class="math inline">\(c\)</span> and indirectly through <span class="math inline">\(M\)</span> by <span class="math inline">\(ab\)</span>. The total causal effect is</p>
+<p><span class="math display">\[
+\boxed{\text{total effect}=c+ab}.
+\]</span></p>
+<p>A regression that controls for <span class="math inline">\(M\)</span> estimates the direct effect <span class="math inline">\(c\)</span>, not the total effect <span class="math inline">\(c+ab\)</span>. If the research question asks for the total effect, <span class="math inline">\(M\)</span> is a bad control because it blocks part of the causal pathway.</p>
+</section>
+<section id="controlling-for-a-collider-creates-an-association" class="level4">
+<h4 class="anchored" data-anchor-id="controlling-for-a-collider-creates-an-association">Controlling for a collider creates an association</h4>
+<p>Why is a variable that predicts both treatment and the outcome sometimes a harmful control? Consider a hiring example:</p>
+<ul>
+<li><span class="math inline">\(D\)</span> is an independently assigned training credential;</li>
+<li><span class="math inline">\(U\)</span> is unobserved interview strength;</li>
+<li><span class="math inline">\(C\)</span> is the applicant’s total hiring score; and</li>
+<li>both the credential and interview strength raise the score.</li>
+</ul>
+<p>In the full applicant pool, the randomly assigned credential <span class="math inline">\(D\)</span> is independent of interview strength <span class="math inline">\(U\)</span>. Now compare applicants with the <strong>same total score</strong> <span class="math inline">\(C\)</span>. Among these applicants, someone with more credential points can have fewer interview-strength points, while someone with fewer credential points must compensate with greater interview strength. Holding the common result <span class="math inline">\(C\)</span> fixed therefore creates a negative relationship between <span class="math inline">\(D\)</span> and <span class="math inline">\(U\)</span>, even though none existed before.</p>
+<p>This structure is called a <strong>collider</strong> because the two causal arrows collide at <span class="math inline">\(C\)</span>:</p>
+<p><span class="math display">\[
+D\longrightarrow C\longleftarrow U.
+\]</span></p>
+<p>A simple numerical model makes the mechanism transparent. Suppose the score is</p>
+<p><span class="math display">\[
+C=D+U,
+\]</span></p>
+<p>and later job performance is</p>
+<p><span class="math display">\[
+Y=\tau D+\gamma U+\varepsilon.
+\]</span></p>
+<p>Before conditioning on <span class="math inline">\(C\)</span>, the independence of <span class="math inline">\(D\)</span> and <span class="math inline">\(U\)</span> protects the comparison: credential holders are not systematically stronger or weaker interviewees. Once we control for the total score, however, <span class="math inline">\(U=C-D\)</span>. For example, among applicants with <span class="math inline">\(C=10\)</span>, an applicant with <span class="math inline">\(D=6\)</span> must have <span class="math inline">\(U=4\)</span>, whereas one with <span class="math inline">\(D=2\)</span> must have <span class="math inline">\(U=8\)</span>. Substituting <span class="math inline">\(U=C-D\)</span> into the outcome equation gives</p>
+<p><span class="math display">\[
+Y=(\tau-\gamma)D+\gamma C+\varepsilon.
+\]</span></p>
+<p>The coefficient on <span class="math inline">\(D\)</span> conditional on <span class="math inline">\(C\)</span> is <span class="math inline">\(\tau-\gamma\)</span>, rather than <span class="math inline">\(\tau\)</span>. The extra term <span class="math inline">\(-\gamma\)</span> appears because, at a fixed score, a one-unit increase in <span class="math inline">\(D\)</span> mechanically implies a one-unit decrease in <span class="math inline">\(U\)</span>. Because <span class="math inline">\(U\)</span> also affects performance, the regression wrongly attributes this induced difference in <span class="math inline">\(U\)</span> to <span class="math inline">\(D\)</span>. Conditioning on the collider creates the very association we wanted to avoid.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Choose controls from the causal story
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Good prediction is not a sufficient rule for selecting controls. To estimate a total treatment effect, controls should generally be determined before treatment and should block confounding paths without blocking causal pathways or opening collider paths.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="selection-bias" class="level3">
+<h3 class="anchored" data-anchor-id="selection-bias">Selection bias</h3>
+<p>Selection bias occurs when the observations included in the analysis are a selected subset of the target population. Let</p>
+<p><span class="math display">\[
+Y=\alpha+\tau D+u,
+\]</span></p>
+<p>but suppose <span class="math inline">\(Y\)</span> is observed only when <span class="math inline">\(S=1\)</span>. Within the selected sample,</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;E[Y\mid D=1,S=1]-E[Y\mid D=0,S=1]\\
+&amp;\qquad=\tau
++\underbrace{
+E[u\mid D=1,S=1]-E[u\mid D=0,S=1]
+}_{\text{selection bias}}.
+\end{aligned}
+\]</span></p>
+<p>If selection depends on both treatment and unobserved outcome determinants—for example,</p>
+<p><span class="math display">\[
+S=1\{aD+bu+\eta&gt;0\},
+\]</span></p>
+<p>then conditioning on <span class="math inline">\(S=1\)</span> generally makes <span class="math inline">\(D\)</span> and <span class="math inline">\(u\)</span> related, even if they were unrelated in the full population.</p>
+<p>For example, suppose training affects employment and ability affects both employment and wages, but wages are observed only for employed people. Comparing wages among employed trainees and employed nontrainees conditions on employment, a common consequence of training and ability. The selected wage comparison need not recover the effect of training in the target population.</p>
+<p>Selection can arise from survey nonresponse, attrition, survivorship, sample restrictions, or observing an outcome only after a particular event. Random sampling from the target population avoids this problem; a larger selected sample does not.</p>
+</section>
+<section id="comparing-the-threats" class="level3">
+<h3 class="anchored" data-anchor-id="comparing-the-threats">Comparing the threats</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Threat</th>
+<th>What goes wrong?</th>
+<th>Characteristic expression</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Omitted variable</td>
+<td>A common cause of <span class="math inline">\(D\)</span> and <span class="math inline">\(Y\)</span> is left in the disturbance</td>
+<td><span class="math inline">\(\gamma\operatorname{Cov}(D,Z)/\operatorname{Var}(D)\)</span></td>
+</tr>
+<tr class="even">
+<td>Measurement error</td>
+<td>The observed regressor contains noise</td>
+<td><span class="math inline">\(\operatorname{plim}\widehat\tau=\lambda\tau\)</span> under classical error</td>
+</tr>
+<tr class="odd">
+<td>Simultaneity</td>
+<td><span class="math inline">\(D\)</span> responds to <span class="math inline">\(Y\)</span> or its disturbance</td>
+<td><span class="math inline">\(\operatorname{Cov}(D,u)\ne0\)</span></td>
+</tr>
+<tr class="even">
+<td>Mediator control</td>
+<td>A causal pathway from <span class="math inline">\(D\)</span> to <span class="math inline">\(Y\)</span> is blocked</td>
+<td>estimated direct effect <span class="math inline">\(c\)</span> instead of total effect <span class="math inline">\(c+ab\)</span></td>
+</tr>
+<tr class="odd">
+<td>Collider control</td>
+<td>Conditioning creates a relationship between <span class="math inline">\(D\)</span> and <span class="math inline">\(U\)</span></td>
+<td>coefficient becomes <span class="math inline">\(\tau-\gamma\)</span> in the example</td>
+</tr>
+<tr class="even">
+<td>Sample selection</td>
+<td>Inclusion in the sample depends jointly on <span class="math inline">\(D\)</span> and outcome determinants</td>
+<td><span class="math inline">\(E[u\mid D=1,S=1]\ne E[u\mid D=0,S=1]\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>These problems cannot be diagnosed or repaired mechanically by looking only at regression fit. The appropriate response depends on the data-generating process: measure confounders, improve measurement, exploit timing or instruments, avoid post-treatment controls, or address the selection mechanism. The research design determines which strategy is credible.</p>
+</section>
+</section>
+<section id="panel-data-and-fixed-effects" class="level2">
+<h2 class="anchored" data-anchor-id="panel-data-and-fixed-effects">Panel data and fixed effects</h2>
+<p><strong>Panel data</strong> follow the same observational units over multiple periods. The unit might be a person, firm, county, school, or country. We write</p>
+<p><span class="math display">\[
+Y_{it},\qquad X_{it},
+\]</span></p>
+<p>where <span class="math inline">\(i=1,\ldots,N\)</span> indexes units and <span class="math inline">\(t=1,\ldots,T\)</span> indexes time. Unlike a repeated cross-section, a panel lets us observe how <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> change <strong>within the same unit</strong>.</p>
+<p>This repeated structure can address an important source of omitted-variable bias: unobserved characteristics that differ across units but remain constant over time.</p>
+<section id="the-unit-fixed-effects-model" class="level3">
+<h3 class="anchored" data-anchor-id="the-unit-fixed-effects-model">The unit fixed-effects model</h3>
+<p>Consider</p>
+<p><span class="math display">\[
+Y_{it}=\alpha_i+\beta X_{it}+u_{it}.
+\]</span></p>
+<p>The term <span class="math inline">\(\alpha_i\)</span> is a <strong>unit fixed effect</strong>. It collects every characteristic of unit <span class="math inline">\(i\)</span> that does not change over time, whether observed or unobserved. For a worker, it might include persistent ability or background; for a firm, it might include location, founding culture, or a durable technology advantage.</p>
+<p>The fixed effect may be correlated with the regressor:</p>
+<p><span class="math display">\[
+\operatorname{Cov}(X_{it},\alpha_i)\ne0.
+\]</span></p>
+<p>If we instead estimate the pooled regression</p>
+<p><span class="math display">\[
+Y_{it}=\alpha+\beta X_{it}+e_{it},
+\qquad e_{it}=(\alpha_i-\alpha)+u_{it},
+\]</span></p>
+<p>then <span class="math inline">\(X_{it}\)</span> is correlated with the composite disturbance <span class="math inline">\(e_{it}\)</span>. Pooled OLS generally suffers from omitted-variable bias.</p>
+</section>
+<section id="the-within-transformation" class="level3">
+<h3 class="anchored" data-anchor-id="the-within-transformation">The within transformation</h3>
+<p>For each unit, calculate its time averages:</p>
+<p><span class="math display">\[
+\overline Y_i=\frac{1}{T}\sum_{t=1}^T Y_{it},
+\qquad
+\overline X_i=\frac{1}{T}\sum_{t=1}^T X_{it},
+\qquad
+\overline u_i=\frac{1}{T}\sum_{t=1}^T u_{it}.
+\]</span></p>
+<p>Averaging the fixed-effects model over time gives</p>
+<p><span class="math display">\[
+\overline Y_i
+=\alpha_i+\beta\overline X_i+\overline u_i.
+\]</span></p>
+<p>Subtract this unit average from each observation:</p>
+<p><span class="math display">\[
+\boxed{
+Y_{it}-\overline Y_i
+=\beta(X_{it}-\overline X_i)
++(u_{it}-\overline u_i)
+}.
+\]</span></p>
+<p>The fixed effect disappears because <span class="math inline">\(\alpha_i-\alpha_i=0\)</span>. OLS applied to these demeaned variables is called the <strong>within estimator</strong>. With one regressor,</p>
+<p><span class="math display">\[
+\boxed{
+\widehat\beta_{\mathrm{FE}}
+=\frac{\sum_i\sum_t
+  (X_{it}-\overline X_i)(Y_{it}-\overline Y_i)}
+{\sum_i\sum_t(X_{it}-\overline X_i)^2}
+}.
+\]</span></p>
+<p>This coefficient uses only within-unit comovement. A unit whose <span class="math inline">\(X\)</span> never changes contributes no identifying variation to <span class="math inline">\(\widehat\beta_{\mathrm{FE}}\)</span>.</p>
+</section>
+<section id="an-intuitive-comparison" class="level3">
+<h3 class="anchored" data-anchor-id="an-intuitive-comparison">An intuitive comparison</h3>
+<p>Suppose we study whether worker training raises earnings. Workers with greater persistent ability may take more training and earn more, creating an upward-biased cross-sectional comparison.</p>
+<ul>
+<li><strong>Pooled OLS asks:</strong> Do workers with more training earn more than workers with less training?</li>
+<li><strong>Worker fixed effects ask:</strong> When a given worker receives more training than usual, do that worker’s earnings also rise relative to their usual level?</li>
+</ul>
+<p>The second comparison removes every worker characteristic that is constant over time. It does not require us to observe or measure those characteristics individually.</p>
+</section>
+<section id="fixed-effects-as-unit-indicators" class="level3">
+<h3 class="anchored" data-anchor-id="fixed-effects-as-unit-indicators">Fixed effects as unit indicators</h3>
+<p>The same estimator can be obtained by including a separate indicator for every unit:</p>
+<p><span class="math display">\[
+Y_{it}
+=\beta X_{it}
++\delta_1\mathbb{1}\{i=1\}
++\cdots
++\delta_N\mathbb{1}\{i=N\}
++u_{it},
+\]</span></p>
+<p>with one indicator or the common intercept omitted to avoid perfect multicollinearity. This is the <strong>least-squares dummy-variable estimator</strong>. The FWL theorem explains the equivalence: residualizing <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> with respect to the unit indicators is exactly the within transformation.</p>
+</section>
+<section id="time-fixed-effects" class="level3">
+<h3 class="anchored" data-anchor-id="time-fixed-effects">Time fixed effects</h3>
+<p>Units may also share shocks in a given period. A recession, regulation, technological change, or aggregate price movement could affect every unit. Add a time fixed effect <span class="math inline">\(\lambda_t\)</span>:</p>
+<p><span class="math display">\[
+Y_{it}=\alpha_i+\lambda_t+\beta X_{it}+u_{it}.
+\]</span></p>
+<p>This is a <strong>two-way fixed-effects model</strong>:</p>
+<ul>
+<li><span class="math inline">\(\alpha_i\)</span> absorbs all time-invariant differences across units;</li>
+<li><span class="math inline">\(\lambda_t\)</span> absorbs shocks common to all units in period <span class="math inline">\(t\)</span>; and</li>
+<li><span class="math inline">\(\beta\)</span> is identified by within-unit changes in <span class="math inline">\(X\)</span> after removing common time changes.</li>
+</ul>
+<p>In a balanced panel, start by subtracting unit <span class="math inline">\(i\)</span>’s time mean, <span class="math inline">\(Z_{it}-\overline Z_i\)</span>. To remove the remaining common time component, we need the cross-sectional mean of this already unit-demeaned variable:</p>
+<p><span class="math display">\[
+\frac{1}{N}\sum_{i=1}^N
+\left(Z_{it}-\overline Z_i\right)
+=\overline Z_t-\overline Z.
+\]</span></p>
+<p>Therefore, removing that time component gives</p>
+<p><span class="math display">\[
+\begin{aligned}
+\ddot Z_{it}
+&amp;=(Z_{it}-\overline Z_i)
+  -(\overline Z_t-\overline Z)\\
+&amp;=Z_{it}-\overline Z_i-\overline Z_t+\overline Z.
+\end{aligned}
+\]</span></p>
+<p>The overall mean <span class="math inline">\(\overline Z\)</span> is added back because it appears in both the unit mean and the time mean. Subtracting both means removes the overall level twice; adding it once restores the extra copy that was removed. Here, <span class="math inline">\(\overline Z_i\)</span> is unit <span class="math inline">\(i\)</span>’s time mean, <span class="math inline">\(\overline Z_t\)</span> is the cross-sectional mean in period <span class="math inline">\(t\)</span>, and <span class="math inline">\(\overline Z\)</span> is the overall mean. The two-way fixed-effects regression is equivalent to</p>
+<p><span class="math display">\[
+\ddot Y_{it}=\beta\ddot X_{it}+\ddot u_{it}.
+\]</span></p>
+</section>
+<section id="what-fixed-effects-removeand-what-they-do-not" class="level3">
+<h3 class="anchored" data-anchor-id="what-fixed-effects-removeand-what-they-do-not">What fixed effects remove—and what they do not</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Fixed effects remove</th>
+<th>Fixed effects do not automatically remove</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Time-invariant unit characteristics</td>
+<td>Time-varying omitted variables</td>
+</tr>
+<tr class="even">
+<td>Permanent differences in outcome levels</td>
+<td>Simultaneity or reverse causality</td>
+</tr>
+<tr class="odd">
+<td>With time effects, shocks common to all units</td>
+<td>Unit-specific time-varying shocks</td>
+</tr>
+<tr class="even">
+<td>Any observed time-invariant unit controls</td>
+<td>Measurement error, selection bias, or bad controls</td>
+</tr>
+</tbody>
+</table>
+<p>Because unit fixed effects absorb all time-invariant variables, the separate coefficient on a time-invariant regressor cannot be estimated in the same model. For example, worker fixed effects prevent us from separately estimating a coefficient on a worker characteristic that never changes during the panel.</p>
+</section>
+<section id="assumption-for-causal-interpretation" class="level3">
+<h3 class="anchored" data-anchor-id="assumption-for-causal-interpretation">Assumption for causal interpretation</h3>
+<p>Removing <span class="math inline">\(\alpha_i\)</span> is useful, but it does not make the remaining variation in <span class="math inline">\(X_{it}\)</span> exogenous. A common sufficient condition for the static fixed-effects estimator is <strong>strict exogeneity</strong>:</p>
+<p><span class="math display">\[
+E[u_{it}\mid X_{i1},X_{i2},\ldots,X_{iT},\alpha_i]=0
+\qquad\text{for every }t.
+\]</span></p>
+<p>This condition says that the period-<span class="math inline">\(t\)</span> disturbance is mean independent of the unit’s regressor values in every period—past, present, and future—after accounting for the fixed effect. It rules out:</p>
+<ul>
+<li>contemporaneous omitted shocks that affect both <span class="math inline">\(X_{it}\)</span> and <span class="math inline">\(Y_{it}\)</span>;</li>
+<li>feedback from today’s outcome shock to future values of <span class="math inline">\(X\)</span>; and</li>
+<li>anticipatory changes in <span class="math inline">\(X\)</span> made in response to future outcome shocks.</li>
+</ul>
+<p>Fixed effects can therefore eliminate bias from time-invariant confounders while leaving bias from time-varying confounders or simultaneity.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Fixed effects are not a complete research design
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The identifying comparison must still be explained. Ask what causes <span class="math inline">\(X\)</span> to change within a unit, whether those changes coincide with other unit-specific shocks, and whether the outcome could influence future treatment. Fixed effects make certain comparisons possible; institutional knowledge determines whether those comparisons are causal.</p>
+</div>
+</div>
+</section>
+<section id="precision-and-inference-in-panels" class="level3">
+<h3 class="anchored" data-anchor-id="precision-and-inference-in-panels">Precision and inference in panels</h3>
+<p>Fixed effects discard between-unit variation and rely on within-unit changes. If <span class="math inline">\(X_{it}\)</span> changes little within units, <span class="math inline">\(\widehat\beta_{\mathrm{FE}}\)</span> can be imprecise even when the panel is large.</p>
+<p>Disturbances for the same unit are also often correlated over time. Conventional standard errors that treat all <span class="math inline">\(NT\)</span> observations as independent may therefore be too small. A common default is to cluster standard errors at the unit level, allowing arbitrary heteroskedasticity and serial dependence within each unit.</p>
+</section>
+</section>
+<section id="natural-experiments-and-the-potential-outcomes-framework" class="level2">
+<h2 class="anchored" data-anchor-id="natural-experiments-and-the-potential-outcomes-framework">Natural experiments and the potential-outcomes framework</h2>
+<p>Regression describes conditional means, but causal questions compare outcomes under alternative interventions. The <strong>potential-outcomes framework</strong> makes that comparison explicit.</p>
+<p>Suppose treatment is binary, with <span class="math inline">\(D_i=1\)</span> for a treated unit and <span class="math inline">\(D_i=0\)</span> for an untreated unit. Each unit has two potential outcomes:</p>
+<p><span class="math display">\[
+Y_i(1)=\text{unit }i\text{'s outcome if treated},
+\]</span></p>
+<p><span class="math display">\[
+Y_i(0)=\text{unit }i\text{'s outcome if untreated}.
+\]</span></p>
+<p>The individual treatment effect is</p>
+<p><span class="math display">\[
+\tau_i=Y_i(1)-Y_i(0).
+\]</span></p>
+<p>We observe only the potential outcome associated with the treatment actually received:</p>
+<p><span class="math display">\[
+\boxed{
+Y_i=D_iY_i(1)+(1-D_i)Y_i(0)
+}.
+\]</span></p>
+<p>For a treated unit, we observe <span class="math inline">\(Y_i(1)\)</span> but not <span class="math inline">\(Y_i(0)\)</span>; for an untreated unit, we observe <span class="math inline">\(Y_i(0)\)</span> but not <span class="math inline">\(Y_i(1)\)</span>. This is the <strong>fundamental problem of causal inference</strong>: an individual causal effect cannot be calculated directly because the two potential outcomes are never jointly observed.</p>
+<section id="ate-and-att" class="level3">
+<h3 class="anchored" data-anchor-id="ate-and-att">ATE and ATT</h3>
+<p>The <strong>average treatment effect (ATE)</strong> is the average effect in the target population:</p>
+<p><span class="math display">\[
+\boxed{
+\operatorname{ATE}
+=E[Y(1)-Y(0)]
+}.
+\]</span></p>
+<p>The <strong>average treatment effect on the treated (ATT)</strong> is the average effect among units that actually receive treatment:</p>
+<p><span class="math display">\[
+\boxed{
+\operatorname{ATT}
+=E[Y(1)-Y(0)\mid D=1]
+}.
+\]</span></p>
+<p>ATE and ATT need not be equal. If treatment effects vary and units with especially large gains are more likely to select treatment, the treated group can have a larger average effect than the population.</p>
+</section>
+<section id="why-random-assignment-identifies-the-ate" class="level3">
+<h3 class="anchored" data-anchor-id="why-random-assignment-identifies-the-ate">Why random assignment identifies the ATE</h3>
+<p>Under random assignment,</p>
+<p><span class="math display">\[
+D\ \perp\!\!\!\perp\ \{Y(1),Y(0)\},
+\]</span></p>
+<p>with positive probabilities of both treatment states. Assignment is unrelated to either potential outcome, so</p>
+<p><span class="math display">\[
+E[Y(1)\mid D=1]=E[Y(1)]
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+E[Y(0)\mid D=0]=E[Y(0)].
+\]</span></p>
+<p>Therefore,</p>
+<p><span class="math display">\[
+\begin{aligned}
+E[Y\mid D=1]-E[Y\mid D=0]
+&amp;=E[Y(1)]-E[Y(0)]\\
+&amp;=\operatorname{ATE}.
+\end{aligned}
+\]</span></p>
+<p>Random assignment makes the treated and untreated groups have the same distribution of <span class="math inline">\(Y(0)\)</span> in the population. Differences that remain in a finite sample arise from chance and are reflected in sampling uncertainty.</p>
+</section>
+<section id="why-ate-equals-att-under-random-assignment" class="level3">
+<h3 class="anchored" data-anchor-id="why-ate-equals-att-under-random-assignment">Why ATE equals ATT under random assignment</h3>
+<p>Random assignment is also independent of the individual treatment effect, because <span class="math inline">\(Y(1)-Y(0)\)</span> is a function of the two potential outcomes. Hence,</p>
+<p><span class="math display">\[
+\begin{aligned}
+\operatorname{ATT}
+&amp;=E[Y(1)-Y(0)\mid D=1]\\
+&amp;=E[Y(1)-Y(0)]\\
+&amp;=\operatorname{ATE}.
+\end{aligned}
+\]</span></p>
+<p>This equality is a population implication of random assignment. In a particular finite randomized sample, the average effect among the units assigned to treatment can differ from the full-sample average effect by chance when effects are heterogeneous; randomization makes the corresponding estimator unbiased over possible assignments.</p>
+</section>
+<section id="natural-experiments" class="level3">
+<h3 class="anchored" data-anchor-id="natural-experiments">Natural experiments</h3>
+<p>In a randomized controlled experiment, researchers deliberately assign treatment. A <strong>natural experiment</strong> arises when an external rule, event, or institution generates treatment variation that is plausibly unrelated to potential outcomes. Examples of assignment mechanisms include lotteries, administrative rules, policy boundaries, or abrupt changes in eligibility.</p>
+<p>The key claim is not that the setting is unusual or that treatment occurs in nature. The key claim is that the relevant variation is <strong>as if randomly assigned</strong>:</p>
+<p><span class="math display">\[
+D\ \perp\!\!\!\perp\ \{Y(1),Y(0)\}
+\]</span></p>
+<p>for the population and comparison generated by the mechanism, possibly after conditioning on predetermined variables.</p>
+<p>Natural experiments require a case-specific argument. Researchers must explain who controls the assignment mechanism, whether units can manipulate exposure, whether the mechanism affects outcomes through other channels, and which population is represented by the resulting comparison. Some designs identify an ATE, while others identify a local or conditional treatment effect.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Assignment, treatment, and compliance
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>An external mechanism may randomly assign an <strong>offer</strong> or <strong>eligibility</strong> without perfectly determining treatment received. In that case, the offer can serve as an instrument rather than treatment itself. The relevant causal estimand may then be a local average treatment effect, a topic developed with instrumental variables.</p>
+</div>
+</div>
+</section>
+<section id="two-simple-difference-estimators" class="level3">
+<h3 class="anchored" data-anchor-id="two-simple-difference-estimators">Two simple-difference estimators</h3>
+<p>Two tempting estimators use only one dimension of comparison. The cross-sectional difference compares groups at a point in time; the time-series difference compares periods for a unit or group. Placing them side by side makes clear why each can be misleading on its own.</p>
+<section id="the-cross-sectional-simple-difference" class="level4">
+<h4 class="anchored" data-anchor-id="the-cross-sectional-simple-difference">The cross-sectional simple difference</h4>
+<p>The most direct cross-sectional comparison is the difference between the observed means of treated and untreated units:</p>
+<p><span class="math display">\[
+\Delta_{\mathrm{CS}}
+=E[Y\mid D=1]-E[Y\mid D=0].
+\]</span></p>
+<p>Because treated units reveal <span class="math inline">\(Y(1)\)</span> and untreated units reveal <span class="math inline">\(Y(0)\)</span>,</p>
+<p><span class="math display">\[
+\Delta_{\mathrm{CS}}
+=E[Y(1)\mid D=1]-E[Y(0)\mid D=0].
+\]</span></p>
+<p>Add and subtract <span class="math inline">\(E[Y(0)\mid D=1]\)</span>:</p>
+<p><span class="math display">\[
+\boxed{
+\begin{aligned}
+\Delta_{\mathrm{CS}}
+&amp;=\underbrace{
+E[Y(1)-Y(0)\mid D=1]
+}_{\mathrm{ATT}}\\
+&amp;\quad+
+\underbrace{
+E[Y(0)\mid D=1]-E[Y(0)\mid D=0]
+}_{\text{selection bias}}.
+\end{aligned}
+}
+\]</span></p>
+<p>The selection term compares the treated and untreated groups under the same untreated state. It asks: even without treatment, would the groups have had different average outcomes? If so, the observed difference mixes the treatment effect with pre-existing differences between the groups.</p>
+<p>In a sample, the <strong>cross-sectional simple-difference estimator</strong> is</p>
+<p><span class="math display">\[
+\boxed{
+\widehat\Delta_{\mathrm{CS}}
+=\overline Y_1-\overline Y_0
+=\frac{1}{n_1}\sum_{i:D_i=1}Y_i
+-\frac{1}{n_0}\sum_{i:D_i=0}Y_i
+}.
+\]</span></p>
+<p>This is also the OLS coefficient on <span class="math inline">\(D_i\)</span> in the regression</p>
+<p><span class="math display">\[
+Y_i=\alpha+\tau D_i+e_i.
+\]</span></p>
+<p>Without a credible assignment mechanism, however, a precisely estimated difference in means is still only an association.</p>
+</section>
+<section id="the-time-series-simple-difference" class="level4">
+<h4 class="anchored" data-anchor-id="the-time-series-simple-difference">The time-series simple difference</h4>
+<p>Suppose a unit or group is untreated before a policy and treated afterward. The before–after comparison is</p>
+<p><span class="math display">\[
+\boxed{
+\Delta_{\mathrm{TS}}
+=E[Y_{\mathrm{post}}]-E[Y_{\mathrm{pre}}]
+}.
+\]</span></p>
+<p>If treatment begins between the two periods, this comparison can be decomposed by adding and subtracting the post-period outcome that would have occurred without treatment:</p>
+<p><span class="math display">\[
+\boxed{
+\begin{aligned}
+\Delta_{\mathrm{TS}}
+&amp;=\underbrace{
+E[Y_{\mathrm{post}}(1)-Y_{\mathrm{post}}(0)]
+}_{\text{treatment effect}}\\
+&amp;\quad+
+\underbrace{
+E[Y_{\mathrm{post}}(0)-Y_{\mathrm{pre}}(0)]
+}_{\text{untreated time change}}.
+\end{aligned}
+}
+\]</span></p>
+<p>The before–after difference identifies the treatment effect only if the untreated outcome would not have changed between periods, or if its change is known. Economic growth, seasonality, inflation, aggregate shocks, aging, and changes in sample composition can all contaminate a simple time-series difference.</p>
+<p>The sample estimator is</p>
+<p><span class="math display">\[
+\widehat\Delta_{\mathrm{TS}}
+=\overline Y_{\mathrm{post}}-\overline Y_{\mathrm{pre}}.
+\]</span></p>
+<p>This estimator removes a fixed level difference but does not separate treatment from other changes occurring at the same time.</p>
+</section>
+</section>
+<section id="from-simple-differences-to-difference-in-differences" class="level3">
+<h3 class="anchored" data-anchor-id="from-simple-differences-to-difference-in-differences">From simple differences to difference-in-differences</h3>
+<p>The two simple differences fail for complementary reasons:</p>
+<ul>
+<li>The cross-sectional difference may contain permanent selection differences between treated and untreated groups.</li>
+<li>The time-series difference may contain common changes over time unrelated to treatment.</li>
+</ul>
+<p>Difference-in-differences combines both comparisons:</p>
+<p><span class="math display">\[
+\boxed{
+\widehat\tau_{\mathrm{DiD}}
+=\left(\overline Y_{T,\mathrm{post}}-\overline Y_{T,\mathrm{pre}}\right)
+-\left(\overline Y_{C,\mathrm{post}}-\overline Y_{C,\mathrm{pre}}\right)
+}.
+\]</span></p>
+<p>The change in the control group is used to estimate the time change that the treated group would have experienced without treatment. The central identifying assumption is <strong>parallel trends</strong>:</p>
+<p><span class="math display">\[
+E[Y_{\mathrm{post}}(0)-Y_{\mathrm{pre}}(0)\mid D=1]
+=E[Y_{\mathrm{post}}(0)-Y_{\mathrm{pre}}(0)\mid D=0].
+\]</span></p>
+<p>Under parallel trends and the usual consistency and no-anticipation conditions, DiD identifies the ATT. The next chapter develops this estimator, its regression representation, diagnostics, and extensions.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Chapter takeaway
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Regression becomes causal only when the variation identifying a coefficient has a credible counterfactual interpretation. Random assignment supplies that counterfactual directly. Natural experiments seek externally generated variation that approximates random assignment. Panel fixed effects remove stable differences, and DiD goes one step further by using a comparison group’s change to estimate the treated group’s missing untreated trend.</p>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script type="ojs-module-contents">
+eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Ilxue1xuICBjb25zdCBjZWYgPSB4ID0+IDEuMSArIDAuNTUgKiB4ICsgMC4wOCAqIHggKiB4O1xuICBjb25zdCBzaWdtYSA9IDAuNjI7XG4gIGNvbnN0IHhWYWx1ZXMgPSBbMS4yLCAzLjAsIDQuOF07XG4gIGNvbnN0IGN1cnZlID0gQXJyYXkuZnJvbSh7bGVuZ3RoOiAxMjF9LCAoXywgaSkgPT4ge1xuICAgIGNvbnN0IHggPSAwLjQgKyBpICogKDUuMiAvIDEyMCk7XG4gICAgcmV0dXJuIHt4LCBtZWFuOiBjZWYoeCl9O1xuICB9KTtcbiAgY29uc3QgZGlzdHJpYnV0aW9ucyA9IHhWYWx1ZXMuZmxhdE1hcCh4ID0+IHtcbiAgICBjb25zdCBtZWFuID0gY2VmKHgpO1xuICAgIHJldHVybiBBcnJheS5mcm9tKHtsZW5ndGg6IDgxfSwgKF8sIGkpID0+IHtcbiAgICAgIGNvbnN0IHkgPSBtZWFuIC0gMi4xICsgaSAqICg0LjIgLyA4MCk7XG4gICAgICBjb25zdCBkZW5zaXR5ID0gTWF0aC5leHAoLTAuNSAqICgoeSAtIG1lYW4pIC8gc2lnbWEpICoqIDIpO1xuICAgICAgcmV0dXJuIHtcbiAgICAgICAgZ3JvdXA6IHgsXG4gICAgICAgIHksXG4gICAgICAgIGxlZnQ6IHggLSAwLjM4ICogZGVuc2l0eSxcbiAgICAgICAgcmlnaHQ6IHggKyAwLjM4ICogZGVuc2l0eVxuICAgICAgfTtcbiAgICB9KTtcbiAgfSk7XG4gIGNvbnN0IGNlbnRlcnMgPSB4VmFsdWVzLm1hcCh4ID0+ICh7eCwgbWVhbjogY2VmKHgpfSkpO1xuXG4gIHJldHVybiBQbG90LnBsb3Qoe1xuICAgIHdpZHRoOiA3NjAsXG4gICAgaGVpZ2h0OiA0NDAsXG4gICAgbWFyZ2luTGVmdDogNTgsXG4gICAgeDoge2xhYmVsOiBcIlhcIiwgZG9tYWluOiBbMCwgNl0sIGdyaWQ6IHRydWV9LFxuICAgIHk6IHtsYWJlbDogXCJZXCIsIGRvbWFpbjogWzAsIDddLCBncmlkOiB0cnVlfSxcbiAgICBtYXJrczogW1xuICAgICAgUGxvdC5hcmVhWChkaXN0cmlidXRpb25zLCB7XG4gICAgICAgIHgxOiBcImxlZnRcIixcbiAgICAgICAgeDI6IFwicmlnaHRcIixcbiAgICAgICAgeTogXCJ5XCIsXG4gICAgICAgIHo6IFwiZ3JvdXBcIixcbiAgICAgICAgZmlsbDogXCJzdGVlbGJsdWVcIixcbiAgICAgICAgZmlsbE9wYWNpdHk6IDAuMjgsXG4gICAgICAgIHN0cm9rZTogXCJzdGVlbGJsdWVcIlxuICAgICAgfSksXG4gICAgICBQbG90LnJ1bGVYKHhWYWx1ZXMsIHtzdHJva2U6IFwiZ3JheVwiLCBzdHJva2VEYXNoYXJyYXk6IFwiNCw0XCJ9KSxcbiAgICAgIFBsb3QubGluZShjdXJ2ZSwge3g6IFwieFwiLCB5OiBcIm1lYW5cIiwgc3Ryb2tlOiBcImJsYWNrXCIsIHN0cm9rZVdpZHRoOiAzfSksXG4gICAgICBQbG90LmRvdChjZW50ZXJzLCB7eDogXCJ4XCIsIHk6IFwibWVhblwiLCByOiA1LCBmaWxsOiBcImNyaW1zb25cIn0pLFxuICAgICAgUGxvdC50ZXh0KGNlbnRlcnMsIHtcbiAgICAgICAgeDogXCJ4XCIsXG4gICAgICAgIHk6IFwibWVhblwiLFxuICAgICAgICB0ZXh0OiBkID0+IFwiRVtZfFg9XCIgKyBkLngudG9GaXhlZCgxKSArIFwiXVwiLFxuICAgICAgICBkeTogLTE0LFxuICAgICAgICBmb250U2l6ZTogMTJcbiAgICAgIH0pXG4gICAgXVxuICB9KTtcbn1cbiJ9XX0=
+</script>
+<script type="module">
+if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }
+window._ojs.paths.runtimeToDoc = "../../notes/sections/empirical";
+window._ojs.paths.runtimeToRoot = "../..";
+window._ojs.paths.docToRoot = "../../..";
+window._ojs.selfContained = false;
+window._ojs.runtime.interpretFromScriptTags();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../../notes/sections/empirical/1_identification_causality_strategies.html" class="pagination-link" aria-label="Identification, Causality, and Identification Strategies">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Identification, Causality, and Identification Strategies</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../../notes/sections/empirical/3_did.html" class="pagination-link" aria-label="Difference-in-Differences">
+        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Difference-in-Differences</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
