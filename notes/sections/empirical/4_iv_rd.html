@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Instrumental Variables and Regression Discontinuity – FIN700: Bootcamp for PhD Finance</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../notes/sections/empirical/3_did.html" rel="prev">
+<script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-9e3e5b9121e68b3f077afb32f2c64d95.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="../../../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../../../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../../../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/sections/empirical/1_identification_causality_strategies.html">Empirical Methods</a></li><li class="breadcrumb-item"><a href="../../../notes/sections/empirical/4_iv_rd.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Instrumental Variables and Regression Discontinuity</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../../../">FIN700: Bootcamp for PhD Finance</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/MingyangZhang1995/FIN700-Math" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Basic Knowledge in Finance</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/finance/basic-knowledge.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Basic Knowledge in Finance</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Linear Algebra</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/linear-algebra/vectors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Vectors and Vector Spaces</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/linear-algebra/linear-maps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Linear Maps and Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/linear-algebra/decompositions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrix Calculus and Projection</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Probability Theory</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/probability/probability-space.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Probability Spaces and Random Variables</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/probability/expectation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Distributions, Expectation, and Dependence</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/probability/common-distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Common Probability Distributions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/probability/continuous-time.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Stochastic Processes and a Introduction to Continuous Time</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Statistics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/statistics/introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Introduction to Statistics and Basic Machine Learning</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Empirical Methods</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/empirical/1_identification_causality_strategies.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Identification, Causality, and Identification Strategies</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/empirical/2_regression_causal_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">From Regression to Causal Inference</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/empirical/3_did.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Difference-in-Differences</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/empirical/4_iv_rd.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Instrumental Variables and Regression Discontinuity</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#instrumental-variables" id="toc-instrumental-variables" class="nav-link active" data-scroll-target="#instrumental-variables">Instrumental variables</a>
+  <ul class="collapse">
+  <li><a href="#the-problem-ols-uses-the-wrong-variation" id="toc-the-problem-ols-uses-the-wrong-variation" class="nav-link" data-scroll-target="#the-problem-ols-uses-the-wrong-variation">The problem: OLS uses the wrong variation</a></li>
+  <li><a href="#the-iv-idea-use-a-clean-shifter" id="toc-the-iv-idea-use-a-clean-shifter" class="nav-link" data-scroll-target="#the-iv-idea-use-a-clean-shifter">The IV idea: use a clean shifter</a></li>
+  <li><a href="#binary-instruments-and-the-wald-estimator" id="toc-binary-instruments-and-the-wald-estimator" class="nav-link" data-scroll-target="#binary-instruments-and-the-wald-estimator">Binary instruments and the Wald estimator</a></li>
+  <li><a href="#from-identification-to-estimation" id="toc-from-identification-to-estimation" class="nav-link" data-scroll-target="#from-identification-to-estimation">From identification to estimation</a></li>
+  </ul></li>
+  <li><a href="#multivariate-iv" id="toc-multivariate-iv" class="nav-link" data-scroll-target="#multivariate-iv">Multivariate IV</a>
+  <ul class="collapse">
+  <li><a href="#endogenous-regressors-controls-and-instruments" id="toc-endogenous-regressors-controls-and-instruments" class="nav-link" data-scroll-target="#endogenous-regressors-controls-and-instruments">Endogenous regressors, controls, and instruments</a></li>
+  <li><a href="#just-identification" id="toc-just-identification" class="nav-link" data-scroll-target="#just-identification">Just identification</a></li>
+  </ul></li>
+  <li><a href="#two-stage-least-squares" id="toc-two-stage-least-squares" class="nav-link" data-scroll-target="#two-stage-least-squares">Two-stage least squares</a>
+  <ul class="collapse">
+  <li><a href="#why-we-need-2sls" id="toc-why-we-need-2sls" class="nav-link" data-scroll-target="#why-we-need-2sls">Why we need 2SLS</a></li>
+  <li><a href="#how-2sls-iv-and-ols-fit-together" id="toc-how-2sls-iv-and-ols-fit-together" class="nav-link" data-scroll-target="#how-2sls-iv-and-ols-fit-together">How 2SLS, IV, and OLS fit together</a></li>
+  </ul></li>
+  <li><a href="#how-iv-goes-wrong" id="toc-how-iv-goes-wrong" class="nav-link" data-scroll-target="#how-iv-goes-wrong">How IV goes wrong</a>
+  <ul class="collapse">
+  <li><a href="#invalid-or-irrelevant-instruments" id="toc-invalid-or-irrelevant-instruments" class="nav-link" data-scroll-target="#invalid-or-irrelevant-instruments">Invalid or irrelevant instruments</a></li>
+  <li><a href="#different-controls-in-the-two-stages" id="toc-different-controls-in-the-two-stages" class="nav-link" data-scroll-target="#different-controls-in-the-two-stages">Different controls in the two stages</a></li>
+  <li><a href="#forbidden-regressions" id="toc-forbidden-regressions" class="nav-link" data-scroll-target="#forbidden-regressions">Forbidden regressions</a></li>
+  <li><a href="#instruments-manufactured-from-functional-form" id="toc-instruments-manufactured-from-functional-form" class="nav-link" data-scroll-target="#instruments-manufactured-from-functional-form">Instruments manufactured from functional form</a></li>
+  </ul></li>
+  <li><a href="#weak-instruments" id="toc-weak-instruments" class="nav-link" data-scroll-target="#weak-instruments">Weak instruments</a>
+  <ul class="collapse">
+  <li><a href="#relevance-can-be-nonzero-and-still-be-too-small" id="toc-relevance-can-be-nonzero-and-still-be-too-small" class="nav-link" data-scroll-target="#relevance-can-be-nonzero-and-still-be-too-small">Relevance can be nonzero and still be too small</a></li>
+  <li><a href="#diagnosing-first-stage-strength" id="toc-diagnosing-first-stage-strength" class="nav-link" data-scroll-target="#diagnosing-first-stage-strength">Diagnosing first-stage strength</a></li>
+  <li><a href="#more-instruments-are-not-automatically-better" id="toc-more-instruments-are-not-automatically-better" class="nav-link" data-scroll-target="#more-instruments-are-not-automatically-better">More instruments are not automatically better</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/sections/empirical/1_identification_causality_strategies.html">Empirical Methods</a></li><li class="breadcrumb-item"><a href="../../../notes/sections/empirical/4_iv_rd.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Instrumental Variables and Regression Discontinuity</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-4_iv_rd" class="quarto-section-identifier">Instrumental Variables and Regression Discontinuity</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="instrumental-variables" class="level2">
+<h2 class="anchored" data-anchor-id="instrumental-variables">Instrumental variables</h2>
+<section id="the-problem-ols-uses-the-wrong-variation" class="level3">
+<h3 class="anchored" data-anchor-id="the-problem-ols-uses-the-wrong-variation">The problem: OLS uses the wrong variation</h3>
+<p>Suppose the causal equation is</p>
+<p><span class="math display">\[
+Y_i=\beta_0+\beta_1X_i+u_i,
+\]</span></p>
+<p>where <span class="math inline">\(\beta_1\)</span> is the causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>. OLS can recover <span class="math inline">\(\beta_1\)</span> only when the variation in <span class="math inline">\(X\)</span> is unrelated to the unobserved determinants collected in <span class="math inline">\(u\)</span>:</p>
+<p><span class="math display">\[
+\operatorname{Cov}(X_i,u_i)=0.
+\]</span></p>
+<p>When this condition fails, <span class="math inline">\(X\)</span> is <strong>endogenous</strong>. Omitted variables, simultaneity, measurement error, and correlated gains can all make <span class="math inline">\(X\)</span> endogenous.</p>
+<p>The simple-regression OLS estimand makes the problem visible:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\frac{\operatorname{Cov}(X_i,Y_i)}{\operatorname{Var}(X_i)}
+&amp;=\frac{\operatorname{Cov}\!\left(X_i,\beta_0+\beta_1X_i+u_i\right)}
+        {\operatorname{Var}(X_i)}\\
+&amp;=\beta_1+
+\underbrace{\frac{\operatorname{Cov}(X_i,u_i)}{\operatorname{Var}(X_i)}}
+_{\text{endogeneity bias}}.
+\end{aligned}
+\]</span></p>
+<p><strong>More data make the OLS estimate more precise around this contaminated quantity; they do not remove the contamination.</strong></p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>%%{init: {"theme":"base","themeVariables":{"primaryColor":"#ffffff","primaryTextColor":"#000000","primaryBorderColor":"#000000","lineColor":"#000000","secondaryColor":"#ffffff","tertiaryColor":"#ffffff","clusterBkg":"#ffffff","clusterBorder":"#000000"}}}%%</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>flowchart LR</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  subgraph B["Why OLS is confounded"]</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    direction TB</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    UB["U"] --&gt; XB["X"]</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    UB --&gt; YB["Y"]</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    XB --&gt; YB</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  end</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  subgraph C["Instrumental variation"]</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    direction TB</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    ZC["Z"] --&gt; XC["X"]</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    UC["U"] --&gt; XC</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    UC --&gt; YC["Y"]</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    XC --&gt; YC</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  end</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  classDef mono fill:#ffffff,stroke:#000000,color:#000000</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  class UB,XB,YB,ZC,XC,UC,YC mono</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  style B fill:#ffffff,stroke:#000000,color:#000000</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  style C fill:#ffffff,stroke:#000000,color:#000000</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  linkStyle default stroke:#000000,color:#000000</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-iv-dags" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-iv-dags-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<pre class="mermaid mermaid-js" data-label="fig-iv-dags">%%{init: {"theme":"base","themeVariables":{"primaryColor":"#ffffff","primaryTextColor":"#000000","primaryBorderColor":"#000000","lineColor":"#000000","secondaryColor":"#ffffff","tertiaryColor":"#ffffff","clusterBkg":"#ffffff","clusterBorder":"#000000"}}}%%
+flowchart LR
+  subgraph B["Why OLS is confounded"]
+    direction TB
+    UB["U"] --&gt; XB["X"]
+    UB --&gt; YB["Y"]
+    XB --&gt; YB
+  end
+
+  subgraph C["Instrumental variation"]
+    direction TB
+    ZC["Z"] --&gt; XC["X"]
+    UC["U"] --&gt; XC
+    UC --&gt; YC["Y"]
+    XC --&gt; YC
+  end
+
+  classDef mono fill:#ffffff,stroke:#000000,color:#000000
+  class UB,XB,YB,ZC,XC,UC,YC mono
+  style B fill:#ffffff,stroke:#000000,color:#000000
+  style C fill:#ffffff,stroke:#000000,color:#000000
+  linkStyle default stroke:#000000,color:#000000
+</pre>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-iv-dags-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Why an instrument helps: it isolates variation in X generated by Z rather than by U.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="the-iv-idea-use-a-clean-shifter" class="level3">
+<h3 class="anchored" data-anchor-id="the-iv-idea-use-a-clean-shifter">The IV idea: use a clean shifter</h3>
+<p>An <strong>instrument</strong> <span class="math inline">\(Z\)</span> changes the endogenous regressor <span class="math inline">\(X\)</span> but is otherwise unrelated to the outcome disturbance. In the simple linear model, the two core requirements are:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Requirement</th>
+<th>Population statement</th>
+<th>Intuition</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Relevance</td>
+<td><span class="math inline">\(\operatorname{Cov}(Z_i,X_i)\ne0\)</span></td>
+<td><span class="math inline">\(Z\)</span> moves <span class="math inline">\(X\)</span></td>
+</tr>
+<tr class="even">
+<td>Exogeneity and exclusion</td>
+<td><span class="math inline">\(\operatorname{Cov}(Z_i,u_i)=0\)</span></td>
+<td><span class="math inline">\(Z\)</span> is unrelated to the unobserved causes of <span class="math inline">\(Y\)</span> and has no direct path to <span class="math inline">\(Y\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The covariance between <span class="math inline">\(Z\)</span> and the outcome is</p>
+<p><span class="math display">\[
+\begin{aligned}
+\operatorname{Cov}(Z_i,Y_i)
+&amp;=\operatorname{Cov}\!\left(Z_i,\beta_0+\beta_1X_i+u_i\right)\\
+&amp;=\beta_1\operatorname{Cov}(Z_i,X_i)
++\operatorname{Cov}(Z_i,u_i).
+\end{aligned}
+\]</span></p>
+<p>If <span class="math inline">\(\operatorname{Cov}(Z_i,u_i)=0\)</span> and <span class="math inline">\(\operatorname{Cov}(Z_i,X_i)\ne0\)</span>, then</p>
+<p><span class="math display">\[
+\boxed{
+\beta_1
+=\frac{\operatorname{Cov}(Z_i,Y_i)}
+       {\operatorname{Cov}(Z_i,X_i)}
+}.
+\]</span></p>
+<p>This ratio is the central IV idea:</p>
+<p><span class="math display">\[
+\boxed{
+\text{causal effect of }X\text{ on }Y
+=\frac{\text{effect of }Z\text{ on }Y}
+       {\text{effect of }Z\text{ on }X}
+}.
+\]</span></p>
+<p>The numerator is the <strong>reduced form</strong>. The denominator is the <strong>first stage</strong>. Their ratio converts the outcome effect of a one-unit change in <span class="math inline">\(Z\)</span> into the outcome effect of a one-unit change in <span class="math inline">\(X\)</span>.</p>
+</section>
+<section id="binary-instruments-and-the-wald-estimator" class="level3">
+<h3 class="anchored" data-anchor-id="binary-instruments-and-the-wald-estimator">Binary instruments and the Wald estimator</h3>
+<p>When <span class="math inline">\(Z\in\{0,1\}\)</span>, covariance differences simplify to differences in conditional means:</p>
+<p><span class="math display">\[
+\boxed{
+\beta_{Wald}
+=\frac{E[Y_i\mid Z_i=1]-E[Y_i\mid Z_i=0]}
+       {E[X_i\mid Z_i=1]-E[X_i\mid Z_i=0]}
+}.
+\]</span></p>
+<p>This is the <strong>Wald estimand</strong>. It is especially useful for lotteries, eligibility rules, draft assignment, and randomized encouragement designs.</p>
+</section>
+<section id="from-identification-to-estimation" class="level3">
+<h3 class="anchored" data-anchor-id="from-identification-to-estimation">From identification to estimation</h3>
+<p>With an intercept, the sample analogue of the simple IV estimand is</p>
+<p><span class="math display">\[
+\widehat\beta_{IV}
+=\frac{\widehat{\operatorname{Cov}}(Z_i,Y_i)}
+       {\widehat{\operatorname{Cov}}(Z_i,X_i)}
+=\frac{\sum_i(Z_i-\overline Z)(Y_i-\overline Y)}
+       {\sum_i(Z_i-\overline Z)(X_i-\overline X)}.
+\]</span></p>
+<p>Equivalently, IV chooses <span class="math inline">\(\widehat\beta\)</span> so that the sample analogue of the orthogonality condition is zero:</p>
+<p><span class="math display">\[
+\frac{1}{n}\sum_{i=1}^n
+Z_i\left(Y_i-X_i'\widehat\beta\right)=0,
+\]</span></p>
+<p>where the intercept and any exogenous controls are included in <span class="math inline">\(X_i\)</span> and in the instrument vector.</p>
+<p>This moment-condition view scales naturally from one instrument to many.</p>
+</section>
+</section>
+<section id="multivariate-iv" class="level2">
+<h2 class="anchored" data-anchor-id="multivariate-iv">Multivariate IV</h2>
+<section id="endogenous-regressors-controls-and-instruments" class="level3">
+<h3 class="anchored" data-anchor-id="endogenous-regressors-controls-and-instruments">Endogenous regressors, controls, and instruments</h3>
+<p>Write the structural equation as</p>
+<p><span class="math display">\[
+Y_i=X_i'\beta+u_i,
+\]</span></p>
+<p>where <span class="math inline">\(X_i\)</span> contains <span class="math inline">\(K\)</span> regressors. Partition it as</p>
+<p><span class="math display">\[
+X_i=
+\begin{bmatrix}
+X_{1i}\\
+W_i
+\end{bmatrix},
+\]</span></p>
+<p>where <span class="math inline">\(X_{1i}\)</span> is endogenous and <span class="math inline">\(W_i\)</span> contains exogenous controls, including an intercept. Let <span class="math inline">\(Z_{1i}\)</span> denote the excluded instruments. The full instrument vector is</p>
+<p><span class="math display">\[
+Z_i=
+\begin{bmatrix}
+Z_{1i}\\
+W_i
+\end{bmatrix}.
+\]</span></p>
+<p>Exogenous controls instrument for themselves. The excluded instruments <span class="math inline">\(Z_1\)</span> provide the additional variation needed to identify the endogenous variables.</p>
+<p>Two conditions matter:</p>
+<p><span class="math display">\[
+\underbrace{E[Z_i u_i]=0}_{\text{instrument exogeneity}},
+\qquad
+\underbrace{\operatorname{rank}\!\left(E[Z_iX_i']\right)=K}_{\text{relevance / rank}}.
+\]</span></p>
+<p>The <strong>order condition</strong> counts instruments: there must be at least as many instruments as regressors, or equivalently at least as many excluded instruments as endogenous regressors. Counting is not enough. The <strong>rank condition</strong> asks whether the instruments create distinct movements in the endogenous regressors. If every instrument moves two endogenous regressors in exactly the same proportion, the data cannot separate their two causal effects.</p>
+</section>
+<section id="just-identification" class="level3">
+<h3 class="anchored" data-anchor-id="just-identification">Just identification</h3>
+<p>Stack the observations into <span class="math inline">\(y\)</span>, <span class="math inline">\(X\)</span>, and <span class="math inline">\(Z\)</span>. If the number of instruments equals the number of regressors, the model is just identified and</p>
+<p><span class="math display">\[
+\boxed{
+\widehat\beta_{IV}
+=(Z'X)^{-1}Z'y
+}.
+\]</span></p>
+<p>Substituting <span class="math inline">\(y=X\beta+u\)</span> gives</p>
+<p><span class="math display">\[
+\widehat\beta_{IV}-\beta
+=(Z'X)^{-1}Z'u
+=\left(\frac{Z'X}{n}\right)^{-1}\frac{Z'u}{n}.
+\]</span></p>
+<p>This display separates the two identification requirements:</p>
+<ul>
+<li><span class="math inline">\(Z'u/n\overset{p}{\to}0\)</span> means the instruments do not systematically move with the unobserved determinants of <span class="math inline">\(Y\)</span>. This comes from instrument exogeneity.</li>
+<li><span class="math inline">\(Z'X/n\)</span> summarizes all of the first-stage relationships between the instruments and regressors. It must contain enough distinct information to separate the coefficients. With one instrument and one endogenous regressor, this simply means <span class="math inline">\(\operatorname{Cov}(Z,X)\ne0\)</span>. With several endogenous regressors, the instruments must move them in different combinations rather than always moving them together.</li>
+</ul>
+<p>When both hold,</p>
+<p><span class="math display">\[
+\widehat\beta_{IV}\overset{p}{\longrightarrow}\beta.
+\]</span></p>
+</section>
+</section>
+<section id="two-stage-least-squares" class="level2">
+<h2 class="anchored" data-anchor-id="two-stage-least-squares">Two-stage least squares</h2>
+<section id="why-we-need-2sls" class="level3">
+<h3 class="anchored" data-anchor-id="why-we-need-2sls">Why we need 2SLS</h3>
+<p>If there are more instruments than regressors, <span class="math inline">\(Z'X\)</span> is not square and the just-identified formula cannot be inverted. Two-stage least squares (2SLS) combines the instruments into fitted values of the regressors.</p>
+<p>Define the projection matrix</p>
+<p><span class="math display">\[
+P_Z=Z(Z'Z)^{-1}Z'.
+\]</span></p>
+<p>The projected regressors are</p>
+<p><span class="math display">\[
+\widetilde X=P_ZX.
+\]</span></p>
+<p>They are the fitted values from regressing every column of <span class="math inline">\(X\)</span> on the full instrument set <span class="math inline">\(Z\)</span>. The 2SLS estimator is</p>
+<p><span class="math display">\[
+\boxed{
+\widehat\beta_{2SLS}
+=(X'P_ZX)^{-1}X'P_Zy
+=(\widetilde X'\widetilde X)^{-1}\widetilde X'y
+}.
+\]</span></p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>%%{init: {"theme":"base","themeVariables":{"primaryColor":"#ffffff","primaryTextColor":"#000000","primaryBorderColor":"#000000","lineColor":"#000000","secondaryColor":"#ffffff","tertiaryColor":"#ffffff","clusterBkg":"#ffffff","clusterBorder":"#000000"}}}%%</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>flowchart TB</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  subgraph FIRST["First stage"]</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    direction LR</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    FI["Inputs: instruments Z, endogenous X, and controls W"] --&gt; FO["Output: instrument-predicted X-tilde"]</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  end</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  subgraph SECOND["Second stage"]</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    direction LR</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    SI["Inputs: outcome Y, predicted X-tilde, and controls W"] --&gt; SO["Output: 2SLS estimate beta-hat"]</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  end</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  FO --&gt; SI</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  classDef mono fill:#ffffff,stroke:#000000,color:#000000</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  class FI,FO,SI,SO mono</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  style FIRST fill:#ffffff,stroke:#000000,color:#000000</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  style SECOND fill:#ffffff,stroke:#000000,color:#000000</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  linkStyle default stroke:#000000,color:#000000</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-2sls-logic" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-2sls-logic-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<pre class="mermaid mermaid-js" data-label="fig-2sls-logic">%%{init: {"theme":"base","themeVariables":{"primaryColor":"#ffffff","primaryTextColor":"#000000","primaryBorderColor":"#000000","lineColor":"#000000","secondaryColor":"#ffffff","tertiaryColor":"#ffffff","clusterBkg":"#ffffff","clusterBorder":"#000000"}}}%%
+flowchart TB
+  subgraph FIRST["First stage"]
+    direction LR
+    FI["Inputs: instruments Z, endogenous X, and controls W"] --&gt; FO["Output: instrument-predicted X-tilde"]
+  end
+
+  subgraph SECOND["Second stage"]
+    direction LR
+    SI["Inputs: outcome Y, predicted X-tilde, and controls W"] --&gt; SO["Output: 2SLS estimate beta-hat"]
+  end
+
+  FO --&gt; SI
+  classDef mono fill:#ffffff,stroke:#000000,color:#000000
+  class FI,FO,SI,SO mono
+  style FIRST fill:#ffffff,stroke:#000000,color:#000000
+  style SECOND fill:#ffffff,stroke:#000000,color:#000000
+  linkStyle default stroke:#000000,color:#000000
+</pre>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-2sls-logic-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: The two stages of 2SLS, with the inputs and output of each stage.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The name describes a useful mental model:</p>
+<ol type="1">
+<li><strong>First stage:</strong> regress the endogenous variable on all instruments and exogenous controls.</li>
+<li><strong>Second stage:</strong> use the instrument-predicted variation in the endogenous variable to estimate its effect on the outcome.</li>
+</ol>
+</section>
+<section id="how-2sls-iv-and-ols-fit-together" class="level3">
+<h3 class="anchored" data-anchor-id="how-2sls-iv-and-ols-fit-together">How 2SLS, IV, and OLS fit together</h3>
+<p>2SLS is the general estimator:</p>
+<ul>
+<li>If the model is just identified, 2SLS reduces to IV.</li>
+<li>If every regressor serves as its own instrument, so <span class="math inline">\(Z=X\)</span>, IV reduces to OLS.</li>
+</ul>
+<p>Moving from OLS to IV therefore changes the source of variation used to estimate <span class="math inline">\(\beta\)</span>: IV keeps only the variation in <span class="math inline">\(X\)</span> generated by <span class="math inline">\(Z\)</span>.</p>
+</section>
+</section>
+<section id="how-iv-goes-wrong" class="level2">
+<h2 class="anchored" data-anchor-id="how-iv-goes-wrong">How IV goes wrong</h2>
+<section id="invalid-or-irrelevant-instruments" class="level3">
+<h3 class="anchored" data-anchor-id="invalid-or-irrelevant-instruments">Invalid or irrelevant instruments</h3>
+<p>The most direct failures are:</p>
+<ul>
+<li><strong>Invalid instrument:</strong> <span class="math inline">\(E[Z_iu_i]\ne0\)</span>. The instrument carries its own relationship with the outcome disturbance.</li>
+<li><strong>Irrelevant instrument:</strong> <span class="math inline">\(E[Z_iX_i']\)</span> lacks rank. The instrument does not provide the variation needed to identify the causal coefficient.</li>
+</ul>
+<p>Either failure destroys consistency. A nearly irrelevant instrument creates an additional weak-instrument problem even when population relevance is technically nonzero.</p>
+</section>
+<section id="different-controls-in-the-two-stages" class="level3">
+<h3 class="anchored" data-anchor-id="different-controls-in-the-two-stages">Different controls in the two stages</h3>
+<p>All exogenous controls included in the structural equation must also be included in the instrument set and therefore in the first stage. The matrix estimator enforces this automatically.</p>
+<p>Using different control sets changes the projection that defines the instrumented regressor and generally breaks the intended orthogonality conditions. It is no longer the stated 2SLS estimator.</p>
+</section>
+<section id="forbidden-regressions" class="level3">
+<h3 class="anchored" data-anchor-id="forbidden-regressions">Forbidden regressions</h3>
+<p>A tempting procedure is to fit a nonlinear first stage - for example, a probit when <span class="math inline">\(X\)</span> is binary - and then insert its fitted probability into an OLS outcome regression. This is not ordinary 2SLS and is generally inconsistent if the nonlinear first-stage model is misspecified.</p>
+<p>For linear IV, a binary endogenous variable does not require a nonlinear first stage. The linear projection remains valid; fitted values need not lie between zero and one because their purpose is projection, not probability forecasting.</p>
+<p>Projection and nonlinear transformation do not commute.</p>
+</section>
+<section id="instruments-manufactured-from-functional-form" class="level3">
+<h3 class="anchored" data-anchor-id="instruments-manufactured-from-functional-form">Instruments manufactured from functional form</h3>
+<p>Suppose a researcher wants to estimate the effect of an endogenous variable <span class="math inline">\(X_1\)</span> but has no external instrument. The regression controls for <span class="math inline">\(W\)</span>, so the researcher proposes using <span class="math inline">\(W^2\)</span> as an instrument. The argument is that the curved part of the relationship with <span class="math inline">\(W\)</span> predicts <span class="math inline">\(X_1\)</span>:</p>
+<p><span class="math display">\[
+W^2 \longrightarrow X_1 \longrightarrow Y.
+\]</span></p>
+<p>The exclusion restriction now rests entirely on a functional-form choice: <span class="math inline">\(W\)</span> may affect <span class="math inline">\(Y\)</span> linearly, but <span class="math inline">\(W^2\)</span> is assumed to have no direct effect on <span class="math inline">\(Y\)</span>.</p>
+<p>For example, let <span class="math inline">\(W\)</span> be age, <span class="math inline">\(X_1\)</span> training, and <span class="math inline">\(Y\)</span> wages. Age squared may predict training, but wage profiles also commonly curve with age. If <span class="math inline">\(W^2\)</span> belongs in the wage equation, it affects <span class="math inline">\(Y\)</span> directly and cannot be an excluded instrument.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>If the outcome relationship is…</th>
+<th>Then <span class="math inline">\(W^2\)</span>…</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Truly linear in <span class="math inline">\(W\)</span></td>
+<td>may be excluded from the outcome equation</td>
+</tr>
+<tr class="even">
+<td>Curved in <span class="math inline">\(W\)</span></td>
+<td>belongs in the outcome equation and is not a valid excluded instrument</td>
+</tr>
+</tbody>
+</table>
+<p>The proposed instrument is therefore valid only if a particular curve is absent from the outcome equation. That is a fragile source of identification because a small functional-form mistake becomes a violation of the exclusion restriction.</p>
+</section>
+</section>
+<section id="weak-instruments" class="level2">
+<h2 class="anchored" data-anchor-id="weak-instruments">Weak instruments</h2>
+<section id="relevance-can-be-nonzero-and-still-be-too-small" class="level3">
+<h3 class="anchored" data-anchor-id="relevance-can-be-nonzero-and-still-be-too-small">Relevance can be nonzero and still be too small</h3>
+<p>An instrument is <strong>weak</strong> when it has little partial correlation with the endogenous regressor after removing the exogenous controls. Population relevance may hold, yet the instrument-predicted component of <span class="math inline">\(X\)</span> may contain very little signal.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>%%{init: {"theme":"base","themeVariables":{"primaryColor":"#ffffff","primaryTextColor":"#000000","primaryBorderColor":"#000000","lineColor":"#000000","secondaryColor":"#ffffff","tertiaryColor":"#ffffff","clusterBkg":"#ffffff","clusterBorder":"#000000"}}}%%</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>flowchart LR</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  subgraph Weak["Weak first stage"]</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    ZW["Z"] -.-&gt;|"tiny shift"| XW["X"]</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    XW --&gt; YW["Y"]</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  end</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  classDef mono fill:#ffffff,stroke:#000000,color:#000000</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  class ZW,XW,YW mono</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  style Weak fill:#ffffff,stroke:#000000,color:#000000</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  linkStyle default stroke:#000000,color:#000000</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-weak-iv" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-weak-iv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<pre class="mermaid mermaid-js" data-label="fig-weak-iv">%%{init: {"theme":"base","themeVariables":{"primaryColor":"#ffffff","primaryTextColor":"#000000","primaryBorderColor":"#000000","lineColor":"#000000","secondaryColor":"#ffffff","tertiaryColor":"#ffffff","clusterBkg":"#ffffff","clusterBorder":"#000000"}}}%%
+flowchart LR
+  subgraph Weak["Weak first stage"]
+    ZW["Z"] -.-&gt;|"tiny shift"| XW["X"]
+    XW --&gt; YW["Y"]
+  end
+  classDef mono fill:#ffffff,stroke:#000000,color:#000000
+  class ZW,XW,YW mono
+  style Weak fill:#ffffff,stroke:#000000,color:#000000
+  linkStyle default stroke:#000000,color:#000000
+</pre>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-weak-iv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: The danger is a small first stage: the reduced form is divided by a noisy number close to zero.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The ratio form explains the instability immediately:</p>
+<p><span class="math display">\[
+\widehat\beta_{IV}
+=\frac{\widehat{\operatorname{Cov}}(Z,Y)}
+       {\widehat{\operatorname{Cov}}(Z,X)}.
+\]</span></p>
+<p>To see the amplification directly, suppose the estimated numerator changes only from <span class="math inline">\(0.20\)</span> to <span class="math inline">\(0.21\)</span> because of sampling noise:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">First-stage denominator</th>
+<th style="text-align: right;"><span class="math inline">\(0.20/\text{denominator}\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(0.21/\text{denominator}\)</span></th>
+<th style="text-align: right;">Change in IV estimate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><span class="math inline">\(0.50\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(0.40\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(0.42\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(0.02\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><span class="math inline">\(0.02\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(10.00\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(10.50\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(0.50\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The same <span class="math inline">\(0.01\)</span> change in the numerator moves the weak-IV estimate by <span class="math inline">\(0.50\)</span> instead of <span class="math inline">\(0.02\)</span>. Dividing by a small first stage magnifies noise in the reduced form.</p>
+</section>
+<section id="diagnosing-first-stage-strength" class="level3">
+<h3 class="anchored" data-anchor-id="diagnosing-first-stage-strength">Diagnosing first-stage strength</h3>
+<p>Consider the first stage</p>
+<p><span class="math display">\[
+X_1=Z_1'\pi_1+W'\pi_2+v.
+\]</span></p>
+<p>Two related diagnostics are useful:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Diagnostic</th>
+<th>Construction</th>
+<th>What it isolates</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Partial <span class="math inline">\(R^2\)</span></td>
+<td>Residualize <span class="math inline">\(X_1\)</span> and every excluded instrument <span class="math inline">\(Z_1\)</span> with respect to <span class="math inline">\(W\)</span>, then regress the residualized <span class="math inline">\(X_1\)</span> on the residualized <span class="math inline">\(Z_1\)</span></td>
+<td>Share of residual variation in <span class="math inline">\(X_1\)</span> explained by excluded instruments</td>
+</tr>
+<tr class="even">
+<td>Partial <span class="math inline">\(F\)</span> statistic</td>
+<td>Test <span class="math inline">\(H_0:\pi_1=0\)</span> in the first stage</td>
+<td>Joint statistical strength of excluded instruments</td>
+</tr>
+</tbody>
+</table>
+<p>The ordinary first-stage <span class="math inline">\(R^2\)</span> is not enough because it can be high solely because the controls <span class="math inline">\(W\)</span> predict <span class="math inline">\(X_1\)</span>. The partial <span class="math inline">\(R^2\)</span> asks what the excluded instruments add after those controls have been removed.</p>
+<p>For <span class="math inline">\(L\)</span> excluded instruments, the homoskedastic first-stage statistic has the familiar form</p>
+<p><span class="math display">\[
+F
+=\frac{R^2_{\text{partial}}/L}
+       {(1-R^2_{\text{partial}})/(n-\dim(W)-L)},
+\]</span></p>
+<p>with degrees of freedom adjusted to the exact specification. The partial <span class="math inline">\(R^2\)</span> describes population predictive content; the <span class="math inline">\(F\)</span> statistic also grows with sample size.</p>
+</section>
+<section id="more-instruments-are-not-automatically-better" class="level3">
+<h3 class="anchored" data-anchor-id="more-instruments-are-not-automatically-better">More instruments are not automatically better</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Instruments added</th>
+<th>First-stage information</th>
+<th>Likely consequence</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Uninformative</td>
+<td>None</td>
+<td>Lower strength per instrument; more finite-sample bias</td>
+</tr>
+<tr class="even">
+<td>Highly informative</td>
+<td>Large</td>
+<td>Stronger identification</td>
+</tr>
+<tr class="odd">
+<td>Moderately informative</td>
+<td>Ambiguous</td>
+<td>Must evaluate strength and robustness, not instrument count alone</td>
+</tr>
+</tbody>
+</table>
+<p>If the number of instruments doubles while their total predictive information does not increase, the first-stage <span class="math inline">\(F\)</span> statistic can fall sharply. All else equal, a smaller, substantively defensible instrument set is easier to understand and defend.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../../notes/sections/empirical/3_did.html" class="pagination-link" aria-label="Difference-in-Differences">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Difference-in-Differences</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
