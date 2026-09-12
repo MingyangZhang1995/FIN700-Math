@@ -243,58 +243,6 @@ With several pre-treatment periods, we can compare earlier changes across groups
 
 Pre-trends are diagnostics and falsification tools, not a certification procedure.
 
-### Conditional parallel trends
-
-Unconditional trends may differ because treated and comparison units have different observed characteristics $X_i$. A conditional parallel-trends assumption requires equal untreated changes among units with the same covariates:
-
-$$
-\boxed{
-E[\Delta Y_i(0)\mid X_i,G_i=1]
-=E[\Delta Y_i(0)\mid X_i,G_i=0].
-}
-$$
-
-We also need overlap:
-
-$$
-0<P(G_i=1\mid X_i)<1
-$$
-
-over the covariate values represented among treated units. Without comparable untreated observations, identification depends on extrapolation.
-
-Let
-
-$$
-m_0(X_i)=E[\Delta Y_i\mid X_i,G_i=0].
-$$
-
-Under conditional parallel trends, a regression-adjustment representation is
-
-$$
-ATT
-=E[\Delta Y_i-m_0(X_i)\mid G_i=1].
-$$
-
-The comparison group's conditional change predicts how the treated group would have changed without treatment.
-
-### Estimation with covariates
-
-Three common approaches implement conditional parallel trends:
-
-| Approach | Main idea | Main modeling risk |
-|---|---|---|
-| Regression adjustment | Model untreated outcome changes as a function of $X$ | Outcome-change model may be misspecified |
-| Inverse probability weighting | Reweight comparison units to resemble treated units | Propensity-score model and weak overlap |
-| Doubly robust estimation | Combine outcome regression and propensity weighting | Requires at least one nuisance model to be correct |
-
-Covariates should generally be measured before treatment and selected because they predict untreated outcome changes or treatment assignment. Post-treatment covariates can be mediators or colliders and create bad-control bias.
-
-::: {.callout-warning}
-## A covariate is not a substitute for design
-
-Adding controls to a two-way fixed-effects regression does not automatically implement conditional parallel trends. The estimator must compare treated and untreated outcome changes at common covariate values and aggregate those comparisons for the intended treated population.
-:::
-
 ## Multiple periods with one treated cohort: $2\times T$
 
 Now suppose the same treated group begins treatment in period $g$, while the comparison group remains untreated throughout. There are still two groups, but there are many periods.
@@ -362,301 +310,351 @@ $$
 
 Equal weights answer a different question from weights based on the treated population exposed in each period.
 
-## Staggered treatment adoption: $G\times T$
-
-In many applications, units begin treatment in different periods. Let
-
-$$
-G_i=g
-$$
-
-denote the first period in which unit $i$ is treated, and let $G_i=\infty$ denote units not treated during the observed panel.
-
-An **absorbing treatment** is one that, once started, remains in place for the rest of the observed period. A unit's treatment status may move from $0$ to $1$, but it never moves back from $1$ to $0$. For example, if a state adopts a law in 2022 and the law remains effective through the end of the dataset, the law is absorbing in that panel. Therefore,
-
-$$
-D_{it}=\mathbb{1}\{t\ge G_i\}.
-$$
-
-Each adoption date defines a cohort. The design now contains many treatment cohorts and many possible comparisons.
-
-### Group-time average treatment effects
-
-Let $Y_{it}(g)$ be the potential outcome if treatment begins in period $g$, and let $Y_{it}(\infty)$ be the outcome if treatment never begins. The fundamental building block is
-
-$$
-\boxed{
-ATT(g,t)
-=E[Y_{it}(g)-Y_{it}(\infty)\mid G_i=g].
-}
-$$
-
-This parameter asks: for the cohort first treated in $g$, what is the average effect in calendar period $t$ relative to never initiating treatment?
-
-No anticipation requires
-
-$$
-Y_{it}(g)=Y_{it}(\infty)
-\qquad\text{for }t<g.
-$$
-
-### Every $ATT(g,t)$ is built from a $2\times2$ comparison
-
-Using the last untreated period $g-1$ as the baseline and never-treated units as the comparison group,
-
-$$
-\boxed{
-\begin{aligned}
-ATT(g,t)
-&=E[Y_{it}-Y_{i,g-1}\mid G_i=g]\\
-&\quad-E[Y_{it}-Y_{i,g-1}\mid G_i=\infty],
-\qquad t\ge g.
-\end{aligned}
-} \tag{4.3}
-$$
-
-Equation 4.3 is an ordinary $2\times2$ DiD using cohort $g$, the never-treated group, baseline $g-1$, and post period $t$.
-
-### Never-treated versus not-yet-treated comparisons
-
-If later cohorts remain untreated in period $t$, they may also serve as comparisons. Under a parallel-trends assumption involving not-yet-treated units,
-
-$$
-\boxed{
-\begin{aligned}
-ATT(g,t)
-&=E[Y_{it}-Y_{i,g-1}\mid G_i=g]\\
-&\quad-E[Y_{it}-Y_{i,g-1}\mid G_i>t],
-\qquad t\ge g.
-\end{aligned}
-} \tag{4.4}
-$$
-
-The comparison-group choice is an identifying assumption, not merely a software option.
-
-| Comparison group | Advantage | Concern |
-|---|---|---|
-| Never treated | Stable membership; never exposed during the panel | May be small or systematically different from adopters |
-| Not yet treated | Uses more observations and may improve overlap | Composition changes over time; future adopters may have different trends |
-
-Once every unit is treated, no untreated comparison remains. Effects in those periods are not identified by standard DiD without additional assumptions.
-
-### Aggregating the building blocks
-
-A staggered design can produce many $ATT(g,t)$ values. A summary parameter should be a transparent weighted average:
-
-$$
-\boxed{
-ATT^{summary}
-=\sum_g\sum_{t\ge g}\omega_{g,t}ATT(g,t),
-\qquad
-\omega_{g,t}\ge0,
-\qquad
-\sum_g\sum_{t\ge g}\omega_{g,t}=1.
-}
-$$
-
-Different weights answer different questions:
-
-- **Cohort averages** summarize effects for a particular adoption group.
-- **Calendar-time averages** summarize effects in a particular period.
-- **Overall averages** summarize treated observations or treated units.
-- **Event-time averages** summarize effects after a given duration of exposure.
-
-For event time $e=t-g$,
-
-$$
-ATT(e)
-=\sum_{g:g+e\le T}\omega_g(e)ATT(g,g+e).
-$$
-
-The cohorts contributing to $ATT(e)$ may change with $e$. Long-run event-time estimates often use only early adopters, so changes across event time can reflect both treatment dynamics and changing cohort composition.
-
 ## Why conventional TWFE can fail
 
-The traditional response to staggered adoption is to put every cohort and period into one static two-way fixed-effects (TWFE) regression:
+Suppose units adopt the same binary treatment in different periods. Let $G_i$ denote unit $i$'s first treatment date. An **absorbing treatment** remains on after adoption, so
+
+$$
+D_{it}=\mathbb 1\{t\ge G_i\}.
+$$
+
+This once-treated-always-treated setting keeps the timing transparent. A conventional static two-way fixed-effects regression is
 
 $$
 Y_{it}=\alpha_i+\lambda_t+\beta_{TWFE}D_{it}+u_{it}.
 $$
 
-In the canonical $2\times2$ design, there is only one treated cohort and one untreated group, so the comparison behind $\beta_{TWFE}$ is unambiguous. With staggered adoption, different cohorts switch treatment on at different dates. The regression still forces all those treatment changes into one coefficient.
+We can see what this regression compares by working through a toy panel.
 
-### Why one regression creates several comparisons
+### A toy panel
 
-Consider an early cohort $E$, a late cohort $L$, and a never-treated group $N$:
+Consider two equally sized cohorts observed for three periods. Cohort $E$ adopts early, in period 1; cohort $L$ adopts late, in period 2. Each table entry reports the observed outcome followed by treatment status in parentheses.
 
-| Group | Period 0 | Period 1 | Period 2 |
-|---|---:|---:|---:|
-| Early cohort $E$ | 0 | 1 | 1 |
-| Late cohort $L$ | 0 | 0 | 1 |
-| Never treated $N$ | 0 | 0 | 0 |
+| Cohort | First treated $G$ | Period 0 | Period 1 | Period 2 |
+|---|---:|---:|---:|---:|
+| Early $E$ | 1 | $0\;(D=0)$ | $2\;(D=1)$ | $10\;(D=1)$ |
+| Late $L$ | 2 | $0\;(D=0)$ | $0\;(D=0)$ | $4\;(D=1)$ |
 
-The unit fixed effects remove permanent differences among $E$, $L$, and $N$. The time fixed effects remove changes common to all three groups. After those components are removed, OLS explains the remaining outcome changes using **every remaining change in treatment status**. Because the regression does not ask us to name a comparison group, it automatically pools several comparisons:
+Suppose every untreated potential outcome is zero. Parallel trends therefore holds exactly, there is no anticipation, and the treatment effects are
 
-- $E$ versus $N$ when $E$ switches on;
-- $L$ versus $N$ when $L$ switches on;
-- $E$ versus the still-untreated $L$ between periods 0 and 1; and
-- $L$ versus the already-treated $E$ between periods 1 and 2.
+$$
+ATT_E(1)=2,\qquad ATT_E(2)=10,\qquad ATT_L(2)=4.
+$$
 
-The first three comparisons use an untreated group as the counterfactual. The last comparison is different. When $L$ becomes treated in period 2, $E$ is treated in both periods 1 and 2. Since $E$ does not switch at that moment, the regression uses its outcome change as a benchmark for the change in $L$. Thus, the already-treated early cohort acts as a control for the newly treated late cohort.
+We will now calculate what the single TWFE coefficient does with these three positive effects.
 
-### The already-treated comparison problem
+### Why OLS uses the already-treated cohort
 
-Write the late-versus-early comparison between periods 1 and 2 as
+The restriction comes from what each part of TWFE is allowed to explain:
+
+| Regression component | What it absorbs | What it cannot absorb |
+|---|---|---|
+| Unit effect $\alpha_i$ | A permanent outcome level for each unit | Any change over time |
+| Time effect $\lambda_t$ | One calendar-time change shared by all units | Different time changes for different cohorts |
+| Treatment term $\beta D_{it}$ | One common treatment level shift | A treatment effect that grows or shrinks after adoption |
+
+Subtract the TWFE equation in period $t-1$ from the equation in period $t$. The unit effect disappears:
+
+$$
+\Delta Y_{it}
+=\underbrace{(\lambda_t-\lambda_{t-1})}_{\kappa_t}
++\beta_{TWFE}\Delta D_{it}
++\Delta u_{it}.
+$$
+
+Here $\kappa_t$ is the common time change for interval $t-1\to t$. The same $\kappa_t$ must apply to both cohorts. This equation reveals the key mechanical point: any cohort with $\Delta D=0$ helps determine the common time change, whether that cohort is untreated with $D=0$ or already treated with $D=1$.
+
+For the toy panel, the changes are
+
+| Interval | Early cohort: $\Delta D_E$ | Early cohort: $\Delta Y_E$ | Late cohort: $\Delta D_L$ | Late cohort: $\Delta Y_L$ |
+|---|---:|---:|---:|---:|
+| Period $0\to1$ | $+1$ (switches on) | $+2$ | $0$ (no switch) | $0$ |
+| Period $1\to2$ | $0$ (already treated) | $+8$ | $+1$ (switches on) | $+4$ |
+
+In period $0\to1$, cohort $E$ switches on and cohort $L$ does not. The first-difference equations are
 
 $$
 \begin{aligned}
-\operatorname{DiD}_{L,E}^{1\to2}
-&=(Y_{L,2}-Y_{L,1})-(Y_{E,2}-Y_{E,1})\\
-&=ATT(2,2)-\{ATT(1,2)-ATT(1,1)\},
+E:&\quad 2=\kappa_1+\beta_{0\to1},\\
+L:&\quad 0=\kappa_1.
 \end{aligned}
 $$
 
-under parallel untreated trends. The first term is the late cohort's effect when it enters treatment. The bracketed term is the change in the early cohort's treatment effect between its first and second treated periods. A valid control should reveal an untreated outcome change, but the early cohort's observed change contains this treatment-effect evolution.
+The unchanged late cohort identifies $\kappa_1=0$, leaving $\widehat\beta_{0\to1}=2$. Cohort $L$ is genuinely untreated here, so the comparison is a valid DiD.
 
-For example, suppose the late cohort's effect in period 2 is $4$, while the early cohort's effect grows from $2$ in period 1 to $6$ in period 2. Then
+In period $1\to2$, the roles change. Cohort $E$ is already treated, but its treatment indicator does not change. Cohort $L$ switches on. The equations are
 
 $$
-\operatorname{DiD}_{L,E}^{1\to2}
-=4-(6-2)=0.
+\begin{aligned}
+E:&\quad 8=\kappa_2+\beta_{1\to2}(0)=\kappa_2,\\
+L:&\quad 4=\kappa_2+\beta_{1\to2}(1).
+\end{aligned}
 $$
 
-Both cohorts have positive treatment effects, yet this particular comparison reports zero because the late cohort's gain is offset by continued growth in the early cohort's effect. If the early effect grows by more than $4$, the comparison becomes negative.
+Because $\Delta D_E=0$, the model cannot attribute any of cohort $E$'s $8$-unit increase to the treatment term. It therefore uses that increase to determine the common time change: $\widehat\kappa_2=8$. The same time change is then applied to cohort $L$, so its treatment coefficient must explain only the difference between its observed increase and $8$:
 
-The overall TWFE coefficient averages this problematic comparison together with the cleaner comparisons. Goodman-Bacon's mechanical decomposition expresses the coefficient as a weighted average of the available $2\times2$ DiDs. Although the weights on those comparisons are positive, an already-treated comparison subtracts changes in earlier cohorts' treatment effects. Once the result is expressed in terms of the underlying $ATT(g,t)$ values, some effects can therefore receive negative or otherwise unintuitive effective weights.
+$$
+\widehat\beta_{1\to2}=4-\widehat\kappa_2=4-8=-4.
+$$
 
-The problem disappears if treatment effects are constant across cohorts and do not change with exposure length: an already-treated group's treatment effect then does not change between the two comparison periods. With heterogeneous or dynamic effects, however, conventional TWFE can be far from the causal average the researcher intends to estimate.
+This is why TWFE uses the already-treated cohort as a control. With no never-treated group in period 2, cohort $E$ is the only observation with no change in $D$. The regression has no indicator saying “already treated and still accumulating effects”; it sees only $\Delta D_E=0$ and uses $E$ to identify the common time change.
 
-### Dynamic event-study contamination
+The second comparison is not a valid untreated counterfactual. Its outcome change contains continued growth in the early cohort's treatment effect:
 
-The conventional staggered-adoption event-study regression
+$$
+\widehat\beta_{1\to2}
+=ATT_L(2)-\{ATT_E(2)-ATT_E(1)\}
+=4-(10-2)
+=-4.
+$$
+
+The model contains only one treatment coefficient. Because the two cohorts have equal sizes and the two intervals contain the same amount of treatment-status variation, OLS gives the two interval contrasts equal weight. In this simplest Goodman--Bacon decomposition,
+
+$$
+\widehat\beta_{TWFE}
+=\frac12\widehat\beta_{0\to1}
++\frac12\widehat\beta_{1\to2}
+=\frac12(2)+\frac12(-4)
+=-1.
+$$
+
+We can now see the failure: the regression reports $-1$ even though the three treatment effects in the data are $2$, $10$, and $4$. Fixed effects remove cohort levels and common time shocks, but they do not make the already-treated early cohort a valid untreated comparison.
+
+## Modern DiD
+
+We now compare two leading implementations of this strategy: the group-time ATT estimators of [Callaway and Sant'Anna (2021)](https://doi.org/10.1016/j.jeconom.2020.12.001) and the interaction-weighted event-study estimator of [Sun and Abraham (2021)](https://doi.org/10.1016/j.jeconom.2020.09.006).
+
+### Callaway--Sant'Anna: group-time DiD contrasts
+
+Callaway and Sant'Anna estimate a separate effect for cohort $g$ in calendar period $t$:
+
+$$
+ATT(g,t)
+=E[Y_{it}(g)-Y_{it}(\infty)\mid G_i=g].
+$$
+
+Here $G_i=g$ means that unit $i$ is first treated in period $g$, while $G_i=\infty$ denotes a never-treated unit.
+
+#### What the input data look like
+
+The estimator is naturally fed long panel data: one row for each unit and period, with an outcome $Y_{it}$, a unit identifier, calendar time $t$, and first-treatment date $G_i$. Treatment status can be constructed as $D_{it}=\mathbb 1\{t\ge G_i\}$.
+
+For compactness, the table below displays cohort means. Unit-level data repeat this structure for every unit.
+
+| Cohort | $G_i$ | $t$ | $Y_{it}$ | $D_{it}$ | Event time $e=t-G_i$ |
+|---|---:|---:|---:|---:|---:|
+| Early $E$ | 2 | 0 | 20 | 0 | $-2$ |
+| Early $E$ | 2 | 1 | 21 | 0 | $-1$ |
+| Early $E$ | 2 | 2 | 25 | 1 | $0$ |
+| Early $E$ | 2 | 3 | 29 | 1 | $1$ |
+| Late $L$ | 3 | 0 | 30 | 0 | $-3$ |
+| Late $L$ | 3 | 1 | 31 | 0 | $-2$ |
+| Late $L$ | 3 | 2 | 32 | 0 | $-1$ |
+| Late $L$ | 3 | 3 | 37 | 1 | $0$ |
+| Never $N$ | $\infty$ | 0 | 10 | 0 | -- |
+| Never $N$ | $\infty$ | 1 | 11 | 0 | -- |
+| Never $N$ | $\infty$ | 2 | 12 | 0 | -- |
+| Never $N$ | $\infty$ | 3 | 13 | 0 | -- |
+
+The untreated outcome grows by one per period in every cohort. The table therefore builds parallel untreated trends directly into the example. The treatment effects are $3$ and $6$ for the early cohort and $4$ for the late cohort.
+
+The same data can be read as a treatment-timing map:
+
+| Cohort | Period 0 | Period 1 | Period 2 | Period 3 |
+|---|:---:|:---:|:---:|:---:|
+| Early $E$ | Untreated | Untreated | **Treated** | **Treated** |
+| Late $L$ | Untreated | Untreated | Untreated | **Treated** |
+| Never $N$ | Untreated | Untreated | Untreated | Untreated |
+
+#### What the estimator does
+
+Using never-treated cohort $N$, each $ATT(g,t)$ is an ordinary two-group, two-period DiD. The baseline is the cohort's last untreated period $g-1$:
+
+$$
+ATT(g,t)
+=E[Y_{it}-Y_{i,g-1}\mid G_i=g]
+-E[Y_{it}-Y_{i,g-1}\mid G_i=\infty].
+$$
+
+For the early cohort in its treatment period,
+
+$$
+\widehat{ATT}(2,2)
+=(25-21)-(12-11)
+=3.
+$$
+
+For that cohort one period after treatment,
+
+$$
+\widehat{ATT}(2,3)
+=(29-21)-(13-11)
+=6.
+$$
+
+For the late cohort in its treatment period,
+
+$$
+\widehat{ATT}(3,3)
+=(37-32)-(13-12)
+=4.
+$$
+
+The estimator repeats this calculation cell by cell. The following map makes the comparison sets explicit.
+
+| Effect cell | Change for treated cohort | Eligible untreated controls | Who is excluded from the control group? |
+|---|---|---|---|
+| $ATT(2,2)$ | $E:1\to2$ | $N$, or $L$ and $N$ if using not-yet-treated controls | No earlier-treated cohort is eligible |
+| $ATT(2,3)$ | $E:1\to3$ | $N$ | $L$ is treated by period 3 |
+| $ATT(3,3)$ | $L:2\to3$ | $N$ | $E$ is already treated |
+
+With not-yet-treated controls, eligibility is imposed mechanically by $G_i>t$. Thus $E$, with $G_i=2$, cannot be a control for $ATT(3,3)$ because $2>3$ is false. With never-treated controls, only $G_i=\infty$ is retained. This is exactly how Callaway--Sant'Anna prevents already-treated outcomes from serving as untreated counterfactuals.
+
+To form an event-time estimate, the method aggregates cells with the same $e=t-g$. If the treated cohorts are equally sized,
+
+$$
+\widehat\theta_{CS}(0)
+=\frac12\widehat{ATT}(2,2)
++\frac12\widehat{ATT}(3,3)
+=\frac12(3)+\frac12(4)
+=3.5,
+$$
+
+while only the early cohort is observed at $e=1$, so
+
+$$
+\widehat\theta_{CS}(1)=\widehat{ATT}(2,3)=6.
+$$
+
+### Sun--Abraham: the interaction-weighted event study
+
+Sun and Abraham use the same long panel structure, but encode treatment with cohort-by-event-time interaction columns. Their key move is to estimate a saturated regression before averaging across cohorts.
+
+#### What “saturated” means
+
+A conventional event study creates one event-time-zero indicator that equals one for every cohort in its first treated period. In the example, it puts $(E,t=2)$ and $(L,t=3)$ in the same column and forces them to share one coefficient.
+
+A **dummy variable** is simply a column of zeros and ones. Its coefficient lets the fitted outcome be higher or lower for the rows in which the dummy equals one. For example, a dummy labeled $E\times e{=}1$ equals one only for observations from cohort $E$ one period after treatment and equals zero everywhere else.
+
+A saturated event study creates one such dummy for every supported cohort-event-time pair:
+
+$$
+\mathbb 1\{G_i=g\}\mathbb 1\{t-g=e\}.
+$$
+
+Using $e=-1$ as the omitted reference period, the regression is
 
 $$
 Y_{it}
 =\alpha_i+\lambda_t
-+\sum_{e\ne-1}\beta_e\mathbb{1}\{t-G_i=e\}
-+u_{it}
++\sum_g\sum_{e\ne-1}
+\delta_{g,e}
+\mathbb 1\{G_i=g\}\mathbb 1\{t-g=e\}
++u_{it}.
 $$
 
-does not generally solve the problem. When effect paths differ across cohorts, a coefficient for one event time can be contaminated by effects at other event times and in other cohorts. Even apparent pre-treatment coefficients may reflect heterogeneous post-treatment effects rather than genuine anticipation.
+For the numerical panel above, the post-treatment portion of the design matrix is
 
-### When is TWFE relatively safe?
+| Cohort and time | $Y_{it}$ | $E\times e{=}0$ | $E\times e{=}1$ | $L\times e{=}0$ |
+|---|---:|:---:|:---:|:---:|
+| $E,t=0$ | 20 | 0 | 0 | 0 |
+| $E,t=1$ (reference) | 21 | 0 | 0 | 0 |
+| $E,t=2$ | 25 | **1** | 0 | 0 |
+| $E,t=3$ | 29 | 0 | **1** | 0 |
+| $L,t=0$ | 30 | 0 | 0 | 0 |
+| $L,t=1$ | 31 | 0 | 0 | 0 |
+| $L,t=2$ (reference) | 32 | 0 | 0 | 0 |
+| $L,t=3$ | 37 | 0 | 0 | **1** |
+| Every $N,t$ row | 10, 11, 12, 13 | 0 | 0 | 0 |
 
-The conventional specification is easiest to interpret when:
+Unit fixed effects absorb permanent level differences, and time fixed effects absorb the one-unit common trend. Never-treated cohort $N$ is omitted from the interaction columns and anchors the untreated time effects.
 
-- there is one treated cohort and one never-treated group;
-- the design is genuinely $2\times2$; or
-- strong restrictions make treatment effects homogeneous across cohorts and stable over time.
+The three interaction coefficients recover three separate DiDs:
 
-These conditions should be argued, not assumed because the regression includes unit and time fixed effects.
+$$
+\widehat\delta_{E,0}
+=(25-21)-(12-11)
+=3,
+$$
 
-::: {.callout-warning}
-## Fixed effects do not cure treatment-effect heterogeneity
+$$
+\widehat\delta_{E,1}
+=(29-21)-(13-11)
+=6,
+$$
 
-Unit and time fixed effects remove permanent unit differences and common period shocks. They do not determine which treated cohort is a valid comparison for another, and they do not force a single TWFE coefficient to be a sensible average of heterogeneous effects.
-:::
+and
 
-## Modern DiD: estimate building blocks, then aggregate
+$$
+\widehat\delta_{L,0}
+=(37-32)-(13-12)
+=4.
+$$
 
-Modern DiD methods use a forward-engineering strategy:
+#### Why separate dummies prevent the already-treated comparison
 
-1. Define each interpretable $ATT(g,t)$.
-2. Choose never-treated or not-yet-treated comparisons justified by a stated parallel-trends assumption.
-3. Estimate each $2\times2$ building block, optionally conditioning on covariates.
-4. Aggregate the estimates using nonnegative weights linked to the target parameter.
+Focus on period 3. Cohort $L$ is newly treated, cohort $E$ is already treated, and cohort $N$ remains untreated.
 
-Several estimators implement versions of this strategy.
+Begin with the outcome the model predicts in the absence of a cohort-event-time effect. The cohort fixed effect supplies each cohort's period-0 level: $10$ for $N$, $20$ for $E$, and $30$ for $L$. The time fixed effect adds the common trend: $0$, $1$, $2$, and $3$ in periods 0 through 3. The remaining differences are handled by the separate dummy columns.
 
-| Approach | Core idea | Useful feature |
+| Cohort-time cell | Cohort level plus common time effect | Dummy that equals one | Amount added by its coefficient | Fitted outcome |
+|---|---:|---|---:|---:|
+| $N,t=3$ | $10+3=13$ | None | $0$ | $13$ |
+| $E,t=2$ | $20+2=22$ | $E\times e{=}0$ | $\delta_{E,0}=3$ | $25$ |
+| $E,t=3$ | $20+3=23$ | $E\times e{=}1$ | $\delta_{E,1}=6$ | $29$ |
+| $L,t=3$ | $30+3=33$ | $L\times e{=}0$ | $\delta_{L,0}=4$ | $37$ |
+
+“Including the $E\times e{=}1$ dummy” therefore has a literal meaning: the model is allowed to add a number only to cohort $E$'s period-3 observations. The fitted equation for that cell is
+
+$$
+29
+=\underbrace{20}_{\text{cohort level}}
++\underbrace{3}_{\text{common time effect}}
++\underbrace{6}_{E\times e=1\text{ coefficient}}.
+$$
+
+Likewise, the newly treated late cohort has its own equation:
+
+$$
+37
+=\underbrace{30}_{\text{cohort level}}
++\underbrace{3}_{\text{common time effect}}
++\underbrace{4}_{L\times e=0\text{ coefficient}}.
+$$
+
+Cohort $N$ has zeros in every treatment-dummy column. Its period-3 outcome, $13=10+3$, reveals the untreated common time effect. Cohort $E$'s extra $6$ and cohort $L$'s extra $4$ are then recorded in different columns and are free to differ.
+
+To see why the separate dummy matters, imagine omitting $E\times e{=}1$. The model would have no term specifically for the extra $6$ observed for $E$ in period 3. It would have to leave that difference unexplained or push part of it into the period-3 time effect. Because the same time effect is also subtracted from cohort $L$, the early cohort's growing treatment effect would contaminate $\delta_{L,0}$.
+
+With $E\times e{=}1$ included, the extra $6$ has its own place in the regression. It does not need to alter the common time effect used to construct $L$'s untreated counterfactual. The already-treated observations from $E$ remain in the dataset, but they are no longer forced to behave like untreated observations: their cohort-specific treatment effect is explicitly represented by their own dummy.
+
+The interaction-weighted step then averages cohort-specific coefficients at the same event time. With equally sized cohorts,
+
+$$
+\widehat\theta_{SA}(0)
+=\frac12\widehat\delta_{E,0}
++\frac12\widehat\delta_{L,0}
+=3.5,
+$$
+
+and
+
+$$
+\widehat\theta_{SA}(1)
+=\widehat\delta_{E,1}
+=6.
+$$
+
+The two estimators coincide in this example because they use the same never-treated comparison cohort, the same cohort-event-time cells, and the same cohort weights.
+
+### Side-by-side comparison
+
+| Feature | Callaway--Sant'Anna | Sun--Abraham IW |
 |---|---|---|
-| Callaway and Sant'Anna group-time ATT | Estimate $ATT(g,t)$ separately using never-treated or not-yet-treated comparisons | Transparent comparison groups, covariates, and aggregation |
-| Sun and Abraham interaction-weighted event study | Estimate cohort-by-event-time effects and aggregate them | Avoids contamination of event-time coefficients under cohort heterogeneity |
-| Borusyak, Jaravel, and Spiess imputation | Estimate untreated outcomes using untreated observations, impute treated counterfactuals, and average treated residuals | Direct counterfactual construction and flexible aggregation |
-| de Chaisemartin and D'Haultfoeuille switcher methods | Compare units whose treatment changes with appropriate stayers | Extends naturally to some designs in which treatment can switch on and off |
-| Fully interacted regression approaches | Saturate cohort and time relationships, then form explicit group-time contrasts | Uses familiar regression tools while preserving heterogeneous effects |
-
-These methods are not interchangeable defaults. They can rely on different parallel-trends assumptions, use different comparison groups and baselines, and target different aggregates. The right choice follows from the design.
-
-### Modern event studies
-
-A modern staggered event study first estimates cohort-specific effects
-
-$$
-\widehat{ATT}(g,g+e)
-$$
-
-and then forms
-
-$$
-\widehat{ATT}(e)
-=\sum_{g:g+e\le T}
-\widehat\omega_g(e)\widehat{ATT}(g,g+e).
-$$
-
-This ordering preserves the meaning of each building block. It also makes the event-time weights and changing cohort composition visible.
-
-### Covariates in modern DiD
-
-Under conditional parallel trends and overlap, regression adjustment, inverse probability weighting, or doubly robust methods can be applied within each cohort-time comparison. Covariates enter the identification strategy for a specific $ATT(g,t)$; they are not merely appended to a global TWFE regression.
-
-### Sensitivity and heterogeneity
-
-A modern analysis should go beyond a single plot:
-
-- Report cohort-specific or event-time effects when scientifically relevant.
-- Use simultaneous confidence bands for collections of event-study coefficients.
-- Examine balance and overlap for the actual comparison groups.
-- Discuss deviations from parallel trends that are substantively plausible.
-- Use sensitivity analysis to show how conclusions change under bounded violations.
-- Explain how weighting and aggregation alter the target population.
-
-## A practical DiD workflow
-
-Before estimating, complete the following design table:
-
-| Question | Required answer |
-|---|---|
-| What is treatment? | Define exposure and whether it is absorbing, reversible, binary, or continuous |
-| When does treatment begin? | Identify effective dates, including anticipation |
-| What is the target? | State $ATT(1)$, $ATT(g,t)$, an event-time effect, or a named aggregate |
-| Who supplies the counterfactual? | Name never-treated or not-yet-treated units for every comparison |
-| Why parallel trends? | Give institutional and economic reasons, not only a statistical test |
-| Are covariates needed? | State conditional parallel trends and verify overlap |
-| How are effects aggregated? | Report the weights and the population they represent |
-| Where does dependence arise? | Choose clustering and inference at the assignment level |
-| What could invalidate the design? | Address anticipation, spillovers, composition, and concurrent shocks |
-
-Then follow an estimand-first sequence:
-
-1. Plot raw outcome paths by treatment cohort.
-2. Display the treatment-timing structure and cohort sizes.
-3. Estimate transparent $ATT(g,t)$ building blocks.
-4. Plot pre-treatment diagnostics and post-treatment dynamics separately.
-5. Aggregate only after defining the target parameter.
-6. Report point estimates with appropriate uncertainty.
-7. Conduct sensitivity and heterogeneity analyses.
-
-## Class exercises
-
-### Exercise 1: Recover the four-means DiD
-
-Using the numerical $2\times2$ table above:
-
-1. Compute the treated group's change.
-2. Compute the comparison group's change.
-3. Construct the treated group's counterfactual post-treatment mean.
-4. Verify the result using the change in cross-group gaps.
-
-### Exercise 2: Identify valid staggered comparisons
-
-Suppose cohort A is treated in 2020, cohort B in 2022, and cohort C is never treated.
-
-1. Which groups can serve as untreated comparisons for cohort A in 2021?
-2. Which groups can serve as untreated comparisons for cohort A in 2023?
-3. Why is cohort A not a clean comparison for cohort B after 2020?
-4. Which parallel-trends assumption supports each proposed comparison?
-
-## Takeaway
-
-The canonical $2\times2$ DiD is a transparent comparison of four means that identifies the ATT under no anticipation and parallel trends. Multiple periods turn the design into a collection of time-specific $2\times2$ comparisons. Staggered adoption adds treatment cohorts, comparison-group choices, and aggregation choices. Modern DiD methods preserve the logic of the simple design by estimating interpretable $ATT(g,t)$ building blocks first and aggregating them according to the causal question.
+| Primitive effect | $ATT(g,t)$ | $CATT(g,e)=ATT(g,g+e)$ |
+| Required data structure | Long unit-period data with outcome, unit, time, and first-treatment cohort | The same long unit-period data, expanded into cohort-by-event-time interaction columns |
+| Estimation method | Run a separate $2\times2$-style DiD for every supported $(g,t)$ cell | Run one regression saturated in supported cohort-event-time indicators, then aggregate |
+| Valid controls | Never-treated units or units satisfying $G_i>t$ for the cell being estimated | An omitted never-treated cohort; a last-treated cohort can be used only while it remains untreated |
+| How already-treated controls are excluded | They fail the control-set rule $G_i>t$ and are removed before estimating each cell | Their outcomes receive their own cohort-event-time indicators, while the omitted untreated cohort anchors the counterfactual |
+| Event-study estimate | Average $\widehat{ATT}(g,g+e)$ across contributing cohorts | Average $\widehat\delta_{g,e}$ across contributing cohorts |
+| Main advantage | Every treated cohort, comparison group, and $2\times2$ contrast is visible | Retains a regression event-study form without pooling heterogeneous cohort effects |
