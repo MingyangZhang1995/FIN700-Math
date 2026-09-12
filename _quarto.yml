@@ -31,6 +31,7 @@ book:
         - notes\sections\empirical\1_identification_causality_strategies.qmd
         - notes\sections\empirical\2_regression_causal_inference.qmd
         - notes\sections\empirical\3_did.qmd
+        - notes\sections\empirical\4_iv_rd.qmd
 
 bibliography: references.bib
 
