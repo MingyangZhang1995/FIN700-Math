@@ -497,7 +497,7 @@ P = \sum_{k=1}^{n} \frac{C}{(1+y)^k} + \frac{F}{(1+y)^n}
 y_{k+1} = y_k - \frac{f(y_k)}{f'(y_k)}
 \]</span> where <span class="math inline">\(f(y) = \sum_{k=1}^{n} \frac{C}{(1+y)^k} + \frac{F}{(1+y)^n} - P\)</span> and <span class="math inline">\(f'(y)\)</span> is its derivative with respect to <span class="math inline">\(y\)</span>. <img src="NewtonIteration_Ani.gif" class="img-fluid quarto-figure quarto-figure-center" alt="Newton-Raphson Method"></p>
 <p>In the below example, we use the Newton-Raphson method to find the YTM of a bond with a market price of $900, a coupon of $50, a face value of $1000, and a maturity of 10 years. The initial guess for YTM is 5% (0.05). The function returns the estimated YTM, as well as the path of estimates and function values during the iterations. As we can see, the YTM converges to approximately 6.4% after only 4 iterations. The path of estimates and function values shows how the method converges to the root of the equation.</p>
-<div id="f42d559b" class="cell" data-execution_count="2">
+<div id="58ad54a9" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example implementation of the Newton-Raphson method for finding YTM</span></span>
@@ -617,7 +617,7 @@ F = S_0 e^{r^f T}.
 <p>By the no-arbitrage principle, as the initial investment is the same and no risk is involved, the final payoff should be the same. Therefore, we have <span class="math display">\[
 F = S_0 e^{r^f T}.
 \]</span></p>
-<div id="5102e131" class="cell" data-execution_count="3">
+<div id="842bb39a" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -719,7 +719,7 @@ F = S_0 e^{r^f T}.
 \max(K-S_T,0).
 \]</span> The buyer pays an upfront <strong>premium</strong> for this asymmetric payoff; the option seller receives the premium and takes on the corresponding obligation. A European option can be exercised only at expiration, whereas an American option can be exercised at any time before expiration. Option investors can also sell options to earn the premium instead of exercising the option.</p>
 <p>The first four panels of the below figure plot the payoffs of a call option, a put option at strike price <span class="math inline">\(K=50\)</span>.</p>
-<div id="66df0245" class="cell" data-execution_count="4">
+<div id="663f5843" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np  </span>

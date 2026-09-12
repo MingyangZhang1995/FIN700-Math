@@ -545,7 +545,7 @@ df = (d\boldsymbol{x})^\top \boldsymbol{A}\boldsymbol{x} + \boldsymbol{x}^\top \
 \]</span> Substituting the expression for the residual gives <span class="math display">\[
 \boldsymbol{X}^\top \left(\boldsymbol{y}-\boldsymbol{X}\hat{\boldsymbol{\beta}}\right)=0 \quad \Rightarrow \quad \boldsymbol{X}^\top\boldsymbol{X}\hat{\boldsymbol{\beta}} = \boldsymbol{X}^\top\boldsymbol{y} \quad \Rightarrow \quad \hat{\boldsymbol{\beta}} = (\boldsymbol{X}^\top\boldsymbol{X})^{-1}\boldsymbol{X}^\top\boldsymbol{y}.
 \]</span></p>
-<div id="cf0059dc" class="cell" data-execution_count="1">
+<div id="036379e0" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -650,7 +650,7 @@ df = (d\boldsymbol{x})^\top \boldsymbol{A}\boldsymbol{x} + \boldsymbol{x}^\top \
 \end{bmatrix}
 \]</span></p>
 <p>So <em>any</em> linear map, however it distorts space, is nothing more than a rotation, an axis-aligned stretch, and a rotation. Feeding the unit sphere through the map produces an ellipsoid whose semi-axis lengths are the singular values <span class="math inline">\(\sigma_i\)</span> and whose axis directions are the columns of <span class="math inline">\(\boldsymbol{U}\)</span>. This is the circle-to-ellipse picture from <a href="linear-maps.html#sec-la-eigenvalues" class="quarto-xref"><span>Section 3.7</span></a>, now available for matrices that are not symmetric — indeed not even square.</p>
-<div id="eb1794a2" class="cell" data-execution_count="2">
+<div id="434f763a" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -701,7 +701,7 @@ df = (d\boldsymbol{x})^\top \boldsymbol{A}\boldsymbol{x} + \boldsymbol{x}^\top \
 <section id="sec-la-pca" class="level2" data-number="4.5">
 <h2 data-number="4.5" class="anchored" data-anchor-id="sec-la-pca"><span class="header-section-number">4.5</span> Principal component analysis</h2>
 <p>Consider an <span class="math inline">\(n\times p\)</span> data matrix <span class="math inline">\(\boldsymbol{X}\)</span> with column-wise zero empirical mean (the sample mean of each column has been shifted to zero). However, in some applications, the <span class="math inline">\(p\)</span> features are highly correlated, so that the <span class="math inline">\(p\)</span>-dimensional data actually live in a lower-dimensional subspace. For example, in the below figure, the two features <span class="math inline">\(\boldsymbol{x}_1\)</span> and <span class="math inline">\(\boldsymbol{x}_2\)</span> are highly correlated. The most informative direction is the one along which the data are most spread out, which is a linear combination of <span class="math inline">\(\boldsymbol{x}_1\)</span> and <span class="math inline">\(\boldsymbol{x}_2\)</span>.</p>
-<div id="c30b7bf3" class="cell" data-execution_count="3">
+<div id="5d2579ab" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>

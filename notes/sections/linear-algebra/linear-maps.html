@@ -374,7 +374,7 @@ T(\boldsymbol{x}) = x_1\, T(\boldsymbol{e}_1) + x_2\, T(\boldsymbol{e}_2) + \cdo
 <p>Using the notation, <a href="#eq-map-on-basis" class="quarto-xref">Equation&nbsp;<span>3.2</span></a> becomes the definition of the <strong>matrix–vector product</strong>: <span class="math inline">\(T(\boldsymbol{x}) = \boldsymbol{A}\boldsymbol{x}\)</span> is the linear combination of the columns of <span class="math inline">\(\boldsymbol{A}\)</span> weighted by the components of <span class="math inline">\(\boldsymbol{x}\)</span>, <span id="eq-column-picture"><span class="math display">\[
 \boldsymbol{A}\boldsymbol{x} = x_1 \boldsymbol{a}_1 + x_2 \boldsymbol{a}_2 + \cdots + x_n \boldsymbol{a}_n, \quad \boldsymbol{a}_j = \boldsymbol{A}\boldsymbol{e}_j.
 \tag{3.3}\]</span></span> The figure below shows the two columns of a <span class="math inline">\(2\times 2\)</span> matrix as the landing spots of <span class="math inline">\(\boldsymbol{e}_1\)</span> and <span class="math inline">\(\boldsymbol{e}_2\)</span>, with the unit square carried along.</p>
-<div id="c5296537" class="cell" data-execution_count="1">
+<div id="5b5b3a55" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -436,7 +436,7 @@ T(\boldsymbol{x}) = x_1\, T(\boldsymbol{e}_1) + x_2\, T(\boldsymbol{e}_2) + \cdo
 <p><strong>Scaling</strong>: stretches along <span class="math inline">\(\boldsymbol{e}_1\)</span> and compresses along <span class="math inline">\(\boldsymbol{e}_2\)</span>. <span class="math display">\[
 \begin{bmatrix} 1.6 &amp; 0 \\ 0 &amp; 0.6 \end{bmatrix}
 \]</span></p>
-<div id="b6224371" class="cell" data-execution_count="2">
+<div id="f8dd6dc8" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -479,7 +479,7 @@ T(\boldsymbol{x}) = x_1\, T(\boldsymbol{e}_1) + x_2\, T(\boldsymbol{e}_2) + \cdo
 <p><strong>Rotation</strong>: turns the plane by <span class="math inline">\(\theta\)</span>; its columns are the rotated basis vectors and stay perpendicular and unit-length. <span class="math display">\[
 \begin{bmatrix} \cos\theta &amp; -\sin\theta \\ \sin\theta &amp; \cos\theta \end{bmatrix}
 \]</span></p>
-<div id="d71aeebd" class="cell" data-execution_count="3">
+<div id="87e91c27" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">3</span>, <span class="dv">3</span>))</span>
@@ -499,7 +499,7 @@ T(\boldsymbol{x}) = x_1\, T(\boldsymbol{e}_1) + x_2\, T(\boldsymbol{e}_2) + \cdo
 <p><strong>Shear</strong>: skews or “slants” the coordinate space while preserving the area or volume of the object. <span class="math display">\[
 \begin{bmatrix} 1 &amp; 0.8 \\ 0 &amp; 1 \end{bmatrix}
 \]</span></p>
-<div id="7511e23b" class="cell" data-execution_count="4">
+<div id="c89cae99" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">3</span>, <span class="dv">3</span>))</span>
@@ -517,7 +517,7 @@ T(\boldsymbol{x}) = x_1\, T(\boldsymbol{e}_1) + x_2\, T(\boldsymbol{e}_2) + \cdo
 <p><strong>Reflection</strong>: flips the plane across the horizontal axis; the “F” comes back mirror-imaged. <span class="math display">\[
 \begin{bmatrix} 1 &amp; 0 \\ 0 &amp; -1 \end{bmatrix}
 \]</span></p>
-<div id="37d4a6bf" class="cell" data-execution_count="5">
+<div id="fbb4ed9e" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">3</span>, <span class="dv">3</span>))</span>
@@ -535,7 +535,7 @@ T(\boldsymbol{x}) = x_1\, T(\boldsymbol{e}_1) + x_2\, T(\boldsymbol{e}_2) + \cdo
 <p><strong>Projection</strong>: flattens the whole plane onto the horizontal axis. Its second column is <span class="math inline">\(\boldsymbol{0}\)</span>: the map sends <span class="math inline">\(\boldsymbol{e}_2\)</span> to the origin, so the vertical direction is exactly the kernel. The image is one-dimensional — a line — and the “F” loses a dimension. <span class="math display">\[
 \begin{bmatrix} 1 &amp; 0 \\ 0 &amp; 0 \end{bmatrix}
 \]</span></p>
-<div id="46fae63b" class="cell" data-execution_count="6">
+<div id="eb32adeb" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">3</span>, <span class="dv">3</span>))</span>
@@ -576,7 +576,7 @@ T(\boldsymbol{x}) = x_1\, T(\boldsymbol{e}_1) + x_2\, T(\boldsymbol{e}_2) + \cdo
 <p><span class="theorem-title"><strong>Definition 3.3</strong></span> For <span class="math inline">\(\boldsymbol{A}\)</span> of size <span class="math inline">\(m \times p\)</span> and <span class="math inline">\(\boldsymbol{B}\)</span> of size <span class="math inline">\(p \times n\)</span>, the <strong>product</strong> <span class="math inline">\(\boldsymbol{A}\boldsymbol{B}\)</span> is the <span class="math inline">\(m \times n\)</span> matrix with entries <a href="#eq-product-entries" class="quarto-xref">Equation&nbsp;<span>3.5</span></a>. It is defined only when the number of columns of <span class="math inline">\(\boldsymbol{A}\)</span> equals the number of rows of <span class="math inline">\(\boldsymbol{B}\)</span> — the target space of <span class="math inline">\(\boldsymbol{B}\)</span> must be the source space of <span class="math inline">\(\boldsymbol{A}\)</span> for the composition to make sense.</p>
 </div>
 <p>Because <span class="math inline">\(\boldsymbol{A}\boldsymbol{B}\)</span> means “<span class="math inline">\(\boldsymbol{B}\)</span> first, then <span class="math inline">\(\boldsymbol{A}\)</span>,” swapping the order generally changes the result. The picture makes this vivid: shearing and then rotating is not the same as rotating and then shearing.</p>
-<div id="fd8bc980" class="cell" data-execution_count="7">
+<div id="f2584314" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -808,7 +808,7 @@ v
 \]</span> the signed area of the parallelogram spanned by the two columns.</p>
 <div id="exm-determinant-2d" class="theorem example">
 <p><span class="theorem-title"><strong>Example 3.7</strong></span> &nbsp;</p>
-<div id="8afd859c" class="cell" data-execution_count="8">
+<div id="daf54b8f" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> np.array([[<span class="fl">2.0</span>, <span class="fl">1.0</span>],</span>
@@ -903,7 +903,7 @@ v
 \det(\boldsymbol{A} - \lambda\boldsymbol{I}) = 0,
 \tag{3.7}\]</span></span> the <strong>characteristic equation</strong>. Its roots are the eigenvalues.</p>
 <p>The figure shows a symmetric matrix acting on the unit circle. A generic vector is rotated toward the long axis, but the two eigenvectors (grey) keep their directions, stretched by their eigenvalues (red); the circle becomes an ellipse whose axes are exactly the eigen-directions.</p>
-<div id="1dbc3280" class="cell" data-execution_count="9">
+<div id="c9a16608" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> np.array([[<span class="fl">2.0</span>, <span class="fl">0.8</span>],</span>
@@ -983,7 +983,7 @@ v
 | &amp; | &amp; &amp; |
 \end{bmatrix}^{-1}.
 \tag{3.9}\]</span></span> Read right to left, this says: <span class="math inline">\(\boldsymbol{P}^{-1}\)</span> rewrites a vector in the eigenvector basis, <span class="math inline">\(\boldsymbol{D}\)</span> scales along each eigen-axis, and <span class="math inline">\(\boldsymbol{P}\)</span> translates back. The figure traces the “F” through the three steps for our symmetric <span class="math inline">\(\boldsymbol{A}\)</span>, whose eigenvectors are orthogonal. Watch the two eigen-axes (red, green): <span class="math inline">\(\boldsymbol{P}^{-1}\)</span> swings them onto the coordinate axes, <span class="math inline">\(\boldsymbol{D}\)</span> stretches each by its eigenvalue, and <span class="math inline">\(\boldsymbol{P}\)</span> swings them back — the net effect on the “F” being exactly <span class="math inline">\(\boldsymbol{A}\)</span>.</p>
-<div id="40b91b96" class="cell" data-execution_count="10">
+<div id="c98ab67b" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> np.array([[<span class="fl">2.0</span>, <span class="fl">0.8</span>],</span>

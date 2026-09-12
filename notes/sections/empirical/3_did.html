@@ -304,41 +304,23 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#parallel-trends-is-about-the-untreated-counterfactual" id="toc-parallel-trends-is-about-the-untreated-counterfactual" class="nav-link" data-scroll-target="#parallel-trends-is-about-the-untreated-counterfactual">Parallel trends is about the untreated counterfactual</a></li>
   <li><a href="#what-pre-treatment-trends-can-tell-us" id="toc-what-pre-treatment-trends-can-tell-us" class="nav-link" data-scroll-target="#what-pre-treatment-trends-can-tell-us">What pre-treatment trends can tell us</a></li>
-  <li><a href="#conditional-parallel-trends" id="toc-conditional-parallel-trends" class="nav-link" data-scroll-target="#conditional-parallel-trends">Conditional parallel trends</a></li>
-  <li><a href="#estimation-with-covariates" id="toc-estimation-with-covariates" class="nav-link" data-scroll-target="#estimation-with-covariates">Estimation with covariates</a></li>
   </ul></li>
   <li><a href="#multiple-periods-with-one-treated-cohort-2times-t" id="toc-multiple-periods-with-one-treated-cohort-2times-t" class="nav-link" data-scroll-target="#multiple-periods-with-one-treated-cohort-2times-t">Multiple periods with one treated cohort: <span class="math inline">\(2\times T\)</span></a>
   <ul class="collapse">
   <li><a href="#event-time-and-event-studies" id="toc-event-time-and-event-studies" class="nav-link" data-scroll-target="#event-time-and-event-studies">Event time and event studies</a></li>
   <li><a href="#dynamic-effects-and-aggregation-over-time" id="toc-dynamic-effects-and-aggregation-over-time" class="nav-link" data-scroll-target="#dynamic-effects-and-aggregation-over-time">Dynamic effects and aggregation over time</a></li>
   </ul></li>
-  <li><a href="#staggered-treatment-adoption-gtimes-t" id="toc-staggered-treatment-adoption-gtimes-t" class="nav-link" data-scroll-target="#staggered-treatment-adoption-gtimes-t">Staggered treatment adoption: <span class="math inline">\(G\times T\)</span></a>
-  <ul class="collapse">
-  <li><a href="#group-time-average-treatment-effects" id="toc-group-time-average-treatment-effects" class="nav-link" data-scroll-target="#group-time-average-treatment-effects">Group-time average treatment effects</a></li>
-  <li><a href="#every-attgt-is-built-from-a-2times2-comparison" id="toc-every-attgt-is-built-from-a-2times2-comparison" class="nav-link" data-scroll-target="#every-attgt-is-built-from-a-2times2-comparison">Every <span class="math inline">\(ATT(g,t)\)</span> is built from a <span class="math inline">\(2\times2\)</span> comparison</a></li>
-  <li><a href="#never-treated-versus-not-yet-treated-comparisons" id="toc-never-treated-versus-not-yet-treated-comparisons" class="nav-link" data-scroll-target="#never-treated-versus-not-yet-treated-comparisons">Never-treated versus not-yet-treated comparisons</a></li>
-  <li><a href="#aggregating-the-building-blocks" id="toc-aggregating-the-building-blocks" class="nav-link" data-scroll-target="#aggregating-the-building-blocks">Aggregating the building blocks</a></li>
-  </ul></li>
   <li><a href="#why-conventional-twfe-can-fail" id="toc-why-conventional-twfe-can-fail" class="nav-link" data-scroll-target="#why-conventional-twfe-can-fail">Why conventional TWFE can fail</a>
   <ul class="collapse">
-  <li><a href="#why-one-regression-creates-several-comparisons" id="toc-why-one-regression-creates-several-comparisons" class="nav-link" data-scroll-target="#why-one-regression-creates-several-comparisons">Why one regression creates several comparisons</a></li>
-  <li><a href="#the-already-treated-comparison-problem" id="toc-the-already-treated-comparison-problem" class="nav-link" data-scroll-target="#the-already-treated-comparison-problem">The already-treated comparison problem</a></li>
-  <li><a href="#dynamic-event-study-contamination" id="toc-dynamic-event-study-contamination" class="nav-link" data-scroll-target="#dynamic-event-study-contamination">Dynamic event-study contamination</a></li>
-  <li><a href="#when-is-twfe-relatively-safe" id="toc-when-is-twfe-relatively-safe" class="nav-link" data-scroll-target="#when-is-twfe-relatively-safe">When is TWFE relatively safe?</a></li>
+  <li><a href="#a-toy-panel" id="toc-a-toy-panel" class="nav-link" data-scroll-target="#a-toy-panel">A toy panel</a></li>
+  <li><a href="#why-ols-uses-the-already-treated-cohort" id="toc-why-ols-uses-the-already-treated-cohort" class="nav-link" data-scroll-target="#why-ols-uses-the-already-treated-cohort">Why OLS uses the already-treated cohort</a></li>
   </ul></li>
-  <li><a href="#modern-did-estimate-building-blocks-then-aggregate" id="toc-modern-did-estimate-building-blocks-then-aggregate" class="nav-link" data-scroll-target="#modern-did-estimate-building-blocks-then-aggregate">Modern DiD: estimate building blocks, then aggregate</a>
+  <li><a href="#modern-did" id="toc-modern-did" class="nav-link" data-scroll-target="#modern-did">Modern DiD</a>
   <ul class="collapse">
-  <li><a href="#modern-event-studies" id="toc-modern-event-studies" class="nav-link" data-scroll-target="#modern-event-studies">Modern event studies</a></li>
-  <li><a href="#covariates-in-modern-did" id="toc-covariates-in-modern-did" class="nav-link" data-scroll-target="#covariates-in-modern-did">Covariates in modern DiD</a></li>
-  <li><a href="#sensitivity-and-heterogeneity" id="toc-sensitivity-and-heterogeneity" class="nav-link" data-scroll-target="#sensitivity-and-heterogeneity">Sensitivity and heterogeneity</a></li>
+  <li><a href="#callawaysantanna-group-time-did-contrasts" id="toc-callawaysantanna-group-time-did-contrasts" class="nav-link" data-scroll-target="#callawaysantanna-group-time-did-contrasts">Callaway–Sant’Anna: group-time DiD contrasts</a></li>
+  <li><a href="#sunabraham-the-interaction-weighted-event-study" id="toc-sunabraham-the-interaction-weighted-event-study" class="nav-link" data-scroll-target="#sunabraham-the-interaction-weighted-event-study">Sun–Abraham: the interaction-weighted event study</a></li>
+  <li><a href="#side-by-side-comparison" id="toc-side-by-side-comparison" class="nav-link" data-scroll-target="#side-by-side-comparison">Side-by-side comparison</a></li>
   </ul></li>
-  <li><a href="#a-practical-did-workflow" id="toc-a-practical-did-workflow" class="nav-link" data-scroll-target="#a-practical-did-workflow">A practical DiD workflow</a></li>
-  <li><a href="#class-exercises" id="toc-class-exercises" class="nav-link" data-scroll-target="#class-exercises">Class exercises</a>
-  <ul class="collapse">
-  <li><a href="#exercise-1-recover-the-four-means-did" id="toc-exercise-1-recover-the-four-means-did" class="nav-link" data-scroll-target="#exercise-1-recover-the-four-means-did">Exercise 1: Recover the four-means DiD</a></li>
-  <li><a href="#exercise-2-identify-valid-staggered-comparisons" id="toc-exercise-2-identify-valid-staggered-comparisons" class="nav-link" data-scroll-target="#exercise-2-identify-valid-staggered-comparisons">Exercise 2: Identify valid staggered comparisons</a></li>
-  </ul></li>
-  <li><a href="#takeaway" id="toc-takeaway" class="nav-link" data-scroll-target="#takeaway">Takeaway</a></li>
   </ul>
 </nav>
     </div>
@@ -633,80 +615,6 @@ Y_{it}=\alpha_i+\lambda_t+\tau D_{it}+u_{it}.
 </ul>
 <p>Pre-trends are diagnostics and falsification tools, not a certification procedure.</p>
 </section>
-<section id="conditional-parallel-trends" class="level3">
-<h3 class="anchored" data-anchor-id="conditional-parallel-trends">Conditional parallel trends</h3>
-<p>Unconditional trends may differ because treated and comparison units have different observed characteristics <span class="math inline">\(X_i\)</span>. A conditional parallel-trends assumption requires equal untreated changes among units with the same covariates:</p>
-<p><span class="math display">\[
-\boxed{
-E[\Delta Y_i(0)\mid X_i,G_i=1]
-=E[\Delta Y_i(0)\mid X_i,G_i=0].
-}
-\]</span></p>
-<p>We also need overlap:</p>
-<p><span class="math display">\[
-0&lt;P(G_i=1\mid X_i)&lt;1
-\]</span></p>
-<p>over the covariate values represented among treated units. Without comparable untreated observations, identification depends on extrapolation.</p>
-<p>Let</p>
-<p><span class="math display">\[
-m_0(X_i)=E[\Delta Y_i\mid X_i,G_i=0].
-\]</span></p>
-<p>Under conditional parallel trends, a regression-adjustment representation is</p>
-<p><span class="math display">\[
-ATT
-=E[\Delta Y_i-m_0(X_i)\mid G_i=1].
-\]</span></p>
-<p>The comparison group’s conditional change predicts how the treated group would have changed without treatment.</p>
-</section>
-<section id="estimation-with-covariates" class="level3">
-<h3 class="anchored" data-anchor-id="estimation-with-covariates">Estimation with covariates</h3>
-<p>Three common approaches implement conditional parallel trends:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Approach</th>
-<th>Main idea</th>
-<th>Main modeling risk</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Regression adjustment</td>
-<td>Model untreated outcome changes as a function of <span class="math inline">\(X\)</span></td>
-<td>Outcome-change model may be misspecified</td>
-</tr>
-<tr class="even">
-<td>Inverse probability weighting</td>
-<td>Reweight comparison units to resemble treated units</td>
-<td>Propensity-score model and weak overlap</td>
-</tr>
-<tr class="odd">
-<td>Doubly robust estimation</td>
-<td>Combine outcome regression and propensity weighting</td>
-<td>Requires at least one nuisance model to be correct</td>
-</tr>
-</tbody>
-</table>
-<p>Covariates should generally be measured before treatment and selected because they predict untreated outcome changes or treatment assignment. Post-treatment covariates can be mediators or colliders and create bad-control bias.</p>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>A covariate is not a substitute for design
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Adding controls to a two-way fixed-effects regression does not automatically implement conditional parallel trends. The estimator must compare treated and untreated outcome changes at common covariate values and aggregate those comparisons for the intended treated population.</p>
-</div>
-</div>
-</section>
 </section>
 <section id="multiple-periods-with-one-treated-cohort-2times-t" class="level2">
 <h2 class="anchored" data-anchor-id="multiple-periods-with-one-treated-cohort-2times-t">Multiple periods with one treated cohort: <span class="math inline">\(2\times T\)</span></h2>
@@ -761,133 +669,25 @@ ATT^{post}
 <p>Equal weights answer a different question from weights based on the treated population exposed in each period.</p>
 </section>
 </section>
-<section id="staggered-treatment-adoption-gtimes-t" class="level2">
-<h2 class="anchored" data-anchor-id="staggered-treatment-adoption-gtimes-t">Staggered treatment adoption: <span class="math inline">\(G\times T\)</span></h2>
-<p>In many applications, units begin treatment in different periods. Let</p>
-<p><span class="math display">\[
-G_i=g
-\]</span></p>
-<p>denote the first period in which unit <span class="math inline">\(i\)</span> is treated, and let <span class="math inline">\(G_i=\infty\)</span> denote units not treated during the observed panel.</p>
-<p>An <strong>absorbing treatment</strong> is one that, once started, remains in place for the rest of the observed period. A unit’s treatment status may move from <span class="math inline">\(0\)</span> to <span class="math inline">\(1\)</span>, but it never moves back from <span class="math inline">\(1\)</span> to <span class="math inline">\(0\)</span>. For example, if a state adopts a law in 2022 and the law remains effective through the end of the dataset, the law is absorbing in that panel. Therefore,</p>
-<p><span class="math display">\[
-D_{it}=\mathbb{1}\{t\ge G_i\}.
-\]</span></p>
-<p>Each adoption date defines a cohort. The design now contains many treatment cohorts and many possible comparisons.</p>
-<section id="group-time-average-treatment-effects" class="level3">
-<h3 class="anchored" data-anchor-id="group-time-average-treatment-effects">Group-time average treatment effects</h3>
-<p>Let <span class="math inline">\(Y_{it}(g)\)</span> be the potential outcome if treatment begins in period <span class="math inline">\(g\)</span>, and let <span class="math inline">\(Y_{it}(\infty)\)</span> be the outcome if treatment never begins. The fundamental building block is</p>
-<p><span class="math display">\[
-\boxed{
-ATT(g,t)
-=E[Y_{it}(g)-Y_{it}(\infty)\mid G_i=g].
-}
-\]</span></p>
-<p>This parameter asks: for the cohort first treated in <span class="math inline">\(g\)</span>, what is the average effect in calendar period <span class="math inline">\(t\)</span> relative to never initiating treatment?</p>
-<p>No anticipation requires</p>
-<p><span class="math display">\[
-Y_{it}(g)=Y_{it}(\infty)
-\qquad\text{for }t&lt;g.
-\]</span></p>
-</section>
-<section id="every-attgt-is-built-from-a-2times2-comparison" class="level3">
-<h3 class="anchored" data-anchor-id="every-attgt-is-built-from-a-2times2-comparison">Every <span class="math inline">\(ATT(g,t)\)</span> is built from a <span class="math inline">\(2\times2\)</span> comparison</h3>
-<p>Using the last untreated period <span class="math inline">\(g-1\)</span> as the baseline and never-treated units as the comparison group,</p>
-<p><span class="math display">\[
-\boxed{
-\begin{aligned}
-ATT(g,t)
-&amp;=E[Y_{it}-Y_{i,g-1}\mid G_i=g]\\
-&amp;\quad-E[Y_{it}-Y_{i,g-1}\mid G_i=\infty],
-\qquad t\ge g.
-\end{aligned}
-} \tag{4.3}
-\]</span></p>
-<p>Equation 4.3 is an ordinary <span class="math inline">\(2\times2\)</span> DiD using cohort <span class="math inline">\(g\)</span>, the never-treated group, baseline <span class="math inline">\(g-1\)</span>, and post period <span class="math inline">\(t\)</span>.</p>
-</section>
-<section id="never-treated-versus-not-yet-treated-comparisons" class="level3">
-<h3 class="anchored" data-anchor-id="never-treated-versus-not-yet-treated-comparisons">Never-treated versus not-yet-treated comparisons</h3>
-<p>If later cohorts remain untreated in period <span class="math inline">\(t\)</span>, they may also serve as comparisons. Under a parallel-trends assumption involving not-yet-treated units,</p>
-<p><span class="math display">\[
-\boxed{
-\begin{aligned}
-ATT(g,t)
-&amp;=E[Y_{it}-Y_{i,g-1}\mid G_i=g]\\
-&amp;\quad-E[Y_{it}-Y_{i,g-1}\mid G_i&gt;t],
-\qquad t\ge g.
-\end{aligned}
-} \tag{4.4}
-\]</span></p>
-<p>The comparison-group choice is an identifying assumption, not merely a software option.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Comparison group</th>
-<th>Advantage</th>
-<th>Concern</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Never treated</td>
-<td>Stable membership; never exposed during the panel</td>
-<td>May be small or systematically different from adopters</td>
-</tr>
-<tr class="even">
-<td>Not yet treated</td>
-<td>Uses more observations and may improve overlap</td>
-<td>Composition changes over time; future adopters may have different trends</td>
-</tr>
-</tbody>
-</table>
-<p>Once every unit is treated, no untreated comparison remains. Effects in those periods are not identified by standard DiD without additional assumptions.</p>
-</section>
-<section id="aggregating-the-building-blocks" class="level3">
-<h3 class="anchored" data-anchor-id="aggregating-the-building-blocks">Aggregating the building blocks</h3>
-<p>A staggered design can produce many <span class="math inline">\(ATT(g,t)\)</span> values. A summary parameter should be a transparent weighted average:</p>
-<p><span class="math display">\[
-\boxed{
-ATT^{summary}
-=\sum_g\sum_{t\ge g}\omega_{g,t}ATT(g,t),
-\qquad
-\omega_{g,t}\ge0,
-\qquad
-\sum_g\sum_{t\ge g}\omega_{g,t}=1.
-}
-\]</span></p>
-<p>Different weights answer different questions:</p>
-<ul>
-<li><strong>Cohort averages</strong> summarize effects for a particular adoption group.</li>
-<li><strong>Calendar-time averages</strong> summarize effects in a particular period.</li>
-<li><strong>Overall averages</strong> summarize treated observations or treated units.</li>
-<li><strong>Event-time averages</strong> summarize effects after a given duration of exposure.</li>
-</ul>
-<p>For event time <span class="math inline">\(e=t-g\)</span>,</p>
-<p><span class="math display">\[
-ATT(e)
-=\sum_{g:g+e\le T}\omega_g(e)ATT(g,g+e).
-\]</span></p>
-<p>The cohorts contributing to <span class="math inline">\(ATT(e)\)</span> may change with <span class="math inline">\(e\)</span>. Long-run event-time estimates often use only early adopters, so changes across event time can reflect both treatment dynamics and changing cohort composition.</p>
-</section>
-</section>
 <section id="why-conventional-twfe-can-fail" class="level2">
 <h2 class="anchored" data-anchor-id="why-conventional-twfe-can-fail">Why conventional TWFE can fail</h2>
-<p>The traditional response to staggered adoption is to put every cohort and period into one static two-way fixed-effects (TWFE) regression:</p>
+<p>Suppose units adopt the same binary treatment in different periods. Let <span class="math inline">\(G_i\)</span> denote unit <span class="math inline">\(i\)</span>’s first treatment date. An <strong>absorbing treatment</strong> remains on after adoption, so</p>
+<p><span class="math display">\[
+D_{it}=\mathbb 1\{t\ge G_i\}.
+\]</span></p>
+<p>This once-treated-always-treated setting keeps the timing transparent. A conventional static two-way fixed-effects regression is</p>
 <p><span class="math display">\[
 Y_{it}=\alpha_i+\lambda_t+\beta_{TWFE}D_{it}+u_{it}.
 \]</span></p>
-<p>In the canonical <span class="math inline">\(2\times2\)</span> design, there is only one treated cohort and one untreated group, so the comparison behind <span class="math inline">\(\beta_{TWFE}\)</span> is unambiguous. With staggered adoption, different cohorts switch treatment on at different dates. The regression still forces all those treatment changes into one coefficient.</p>
-<section id="why-one-regression-creates-several-comparisons" class="level3">
-<h3 class="anchored" data-anchor-id="why-one-regression-creates-several-comparisons">Why one regression creates several comparisons</h3>
-<p>Consider an early cohort <span class="math inline">\(E\)</span>, a late cohort <span class="math inline">\(L\)</span>, and a never-treated group <span class="math inline">\(N\)</span>:</p>
+<p>We can see what this regression compares by working through a toy panel.</p>
+<section id="a-toy-panel" class="level3">
+<h3 class="anchored" data-anchor-id="a-toy-panel">A toy panel</h3>
+<p>Consider two equally sized cohorts observed for three periods. Cohort <span class="math inline">\(E\)</span> adopts early, in period 1; cohort <span class="math inline">\(L\)</span> adopts late, in period 2. Each table entry reports the observed outcome followed by treatment status in parentheses.</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
-<th>Group</th>
+<th>Cohort</th>
+<th style="text-align: right;">First treated <span class="math inline">\(G\)</span></th>
 <th style="text-align: right;">Period 0</th>
 <th style="text-align: right;">Period 1</th>
 <th style="text-align: right;">Period 2</th>
@@ -895,99 +695,592 @@ Y_{it}=\alpha_i+\lambda_t+\beta_{TWFE}D_{it}+u_{it}.
 </thead>
 <tbody>
 <tr class="odd">
-<td>Early cohort <span class="math inline">\(E\)</span></td>
-<td style="text-align: right;">0</td>
+<td>Early <span class="math inline">\(E\)</span></td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
+<td style="text-align: right;"><span class="math inline">\(0\;(D=0)\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(2\;(D=1)\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(10\;(D=1)\)</span></td>
 </tr>
 <tr class="even">
-<td>Late cohort <span class="math inline">\(L\)</span></td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-</tr>
-<tr class="odd">
-<td>Never treated <span class="math inline">\(N\)</span></td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
+<td>Late <span class="math inline">\(L\)</span></td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"><span class="math inline">\(0\;(D=0)\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(0\;(D=0)\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(4\;(D=1)\)</span></td>
 </tr>
 </tbody>
 </table>
-<p>The unit fixed effects remove permanent differences among <span class="math inline">\(E\)</span>, <span class="math inline">\(L\)</span>, and <span class="math inline">\(N\)</span>. The time fixed effects remove changes common to all three groups. After those components are removed, OLS explains the remaining outcome changes using <strong>every remaining change in treatment status</strong>. Because the regression does not ask us to name a comparison group, it automatically pools several comparisons:</p>
-<ul>
-<li><span class="math inline">\(E\)</span> versus <span class="math inline">\(N\)</span> when <span class="math inline">\(E\)</span> switches on;</li>
-<li><span class="math inline">\(L\)</span> versus <span class="math inline">\(N\)</span> when <span class="math inline">\(L\)</span> switches on;</li>
-<li><span class="math inline">\(E\)</span> versus the still-untreated <span class="math inline">\(L\)</span> between periods 0 and 1; and</li>
-<li><span class="math inline">\(L\)</span> versus the already-treated <span class="math inline">\(E\)</span> between periods 1 and 2.</li>
-</ul>
-<p>The first three comparisons use an untreated group as the counterfactual. The last comparison is different. When <span class="math inline">\(L\)</span> becomes treated in period 2, <span class="math inline">\(E\)</span> is treated in both periods 1 and 2. Since <span class="math inline">\(E\)</span> does not switch at that moment, the regression uses its outcome change as a benchmark for the change in <span class="math inline">\(L\)</span>. Thus, the already-treated early cohort acts as a control for the newly treated late cohort.</p>
+<p>Suppose every untreated potential outcome is zero. Parallel trends therefore holds exactly, there is no anticipation, and the treatment effects are</p>
+<p><span class="math display">\[
+ATT_E(1)=2,\qquad ATT_E(2)=10,\qquad ATT_L(2)=4.
+\]</span></p>
+<p>We will now calculate what the single TWFE coefficient does with these three positive effects.</p>
 </section>
-<section id="the-already-treated-comparison-problem" class="level3">
-<h3 class="anchored" data-anchor-id="the-already-treated-comparison-problem">The already-treated comparison problem</h3>
-<p>Write the late-versus-early comparison between periods 1 and 2 as</p>
+<section id="why-ols-uses-the-already-treated-cohort" class="level3">
+<h3 class="anchored" data-anchor-id="why-ols-uses-the-already-treated-cohort">Why OLS uses the already-treated cohort</h3>
+<p>The restriction comes from what each part of TWFE is allowed to explain:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Regression component</th>
+<th>What it absorbs</th>
+<th>What it cannot absorb</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Unit effect <span class="math inline">\(\alpha_i\)</span></td>
+<td>A permanent outcome level for each unit</td>
+<td>Any change over time</td>
+</tr>
+<tr class="even">
+<td>Time effect <span class="math inline">\(\lambda_t\)</span></td>
+<td>One calendar-time change shared by all units</td>
+<td>Different time changes for different cohorts</td>
+</tr>
+<tr class="odd">
+<td>Treatment term <span class="math inline">\(\beta D_{it}\)</span></td>
+<td>One common treatment level shift</td>
+<td>A treatment effect that grows or shrinks after adoption</td>
+</tr>
+</tbody>
+</table>
+<p>Subtract the TWFE equation in period <span class="math inline">\(t-1\)</span> from the equation in period <span class="math inline">\(t\)</span>. The unit effect disappears:</p>
+<p><span class="math display">\[
+\Delta Y_{it}
+=\underbrace{(\lambda_t-\lambda_{t-1})}_{\kappa_t}
++\beta_{TWFE}\Delta D_{it}
++\Delta u_{it}.
+\]</span></p>
+<p>Here <span class="math inline">\(\kappa_t\)</span> is the common time change for interval <span class="math inline">\(t-1\to t\)</span>. The same <span class="math inline">\(\kappa_t\)</span> must apply to both cohorts. This equation reveals the key mechanical point: any cohort with <span class="math inline">\(\Delta D=0\)</span> helps determine the common time change, whether that cohort is untreated with <span class="math inline">\(D=0\)</span> or already treated with <span class="math inline">\(D=1\)</span>.</p>
+<p>For the toy panel, the changes are</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 21%">
+<col style="width: 21%">
+<col style="width: 21%">
+<col style="width: 21%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Interval</th>
+<th style="text-align: right;">Early cohort: <span class="math inline">\(\Delta D_E\)</span></th>
+<th style="text-align: right;">Early cohort: <span class="math inline">\(\Delta Y_E\)</span></th>
+<th style="text-align: right;">Late cohort: <span class="math inline">\(\Delta D_L\)</span></th>
+<th style="text-align: right;">Late cohort: <span class="math inline">\(\Delta Y_L\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Period <span class="math inline">\(0\to1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(+1\)</span> (switches on)</td>
+<td style="text-align: right;"><span class="math inline">\(+2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(0\)</span> (no switch)</td>
+<td style="text-align: right;"><span class="math inline">\(0\)</span></td>
+</tr>
+<tr class="even">
+<td>Period <span class="math inline">\(1\to2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(0\)</span> (already treated)</td>
+<td style="text-align: right;"><span class="math inline">\(+8\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(+1\)</span> (switches on)</td>
+<td style="text-align: right;"><span class="math inline">\(+4\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>In period <span class="math inline">\(0\to1\)</span>, cohort <span class="math inline">\(E\)</span> switches on and cohort <span class="math inline">\(L\)</span> does not. The first-difference equations are</p>
 <p><span class="math display">\[
 \begin{aligned}
-\operatorname{DiD}_{L,E}^{1\to2}
-&amp;=(Y_{L,2}-Y_{L,1})-(Y_{E,2}-Y_{E,1})\\
-&amp;=ATT(2,2)-\{ATT(1,2)-ATT(1,1)\},
+E:&amp;\quad 2=\kappa_1+\beta_{0\to1},\\
+L:&amp;\quad 0=\kappa_1.
 \end{aligned}
 \]</span></p>
-<p>under parallel untreated trends. The first term is the late cohort’s effect when it enters treatment. The bracketed term is the change in the early cohort’s treatment effect between its first and second treated periods. A valid control should reveal an untreated outcome change, but the early cohort’s observed change contains this treatment-effect evolution.</p>
-<p>For example, suppose the late cohort’s effect in period 2 is <span class="math inline">\(4\)</span>, while the early cohort’s effect grows from <span class="math inline">\(2\)</span> in period 1 to <span class="math inline">\(6\)</span> in period 2. Then</p>
+<p>The unchanged late cohort identifies <span class="math inline">\(\kappa_1=0\)</span>, leaving <span class="math inline">\(\widehat\beta_{0\to1}=2\)</span>. Cohort <span class="math inline">\(L\)</span> is genuinely untreated here, so the comparison is a valid DiD.</p>
+<p>In period <span class="math inline">\(1\to2\)</span>, the roles change. Cohort <span class="math inline">\(E\)</span> is already treated, but its treatment indicator does not change. Cohort <span class="math inline">\(L\)</span> switches on. The equations are</p>
 <p><span class="math display">\[
-\operatorname{DiD}_{L,E}^{1\to2}
-=4-(6-2)=0.
+\begin{aligned}
+E:&amp;\quad 8=\kappa_2+\beta_{1\to2}(0)=\kappa_2,\\
+L:&amp;\quad 4=\kappa_2+\beta_{1\to2}(1).
+\end{aligned}
 \]</span></p>
-<p>Both cohorts have positive treatment effects, yet this particular comparison reports zero because the late cohort’s gain is offset by continued growth in the early cohort’s effect. If the early effect grows by more than <span class="math inline">\(4\)</span>, the comparison becomes negative.</p>
-<p>The overall TWFE coefficient averages this problematic comparison together with the cleaner comparisons. Goodman-Bacon’s mechanical decomposition expresses the coefficient as a weighted average of the available <span class="math inline">\(2\times2\)</span> DiDs. Although the weights on those comparisons are positive, an already-treated comparison subtracts changes in earlier cohorts’ treatment effects. Once the result is expressed in terms of the underlying <span class="math inline">\(ATT(g,t)\)</span> values, some effects can therefore receive negative or otherwise unintuitive effective weights.</p>
-<p>The problem disappears if treatment effects are constant across cohorts and do not change with exposure length: an already-treated group’s treatment effect then does not change between the two comparison periods. With heterogeneous or dynamic effects, however, conventional TWFE can be far from the causal average the researcher intends to estimate.</p>
+<p>Because <span class="math inline">\(\Delta D_E=0\)</span>, the model cannot attribute any of cohort <span class="math inline">\(E\)</span>’s <span class="math inline">\(8\)</span>-unit increase to the treatment term. It therefore uses that increase to determine the common time change: <span class="math inline">\(\widehat\kappa_2=8\)</span>. The same time change is then applied to cohort <span class="math inline">\(L\)</span>, so its treatment coefficient must explain only the difference between its observed increase and <span class="math inline">\(8\)</span>:</p>
+<p><span class="math display">\[
+\widehat\beta_{1\to2}=4-\widehat\kappa_2=4-8=-4.
+\]</span></p>
+<p>This is why TWFE uses the already-treated cohort as a control. With no never-treated group in period 2, cohort <span class="math inline">\(E\)</span> is the only observation with no change in <span class="math inline">\(D\)</span>. The regression has no indicator saying “already treated and still accumulating effects”; it sees only <span class="math inline">\(\Delta D_E=0\)</span> and uses <span class="math inline">\(E\)</span> to identify the common time change.</p>
+<p>The second comparison is not a valid untreated counterfactual. Its outcome change contains continued growth in the early cohort’s treatment effect:</p>
+<p><span class="math display">\[
+\widehat\beta_{1\to2}
+=ATT_L(2)-\{ATT_E(2)-ATT_E(1)\}
+=4-(10-2)
+=-4.
+\]</span></p>
+<p>The model contains only one treatment coefficient. Because the two cohorts have equal sizes and the two intervals contain the same amount of treatment-status variation, OLS gives the two interval contrasts equal weight. In this simplest Goodman–Bacon decomposition,</p>
+<p><span class="math display">\[
+\widehat\beta_{TWFE}
+=\frac12\widehat\beta_{0\to1}
++\frac12\widehat\beta_{1\to2}
+=\frac12(2)+\frac12(-4)
+=-1.
+\]</span></p>
+<p>We can now see the failure: the regression reports <span class="math inline">\(-1\)</span> even though the three treatment effects in the data are <span class="math inline">\(2\)</span>, <span class="math inline">\(10\)</span>, and <span class="math inline">\(4\)</span>. Fixed effects remove cohort levels and common time shocks, but they do not make the already-treated early cohort a valid untreated comparison.</p>
 </section>
-<section id="dynamic-event-study-contamination" class="level3">
-<h3 class="anchored" data-anchor-id="dynamic-event-study-contamination">Dynamic event-study contamination</h3>
-<p>The conventional staggered-adoption event-study regression</p>
+</section>
+<section id="modern-did" class="level2">
+<h2 class="anchored" data-anchor-id="modern-did">Modern DiD</h2>
+<p>We now compare two leading implementations of this strategy: the group-time ATT estimators of <a href="https://doi.org/10.1016/j.jeconom.2020.12.001">Callaway and Sant’Anna (2021)</a> and the interaction-weighted event-study estimator of <a href="https://doi.org/10.1016/j.jeconom.2020.09.006">Sun and Abraham (2021)</a>.</p>
+<section id="callawaysantanna-group-time-did-contrasts" class="level3">
+<h3 class="anchored" data-anchor-id="callawaysantanna-group-time-did-contrasts">Callaway–Sant’Anna: group-time DiD contrasts</h3>
+<p>Callaway and Sant’Anna estimate a separate effect for cohort <span class="math inline">\(g\)</span> in calendar period <span class="math inline">\(t\)</span>:</p>
+<p><span class="math display">\[
+ATT(g,t)
+=E[Y_{it}(g)-Y_{it}(\infty)\mid G_i=g].
+\]</span></p>
+<p>Here <span class="math inline">\(G_i=g\)</span> means that unit <span class="math inline">\(i\)</span> is first treated in period <span class="math inline">\(g\)</span>, while <span class="math inline">\(G_i=\infty\)</span> denotes a never-treated unit.</p>
+<section id="what-the-input-data-look-like" class="level4">
+<h4 class="anchored" data-anchor-id="what-the-input-data-look-like">What the input data look like</h4>
+<p>The estimator is naturally fed long panel data: one row for each unit and period, with an outcome <span class="math inline">\(Y_{it}\)</span>, a unit identifier, calendar time <span class="math inline">\(t\)</span>, and first-treatment date <span class="math inline">\(G_i\)</span>. Treatment status can be constructed as <span class="math inline">\(D_{it}=\mathbb 1\{t\ge G_i\}\)</span>.</p>
+<p>For compactness, the table below displays cohort means. Unit-level data repeat this structure for every unit.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Cohort</th>
+<th style="text-align: right;"><span class="math inline">\(G_i\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(t\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(Y_{it}\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(D_{it}\)</span></th>
+<th style="text-align: right;">Event time <span class="math inline">\(e=t-G_i\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Early <span class="math inline">\(E\)</span></td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"><span class="math inline">\(-2\)</span></td>
+</tr>
+<tr class="even">
+<td>Early <span class="math inline">\(E\)</span></td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"><span class="math inline">\(-1\)</span></td>
+</tr>
+<tr class="odd">
+<td>Early <span class="math inline">\(E\)</span></td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><span class="math inline">\(0\)</span></td>
+</tr>
+<tr class="even">
+<td>Early <span class="math inline">\(E\)</span></td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">29</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><span class="math inline">\(1\)</span></td>
+</tr>
+<tr class="odd">
+<td>Late <span class="math inline">\(L\)</span></td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"><span class="math inline">\(-3\)</span></td>
+</tr>
+<tr class="even">
+<td>Late <span class="math inline">\(L\)</span></td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">31</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"><span class="math inline">\(-2\)</span></td>
+</tr>
+<tr class="odd">
+<td>Late <span class="math inline">\(L\)</span></td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">32</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"><span class="math inline">\(-1\)</span></td>
+</tr>
+<tr class="even">
+<td>Late <span class="math inline">\(L\)</span></td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">37</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><span class="math inline">\(0\)</span></td>
+</tr>
+<tr class="odd">
+<td>Never <span class="math inline">\(N\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\infty\)</span></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">–</td>
+</tr>
+<tr class="even">
+<td>Never <span class="math inline">\(N\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\infty\)</span></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">–</td>
+</tr>
+<tr class="odd">
+<td>Never <span class="math inline">\(N\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\infty\)</span></td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">–</td>
+</tr>
+<tr class="even">
+<td>Never <span class="math inline">\(N\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\infty\)</span></td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">–</td>
+</tr>
+</tbody>
+</table>
+<p>The untreated outcome grows by one per period in every cohort. The table therefore builds parallel untreated trends directly into the example. The treatment effects are <span class="math inline">\(3\)</span> and <span class="math inline">\(6\)</span> for the early cohort and <span class="math inline">\(4\)</span> for the late cohort.</p>
+<p>The same data can be read as a treatment-timing map:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Cohort</th>
+<th style="text-align: center;">Period 0</th>
+<th style="text-align: center;">Period 1</th>
+<th style="text-align: center;">Period 2</th>
+<th style="text-align: center;">Period 3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Early <span class="math inline">\(E\)</span></td>
+<td style="text-align: center;">Untreated</td>
+<td style="text-align: center;">Untreated</td>
+<td style="text-align: center;"><strong>Treated</strong></td>
+<td style="text-align: center;"><strong>Treated</strong></td>
+</tr>
+<tr class="even">
+<td>Late <span class="math inline">\(L\)</span></td>
+<td style="text-align: center;">Untreated</td>
+<td style="text-align: center;">Untreated</td>
+<td style="text-align: center;">Untreated</td>
+<td style="text-align: center;"><strong>Treated</strong></td>
+</tr>
+<tr class="odd">
+<td>Never <span class="math inline">\(N\)</span></td>
+<td style="text-align: center;">Untreated</td>
+<td style="text-align: center;">Untreated</td>
+<td style="text-align: center;">Untreated</td>
+<td style="text-align: center;">Untreated</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="what-the-estimator-does" class="level4">
+<h4 class="anchored" data-anchor-id="what-the-estimator-does">What the estimator does</h4>
+<p>Using never-treated cohort <span class="math inline">\(N\)</span>, each <span class="math inline">\(ATT(g,t)\)</span> is an ordinary two-group, two-period DiD. The baseline is the cohort’s last untreated period <span class="math inline">\(g-1\)</span>:</p>
+<p><span class="math display">\[
+ATT(g,t)
+=E[Y_{it}-Y_{i,g-1}\mid G_i=g]
+-E[Y_{it}-Y_{i,g-1}\mid G_i=\infty].
+\]</span></p>
+<p>For the early cohort in its treatment period,</p>
+<p><span class="math display">\[
+\widehat{ATT}(2,2)
+=(25-21)-(12-11)
+=3.
+\]</span></p>
+<p>For that cohort one period after treatment,</p>
+<p><span class="math display">\[
+\widehat{ATT}(2,3)
+=(29-21)-(13-11)
+=6.
+\]</span></p>
+<p>For the late cohort in its treatment period,</p>
+<p><span class="math display">\[
+\widehat{ATT}(3,3)
+=(37-32)-(13-12)
+=4.
+\]</span></p>
+<p>The estimator repeats this calculation cell by cell. The following map makes the comparison sets explicit.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Effect cell</th>
+<th>Change for treated cohort</th>
+<th>Eligible untreated controls</th>
+<th>Who is excluded from the control group?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(ATT(2,2)\)</span></td>
+<td><span class="math inline">\(E:1\to2\)</span></td>
+<td><span class="math inline">\(N\)</span>, or <span class="math inline">\(L\)</span> and <span class="math inline">\(N\)</span> if using not-yet-treated controls</td>
+<td>No earlier-treated cohort is eligible</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(ATT(2,3)\)</span></td>
+<td><span class="math inline">\(E:1\to3\)</span></td>
+<td><span class="math inline">\(N\)</span></td>
+<td><span class="math inline">\(L\)</span> is treated by period 3</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(ATT(3,3)\)</span></td>
+<td><span class="math inline">\(L:2\to3\)</span></td>
+<td><span class="math inline">\(N\)</span></td>
+<td><span class="math inline">\(E\)</span> is already treated</td>
+</tr>
+</tbody>
+</table>
+<p>With not-yet-treated controls, eligibility is imposed mechanically by <span class="math inline">\(G_i&gt;t\)</span>. Thus <span class="math inline">\(E\)</span>, with <span class="math inline">\(G_i=2\)</span>, cannot be a control for <span class="math inline">\(ATT(3,3)\)</span> because <span class="math inline">\(2&gt;3\)</span> is false. With never-treated controls, only <span class="math inline">\(G_i=\infty\)</span> is retained. This is exactly how Callaway–Sant’Anna prevents already-treated outcomes from serving as untreated counterfactuals.</p>
+<p>To form an event-time estimate, the method aggregates cells with the same <span class="math inline">\(e=t-g\)</span>. If the treated cohorts are equally sized,</p>
+<p><span class="math display">\[
+\widehat\theta_{CS}(0)
+=\frac12\widehat{ATT}(2,2)
++\frac12\widehat{ATT}(3,3)
+=\frac12(3)+\frac12(4)
+=3.5,
+\]</span></p>
+<p>while only the early cohort is observed at <span class="math inline">\(e=1\)</span>, so</p>
+<p><span class="math display">\[
+\widehat\theta_{CS}(1)=\widehat{ATT}(2,3)=6.
+\]</span></p>
+</section>
+</section>
+<section id="sunabraham-the-interaction-weighted-event-study" class="level3">
+<h3 class="anchored" data-anchor-id="sunabraham-the-interaction-weighted-event-study">Sun–Abraham: the interaction-weighted event study</h3>
+<p>Sun and Abraham use the same long panel structure, but encode treatment with cohort-by-event-time interaction columns. Their key move is to estimate a saturated regression before averaging across cohorts.</p>
+<section id="what-saturated-means" class="level4">
+<h4 class="anchored" data-anchor-id="what-saturated-means">What “saturated” means</h4>
+<p>A conventional event study creates one event-time-zero indicator that equals one for every cohort in its first treated period. In the example, it puts <span class="math inline">\((E,t=2)\)</span> and <span class="math inline">\((L,t=3)\)</span> in the same column and forces them to share one coefficient.</p>
+<p>A <strong>dummy variable</strong> is simply a column of zeros and ones. Its coefficient lets the fitted outcome be higher or lower for the rows in which the dummy equals one. For example, a dummy labeled <span class="math inline">\(E\times e{=}1\)</span> equals one only for observations from cohort <span class="math inline">\(E\)</span> one period after treatment and equals zero everywhere else.</p>
+<p>A saturated event study creates one such dummy for every supported cohort-event-time pair:</p>
+<p><span class="math display">\[
+\mathbb 1\{G_i=g\}\mathbb 1\{t-g=e\}.
+\]</span></p>
+<p>Using <span class="math inline">\(e=-1\)</span> as the omitted reference period, the regression is</p>
 <p><span class="math display">\[
 Y_{it}
 =\alpha_i+\lambda_t
-+\sum_{e\ne-1}\beta_e\mathbb{1}\{t-G_i=e\}
-+u_{it}
++\sum_g\sum_{e\ne-1}
+\delta_{g,e}
+\mathbb 1\{G_i=g\}\mathbb 1\{t-g=e\}
++u_{it}.
 \]</span></p>
-<p>does not generally solve the problem. When effect paths differ across cohorts, a coefficient for one event time can be contaminated by effects at other event times and in other cohorts. Even apparent pre-treatment coefficients may reflect heterogeneous post-treatment effects rather than genuine anticipation.</p>
+<p>For the numerical panel above, the post-treatment portion of the design matrix is</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 18%">
+<col style="width: 22%">
+<col style="width: 22%">
+<col style="width: 22%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Cohort and time</th>
+<th style="text-align: right;"><span class="math inline">\(Y_{it}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(E\times e{=}0\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(E\times e{=}1\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(L\times e{=}0\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(E,t=0\)</span></td>
+<td style="text-align: right;">20</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(E,t=1\)</span> (reference)</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(E,t=2\)</span></td>
+<td style="text-align: right;">25</td>
+<td style="text-align: center;"><strong>1</strong></td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(E,t=3\)</span></td>
+<td style="text-align: right;">29</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;"><strong>1</strong></td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(L,t=0\)</span></td>
+<td style="text-align: right;">30</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(L,t=1\)</span></td>
+<td style="text-align: right;">31</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(L,t=2\)</span> (reference)</td>
+<td style="text-align: right;">32</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(L,t=3\)</span></td>
+<td style="text-align: right;">37</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;"><strong>1</strong></td>
+</tr>
+<tr class="odd">
+<td>Every <span class="math inline">\(N,t\)</span> row</td>
+<td style="text-align: right;">10, 11, 12, 13</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+</tbody>
+</table>
+<p>Unit fixed effects absorb permanent level differences, and time fixed effects absorb the one-unit common trend. Never-treated cohort <span class="math inline">\(N\)</span> is omitted from the interaction columns and anchors the untreated time effects.</p>
+<p>The three interaction coefficients recover three separate DiDs:</p>
+<p><span class="math display">\[
+\widehat\delta_{E,0}
+=(25-21)-(12-11)
+=3,
+\]</span></p>
+<p><span class="math display">\[
+\widehat\delta_{E,1}
+=(29-21)-(13-11)
+=6,
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\widehat\delta_{L,0}
+=(37-32)-(13-12)
+=4.
+\]</span></p>
 </section>
-<section id="when-is-twfe-relatively-safe" class="level3">
-<h3 class="anchored" data-anchor-id="when-is-twfe-relatively-safe">When is TWFE relatively safe?</h3>
-<p>The conventional specification is easiest to interpret when:</p>
-<ul>
-<li>there is one treated cohort and one never-treated group;</li>
-<li>the design is genuinely <span class="math inline">\(2\times2\)</span>; or</li>
-<li>strong restrictions make treatment effects homogeneous across cohorts and stable over time.</li>
-</ul>
-<p>These conditions should be argued, not assumed because the regression includes unit and time fixed effects.</p>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Fixed effects do not cure treatment-effect heterogeneity
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Unit and time fixed effects remove permanent unit differences and common period shocks. They do not determine which treated cohort is a valid comparison for another, and they do not force a single TWFE coefficient to be a sensible average of heterogeneous effects.</p>
-</div>
-</div>
+<section id="why-separate-dummies-prevent-the-already-treated-comparison" class="level4">
+<h4 class="anchored" data-anchor-id="why-separate-dummies-prevent-the-already-treated-comparison">Why separate dummies prevent the already-treated comparison</h4>
+<p>Focus on period 3. Cohort <span class="math inline">\(L\)</span> is newly treated, cohort <span class="math inline">\(E\)</span> is already treated, and cohort <span class="math inline">\(N\)</span> remains untreated.</p>
+<p>Begin with the outcome the model predicts in the absence of a cohort-event-time effect. The cohort fixed effect supplies each cohort’s period-0 level: <span class="math inline">\(10\)</span> for <span class="math inline">\(N\)</span>, <span class="math inline">\(20\)</span> for <span class="math inline">\(E\)</span>, and <span class="math inline">\(30\)</span> for <span class="math inline">\(L\)</span>. The time fixed effect adds the common trend: <span class="math inline">\(0\)</span>, <span class="math inline">\(1\)</span>, <span class="math inline">\(2\)</span>, and <span class="math inline">\(3\)</span> in periods 0 through 3. The remaining differences are handled by the separate dummy columns.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 22%">
+<col style="width: 16%">
+<col style="width: 22%">
+<col style="width: 22%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Cohort-time cell</th>
+<th style="text-align: right;">Cohort level plus common time effect</th>
+<th>Dummy that equals one</th>
+<th style="text-align: right;">Amount added by its coefficient</th>
+<th style="text-align: right;">Fitted outcome</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(N,t=3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(10+3=13\)</span></td>
+<td>None</td>
+<td style="text-align: right;"><span class="math inline">\(0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(13\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(E,t=2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(20+2=22\)</span></td>
+<td><span class="math inline">\(E\times e{=}0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\delta_{E,0}=3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(25\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(E,t=3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(20+3=23\)</span></td>
+<td><span class="math inline">\(E\times e{=}1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\delta_{E,1}=6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(29\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(L,t=3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(30+3=33\)</span></td>
+<td><span class="math inline">\(L\times e{=}0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\delta_{L,0}=4\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(37\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>“Including the <span class="math inline">\(E\times e{=}1\)</span> dummy” therefore has a literal meaning: the model is allowed to add a number only to cohort <span class="math inline">\(E\)</span>’s period-3 observations. The fitted equation for that cell is</p>
+<p><span class="math display">\[
+29
+=\underbrace{20}_{\text{cohort level}}
++\underbrace{3}_{\text{common time effect}}
++\underbrace{6}_{E\times e=1\text{ coefficient}}.
+\]</span></p>
+<p>Likewise, the newly treated late cohort has its own equation:</p>
+<p><span class="math display">\[
+37
+=\underbrace{30}_{\text{cohort level}}
++\underbrace{3}_{\text{common time effect}}
++\underbrace{4}_{L\times e=0\text{ coefficient}}.
+\]</span></p>
+<p>Cohort <span class="math inline">\(N\)</span> has zeros in every treatment-dummy column. Its period-3 outcome, <span class="math inline">\(13=10+3\)</span>, reveals the untreated common time effect. Cohort <span class="math inline">\(E\)</span>’s extra <span class="math inline">\(6\)</span> and cohort <span class="math inline">\(L\)</span>’s extra <span class="math inline">\(4\)</span> are then recorded in different columns and are free to differ.</p>
+<p>To see why the separate dummy matters, imagine omitting <span class="math inline">\(E\times e{=}1\)</span>. The model would have no term specifically for the extra <span class="math inline">\(6\)</span> observed for <span class="math inline">\(E\)</span> in period 3. It would have to leave that difference unexplained or push part of it into the period-3 time effect. Because the same time effect is also subtracted from cohort <span class="math inline">\(L\)</span>, the early cohort’s growing treatment effect would contaminate <span class="math inline">\(\delta_{L,0}\)</span>.</p>
+<p>With <span class="math inline">\(E\times e{=}1\)</span> included, the extra <span class="math inline">\(6\)</span> has its own place in the regression. It does not need to alter the common time effect used to construct <span class="math inline">\(L\)</span>’s untreated counterfactual. The already-treated observations from <span class="math inline">\(E\)</span> remain in the dataset, but they are no longer forced to behave like untreated observations: their cohort-specific treatment effect is explicitly represented by their own dummy.</p>
+<p>The interaction-weighted step then averages cohort-specific coefficients at the same event time. With equally sized cohorts,</p>
+<p><span class="math display">\[
+\widehat\theta_{SA}(0)
+=\frac12\widehat\delta_{E,0}
++\frac12\widehat\delta_{L,0}
+=3.5,
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\widehat\theta_{SA}(1)
+=\widehat\delta_{E,1}
+=6.
+\]</span></p>
+<p>The two estimators coincide in this example because they use the same never-treated comparison cohort, the same cohort-event-time cells, and the same cohort weights.</p>
 </section>
 </section>
-<section id="modern-did-estimate-building-blocks-then-aggregate" class="level2">
-<h2 class="anchored" data-anchor-id="modern-did-estimate-building-blocks-then-aggregate">Modern DiD: estimate building blocks, then aggregate</h2>
-<p>Modern DiD methods use a forward-engineering strategy:</p>
-<ol type="1">
-<li>Define each interpretable <span class="math inline">\(ATT(g,t)\)</span>.</li>
-<li>Choose never-treated or not-yet-treated comparisons justified by a stated parallel-trends assumption.</li>
-<li>Estimate each <span class="math inline">\(2\times2\)</span> building block, optionally conditioning on covariates.</li>
-<li>Aggregate the estimates using nonnegative weights linked to the target parameter.</li>
-</ol>
-<p>Several estimators implement versions of this strategy.</p>
+<section id="side-by-side-comparison" class="level3">
+<h3 class="anchored" data-anchor-id="side-by-side-comparison">Side-by-side comparison</h3>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 33%">
@@ -996,163 +1289,52 @@ Y_{it}
 </colgroup>
 <thead>
 <tr class="header">
-<th>Approach</th>
-<th>Core idea</th>
-<th>Useful feature</th>
+<th>Feature</th>
+<th>Callaway–Sant’Anna</th>
+<th>Sun–Abraham IW</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Callaway and Sant’Anna group-time ATT</td>
-<td>Estimate <span class="math inline">\(ATT(g,t)\)</span> separately using never-treated or not-yet-treated comparisons</td>
-<td>Transparent comparison groups, covariates, and aggregation</td>
+<td>Primitive effect</td>
+<td><span class="math inline">\(ATT(g,t)\)</span></td>
+<td><span class="math inline">\(CATT(g,e)=ATT(g,g+e)\)</span></td>
 </tr>
 <tr class="even">
-<td>Sun and Abraham interaction-weighted event study</td>
-<td>Estimate cohort-by-event-time effects and aggregate them</td>
-<td>Avoids contamination of event-time coefficients under cohort heterogeneity</td>
+<td>Required data structure</td>
+<td>Long unit-period data with outcome, unit, time, and first-treatment cohort</td>
+<td>The same long unit-period data, expanded into cohort-by-event-time interaction columns</td>
 </tr>
 <tr class="odd">
-<td>Borusyak, Jaravel, and Spiess imputation</td>
-<td>Estimate untreated outcomes using untreated observations, impute treated counterfactuals, and average treated residuals</td>
-<td>Direct counterfactual construction and flexible aggregation</td>
+<td>Estimation method</td>
+<td>Run a separate <span class="math inline">\(2\times2\)</span>-style DiD for every supported <span class="math inline">\((g,t)\)</span> cell</td>
+<td>Run one regression saturated in supported cohort-event-time indicators, then aggregate</td>
 </tr>
 <tr class="even">
-<td>de Chaisemartin and D’Haultfoeuille switcher methods</td>
-<td>Compare units whose treatment changes with appropriate stayers</td>
-<td>Extends naturally to some designs in which treatment can switch on and off</td>
+<td>Valid controls</td>
+<td>Never-treated units or units satisfying <span class="math inline">\(G_i&gt;t\)</span> for the cell being estimated</td>
+<td>An omitted never-treated cohort; a last-treated cohort can be used only while it remains untreated</td>
 </tr>
 <tr class="odd">
-<td>Fully interacted regression approaches</td>
-<td>Saturate cohort and time relationships, then form explicit group-time contrasts</td>
-<td>Uses familiar regression tools while preserving heterogeneous effects</td>
+<td>How already-treated controls are excluded</td>
+<td>They fail the control-set rule <span class="math inline">\(G_i&gt;t\)</span> and are removed before estimating each cell</td>
+<td>Their outcomes receive their own cohort-event-time indicators, while the omitted untreated cohort anchors the counterfactual</td>
+</tr>
+<tr class="even">
+<td>Event-study estimate</td>
+<td>Average <span class="math inline">\(\widehat{ATT}(g,g+e)\)</span> across contributing cohorts</td>
+<td>Average <span class="math inline">\(\widehat\delta_{g,e}\)</span> across contributing cohorts</td>
+</tr>
+<tr class="odd">
+<td>Main advantage</td>
+<td>Every treated cohort, comparison group, and <span class="math inline">\(2\times2\)</span> contrast is visible</td>
+<td>Retains a regression event-study form without pooling heterogeneous cohort effects</td>
 </tr>
 </tbody>
 </table>
-<p>These methods are not interchangeable defaults. They can rely on different parallel-trends assumptions, use different comparison groups and baselines, and target different aggregates. The right choice follows from the design.</p>
-<section id="modern-event-studies" class="level3">
-<h3 class="anchored" data-anchor-id="modern-event-studies">Modern event studies</h3>
-<p>A modern staggered event study first estimates cohort-specific effects</p>
-<p><span class="math display">\[
-\widehat{ATT}(g,g+e)
-\]</span></p>
-<p>and then forms</p>
-<p><span class="math display">\[
-\widehat{ATT}(e)
-=\sum_{g:g+e\le T}
-\widehat\omega_g(e)\widehat{ATT}(g,g+e).
-\]</span></p>
-<p>This ordering preserves the meaning of each building block. It also makes the event-time weights and changing cohort composition visible.</p>
-</section>
-<section id="covariates-in-modern-did" class="level3">
-<h3 class="anchored" data-anchor-id="covariates-in-modern-did">Covariates in modern DiD</h3>
-<p>Under conditional parallel trends and overlap, regression adjustment, inverse probability weighting, or doubly robust methods can be applied within each cohort-time comparison. Covariates enter the identification strategy for a specific <span class="math inline">\(ATT(g,t)\)</span>; they are not merely appended to a global TWFE regression.</p>
-</section>
-<section id="sensitivity-and-heterogeneity" class="level3">
-<h3 class="anchored" data-anchor-id="sensitivity-and-heterogeneity">Sensitivity and heterogeneity</h3>
-<p>A modern analysis should go beyond a single plot:</p>
-<ul>
-<li>Report cohort-specific or event-time effects when scientifically relevant.</li>
-<li>Use simultaneous confidence bands for collections of event-study coefficients.</li>
-<li>Examine balance and overlap for the actual comparison groups.</li>
-<li>Discuss deviations from parallel trends that are substantively plausible.</li>
-<li>Use sensitivity analysis to show how conclusions change under bounded violations.</li>
-<li>Explain how weighting and aggregation alter the target population.</li>
-</ul>
-</section>
-</section>
-<section id="a-practical-did-workflow" class="level2">
-<h2 class="anchored" data-anchor-id="a-practical-did-workflow">A practical DiD workflow</h2>
-<p>Before estimating, complete the following design table:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Question</th>
-<th>Required answer</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>What is treatment?</td>
-<td>Define exposure and whether it is absorbing, reversible, binary, or continuous</td>
-</tr>
-<tr class="even">
-<td>When does treatment begin?</td>
-<td>Identify effective dates, including anticipation</td>
-</tr>
-<tr class="odd">
-<td>What is the target?</td>
-<td>State <span class="math inline">\(ATT(1)\)</span>, <span class="math inline">\(ATT(g,t)\)</span>, an event-time effect, or a named aggregate</td>
-</tr>
-<tr class="even">
-<td>Who supplies the counterfactual?</td>
-<td>Name never-treated or not-yet-treated units for every comparison</td>
-</tr>
-<tr class="odd">
-<td>Why parallel trends?</td>
-<td>Give institutional and economic reasons, not only a statistical test</td>
-</tr>
-<tr class="even">
-<td>Are covariates needed?</td>
-<td>State conditional parallel trends and verify overlap</td>
-</tr>
-<tr class="odd">
-<td>How are effects aggregated?</td>
-<td>Report the weights and the population they represent</td>
-</tr>
-<tr class="even">
-<td>Where does dependence arise?</td>
-<td>Choose clustering and inference at the assignment level</td>
-</tr>
-<tr class="odd">
-<td>What could invalidate the design?</td>
-<td>Address anticipation, spillovers, composition, and concurrent shocks</td>
-</tr>
-</tbody>
-</table>
-<p>Then follow an estimand-first sequence:</p>
-<ol type="1">
-<li>Plot raw outcome paths by treatment cohort.</li>
-<li>Display the treatment-timing structure and cohort sizes.</li>
-<li>Estimate transparent <span class="math inline">\(ATT(g,t)\)</span> building blocks.</li>
-<li>Plot pre-treatment diagnostics and post-treatment dynamics separately.</li>
-<li>Aggregate only after defining the target parameter.</li>
-<li>Report point estimates with appropriate uncertainty.</li>
-<li>Conduct sensitivity and heterogeneity analyses.</li>
-</ol>
-</section>
-<section id="class-exercises" class="level2">
-<h2 class="anchored" data-anchor-id="class-exercises">Class exercises</h2>
-<section id="exercise-1-recover-the-four-means-did" class="level3">
-<h3 class="anchored" data-anchor-id="exercise-1-recover-the-four-means-did">Exercise 1: Recover the four-means DiD</h3>
-<p>Using the numerical <span class="math inline">\(2\times2\)</span> table above:</p>
-<ol type="1">
-<li>Compute the treated group’s change.</li>
-<li>Compute the comparison group’s change.</li>
-<li>Construct the treated group’s counterfactual post-treatment mean.</li>
-<li>Verify the result using the change in cross-group gaps.</li>
-</ol>
-</section>
-<section id="exercise-2-identify-valid-staggered-comparisons" class="level3">
-<h3 class="anchored" data-anchor-id="exercise-2-identify-valid-staggered-comparisons">Exercise 2: Identify valid staggered comparisons</h3>
-<p>Suppose cohort A is treated in 2020, cohort B in 2022, and cohort C is never treated.</p>
-<ol type="1">
-<li>Which groups can serve as untreated comparisons for cohort A in 2021?</li>
-<li>Which groups can serve as untreated comparisons for cohort A in 2023?</li>
-<li>Why is cohort A not a clean comparison for cohort B after 2020?</li>
-<li>Which parallel-trends assumption supports each proposed comparison?</li>
-</ol>
-</section>
-</section>
-<section id="takeaway" class="level2">
-<h2 class="anchored" data-anchor-id="takeaway">Takeaway</h2>
-<p>The canonical <span class="math inline">\(2\times2\)</span> DiD is a transparent comparison of four means that identifies the ATT under no anticipation and parallel trends. Multiple periods turn the design into a collection of time-specific <span class="math inline">\(2\times2\)</span> comparisons. Staggered adoption adds treatment cohorts, comparison-group choices, and aggregation choices. Modern DiD methods preserve the logic of the simple design by estimating interpretable <span class="math inline">\(ATT(g,t)\)</span> building blocks first and aggregating them according to the causal question.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
