@@ -1,0 +1,419 @@
+# Regression Discontinuity {#sec-5_rd}
+
+## The design in one sentence
+
+::: {.text-center}
+**A rule changes treatment at a known threshold. RD compares observations just below and just above that threshold.**
+:::
+
+Suppose students with an entrance score of at least 80 are eligible for tutoring. Compare a student who scored 79.9 with one who scored 80.1. Their scores are nearly identical; their eligibility differs.
+
+The design asks:
+
+> Does the outcome jump at the same place where the treatment rule jumps?
+
+## Vocabulary before estimation
+
+Let $R_i$ be the original entrance score and let the cutoff be $c=80$. Define the centered score
+
+$$
+X_i=R_i-c.
+$$
+
+The cutoff is now zero. Negative values are below it; positive values are above it.
+
+| Term | Symbol in these notes | Tutoring example |
+|---|---:|---|
+| **Running variable** (assignment or forcing variable) | $R_i$ or centered $X_i$ | Entrance score |
+| **Cutoff** (threshold) | $c$ | 80 points |
+| **Eligibility indicator** (assignment or encouragement) | $Z_i=\mathbb 1(X_i\geq0)$ in this example | Eligible for tutoring |
+| **Treatment received** | $D_i$ | Attended tutoring |
+| **Outcome** | $Y_i$ | Later exam score |
+| **Bandwidth** | $h$ | Use scores from $80-h$ to $80+h$ |
+| **Discontinuity** (jump) | Difference of limits at $0$ | Right-hand limit minus left-hand limit |
+| **RD estimand** | $\tau_{RD}$ | Effect at the eligibility margin |
+
+::: {.callout-important}
+## Three statements that prevent most notation mistakes
+
+1. The running variable determines cutoff side; the rule maps cutoff side into eligibility.
+2. In a **sharp** RD, cutoff side and treatment are the same. In a **fuzzy** RD, they are not.
+3. The RD effect is a **vertical jump at the cutoff**, not the slope of the outcome against the running variable.
+:::
+
+### Sharp and fuzzy describe assignment, not the graph's appearance
+
+```{ojs}
+//| echo: false
+//| label: fig-rd-sharp-fuzzy
+//| fig-cap: "Sharp and fuzzy RD. The vertical line is the cutoff; open and filled circles distinguish observations on the two sides."
+
+{
+  const xs = Array.from({length: 41}, (_, i) => -10 + i * 0.5);
+  const sharp = xs.map(x => ({x, p: x >= 0 ? 1 : 0, side: x >= 0 ? "Above cutoff" : "Below cutoff"}));
+  const fuzzy = xs.map(x => ({
+    x,
+    p: Math.max(0.04, Math.min(0.96, 0.24 + 0.018 * x + (x >= 0 ? 0.48 : 0))),
+    side: x >= 0 ? "Above cutoff" : "Below cutoff"
+  }));
+  const panels = [
+    {title: "Sharp: treatment switches 0 to 1", data: sharp},
+    {title: "Fuzzy: treatment probability jumps", data: fuzzy}
+  ];
+  const charts = panels.map(panel => Plot.plot({
+    width: 370,
+    height: 280,
+    marginLeft: 55,
+    marginBottom: 50,
+    title: panel.title,
+    x: {label: "Centered running variable, X", domain: [-10, 10]},
+    y: {label: "Pr(treated)", domain: [-0.05, 1.05], ticks: 3, grid: true},
+    color: {domain: ["Below cutoff", "Above cutoff"], range: ["black", "black"], legend: false},
+    symbol: {domain: ["Below cutoff", "Above cutoff"], range: ["circle", "circle"]},
+    marks: [
+      Plot.ruleX([0], {stroke: "black", strokeDasharray: "5,4"}),
+      Plot.line(panel.data.filter(d => d.x < 0), {x: "x", y: "p", stroke: "black"}),
+      Plot.line(panel.data.filter(d => d.x >= 0), {x: "x", y: "p", stroke: "black"}),
+      Plot.dot(panel.data.filter(d => d.x < 0), {x: "x", y: "p", r: 2.5, fill: "white", stroke: "black"}),
+      Plot.dot(panel.data.filter(d => d.x >= 0), {x: "x", y: "p", r: 2.5, fill: "black", stroke: "black"})
+    ]
+  }));
+  const wrap = html`<div style="display:flex;flex-wrap:wrap;gap:1rem;justify-content:center"></div>`;
+  charts.forEach(chart => wrap.append(chart));
+  return wrap;
+}
+```
+
+| Design | What happens at the cutoff? | What $Z_i$ means |
+|---|---|---|
+| **Sharp RD** | $D_i$ changes from 0 to 1 | Eligibility; it also equals treatment status |
+| **Fuzzy RD** | $E[D_i\mid X_i=x]$ jumps, but by less than 1 | Eligibility or encouragement |
+
+**“Sharp” does not mean the outcome jump is large. “Fuzzy” does not mean the cutoff is unknown.**
+
+## Why the comparison can be causal
+
+Students with scores of 60 and 90 may differ in many ways. Students with 79.9 and 80.1 have nearly the same running variable. The cutoff supplies a reason that their treatment status differs sharply.
+
+The key counterfactual claim is **continuity**:
+
+> Without the treatment rule, average potential outcomes would pass smoothly through the cutoff.
+
+Levels and slopes may vary with the running variable. They just must not jump at the cutoff for another reason.
+
+```{ojs}
+//| echo: false
+//| label: fig-rd-jump
+//| fig-cap: "RD removes the smooth relationship with the running variable and reads the remaining vertical jump at the cutoff."
+
+{
+  const x = Array.from({length: 81}, (_, i) => -10 + i * 0.25);
+  const mean0 = v => 70 + 0.45 * v + 0.018 * v * v;
+  const tau = 6;
+  const points = x.map((v, i) => ({
+    x: v,
+    y: mean0(v) + (v >= 0 ? tau : 0) + 1.35 * Math.sin(2.7 * v + i * 0.41),
+    side: v >= 0 ? "Above cutoff" : "Below cutoff"
+  }));
+  const left = x.filter(v => v < 0).map(v => ({x: v, y: mean0(v)}));
+  const right = x.filter(v => v >= 0).map(v => ({x: v, y: mean0(v) + tau}));
+  return Plot.plot({
+    width: 760,
+    height: 410,
+    marginLeft: 62,
+    marginBottom: 52,
+    x: {label: "Centered entrance score, X", domain: [-10, 10]},
+    y: {label: "Later exam score, Y", domain: [63, 84], grid: true},
+    marks: [
+      Plot.ruleX([0], {stroke: "black", strokeDasharray: "5,4"}),
+      Plot.dot(points.filter(d => d.x < 0), {x: "x", y: "y", r: 3, fill: "white", stroke: "black", opacity: 0.7}),
+      Plot.dot(points.filter(d => d.x >= 0), {x: "x", y: "y", r: 3, fill: "black", opacity: 0.7}),
+      Plot.line(left, {x: "x", y: "y", stroke: "black", strokeWidth: 2.5}),
+      Plot.line(right, {x: "x", y: "y", stroke: "black", strokeWidth: 2.5}),
+      Plot.ruleX([{x: 0, y1: mean0(0), y2: mean0(0) + tau}], {x: "x", y1: "y1", y2: "y2", stroke: "black", strokeWidth: 3}),
+      Plot.text([{x: 0.35, y: mean0(0) + tau / 2, label: "jump = τRD"}], {x: "x", y: "y", text: "label", dx: 42, fontSize: 13})
+    ]
+  });
+}
+```
+
+At the cutoff, the observed jump is
+
+$$
+\tau_{RD}
+=
+\lim_{x\downarrow 0}E[Y_i\mid X_i=x]
+-
+\lim_{x\uparrow 0}E[Y_i\mid X_i=x].
+$$
+
+Here $x\downarrow0$ approaches zero from above and $x\uparrow0$ approaches from below. The order is **right minus left**.
+
+Under continuity, this identifies the average treatment effect **at the cutoff**:
+
+$$
+\tau_{RD}=E[Y_i(1)-Y_i(0)\mid X_i=0].
+$$
+
+**This is local. It does not automatically reveal the effect for students far above or below 80.**
+
+## Three jumps, three names
+
+This table connects RD to IV terminology.
+
+| Plot at the cutoff | Jump | Common name |
+|---|---:|---|
+| Eligibility $Z$ against $X$ | $1$ by construction | Assignment rule |
+| Treatment $D$ against $X$ | $\Delta_D$ | First stage |
+| Outcome $Y$ against $X$ | $\Delta_Y$ | Reduced form |
+
+For a sharp RD, $\Delta_D=1$, so the treatment effect is simply $\Delta_Y$.
+
+For a fuzzy RD,
+
+$$
+\boxed{\tau_{FRD}=\frac{\Delta_Y}{\Delta_D}}.
+$$
+
+Example: eligibility raises tutoring participation by 40 percentage points and raises later scores by 2 points. The fuzzy RD estimate is
+
+$$
+\frac{2}{0.40}=5
+$$
+
+score points for students whose tutoring decision is changed by eligibility near the cutoff. This is a local average treatment effect for **compliers at the cutoff**.
+
+## From the picture to an estimate
+
+### Center first
+
+Centering makes the cutoff $X_i=0$. Then the intercept on each side is the predicted outcome at the cutoff.
+
+### Fit each side separately and locally
+
+Within a bandwidth $h$, a local linear specification is
+
+$$
+Y_i
+=\alpha+\tau Z_i+\beta X_i+\gamma(Z_i\times X_i)+\varepsilon_i,
+\qquad |X_i|\leq h.
+$$
+
+| Quantity | Left of cutoff | Right of cutoff |
+|---|---:|---:|
+| Intercept at $X=0$ | $\alpha$ | $\alpha+\tau$ |
+| Slope | $\beta$ | $\beta+\gamma$ |
+
+Therefore $\tau$ is the estimated vertical jump. The interaction allows the two sides to have different slopes.
+
+::: {.callout-tip}
+## Why “local linear”?
+
+Near a point, many smooth curves look approximately straight. Fit simple lines near the cutoff rather than a complicated curve across the full range.
+:::
+
+### Bandwidth is the central tradeoff
+
+```{ojs}
+//| echo: false
+//| label: fig-rd-bandwidth
+//| fig-cap: "A bandwidth keeps observations within h units of the cutoff. Narrow windows improve local comparability but use less information."
+
+{
+  const data = Array.from({length: 81}, (_, i) => {
+    const x = -10 + i * 0.25;
+    return {x, y: 70 + 0.45 * x + 0.018 * x * x + (x >= 0 ? 6 : 0) + 1.1 * Math.sin(i * 1.13)};
+  });
+  const hs = [2.5, 5, 10];
+  const labels = ["Narrow h", "Moderate h", "Wide h"];
+  const charts = hs.map((h, j) => Plot.plot({
+    width: 245,
+    height: 260,
+    marginLeft: 48,
+    marginBottom: 45,
+    title: labels[j],
+    x: {label: "X", domain: [-10, 10], ticks: 5},
+    y: {label: j === 0 ? "Y" : null, domain: [63, 84], ticks: 4},
+    marks: [
+      Plot.rectY([{x1: -h, x2: h, y1: 63, y2: 84}], {x1: "x1", x2: "x2", y1: "y1", y2: "y2", fill: "lightgray", fillOpacity: 0.5}),
+      Plot.ruleX([0], {stroke: "black", strokeDasharray: "5,4"}),
+      Plot.dot(data.filter(d => Math.abs(d.x) <= h), {x: "x", y: "y", r: 2.5, fill: "black"}),
+      Plot.dot(data.filter(d => Math.abs(d.x) > h), {x: "x", y: "y", r: 2, fill: "white", stroke: "gray", opacity: 0.45})
+    ]
+  }));
+  const wrap = html`<div style="display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center"></div>`;
+  charts.forEach(chart => wrap.append(chart));
+  return wrap;
+}
+```
+
+| Bandwidth | Main advantage | Main risk |
+|---|---|---|
+| Narrow | Better local approximation; units are more comparable | Few observations; imprecise estimate |
+| Wide | More observations; greater precision | Curvature can bias a simple local fit |
+
+**Use a data-driven bandwidth as the main specification and show nearby alternatives as sensitivity checks. Do not choose $h$ because it makes the estimate significant.**
+
+### Bins are for the picture
+
+An RD plot often shows means within bins of the running variable. Bins reduce visual noise; they usually do **not** define the estimator.
+
+| Choice | Controls | Affects |
+|---|---|---|
+| Bin width / number of bins | How raw outcomes are summarized | Appearance of the plot |
+| Bandwidth $h$ | Which observations enter local estimation | Estimate and precision |
+| Polynomial order | Shape fitted on each side | Estimate and extrapolation to cutoff |
+
+## What must be true
+
+No single test establishes RD validity. Each diagnostic asks whether the data behave as the design predicts.
+
+| Requirement | How to probe it | Expected if it holds | Warning pattern |
+|---|---|---|---|
+| No other discontinuous change at $c$ | Audit every rule tied to the cutoff; plot outcomes that treatment cannot yet affect | Only the treatment rule changes at $c$; placebo outcomes are smooth | Another policy starts at $c$ or a placebo outcome jumps |
+| No precise manipulation of the running variable | Plot a fine histogram; estimate a density discontinuity with `rddensity` | The density passes smoothly through $c$ | Missing mass on one side and bunching on the other |
+| Predetermined covariates are continuous | Apply the same RD plot and estimator to each baseline covariate | Covariate limits meet at $c$; isolated insignificant estimates occur at their nominal rate | Economically meaningful or systematic covariate jumps |
+| The cutoff changes treatment in a fuzzy RD | Plot $D$ against $X$; estimate the first-stage discontinuity with `rdrobust D X` | A clear, precisely estimated jump in treatment probability | A tiny or statistically indistinguishable first stage |
+| Fuzzy-RD exclusion and monotonicity hold | Trace every pathway from eligibility to $Y$ and every behavioral response | Eligibility affects $Y$ only through $D$ and does not make anyone less likely to take treatment | A direct eligibility effect, bundled treatment, or plausible defiers |
+
+The first three checks look for **no jump**. The fuzzy first stage looks for a **jump**. Exclusion and monotonicity require institutional evidence because they are not fully testable.
+
+```{ojs}
+//| echo: false
+//| label: fig-rd-diagnostic-patterns
+//| fig-cap: "Diagnostic predictions. Predetermined covariates should be smooth at the cutoff; treatment take-up must jump in a fuzzy RD."
+
+{
+  const xs = Array.from({length: 61}, (_, i) => -6 + i * 0.2);
+  const makeData = (kind) => xs.map((x, i) => {
+    const noise = 0.55 * Math.sin(i * 2.17);
+    if (kind === "covariate-holds") return {x, y: 50 + 0.35 * x + noise};
+    if (kind === "covariate-fails") return {x, y: 50 + 0.35 * x + (x >= 0 ? 4.5 : 0) + noise};
+    if (kind === "first-stage-holds") return {x, y: 0.22 + 0.015 * x + (x >= 0 ? 0.48 : 0) + noise / 18};
+    return {x, y: 0.47 + 0.015 * x + noise / 18};
+  });
+  const panels = [
+    {title: "Covariate: requirement holds", kind: "covariate-holds", yLabel: "Baseline covariate", domain: [45, 57]},
+    {title: "Covariate: warning", kind: "covariate-fails", yLabel: "Baseline covariate", domain: [45, 60]},
+    {title: "First stage: requirement holds", kind: "first-stage-holds", yLabel: "Pr(treated)", domain: [0, 1]},
+    {title: "First stage: warning", kind: "first-stage-fails", yLabel: "Pr(treated)", domain: [0, 1]}
+  ];
+  const charts = panels.map(panel => {
+    const data = makeData(panel.kind);
+    const left = data.filter(d => d.x < 0);
+    const right = data.filter(d => d.x >= 0);
+    return Plot.plot({
+      width: 365,
+      height: 255,
+      marginLeft: 58,
+      marginBottom: 45,
+      title: panel.title,
+      x: {label: "Centered running variable, X", domain: [-6, 6], ticks: 5},
+      y: {label: panel.yLabel, domain: panel.domain, grid: true, ticks: 4},
+      marks: [
+        Plot.ruleX([0], {stroke: "black", strokeDasharray: "5,4"}),
+        Plot.dot(left, {x: "x", y: "y", r: 2.4, fill: "white", stroke: "black"}),
+        Plot.dot(right, {x: "x", y: "y", r: 2.4, fill: "black"}),
+        Plot.linearRegressionY(left, {x: "x", y: "y", stroke: "black", strokeWidth: 2}),
+        Plot.linearRegressionY(right, {x: "x", y: "y", stroke: "black", strokeWidth: 2})
+      ]
+    });
+  });
+  const wrap = html`<div style="display:flex;flex-wrap:wrap;gap:0.75rem;justify-content:center"></div>`;
+  charts.forEach(chart => wrap.append(chart));
+  return wrap;
+}
+```
+
+Diagnostics can reveal problems; they cannot prove the identifying assumption. Multiple covariate tests also create false positives by chance, so judge their joint pattern and economic size rather than one $p$-value.
+
+### Sorting changes who is compared
+
+| Smooth near the cutoff | Bunching near the cutoff |
+|---|---|
+| Counts change gradually through zero. Units just below and above plausibly come from the same underlying population. | Missing observations just below and excess observations just above suggest that some units crossed strategically. The two sides may now contain different types of units. |
+
+The density plot counts observations in narrow intervals of the running variable. We are not looking for a flat distribution; we are looking for a distribution that **does not jump at the cutoff**.
+
+```{ojs}
+//| echo: false
+//| label: fig-rd-sorting
+//| fig-cap: "A smooth density is reassuring. Bunching just above the cutoff can indicate precise manipulation of the running variable."
+
+{
+  const bins = Array.from({length: 20}, (_, i) => {
+    const x1 = -10 + i;
+    const x2 = x1 + 1;
+    const x = (x1 + x2) / 2;
+    return {
+      x,
+      x1,
+      x2,
+      smooth: 35 + 8 * Math.cos(x / 5),
+      sorted: 35 + 8 * Math.cos(x / 5) + (x > 0 && x < 3 ? 25 : 0) - (x < 0 && x > -3 ? 12 : 0)
+    };
+  });
+  const panels = [
+    {title: "No visible sorting", field: "smooth"},
+    {title: "Bunching above cutoff", field: "sorted"}
+  ];
+  const charts = panels.map(panel => Plot.plot({
+    width: 370,
+    height: 270,
+    marginLeft: 50,
+    marginBottom: 48,
+    title: panel.title,
+    x: {label: "Centered running variable, X", domain: [-10, 10]},
+    y: {label: "Number of observations", domain: [0, 70], grid: true},
+    marks: [
+      Plot.ruleX([0], {stroke: "black", strokeDasharray: "5,4"}),
+      Plot.rectY(bins, {x1: "x1", x2: "x2", y: panel.field, fill: "white", stroke: "black", inset: 0.8})
+    ]
+  }));
+  const wrap = html`<div style="display:flex;flex-wrap:wrap;gap:1rem;justify-content:center"></div>`;
+  charts.forEach(chart => wrap.append(chart));
+  return wrap;
+}
+```
+
+A density jump does not mechanically prove outcome bias. It raises the substantive question: **who moved across the threshold, and could that movement change potential outcomes?**
+
+## A compact workflow
+
+1. **State the rule.** Name $R$, $c$, $Z$, $D$, and $Y$ in words.
+2. **Audit the institution.** Could people manipulate $R$? What else changes at $c$?
+3. **Plot treatment and outcome.** Show cutoff, binned means, and separate local fits.
+4. **Estimate locally.** Prefer local linear fits with robust bias-corrected inference.
+5. **Check credibility.** Inspect density, predetermined covariates, and placebo cutoffs.
+6. **Show sensitivity.** Report reasonable bandwidth and specification changes.
+7. **Interpret locally.** Say whose effect is identified.
+
+**Report the cutoff, polynomial order, kernel, selected bandwidths on both sides, effective sample sizes, estimate, standard error or confidence interval, and whether inference is conventional or robust bias-corrected.**
+
+## Common wrong turns
+
+| Wrong turn | Why it fails | Better practice |
+|---|---|---|
+| Compare everyone above with everyone below | Distant units may be very different | Estimate locally near the cutoff |
+| Call “above cutoff” the treatment group in a fuzzy RD | Eligibility and receipt differ | Keep $Z$ and $D$ separate |
+| Use one regression line through both sides | Forces the jump to zero | Fit separate intercepts and slopes |
+| Use a high-order global polynomial | Edge behavior can drive the estimate | Use local linear or quadratic fits |
+| Read a slope as the RD effect | RD concerns the jump | Compare right and left limits at $c$ |
+| Treat balance tests as proof | Failure to reject is not validation | Combine plots, institutional facts, and diagnostics |
+| Generalize to the full population | The design identifies a local effect | Describe the margin and justify any extrapolation |
+
+## Check your understanding
+
+A lender automatically recommends approval when a small-business applicant's internal credit score is at least 70. Loan receipt rises from 35% just below 70 to 75% just above 70 because loan officers can override the recommendation. One-year capital expenditure rises by $8,000 at the same cutoff.
+
+1. What are the running variable, cutoff, eligibility rule, treatment, and outcome?
+2. Is the design sharp or fuzzy?
+3. What is the first-stage jump, using above-cutoff minus below-cutoff?
+4. What is the fuzzy RD estimate?
+5. For whom is that estimate informative?
+
+::: {.callout-note collapse="true"}
+## Answer
+
+The running variable is the internal credit score, the cutoff is 70, assignment is the automatic approval recommendation, treatment is loan receipt, and the outcome is one-year capital expenditure. The design is fuzzy. The first stage is $0.75-0.35=0.40$. The fuzzy RD estimate is $\$8{,}000/0.40=\$20{,}000$ of capital expenditure for applicants near 70 whose loan receipt is changed by the automatic recommendation.
+:::

@@ -32,6 +32,7 @@ book:
         - notes\sections\empirical\2_regression_causal_inference.qmd
         - notes\sections\empirical\3_did.qmd
         - notes\sections\empirical\4_iv_rd.qmd
+        - notes\sections\empirical\5_rd.qmd
 
 bibliography: references.bib
 
