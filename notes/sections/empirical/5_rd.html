@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Regression Discontinuity – FIN700: Bootcamp for PhD Finance</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../notes/sections/empirical/4_iv_rd.html" rel="prev">
+<script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-9e3e5b9121e68b3f077afb32f2c64d95.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script type="module" src="../../../site_libs/quarto-ojs/quarto-ojs-runtime.js"></script>
+<link href="../../../site_libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/sections/empirical/1_identification_causality_strategies.html">Empirical Methods</a></li><li class="breadcrumb-item"><a href="../../../notes/sections/empirical/5_rd.html"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Regression Discontinuity</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../../../">FIN700: Bootcamp for PhD Finance</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/MingyangZhang1995/FIN700-Math" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Basic Knowledge in Finance</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/finance/basic-knowledge.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Basic Knowledge in Finance</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Linear Algebra</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/linear-algebra/vectors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Vectors and Vector Spaces</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/linear-algebra/linear-maps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Linear Maps and Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/linear-algebra/decompositions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrix Calculus and Projection</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Probability Theory</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/probability/probability-space.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Probability Spaces and Random Variables</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/probability/expectation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Distributions, Expectation, and Dependence</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/probability/common-distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Common Probability Distributions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/probability/continuous-time.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Stochastic Processes and a Introduction to Continuous Time</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Statistics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/statistics/introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Introduction to Statistics and Basic Machine Learning</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Empirical Methods</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/empirical/1_identification_causality_strategies.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Identification, Causality, and Identification Strategies</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/empirical/2_regression_causal_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">From Regression to Causal Inference</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/empirical/3_did.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Difference-in-Differences</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/empirical/4_iv_rd.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Instrumental Variables and Regression Discontinuity</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../notes/sections/empirical/5_rd.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Regression Discontinuity</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#the-design-in-one-sentence" id="toc-the-design-in-one-sentence" class="nav-link active" data-scroll-target="#the-design-in-one-sentence">The design in one sentence</a></li>
+  <li><a href="#vocabulary-before-estimation" id="toc-vocabulary-before-estimation" class="nav-link" data-scroll-target="#vocabulary-before-estimation">Vocabulary before estimation</a>
+  <ul class="collapse">
+  <li><a href="#sharp-and-fuzzy-describe-assignment-not-the-graphs-appearance" id="toc-sharp-and-fuzzy-describe-assignment-not-the-graphs-appearance" class="nav-link" data-scroll-target="#sharp-and-fuzzy-describe-assignment-not-the-graphs-appearance">Sharp and fuzzy describe assignment, not the graph’s appearance</a></li>
+  </ul></li>
+  <li><a href="#why-the-comparison-can-be-causal" id="toc-why-the-comparison-can-be-causal" class="nav-link" data-scroll-target="#why-the-comparison-can-be-causal">Why the comparison can be causal</a></li>
+  <li><a href="#three-jumps-three-names" id="toc-three-jumps-three-names" class="nav-link" data-scroll-target="#three-jumps-three-names">Three jumps, three names</a></li>
+  <li><a href="#from-the-picture-to-an-estimate" id="toc-from-the-picture-to-an-estimate" class="nav-link" data-scroll-target="#from-the-picture-to-an-estimate">From the picture to an estimate</a>
+  <ul class="collapse">
+  <li><a href="#center-first" id="toc-center-first" class="nav-link" data-scroll-target="#center-first">Center first</a></li>
+  <li><a href="#fit-each-side-separately-and-locally" id="toc-fit-each-side-separately-and-locally" class="nav-link" data-scroll-target="#fit-each-side-separately-and-locally">Fit each side separately and locally</a></li>
+  <li><a href="#bandwidth-is-the-central-tradeoff" id="toc-bandwidth-is-the-central-tradeoff" class="nav-link" data-scroll-target="#bandwidth-is-the-central-tradeoff">Bandwidth is the central tradeoff</a></li>
+  <li><a href="#bins-are-for-the-picture" id="toc-bins-are-for-the-picture" class="nav-link" data-scroll-target="#bins-are-for-the-picture">Bins are for the picture</a></li>
+  </ul></li>
+  <li><a href="#what-must-be-true" id="toc-what-must-be-true" class="nav-link" data-scroll-target="#what-must-be-true">What must be true</a>
+  <ul class="collapse">
+  <li><a href="#sorting-changes-who-is-compared" id="toc-sorting-changes-who-is-compared" class="nav-link" data-scroll-target="#sorting-changes-who-is-compared">Sorting changes who is compared</a></li>
+  </ul></li>
+  <li><a href="#a-compact-workflow" id="toc-a-compact-workflow" class="nav-link" data-scroll-target="#a-compact-workflow">A compact workflow</a></li>
+  <li><a href="#common-wrong-turns" id="toc-common-wrong-turns" class="nav-link" data-scroll-target="#common-wrong-turns">Common wrong turns</a></li>
+  <li><a href="#check-your-understanding" id="toc-check-your-understanding" class="nav-link" data-scroll-target="#check-your-understanding">Check your understanding</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/sections/empirical/1_identification_causality_strategies.html">Empirical Methods</a></li><li class="breadcrumb-item"><a href="../../../notes/sections/empirical/5_rd.html"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Regression Discontinuity</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-5_rd" class="quarto-section-identifier">Regression Discontinuity</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="the-design-in-one-sentence" class="level2">
+<h2 class="anchored" data-anchor-id="the-design-in-one-sentence">The design in one sentence</h2>
+<div class="text-center">
+<p><strong>A rule changes treatment at a known threshold. RD compares observations just below and just above that threshold.</strong></p>
+</div>
+<p>Suppose students with an entrance score of at least 80 are eligible for tutoring. Compare a student who scored 79.9 with one who scored 80.1. Their scores are nearly identical; their eligibility differs.</p>
+<p>The design asks:</p>
+<blockquote class="blockquote">
+<p>Does the outcome jump at the same place where the treatment rule jumps?</p>
+</blockquote>
+</section>
+<section id="vocabulary-before-estimation" class="level2">
+<h2 class="anchored" data-anchor-id="vocabulary-before-estimation">Vocabulary before estimation</h2>
+<p>Let <span class="math inline">\(R_i\)</span> be the original entrance score and let the cutoff be <span class="math inline">\(c=80\)</span>. Define the centered score</p>
+<p><span class="math display">\[
+X_i=R_i-c.
+\]</span></p>
+<p>The cutoff is now zero. Negative values are below it; positive values are above it.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 30%">
+<col style="width: 40%">
+<col style="width: 30%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Term</th>
+<th style="text-align: right;">Symbol in these notes</th>
+<th>Tutoring example</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Running variable</strong> (assignment or forcing variable)</td>
+<td style="text-align: right;"><span class="math inline">\(R_i\)</span> or centered <span class="math inline">\(X_i\)</span></td>
+<td>Entrance score</td>
+</tr>
+<tr class="even">
+<td><strong>Cutoff</strong> (threshold)</td>
+<td style="text-align: right;"><span class="math inline">\(c\)</span></td>
+<td>80 points</td>
+</tr>
+<tr class="odd">
+<td><strong>Eligibility indicator</strong> (assignment or encouragement)</td>
+<td style="text-align: right;"><span class="math inline">\(Z_i=\mathbb 1(X_i\geq0)\)</span> in this example</td>
+<td>Eligible for tutoring</td>
+</tr>
+<tr class="even">
+<td><strong>Treatment received</strong></td>
+<td style="text-align: right;"><span class="math inline">\(D_i\)</span></td>
+<td>Attended tutoring</td>
+</tr>
+<tr class="odd">
+<td><strong>Outcome</strong></td>
+<td style="text-align: right;"><span class="math inline">\(Y_i\)</span></td>
+<td>Later exam score</td>
+</tr>
+<tr class="even">
+<td><strong>Bandwidth</strong></td>
+<td style="text-align: right;"><span class="math inline">\(h\)</span></td>
+<td>Use scores from <span class="math inline">\(80-h\)</span> to <span class="math inline">\(80+h\)</span></td>
+</tr>
+<tr class="odd">
+<td><strong>Discontinuity</strong> (jump)</td>
+<td style="text-align: right;">Difference of limits at <span class="math inline">\(0\)</span></td>
+<td>Right-hand limit minus left-hand limit</td>
+</tr>
+<tr class="even">
+<td><strong>RD estimand</strong></td>
+<td style="text-align: right;"><span class="math inline">\(\tau_{RD}\)</span></td>
+<td>Effect at the eligibility margin</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Three statements that prevent most notation mistakes
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>The running variable determines cutoff side; the rule maps cutoff side into eligibility.</li>
+<li>In a <strong>sharp</strong> RD, cutoff side and treatment are the same. In a <strong>fuzzy</strong> RD, they are not.</li>
+<li>The RD effect is a <strong>vertical jump at the cutoff</strong>, not the slope of the outcome against the running variable.</li>
+</ol>
+</div>
+</div>
+<section id="sharp-and-fuzzy-describe-assignment-not-the-graphs-appearance" class="level3">
+<h3 class="anchored" data-anchor-id="sharp-and-fuzzy-describe-assignment-not-the-graphs-appearance">Sharp and fuzzy describe assignment, not the graph’s appearance</h3>
+<div class="cell">
+<details class="code-fold hidden">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb1" data-startfrom="49" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 48;"><span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> xs <span class="op">=</span> <span class="bu">Array</span><span class="op">.</span><span class="fu">from</span>({<span class="dt">length</span><span class="op">:</span> <span class="dv">41</span>}<span class="op">,</span> (_<span class="op">,</span> i) <span class="kw">=&gt;</span> <span class="op">-</span><span class="dv">10</span> <span class="op">+</span> i <span class="op">*</span> <span class="fl">0.5</span>)<span class="op">;</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> sharp <span class="op">=</span> xs<span class="op">.</span><span class="fu">map</span>(x <span class="kw">=&gt;</span> ({x<span class="op">,</span> <span class="dt">p</span><span class="op">:</span> x <span class="op">&gt;=</span> <span class="dv">0</span> <span class="op">?</span> <span class="dv">1</span> <span class="op">:</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">side</span><span class="op">:</span> x <span class="op">&gt;=</span> <span class="dv">0</span> <span class="op">?</span> <span class="st">"Above cutoff"</span> <span class="op">:</span> <span class="st">"Below cutoff"</span>}))<span class="op">;</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> fuzzy <span class="op">=</span> xs<span class="op">.</span><span class="fu">map</span>(x <span class="kw">=&gt;</span> ({</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>    x<span class="op">,</span></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>    <span class="dt">p</span><span class="op">:</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">max</span>(<span class="fl">0.04</span><span class="op">,</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">min</span>(<span class="fl">0.96</span><span class="op">,</span> <span class="fl">0.24</span> <span class="op">+</span> <span class="fl">0.018</span> <span class="op">*</span> x <span class="op">+</span> (x <span class="op">&gt;=</span> <span class="dv">0</span> <span class="op">?</span> <span class="fl">0.48</span> <span class="op">:</span> <span class="dv">0</span>)))<span class="op">,</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>    <span class="dt">side</span><span class="op">:</span> x <span class="op">&gt;=</span> <span class="dv">0</span> <span class="op">?</span> <span class="st">"Above cutoff"</span> <span class="op">:</span> <span class="st">"Below cutoff"</span></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>  }))<span class="op">;</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> panels <span class="op">=</span> [</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">title</span><span class="op">:</span> <span class="st">"Sharp: treatment switches 0 to 1"</span><span class="op">,</span> <span class="dt">data</span><span class="op">:</span> sharp}<span class="op">,</span></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">title</span><span class="op">:</span> <span class="st">"Fuzzy: treatment probability jumps"</span><span class="op">,</span> <span class="dt">data</span><span class="op">:</span> fuzzy}</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>  ]<span class="op">;</span></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> charts <span class="op">=</span> panels<span class="op">.</span><span class="fu">map</span>(panel <span class="kw">=&gt;</span> Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>    <span class="dt">width</span><span class="op">:</span> <span class="dv">370</span><span class="op">,</span></span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>    <span class="dt">height</span><span class="op">:</span> <span class="dv">280</span><span class="op">,</span></span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marginLeft</span><span class="op">:</span> <span class="dv">55</span><span class="op">,</span></span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marginBottom</span><span class="op">:</span> <span class="dv">50</span><span class="op">,</span></span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>    <span class="dt">title</span><span class="op">:</span> panel<span class="op">.</span><span class="at">title</span><span class="op">,</span></span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Centered running variable, X"</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> [<span class="op">-</span><span class="dv">10</span><span class="op">,</span> <span class="dv">10</span>]}<span class="op">,</span></span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Pr(treated)"</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> [<span class="op">-</span><span class="fl">0.05</span><span class="op">,</span> <span class="fl">1.05</span>]<span class="op">,</span> <span class="dt">ticks</span><span class="op">:</span> <span class="dv">3</span><span class="op">,</span> <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span>}<span class="op">,</span></span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>    <span class="dt">color</span><span class="op">:</span> {<span class="dt">domain</span><span class="op">:</span> [<span class="st">"Below cutoff"</span><span class="op">,</span> <span class="st">"Above cutoff"</span>]<span class="op">,</span> <span class="dt">range</span><span class="op">:</span> [<span class="st">"black"</span><span class="op">,</span> <span class="st">"black"</span>]<span class="op">,</span> <span class="dt">legend</span><span class="op">:</span> <span class="kw">false</span>}<span class="op">,</span></span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a>    <span class="dt">symbol</span><span class="op">:</span> {<span class="dt">domain</span><span class="op">:</span> [<span class="st">"Below cutoff"</span><span class="op">,</span> <span class="st">"Above cutoff"</span>]<span class="op">,</span> <span class="dt">range</span><span class="op">:</span> [<span class="st">"circle"</span><span class="op">,</span> <span class="st">"circle"</span>]}<span class="op">,</span></span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">ruleX</span>([<span class="dv">0</span>]<span class="op">,</span> {<span class="dt">stroke</span><span class="op">:</span> <span class="st">"black"</span><span class="op">,</span> <span class="dt">strokeDasharray</span><span class="op">:</span> <span class="st">"5,4"</span>})<span class="op">,</span></span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">line</span>(panel<span class="op">.</span><span class="at">data</span><span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">x</span> <span class="op">&lt;</span> <span class="dv">0</span>)<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"x"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"p"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"black"</span>})<span class="op">,</span></span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">line</span>(panel<span class="op">.</span><span class="at">data</span><span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">x</span> <span class="op">&gt;=</span> <span class="dv">0</span>)<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"x"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"p"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"black"</span>})<span class="op">,</span></span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">dot</span>(panel<span class="op">.</span><span class="at">data</span><span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">x</span> <span class="op">&lt;</span> <span class="dv">0</span>)<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"x"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"p"</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="fl">2.5</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span> <span class="st">"white"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"black"</span>})<span class="op">,</span></span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">dot</span>(panel<span class="op">.</span><span class="at">data</span><span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">x</span> <span class="op">&gt;=</span> <span class="dv">0</span>)<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"x"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"p"</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="fl">2.5</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span> <span class="st">"black"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"black"</span>})</span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a>  }))<span class="op">;</span></span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> wrap <span class="op">=</span> <span class="fu">html</span><span class="vs">`&lt;div style="display:flex;flex-wrap:wrap;gap:1rem;justify-content:center"&gt;&lt;/div&gt;`</span><span class="op">;</span></span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a>  charts<span class="op">.</span><span class="fu">forEach</span>(chart <span class="kw">=&gt;</span> wrap<span class="op">.</span><span class="fu">append</span>(chart))<span class="op">;</span></span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> wrap<span class="op">;</span></span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="fig-rd-sharp-fuzzy" class="cell-output cell-output-display quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-rd-sharp-fuzzy-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div id="ojs-cell-1" data-nodetype="expression">
+
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rd-sharp-fuzzy-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Sharp and fuzzy RD. The vertical line is the cutoff; open and filled circles distinguish observations on the two sides.
+</figcaption>
+</figure>
+</div>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Design</th>
+<th>What happens at the cutoff?</th>
+<th>What <span class="math inline">\(Z_i\)</span> means</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Sharp RD</strong></td>
+<td><span class="math inline">\(D_i\)</span> changes from 0 to 1</td>
+<td>Eligibility; it also equals treatment status</td>
+</tr>
+<tr class="even">
+<td><strong>Fuzzy RD</strong></td>
+<td><span class="math inline">\(E[D_i\mid X_i=x]\)</span> jumps, but by less than 1</td>
+<td>Eligibility or encouragement</td>
+</tr>
+</tbody>
+</table>
+<p><strong>“Sharp” does not mean the outcome jump is large. “Fuzzy” does not mean the cutoff is unknown.</strong></p>
+</section>
+</section>
+<section id="why-the-comparison-can-be-causal" class="level2">
+<h2 class="anchored" data-anchor-id="why-the-comparison-can-be-causal">Why the comparison can be causal</h2>
+<p>Students with scores of 60 and 90 may differ in many ways. Students with 79.9 and 80.1 have nearly the same running variable. The cutoff supplies a reason that their treatment status differs sharply.</p>
+<p>The key counterfactual claim is <strong>continuity</strong>:</p>
+<blockquote class="blockquote">
+<p>Without the treatment rule, average potential outcomes would pass smoothly through the cutoff.</p>
+</blockquote>
+<p>Levels and slopes may vary with the running variable. They just must not jump at the cutoff for another reason.</p>
+<div class="cell">
+<details class="code-fold hidden">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb2" data-startfrom="107" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 106;"><span id="cb2-107"><a href="#cb2-107" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> x <span class="op">=</span> <span class="bu">Array</span><span class="op">.</span><span class="fu">from</span>({<span class="dt">length</span><span class="op">:</span> <span class="dv">81</span>}<span class="op">,</span> (_<span class="op">,</span> i) <span class="kw">=&gt;</span> <span class="op">-</span><span class="dv">10</span> <span class="op">+</span> i <span class="op">*</span> <span class="fl">0.25</span>)<span class="op">;</span></span>
+<span id="cb2-109"><a href="#cb2-109" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> mean0 <span class="op">=</span> v <span class="kw">=&gt;</span> <span class="dv">70</span> <span class="op">+</span> <span class="fl">0.45</span> <span class="op">*</span> v <span class="op">+</span> <span class="fl">0.018</span> <span class="op">*</span> v <span class="op">*</span> v<span class="op">;</span></span>
+<span id="cb2-110"><a href="#cb2-110" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> tau <span class="op">=</span> <span class="dv">6</span><span class="op">;</span></span>
+<span id="cb2-111"><a href="#cb2-111" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> points <span class="op">=</span> x<span class="op">.</span><span class="fu">map</span>((v<span class="op">,</span> i) <span class="kw">=&gt;</span> ({</span>
+<span id="cb2-112"><a href="#cb2-112" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> v<span class="op">,</span></span>
+<span id="cb2-113"><a href="#cb2-113" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> <span class="fu">mean0</span>(v) <span class="op">+</span> (v <span class="op">&gt;=</span> <span class="dv">0</span> <span class="op">?</span> tau <span class="op">:</span> <span class="dv">0</span>) <span class="op">+</span> <span class="fl">1.35</span> <span class="op">*</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">sin</span>(<span class="fl">2.7</span> <span class="op">*</span> v <span class="op">+</span> i <span class="op">*</span> <span class="fl">0.41</span>)<span class="op">,</span></span>
+<span id="cb2-114"><a href="#cb2-114" aria-hidden="true" tabindex="-1"></a>    <span class="dt">side</span><span class="op">:</span> v <span class="op">&gt;=</span> <span class="dv">0</span> <span class="op">?</span> <span class="st">"Above cutoff"</span> <span class="op">:</span> <span class="st">"Below cutoff"</span></span>
+<span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a>  }))<span class="op">;</span></span>
+<span id="cb2-116"><a href="#cb2-116" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> left <span class="op">=</span> x<span class="op">.</span><span class="fu">filter</span>(v <span class="kw">=&gt;</span> v <span class="op">&lt;</span> <span class="dv">0</span>)<span class="op">.</span><span class="fu">map</span>(v <span class="kw">=&gt;</span> ({<span class="dt">x</span><span class="op">:</span> v<span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="fu">mean0</span>(v)}))<span class="op">;</span></span>
+<span id="cb2-117"><a href="#cb2-117" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> right <span class="op">=</span> x<span class="op">.</span><span class="fu">filter</span>(v <span class="kw">=&gt;</span> v <span class="op">&gt;=</span> <span class="dv">0</span>)<span class="op">.</span><span class="fu">map</span>(v <span class="kw">=&gt;</span> ({<span class="dt">x</span><span class="op">:</span> v<span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="fu">mean0</span>(v) <span class="op">+</span> tau}))<span class="op">;</span></span>
+<span id="cb2-118"><a href="#cb2-118" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb2-119"><a href="#cb2-119" aria-hidden="true" tabindex="-1"></a>    <span class="dt">width</span><span class="op">:</span> <span class="dv">760</span><span class="op">,</span></span>
+<span id="cb2-120"><a href="#cb2-120" aria-hidden="true" tabindex="-1"></a>    <span class="dt">height</span><span class="op">:</span> <span class="dv">410</span><span class="op">,</span></span>
+<span id="cb2-121"><a href="#cb2-121" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marginLeft</span><span class="op">:</span> <span class="dv">62</span><span class="op">,</span></span>
+<span id="cb2-122"><a href="#cb2-122" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marginBottom</span><span class="op">:</span> <span class="dv">52</span><span class="op">,</span></span>
+<span id="cb2-123"><a href="#cb2-123" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Centered entrance score, X"</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> [<span class="op">-</span><span class="dv">10</span><span class="op">,</span> <span class="dv">10</span>]}<span class="op">,</span></span>
+<span id="cb2-124"><a href="#cb2-124" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Later exam score, Y"</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> [<span class="dv">63</span><span class="op">,</span> <span class="dv">84</span>]<span class="op">,</span> <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span>}<span class="op">,</span></span>
+<span id="cb2-125"><a href="#cb2-125" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb2-126"><a href="#cb2-126" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">ruleX</span>([<span class="dv">0</span>]<span class="op">,</span> {<span class="dt">stroke</span><span class="op">:</span> <span class="st">"black"</span><span class="op">,</span> <span class="dt">strokeDasharray</span><span class="op">:</span> <span class="st">"5,4"</span>})<span class="op">,</span></span>
+<span id="cb2-127"><a href="#cb2-127" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">dot</span>(points<span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">x</span> <span class="op">&lt;</span> <span class="dv">0</span>)<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"x"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"y"</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">3</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span> <span class="st">"white"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"black"</span><span class="op">,</span> <span class="dt">opacity</span><span class="op">:</span> <span class="fl">0.7</span>})<span class="op">,</span></span>
+<span id="cb2-128"><a href="#cb2-128" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">dot</span>(points<span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">x</span> <span class="op">&gt;=</span> <span class="dv">0</span>)<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"x"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"y"</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">3</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span> <span class="st">"black"</span><span class="op">,</span> <span class="dt">opacity</span><span class="op">:</span> <span class="fl">0.7</span>})<span class="op">,</span></span>
+<span id="cb2-129"><a href="#cb2-129" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">line</span>(left<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"x"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"y"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"black"</span><span class="op">,</span> <span class="dt">strokeWidth</span><span class="op">:</span> <span class="fl">2.5</span>})<span class="op">,</span></span>
+<span id="cb2-130"><a href="#cb2-130" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">line</span>(right<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"x"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"y"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"black"</span><span class="op">,</span> <span class="dt">strokeWidth</span><span class="op">:</span> <span class="fl">2.5</span>})<span class="op">,</span></span>
+<span id="cb2-131"><a href="#cb2-131" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">ruleX</span>([{<span class="dt">x</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">y1</span><span class="op">:</span> <span class="fu">mean0</span>(<span class="dv">0</span>)<span class="op">,</span> <span class="dt">y2</span><span class="op">:</span> <span class="fu">mean0</span>(<span class="dv">0</span>) <span class="op">+</span> tau}]<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"x"</span><span class="op">,</span> <span class="dt">y1</span><span class="op">:</span> <span class="st">"y1"</span><span class="op">,</span> <span class="dt">y2</span><span class="op">:</span> <span class="st">"y2"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"black"</span><span class="op">,</span> <span class="dt">strokeWidth</span><span class="op">:</span> <span class="dv">3</span>})<span class="op">,</span></span>
+<span id="cb2-132"><a href="#cb2-132" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">text</span>([{<span class="dt">x</span><span class="op">:</span> <span class="fl">0.35</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="fu">mean0</span>(<span class="dv">0</span>) <span class="op">+</span> tau <span class="op">/</span> <span class="dv">2</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"jump = τRD"</span>}]<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"x"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"y"</span><span class="op">,</span> <span class="dt">text</span><span class="op">:</span> <span class="st">"label"</span><span class="op">,</span> <span class="dt">dx</span><span class="op">:</span> <span class="dv">42</span><span class="op">,</span> <span class="dt">fontSize</span><span class="op">:</span> <span class="dv">13</span>})</span>
+<span id="cb2-133"><a href="#cb2-133" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb2-134"><a href="#cb2-134" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb2-135"><a href="#cb2-135" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="fig-rd-jump" class="cell-output cell-output-display quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-rd-jump-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div id="ojs-cell-2" data-nodetype="expression">
+
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rd-jump-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: RD removes the smooth relationship with the running variable and reads the remaining vertical jump at the cutoff.
+</figcaption>
+</figure>
+</div>
+</div>
+<p>At the cutoff, the observed jump is</p>
+<p><span class="math display">\[
+\tau_{RD}
+=
+\lim_{x\downarrow 0}E[Y_i\mid X_i=x]
+-
+\lim_{x\uparrow 0}E[Y_i\mid X_i=x].
+\]</span></p>
+<p>Here <span class="math inline">\(x\downarrow0\)</span> approaches zero from above and <span class="math inline">\(x\uparrow0\)</span> approaches from below. The order is <strong>right minus left</strong>.</p>
+<p>Under continuity, this identifies the average treatment effect <strong>at the cutoff</strong>:</p>
+<p><span class="math display">\[
+\tau_{RD}=E[Y_i(1)-Y_i(0)\mid X_i=0].
+\]</span></p>
+<p><strong>This is local. It does not automatically reveal the effect for students far above or below 80.</strong></p>
+</section>
+<section id="three-jumps-three-names" class="level2">
+<h2 class="anchored" data-anchor-id="three-jumps-three-names">Three jumps, three names</h2>
+<p>This table connects RD to IV terminology.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Plot at the cutoff</th>
+<th style="text-align: right;">Jump</th>
+<th>Common name</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Eligibility <span class="math inline">\(Z\)</span> against <span class="math inline">\(X\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(1\)</span> by construction</td>
+<td>Assignment rule</td>
+</tr>
+<tr class="even">
+<td>Treatment <span class="math inline">\(D\)</span> against <span class="math inline">\(X\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\Delta_D\)</span></td>
+<td>First stage</td>
+</tr>
+<tr class="odd">
+<td>Outcome <span class="math inline">\(Y\)</span> against <span class="math inline">\(X\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\Delta_Y\)</span></td>
+<td>Reduced form</td>
+</tr>
+</tbody>
+</table>
+<p>For a sharp RD, <span class="math inline">\(\Delta_D=1\)</span>, so the treatment effect is simply <span class="math inline">\(\Delta_Y\)</span>.</p>
+<p>For a fuzzy RD,</p>
+<p><span class="math display">\[
+\boxed{\tau_{FRD}=\frac{\Delta_Y}{\Delta_D}}.
+\]</span></p>
+<p>Example: eligibility raises tutoring participation by 40 percentage points and raises later scores by 2 points. The fuzzy RD estimate is</p>
+<p><span class="math display">\[
+\frac{2}{0.40}=5
+\]</span></p>
+<p>score points for students whose tutoring decision is changed by eligibility near the cutoff. This is a local average treatment effect for <strong>compliers at the cutoff</strong>.</p>
+</section>
+<section id="from-the-picture-to-an-estimate" class="level2">
+<h2 class="anchored" data-anchor-id="from-the-picture-to-an-estimate">From the picture to an estimate</h2>
+<section id="center-first" class="level3">
+<h3 class="anchored" data-anchor-id="center-first">Center first</h3>
+<p>Centering makes the cutoff <span class="math inline">\(X_i=0\)</span>. Then the intercept on each side is the predicted outcome at the cutoff.</p>
+</section>
+<section id="fit-each-side-separately-and-locally" class="level3">
+<h3 class="anchored" data-anchor-id="fit-each-side-separately-and-locally">Fit each side separately and locally</h3>
+<p>Within a bandwidth <span class="math inline">\(h\)</span>, a local linear specification is</p>
+<p><span class="math display">\[
+Y_i
+=\alpha+\tau Z_i+\beta X_i+\gamma(Z_i\times X_i)+\varepsilon_i,
+\qquad |X_i|\leq h.
+\]</span></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Quantity</th>
+<th style="text-align: right;">Left of cutoff</th>
+<th style="text-align: right;">Right of cutoff</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Intercept at <span class="math inline">\(X=0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\alpha\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\alpha+\tau\)</span></td>
+</tr>
+<tr class="even">
+<td>Slope</td>
+<td style="text-align: right;"><span class="math inline">\(\beta\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\beta+\gamma\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Therefore <span class="math inline">\(\tau\)</span> is the estimated vertical jump. The interaction allows the two sides to have different slopes.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Why “local linear”?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Near a point, many smooth curves look approximately straight. Fit simple lines near the cutoff rather than a complicated curve across the full range.</p>
+</div>
+</div>
+</section>
+<section id="bandwidth-is-the-central-tradeoff" class="level3">
+<h3 class="anchored" data-anchor-id="bandwidth-is-the-central-tradeoff">Bandwidth is the central tradeoff</h3>
+<div class="cell">
+<details class="code-fold hidden">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb3" data-startfrom="220" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 219;"><span id="cb3-220"><a href="#cb3-220" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb3-221"><a href="#cb3-221" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> data <span class="op">=</span> <span class="bu">Array</span><span class="op">.</span><span class="fu">from</span>({<span class="dt">length</span><span class="op">:</span> <span class="dv">81</span>}<span class="op">,</span> (_<span class="op">,</span> i) <span class="kw">=&gt;</span> {</span>
+<span id="cb3-222"><a href="#cb3-222" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> x <span class="op">=</span> <span class="op">-</span><span class="dv">10</span> <span class="op">+</span> i <span class="op">*</span> <span class="fl">0.25</span><span class="op">;</span></span>
+<span id="cb3-223"><a href="#cb3-223" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {x<span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="dv">70</span> <span class="op">+</span> <span class="fl">0.45</span> <span class="op">*</span> x <span class="op">+</span> <span class="fl">0.018</span> <span class="op">*</span> x <span class="op">*</span> x <span class="op">+</span> (x <span class="op">&gt;=</span> <span class="dv">0</span> <span class="op">?</span> <span class="dv">6</span> <span class="op">:</span> <span class="dv">0</span>) <span class="op">+</span> <span class="fl">1.1</span> <span class="op">*</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">sin</span>(i <span class="op">*</span> <span class="fl">1.13</span>)}<span class="op">;</span></span>
+<span id="cb3-224"><a href="#cb3-224" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb3-225"><a href="#cb3-225" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> hs <span class="op">=</span> [<span class="fl">2.5</span><span class="op">,</span> <span class="dv">5</span><span class="op">,</span> <span class="dv">10</span>]<span class="op">;</span></span>
+<span id="cb3-226"><a href="#cb3-226" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> labels <span class="op">=</span> [<span class="st">"Narrow h"</span><span class="op">,</span> <span class="st">"Moderate h"</span><span class="op">,</span> <span class="st">"Wide h"</span>]<span class="op">;</span></span>
+<span id="cb3-227"><a href="#cb3-227" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> charts <span class="op">=</span> hs<span class="op">.</span><span class="fu">map</span>((h<span class="op">,</span> j) <span class="kw">=&gt;</span> Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb3-228"><a href="#cb3-228" aria-hidden="true" tabindex="-1"></a>    <span class="dt">width</span><span class="op">:</span> <span class="dv">245</span><span class="op">,</span></span>
+<span id="cb3-229"><a href="#cb3-229" aria-hidden="true" tabindex="-1"></a>    <span class="dt">height</span><span class="op">:</span> <span class="dv">260</span><span class="op">,</span></span>
+<span id="cb3-230"><a href="#cb3-230" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marginLeft</span><span class="op">:</span> <span class="dv">48</span><span class="op">,</span></span>
+<span id="cb3-231"><a href="#cb3-231" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marginBottom</span><span class="op">:</span> <span class="dv">45</span><span class="op">,</span></span>
+<span id="cb3-232"><a href="#cb3-232" aria-hidden="true" tabindex="-1"></a>    <span class="dt">title</span><span class="op">:</span> labels[j]<span class="op">,</span></span>
+<span id="cb3-233"><a href="#cb3-233" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"X"</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> [<span class="op">-</span><span class="dv">10</span><span class="op">,</span> <span class="dv">10</span>]<span class="op">,</span> <span class="dt">ticks</span><span class="op">:</span> <span class="dv">5</span>}<span class="op">,</span></span>
+<span id="cb3-234"><a href="#cb3-234" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> j <span class="op">===</span> <span class="dv">0</span> <span class="op">?</span> <span class="st">"Y"</span> <span class="op">:</span> <span class="kw">null</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> [<span class="dv">63</span><span class="op">,</span> <span class="dv">84</span>]<span class="op">,</span> <span class="dt">ticks</span><span class="op">:</span> <span class="dv">4</span>}<span class="op">,</span></span>
+<span id="cb3-235"><a href="#cb3-235" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb3-236"><a href="#cb3-236" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">rectY</span>([{<span class="dt">x1</span><span class="op">:</span> <span class="op">-</span>h<span class="op">,</span> <span class="dt">x2</span><span class="op">:</span> h<span class="op">,</span> <span class="dt">y1</span><span class="op">:</span> <span class="dv">63</span><span class="op">,</span> <span class="dt">y2</span><span class="op">:</span> <span class="dv">84</span>}]<span class="op">,</span> {<span class="dt">x1</span><span class="op">:</span> <span class="st">"x1"</span><span class="op">,</span> <span class="dt">x2</span><span class="op">:</span> <span class="st">"x2"</span><span class="op">,</span> <span class="dt">y1</span><span class="op">:</span> <span class="st">"y1"</span><span class="op">,</span> <span class="dt">y2</span><span class="op">:</span> <span class="st">"y2"</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span> <span class="st">"lightgray"</span><span class="op">,</span> <span class="dt">fillOpacity</span><span class="op">:</span> <span class="fl">0.5</span>})<span class="op">,</span></span>
+<span id="cb3-237"><a href="#cb3-237" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">ruleX</span>([<span class="dv">0</span>]<span class="op">,</span> {<span class="dt">stroke</span><span class="op">:</span> <span class="st">"black"</span><span class="op">,</span> <span class="dt">strokeDasharray</span><span class="op">:</span> <span class="st">"5,4"</span>})<span class="op">,</span></span>
+<span id="cb3-238"><a href="#cb3-238" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">dot</span>(data<span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">abs</span>(d<span class="op">.</span><span class="at">x</span>) <span class="op">&lt;=</span> h)<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"x"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"y"</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="fl">2.5</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span> <span class="st">"black"</span>})<span class="op">,</span></span>
+<span id="cb3-239"><a href="#cb3-239" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">dot</span>(data<span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">abs</span>(d<span class="op">.</span><span class="at">x</span>) <span class="op">&gt;</span> h)<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"x"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"y"</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">2</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span> <span class="st">"white"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"gray"</span><span class="op">,</span> <span class="dt">opacity</span><span class="op">:</span> <span class="fl">0.45</span>})</span>
+<span id="cb3-240"><a href="#cb3-240" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb3-241"><a href="#cb3-241" aria-hidden="true" tabindex="-1"></a>  }))<span class="op">;</span></span>
+<span id="cb3-242"><a href="#cb3-242" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> wrap <span class="op">=</span> <span class="fu">html</span><span class="vs">`&lt;div style="display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center"&gt;&lt;/div&gt;`</span><span class="op">;</span></span>
+<span id="cb3-243"><a href="#cb3-243" aria-hidden="true" tabindex="-1"></a>  charts<span class="op">.</span><span class="fu">forEach</span>(chart <span class="kw">=&gt;</span> wrap<span class="op">.</span><span class="fu">append</span>(chart))<span class="op">;</span></span>
+<span id="cb3-244"><a href="#cb3-244" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> wrap<span class="op">;</span></span>
+<span id="cb3-245"><a href="#cb3-245" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="fig-rd-bandwidth" class="cell-output cell-output-display quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-rd-bandwidth-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div id="ojs-cell-3" data-nodetype="expression">
+
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rd-bandwidth-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: A bandwidth keeps observations within h units of the cutoff. Narrow windows improve local comparability but use less information.
+</figcaption>
+</figure>
+</div>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Bandwidth</th>
+<th>Main advantage</th>
+<th>Main risk</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Narrow</td>
+<td>Better local approximation; units are more comparable</td>
+<td>Few observations; imprecise estimate</td>
+</tr>
+<tr class="even">
+<td>Wide</td>
+<td>More observations; greater precision</td>
+<td>Curvature can bias a simple local fit</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Use a data-driven bandwidth as the main specification and show nearby alternatives as sensitivity checks. Do not choose <span class="math inline">\(h\)</span> because it makes the estimate significant.</strong></p>
+</section>
+<section id="bins-are-for-the-picture" class="level3">
+<h3 class="anchored" data-anchor-id="bins-are-for-the-picture">Bins are for the picture</h3>
+<p>An RD plot often shows means within bins of the running variable. Bins reduce visual noise; they usually do <strong>not</strong> define the estimator.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Choice</th>
+<th>Controls</th>
+<th>Affects</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Bin width / number of bins</td>
+<td>How raw outcomes are summarized</td>
+<td>Appearance of the plot</td>
+</tr>
+<tr class="even">
+<td>Bandwidth <span class="math inline">\(h\)</span></td>
+<td>Which observations enter local estimation</td>
+<td>Estimate and precision</td>
+</tr>
+<tr class="odd">
+<td>Polynomial order</td>
+<td>Shape fitted on each side</td>
+<td>Estimate and extrapolation to cutoff</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="what-must-be-true" class="level2">
+<h2 class="anchored" data-anchor-id="what-must-be-true">What must be true</h2>
+<p>No single test establishes RD validity. Each diagnostic asks whether the data behave as the design predicts.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Requirement</th>
+<th>How to probe it</th>
+<th>Expected if it holds</th>
+<th>Warning pattern</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>No other discontinuous change at <span class="math inline">\(c\)</span></td>
+<td>Audit every rule tied to the cutoff; plot outcomes that treatment cannot yet affect</td>
+<td>Only the treatment rule changes at <span class="math inline">\(c\)</span>; placebo outcomes are smooth</td>
+<td>Another policy starts at <span class="math inline">\(c\)</span> or a placebo outcome jumps</td>
+</tr>
+<tr class="even">
+<td>No precise manipulation of the running variable</td>
+<td>Plot a fine histogram; estimate a density discontinuity with <code>rddensity</code></td>
+<td>The density passes smoothly through <span class="math inline">\(c\)</span></td>
+<td>Missing mass on one side and bunching on the other</td>
+</tr>
+<tr class="odd">
+<td>Predetermined covariates are continuous</td>
+<td>Apply the same RD plot and estimator to each baseline covariate</td>
+<td>Covariate limits meet at <span class="math inline">\(c\)</span>; isolated insignificant estimates occur at their nominal rate</td>
+<td>Economically meaningful or systematic covariate jumps</td>
+</tr>
+<tr class="even">
+<td>The cutoff changes treatment in a fuzzy RD</td>
+<td>Plot <span class="math inline">\(D\)</span> against <span class="math inline">\(X\)</span>; estimate the first-stage discontinuity with <code>rdrobust D X</code></td>
+<td>A clear, precisely estimated jump in treatment probability</td>
+<td>A tiny or statistically indistinguishable first stage</td>
+</tr>
+<tr class="odd">
+<td>Fuzzy-RD exclusion and monotonicity hold</td>
+<td>Trace every pathway from eligibility to <span class="math inline">\(Y\)</span> and every behavioral response</td>
+<td>Eligibility affects <span class="math inline">\(Y\)</span> only through <span class="math inline">\(D\)</span> and does not make anyone less likely to take treatment</td>
+<td>A direct eligibility effect, bundled treatment, or plausible defiers</td>
+</tr>
+</tbody>
+</table>
+<p>The first three checks look for <strong>no jump</strong>. The fuzzy first stage looks for a <strong>jump</strong>. Exclusion and monotonicity require institutional evidence because they are not fully testable.</p>
+<div class="cell">
+<details class="code-fold hidden">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb4" data-startfrom="284" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 283;"><span id="cb4-284"><a href="#cb4-284" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb4-285"><a href="#cb4-285" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> xs <span class="op">=</span> <span class="bu">Array</span><span class="op">.</span><span class="fu">from</span>({<span class="dt">length</span><span class="op">:</span> <span class="dv">61</span>}<span class="op">,</span> (_<span class="op">,</span> i) <span class="kw">=&gt;</span> <span class="op">-</span><span class="dv">6</span> <span class="op">+</span> i <span class="op">*</span> <span class="fl">0.2</span>)<span class="op">;</span></span>
+<span id="cb4-286"><a href="#cb4-286" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> makeData <span class="op">=</span> (kind) <span class="kw">=&gt;</span> xs<span class="op">.</span><span class="fu">map</span>((x<span class="op">,</span> i) <span class="kw">=&gt;</span> {</span>
+<span id="cb4-287"><a href="#cb4-287" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> noise <span class="op">=</span> <span class="fl">0.55</span> <span class="op">*</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">sin</span>(i <span class="op">*</span> <span class="fl">2.17</span>)<span class="op">;</span></span>
+<span id="cb4-288"><a href="#cb4-288" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (kind <span class="op">===</span> <span class="st">"covariate-holds"</span>) <span class="cf">return</span> {x<span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="dv">50</span> <span class="op">+</span> <span class="fl">0.35</span> <span class="op">*</span> x <span class="op">+</span> noise}<span class="op">;</span></span>
+<span id="cb4-289"><a href="#cb4-289" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (kind <span class="op">===</span> <span class="st">"covariate-fails"</span>) <span class="cf">return</span> {x<span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="dv">50</span> <span class="op">+</span> <span class="fl">0.35</span> <span class="op">*</span> x <span class="op">+</span> (x <span class="op">&gt;=</span> <span class="dv">0</span> <span class="op">?</span> <span class="fl">4.5</span> <span class="op">:</span> <span class="dv">0</span>) <span class="op">+</span> noise}<span class="op">;</span></span>
+<span id="cb4-290"><a href="#cb4-290" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (kind <span class="op">===</span> <span class="st">"first-stage-holds"</span>) <span class="cf">return</span> {x<span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="fl">0.22</span> <span class="op">+</span> <span class="fl">0.015</span> <span class="op">*</span> x <span class="op">+</span> (x <span class="op">&gt;=</span> <span class="dv">0</span> <span class="op">?</span> <span class="fl">0.48</span> <span class="op">:</span> <span class="dv">0</span>) <span class="op">+</span> noise <span class="op">/</span> <span class="dv">18</span>}<span class="op">;</span></span>
+<span id="cb4-291"><a href="#cb4-291" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {x<span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="fl">0.47</span> <span class="op">+</span> <span class="fl">0.015</span> <span class="op">*</span> x <span class="op">+</span> noise <span class="op">/</span> <span class="dv">18</span>}<span class="op">;</span></span>
+<span id="cb4-292"><a href="#cb4-292" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb4-293"><a href="#cb4-293" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> panels <span class="op">=</span> [</span>
+<span id="cb4-294"><a href="#cb4-294" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">title</span><span class="op">:</span> <span class="st">"Covariate: requirement holds"</span><span class="op">,</span> <span class="dt">kind</span><span class="op">:</span> <span class="st">"covariate-holds"</span><span class="op">,</span> <span class="dt">yLabel</span><span class="op">:</span> <span class="st">"Baseline covariate"</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> [<span class="dv">45</span><span class="op">,</span> <span class="dv">57</span>]}<span class="op">,</span></span>
+<span id="cb4-295"><a href="#cb4-295" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">title</span><span class="op">:</span> <span class="st">"Covariate: warning"</span><span class="op">,</span> <span class="dt">kind</span><span class="op">:</span> <span class="st">"covariate-fails"</span><span class="op">,</span> <span class="dt">yLabel</span><span class="op">:</span> <span class="st">"Baseline covariate"</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> [<span class="dv">45</span><span class="op">,</span> <span class="dv">60</span>]}<span class="op">,</span></span>
+<span id="cb4-296"><a href="#cb4-296" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">title</span><span class="op">:</span> <span class="st">"First stage: requirement holds"</span><span class="op">,</span> <span class="dt">kind</span><span class="op">:</span> <span class="st">"first-stage-holds"</span><span class="op">,</span> <span class="dt">yLabel</span><span class="op">:</span> <span class="st">"Pr(treated)"</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> [<span class="dv">0</span><span class="op">,</span> <span class="dv">1</span>]}<span class="op">,</span></span>
+<span id="cb4-297"><a href="#cb4-297" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">title</span><span class="op">:</span> <span class="st">"First stage: warning"</span><span class="op">,</span> <span class="dt">kind</span><span class="op">:</span> <span class="st">"first-stage-fails"</span><span class="op">,</span> <span class="dt">yLabel</span><span class="op">:</span> <span class="st">"Pr(treated)"</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> [<span class="dv">0</span><span class="op">,</span> <span class="dv">1</span>]}</span>
+<span id="cb4-298"><a href="#cb4-298" aria-hidden="true" tabindex="-1"></a>  ]<span class="op">;</span></span>
+<span id="cb4-299"><a href="#cb4-299" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> charts <span class="op">=</span> panels<span class="op">.</span><span class="fu">map</span>(panel <span class="kw">=&gt;</span> {</span>
+<span id="cb4-300"><a href="#cb4-300" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> data <span class="op">=</span> <span class="fu">makeData</span>(panel<span class="op">.</span><span class="at">kind</span>)<span class="op">;</span></span>
+<span id="cb4-301"><a href="#cb4-301" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> left <span class="op">=</span> data<span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">x</span> <span class="op">&lt;</span> <span class="dv">0</span>)<span class="op">;</span></span>
+<span id="cb4-302"><a href="#cb4-302" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> right <span class="op">=</span> data<span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">x</span> <span class="op">&gt;=</span> <span class="dv">0</span>)<span class="op">;</span></span>
+<span id="cb4-303"><a href="#cb4-303" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb4-304"><a href="#cb4-304" aria-hidden="true" tabindex="-1"></a>      <span class="dt">width</span><span class="op">:</span> <span class="dv">365</span><span class="op">,</span></span>
+<span id="cb4-305"><a href="#cb4-305" aria-hidden="true" tabindex="-1"></a>      <span class="dt">height</span><span class="op">:</span> <span class="dv">255</span><span class="op">,</span></span>
+<span id="cb4-306"><a href="#cb4-306" aria-hidden="true" tabindex="-1"></a>      <span class="dt">marginLeft</span><span class="op">:</span> <span class="dv">58</span><span class="op">,</span></span>
+<span id="cb4-307"><a href="#cb4-307" aria-hidden="true" tabindex="-1"></a>      <span class="dt">marginBottom</span><span class="op">:</span> <span class="dv">45</span><span class="op">,</span></span>
+<span id="cb4-308"><a href="#cb4-308" aria-hidden="true" tabindex="-1"></a>      <span class="dt">title</span><span class="op">:</span> panel<span class="op">.</span><span class="at">title</span><span class="op">,</span></span>
+<span id="cb4-309"><a href="#cb4-309" aria-hidden="true" tabindex="-1"></a>      <span class="dt">x</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Centered running variable, X"</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> [<span class="op">-</span><span class="dv">6</span><span class="op">,</span> <span class="dv">6</span>]<span class="op">,</span> <span class="dt">ticks</span><span class="op">:</span> <span class="dv">5</span>}<span class="op">,</span></span>
+<span id="cb4-310"><a href="#cb4-310" aria-hidden="true" tabindex="-1"></a>      <span class="dt">y</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> panel<span class="op">.</span><span class="at">yLabel</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> panel<span class="op">.</span><span class="at">domain</span><span class="op">,</span> <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">ticks</span><span class="op">:</span> <span class="dv">4</span>}<span class="op">,</span></span>
+<span id="cb4-311"><a href="#cb4-311" aria-hidden="true" tabindex="-1"></a>      <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb4-312"><a href="#cb4-312" aria-hidden="true" tabindex="-1"></a>        Plot<span class="op">.</span><span class="fu">ruleX</span>([<span class="dv">0</span>]<span class="op">,</span> {<span class="dt">stroke</span><span class="op">:</span> <span class="st">"black"</span><span class="op">,</span> <span class="dt">strokeDasharray</span><span class="op">:</span> <span class="st">"5,4"</span>})<span class="op">,</span></span>
+<span id="cb4-313"><a href="#cb4-313" aria-hidden="true" tabindex="-1"></a>        Plot<span class="op">.</span><span class="fu">dot</span>(left<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"x"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"y"</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="fl">2.4</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span> <span class="st">"white"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"black"</span>})<span class="op">,</span></span>
+<span id="cb4-314"><a href="#cb4-314" aria-hidden="true" tabindex="-1"></a>        Plot<span class="op">.</span><span class="fu">dot</span>(right<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"x"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"y"</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="fl">2.4</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span> <span class="st">"black"</span>})<span class="op">,</span></span>
+<span id="cb4-315"><a href="#cb4-315" aria-hidden="true" tabindex="-1"></a>        Plot<span class="op">.</span><span class="fu">linearRegressionY</span>(left<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"x"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"y"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"black"</span><span class="op">,</span> <span class="dt">strokeWidth</span><span class="op">:</span> <span class="dv">2</span>})<span class="op">,</span></span>
+<span id="cb4-316"><a href="#cb4-316" aria-hidden="true" tabindex="-1"></a>        Plot<span class="op">.</span><span class="fu">linearRegressionY</span>(right<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"x"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"y"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"black"</span><span class="op">,</span> <span class="dt">strokeWidth</span><span class="op">:</span> <span class="dv">2</span>})</span>
+<span id="cb4-317"><a href="#cb4-317" aria-hidden="true" tabindex="-1"></a>      ]</span>
+<span id="cb4-318"><a href="#cb4-318" aria-hidden="true" tabindex="-1"></a>    })<span class="op">;</span></span>
+<span id="cb4-319"><a href="#cb4-319" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb4-320"><a href="#cb4-320" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> wrap <span class="op">=</span> <span class="fu">html</span><span class="vs">`&lt;div style="display:flex;flex-wrap:wrap;gap:0.75rem;justify-content:center"&gt;&lt;/div&gt;`</span><span class="op">;</span></span>
+<span id="cb4-321"><a href="#cb4-321" aria-hidden="true" tabindex="-1"></a>  charts<span class="op">.</span><span class="fu">forEach</span>(chart <span class="kw">=&gt;</span> wrap<span class="op">.</span><span class="fu">append</span>(chart))<span class="op">;</span></span>
+<span id="cb4-322"><a href="#cb4-322" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> wrap<span class="op">;</span></span>
+<span id="cb4-323"><a href="#cb4-323" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="fig-rd-diagnostic-patterns" class="cell-output cell-output-display quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-rd-diagnostic-patterns-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div id="ojs-cell-4" data-nodetype="expression">
+
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rd-diagnostic-patterns-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Diagnostic predictions. Predetermined covariates should be smooth at the cutoff; treatment take-up must jump in a fuzzy RD.
+</figcaption>
+</figure>
+</div>
+</div>
+<p>Diagnostics can reveal problems; they cannot prove the identifying assumption. Multiple covariate tests also create false positives by chance, so judge their joint pattern and economic size rather than one <span class="math inline">\(p\)</span>-value.</p>
+<section id="sorting-changes-who-is-compared" class="level3">
+<h3 class="anchored" data-anchor-id="sorting-changes-who-is-compared">Sorting changes who is compared</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Smooth near the cutoff</th>
+<th>Bunching near the cutoff</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Counts change gradually through zero. Units just below and above plausibly come from the same underlying population.</td>
+<td>Missing observations just below and excess observations just above suggest that some units crossed strategically. The two sides may now contain different types of units.</td>
+</tr>
+</tbody>
+</table>
+<p>The density plot counts observations in narrow intervals of the running variable. We are not looking for a flat distribution; we are looking for a distribution that <strong>does not jump at the cutoff</strong>.</p>
+<div class="cell">
+<details class="code-fold hidden">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb5" data-startfrom="341" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 340;"><span id="cb5-341"><a href="#cb5-341" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb5-342"><a href="#cb5-342" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> bins <span class="op">=</span> <span class="bu">Array</span><span class="op">.</span><span class="fu">from</span>({<span class="dt">length</span><span class="op">:</span> <span class="dv">20</span>}<span class="op">,</span> (_<span class="op">,</span> i) <span class="kw">=&gt;</span> {</span>
+<span id="cb5-343"><a href="#cb5-343" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> x1 <span class="op">=</span> <span class="op">-</span><span class="dv">10</span> <span class="op">+</span> i<span class="op">;</span></span>
+<span id="cb5-344"><a href="#cb5-344" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> x2 <span class="op">=</span> x1 <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb5-345"><a href="#cb5-345" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> x <span class="op">=</span> (x1 <span class="op">+</span> x2) <span class="op">/</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb5-346"><a href="#cb5-346" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {</span>
+<span id="cb5-347"><a href="#cb5-347" aria-hidden="true" tabindex="-1"></a>      x<span class="op">,</span></span>
+<span id="cb5-348"><a href="#cb5-348" aria-hidden="true" tabindex="-1"></a>      x1<span class="op">,</span></span>
+<span id="cb5-349"><a href="#cb5-349" aria-hidden="true" tabindex="-1"></a>      x2<span class="op">,</span></span>
+<span id="cb5-350"><a href="#cb5-350" aria-hidden="true" tabindex="-1"></a>      <span class="dt">smooth</span><span class="op">:</span> <span class="dv">35</span> <span class="op">+</span> <span class="dv">8</span> <span class="op">*</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">cos</span>(x <span class="op">/</span> <span class="dv">5</span>)<span class="op">,</span></span>
+<span id="cb5-351"><a href="#cb5-351" aria-hidden="true" tabindex="-1"></a>      <span class="dt">sorted</span><span class="op">:</span> <span class="dv">35</span> <span class="op">+</span> <span class="dv">8</span> <span class="op">*</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">cos</span>(x <span class="op">/</span> <span class="dv">5</span>) <span class="op">+</span> (x <span class="op">&gt;</span> <span class="dv">0</span> <span class="op">&amp;&amp;</span> x <span class="op">&lt;</span> <span class="dv">3</span> <span class="op">?</span> <span class="dv">25</span> <span class="op">:</span> <span class="dv">0</span>) <span class="op">-</span> (x <span class="op">&lt;</span> <span class="dv">0</span> <span class="op">&amp;&amp;</span> x <span class="op">&gt;</span> <span class="op">-</span><span class="dv">3</span> <span class="op">?</span> <span class="dv">12</span> <span class="op">:</span> <span class="dv">0</span>)</span>
+<span id="cb5-352"><a href="#cb5-352" aria-hidden="true" tabindex="-1"></a>    }<span class="op">;</span></span>
+<span id="cb5-353"><a href="#cb5-353" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb5-354"><a href="#cb5-354" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> panels <span class="op">=</span> [</span>
+<span id="cb5-355"><a href="#cb5-355" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">title</span><span class="op">:</span> <span class="st">"No visible sorting"</span><span class="op">,</span> <span class="dt">field</span><span class="op">:</span> <span class="st">"smooth"</span>}<span class="op">,</span></span>
+<span id="cb5-356"><a href="#cb5-356" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">title</span><span class="op">:</span> <span class="st">"Bunching above cutoff"</span><span class="op">,</span> <span class="dt">field</span><span class="op">:</span> <span class="st">"sorted"</span>}</span>
+<span id="cb5-357"><a href="#cb5-357" aria-hidden="true" tabindex="-1"></a>  ]<span class="op">;</span></span>
+<span id="cb5-358"><a href="#cb5-358" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> charts <span class="op">=</span> panels<span class="op">.</span><span class="fu">map</span>(panel <span class="kw">=&gt;</span> Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb5-359"><a href="#cb5-359" aria-hidden="true" tabindex="-1"></a>    <span class="dt">width</span><span class="op">:</span> <span class="dv">370</span><span class="op">,</span></span>
+<span id="cb5-360"><a href="#cb5-360" aria-hidden="true" tabindex="-1"></a>    <span class="dt">height</span><span class="op">:</span> <span class="dv">270</span><span class="op">,</span></span>
+<span id="cb5-361"><a href="#cb5-361" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marginLeft</span><span class="op">:</span> <span class="dv">50</span><span class="op">,</span></span>
+<span id="cb5-362"><a href="#cb5-362" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marginBottom</span><span class="op">:</span> <span class="dv">48</span><span class="op">,</span></span>
+<span id="cb5-363"><a href="#cb5-363" aria-hidden="true" tabindex="-1"></a>    <span class="dt">title</span><span class="op">:</span> panel<span class="op">.</span><span class="at">title</span><span class="op">,</span></span>
+<span id="cb5-364"><a href="#cb5-364" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Centered running variable, X"</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> [<span class="op">-</span><span class="dv">10</span><span class="op">,</span> <span class="dv">10</span>]}<span class="op">,</span></span>
+<span id="cb5-365"><a href="#cb5-365" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Number of observations"</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> [<span class="dv">0</span><span class="op">,</span> <span class="dv">70</span>]<span class="op">,</span> <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span>}<span class="op">,</span></span>
+<span id="cb5-366"><a href="#cb5-366" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb5-367"><a href="#cb5-367" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">ruleX</span>([<span class="dv">0</span>]<span class="op">,</span> {<span class="dt">stroke</span><span class="op">:</span> <span class="st">"black"</span><span class="op">,</span> <span class="dt">strokeDasharray</span><span class="op">:</span> <span class="st">"5,4"</span>})<span class="op">,</span></span>
+<span id="cb5-368"><a href="#cb5-368" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">rectY</span>(bins<span class="op">,</span> {<span class="dt">x1</span><span class="op">:</span> <span class="st">"x1"</span><span class="op">,</span> <span class="dt">x2</span><span class="op">:</span> <span class="st">"x2"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> panel<span class="op">.</span><span class="at">field</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span> <span class="st">"white"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"black"</span><span class="op">,</span> <span class="dt">inset</span><span class="op">:</span> <span class="fl">0.8</span>})</span>
+<span id="cb5-369"><a href="#cb5-369" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb5-370"><a href="#cb5-370" aria-hidden="true" tabindex="-1"></a>  }))<span class="op">;</span></span>
+<span id="cb5-371"><a href="#cb5-371" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> wrap <span class="op">=</span> <span class="fu">html</span><span class="vs">`&lt;div style="display:flex;flex-wrap:wrap;gap:1rem;justify-content:center"&gt;&lt;/div&gt;`</span><span class="op">;</span></span>
+<span id="cb5-372"><a href="#cb5-372" aria-hidden="true" tabindex="-1"></a>  charts<span class="op">.</span><span class="fu">forEach</span>(chart <span class="kw">=&gt;</span> wrap<span class="op">.</span><span class="fu">append</span>(chart))<span class="op">;</span></span>
+<span id="cb5-373"><a href="#cb5-373" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> wrap<span class="op">;</span></span>
+<span id="cb5-374"><a href="#cb5-374" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="fig-rd-sorting" class="cell-output cell-output-display quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-rd-sorting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div id="ojs-cell-5" data-nodetype="expression">
+
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rd-sorting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: A smooth density is reassuring. Bunching just above the cutoff can indicate precise manipulation of the running variable.
+</figcaption>
+</figure>
+</div>
+</div>
+<p>A density jump does not mechanically prove outcome bias. It raises the substantive question: <strong>who moved across the threshold, and could that movement change potential outcomes?</strong></p>
+</section>
+</section>
+<section id="a-compact-workflow" class="level2">
+<h2 class="anchored" data-anchor-id="a-compact-workflow">A compact workflow</h2>
+<ol type="1">
+<li><strong>State the rule.</strong> Name <span class="math inline">\(R\)</span>, <span class="math inline">\(c\)</span>, <span class="math inline">\(Z\)</span>, <span class="math inline">\(D\)</span>, and <span class="math inline">\(Y\)</span> in words.</li>
+<li><strong>Audit the institution.</strong> Could people manipulate <span class="math inline">\(R\)</span>? What else changes at <span class="math inline">\(c\)</span>?</li>
+<li><strong>Plot treatment and outcome.</strong> Show cutoff, binned means, and separate local fits.</li>
+<li><strong>Estimate locally.</strong> Prefer local linear fits with robust bias-corrected inference.</li>
+<li><strong>Check credibility.</strong> Inspect density, predetermined covariates, and placebo cutoffs.</li>
+<li><strong>Show sensitivity.</strong> Report reasonable bandwidth and specification changes.</li>
+<li><strong>Interpret locally.</strong> Say whose effect is identified.</li>
+</ol>
+<p><strong>Report the cutoff, polynomial order, kernel, selected bandwidths on both sides, effective sample sizes, estimate, standard error or confidence interval, and whether inference is conventional or robust bias-corrected.</strong></p>
+</section>
+<section id="common-wrong-turns" class="level2">
+<h2 class="anchored" data-anchor-id="common-wrong-turns">Common wrong turns</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Wrong turn</th>
+<th>Why it fails</th>
+<th>Better practice</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Compare everyone above with everyone below</td>
+<td>Distant units may be very different</td>
+<td>Estimate locally near the cutoff</td>
+</tr>
+<tr class="even">
+<td>Call “above cutoff” the treatment group in a fuzzy RD</td>
+<td>Eligibility and receipt differ</td>
+<td>Keep <span class="math inline">\(Z\)</span> and <span class="math inline">\(D\)</span> separate</td>
+</tr>
+<tr class="odd">
+<td>Use one regression line through both sides</td>
+<td>Forces the jump to zero</td>
+<td>Fit separate intercepts and slopes</td>
+</tr>
+<tr class="even">
+<td>Use a high-order global polynomial</td>
+<td>Edge behavior can drive the estimate</td>
+<td>Use local linear or quadratic fits</td>
+</tr>
+<tr class="odd">
+<td>Read a slope as the RD effect</td>
+<td>RD concerns the jump</td>
+<td>Compare right and left limits at <span class="math inline">\(c\)</span></td>
+</tr>
+<tr class="even">
+<td>Treat balance tests as proof</td>
+<td>Failure to reject is not validation</td>
+<td>Combine plots, institutional facts, and diagnostics</td>
+</tr>
+<tr class="odd">
+<td>Generalize to the full population</td>
+<td>The design identifies a local effect</td>
+<td>Describe the margin and justify any extrapolation</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="check-your-understanding" class="level2">
+<h2 class="anchored" data-anchor-id="check-your-understanding">Check your understanding</h2>
+<p>A lender automatically recommends approval when a small-business applicant’s internal credit score is at least 70. Loan receipt rises from 35% just below 70 to 75% just above 70 because loan officers can override the recommendation. One-year capital expenditure rises by $8,000 at the same cutoff.</p>
+<ol type="1">
+<li>What are the running variable, cutoff, eligibility rule, treatment, and outcome?</li>
+<li>Is the design sharp or fuzzy?</li>
+<li>What is the first-stage jump, using above-cutoff minus below-cutoff?</li>
+<li>What is the fuzzy RD estimate?</li>
+<li>For whom is that estimate informative?</li>
+</ol>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Answer
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The running variable is the internal credit score, the cutoff is 70, assignment is the automatic approval recommendation, treatment is loan receipt, and the outcome is one-year capital expenditure. The design is fuzzy. The first stage is <span class="math inline">\(0.75-0.35=0.40\)</span>. The fuzzy RD estimate is <span class="math inline">\(\$8{,}000/0.40=\$20{,}000\)</span> of capital expenditure for applicants near 70 whose loan receipt is changed by the automatic recommendation.</p>
+</div>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script type="ojs-module-contents">
+eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Ilxue1xuICBjb25zdCB4cyA9IEFycmF5LmZyb20oe2xlbmd0aDogNDF9LCAoXywgaSkgPT4gLTEwICsgaSAqIDAuNSk7XG4gIGNvbnN0IHNoYXJwID0geHMubWFwKHggPT4gKHt4LCBwOiB4ID49IDAgPyAxIDogMCwgc2lkZTogeCA+PSAwID8gXCJBYm92ZSBjdXRvZmZcIiA6IFwiQmVsb3cgY3V0b2ZmXCJ9KSk7XG4gIGNvbnN0IGZ1enp5ID0geHMubWFwKHggPT4gKHtcbiAgICB4LFxuICAgIHA6IE1hdGgubWF4KDAuMDQsIE1hdGgubWluKDAuOTYsIDAuMjQgKyAwLjAxOCAqIHggKyAoeCA+PSAwID8gMC40OCA6IDApKSksXG4gICAgc2lkZTogeCA+PSAwID8gXCJBYm92ZSBjdXRvZmZcIiA6IFwiQmVsb3cgY3V0b2ZmXCJcbiAgfSkpO1xuICBjb25zdCBwYW5lbHMgPSBbXG4gICAge3RpdGxlOiBcIlNoYXJwOiB0cmVhdG1lbnQgc3dpdGNoZXMgMCB0byAxXCIsIGRhdGE6IHNoYXJwfSxcbiAgICB7dGl0bGU6IFwiRnV6enk6IHRyZWF0bWVudCBwcm9iYWJpbGl0eSBqdW1wc1wiLCBkYXRhOiBmdXp6eX1cbiAgXTtcbiAgY29uc3QgY2hhcnRzID0gcGFuZWxzLm1hcChwYW5lbCA9PiBQbG90LnBsb3Qoe1xuICAgIHdpZHRoOiAzNzAsXG4gICAgaGVpZ2h0OiAyODAsXG4gICAgbWFyZ2luTGVmdDogNTUsXG4gICAgbWFyZ2luQm90dG9tOiA1MCxcbiAgICB0aXRsZTogcGFuZWwudGl0bGUsXG4gICAgeDoge2xhYmVsOiBcIkNlbnRlcmVkIHJ1bm5pbmcgdmFyaWFibGUsIFhcIiwgZG9tYWluOiBbLTEwLCAxMF19LFxuICAgIHk6IHtsYWJlbDogXCJQcih0cmVhdGVkKVwiLCBkb21haW46IFstMC4wNSwgMS4wNV0sIHRpY2tzOiAzLCBncmlkOiB0cnVlfSxcbiAgICBjb2xvcjoge2RvbWFpbjogW1wiQmVsb3cgY3V0b2ZmXCIsIFwiQWJvdmUgY3V0b2ZmXCJdLCByYW5nZTogW1wiYmxhY2tcIiwgXCJibGFja1wiXSwgbGVnZW5kOiBmYWxzZX0sXG4gICAgc3ltYm9sOiB7ZG9tYWluOiBbXCJCZWxvdyBjdXRvZmZcIiwgXCJBYm92ZSBjdXRvZmZcIl0sIHJhbmdlOiBbXCJjaXJjbGVcIiwgXCJjaXJjbGVcIl19LFxuICAgIG1hcmtzOiBbXG4gICAgICBQbG90LnJ1bGVYKFswXSwge3N0cm9rZTogXCJibGFja1wiLCBzdHJva2VEYXNoYXJyYXk6IFwiNSw0XCJ9KSxcbiAgICAgIFBsb3QubGluZShwYW5lbC5kYXRhLmZpbHRlcihkID0+IGQueCA8IDApLCB7eDogXCJ4XCIsIHk6IFwicFwiLCBzdHJva2U6IFwiYmxhY2tcIn0pLFxuICAgICAgUGxvdC5saW5lKHBhbmVsLmRhdGEuZmlsdGVyKGQgPT4gZC54ID49IDApLCB7eDogXCJ4XCIsIHk6IFwicFwiLCBzdHJva2U6IFwiYmxhY2tcIn0pLFxuICAgICAgUGxvdC5kb3QocGFuZWwuZGF0YS5maWx0ZXIoZCA9PiBkLnggPCAwKSwge3g6IFwieFwiLCB5OiBcInBcIiwgcjogMi41LCBmaWxsOiBcIndoaXRlXCIsIHN0cm9rZTogXCJibGFja1wifSksXG4gICAgICBQbG90LmRvdChwYW5lbC5kYXRhLmZpbHRlcihkID0+IGQueCA+PSAwKSwge3g6IFwieFwiLCB5OiBcInBcIiwgcjogMi41LCBmaWxsOiBcImJsYWNrXCIsIHN0cm9rZTogXCJibGFja1wifSlcbiAgICBdXG4gIH0pKTtcbiAgY29uc3Qgd3JhcCA9IGh0bWxgPGRpdiBzdHlsZT1cImRpc3BsYXk6ZmxleDtmbGV4LXdyYXA6d3JhcDtnYXA6MXJlbTtqdXN0aWZ5LWNvbnRlbnQ6Y2VudGVyXCI+PC9kaXY+YDtcbiAgY2hhcnRzLmZvckVhY2goY2hhcnQgPT4gd3JhcC5hcHBlbmQoY2hhcnQpKTtcbiAgcmV0dXJuIHdyYXA7XG59XG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTIiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJcbntcbiAgY29uc3QgeCA9IEFycmF5LmZyb20oe2xlbmd0aDogODF9LCAoXywgaSkgPT4gLTEwICsgaSAqIDAuMjUpO1xuICBjb25zdCBtZWFuMCA9IHYgPT4gNzAgKyAwLjQ1ICogdiArIDAuMDE4ICogdiAqIHY7XG4gIGNvbnN0IHRhdSA9IDY7XG4gIGNvbnN0IHBvaW50cyA9IHgubWFwKCh2LCBpKSA9PiAoe1xuICAgIHg6IHYsXG4gICAgeTogbWVhbjAodikgKyAodiA+PSAwID8gdGF1IDogMCkgKyAxLjM1ICogTWF0aC5zaW4oMi43ICogdiArIGkgKiAwLjQxKSxcbiAgICBzaWRlOiB2ID49IDAgPyBcIkFib3ZlIGN1dG9mZlwiIDogXCJCZWxvdyBjdXRvZmZcIlxuICB9KSk7XG4gIGNvbnN0IGxlZnQgPSB4LmZpbHRlcih2ID0+IHYgPCAwKS5tYXAodiA9PiAoe3g6IHYsIHk6IG1lYW4wKHYpfSkpO1xuICBjb25zdCByaWdodCA9IHguZmlsdGVyKHYgPT4gdiA+PSAwKS5tYXAodiA9PiAoe3g6IHYsIHk6IG1lYW4wKHYpICsgdGF1fSkpO1xuICByZXR1cm4gUGxvdC5wbG90KHtcbiAgICB3aWR0aDogNzYwLFxuICAgIGhlaWdodDogNDEwLFxuICAgIG1hcmdpbkxlZnQ6IDYyLFxuICAgIG1hcmdpbkJvdHRvbTogNTIsXG4gICAgeDoge2xhYmVsOiBcIkNlbnRlcmVkIGVudHJhbmNlIHNjb3JlLCBYXCIsIGRvbWFpbjogWy0xMCwgMTBdfSxcbiAgICB5OiB7bGFiZWw6IFwiTGF0ZXIgZXhhbSBzY29yZSwgWVwiLCBkb21haW46IFs2MywgODRdLCBncmlkOiB0cnVlfSxcbiAgICBtYXJrczogW1xuICAgICAgUGxvdC5ydWxlWChbMF0sIHtzdHJva2U6IFwiYmxhY2tcIiwgc3Ryb2tlRGFzaGFycmF5OiBcIjUsNFwifSksXG4gICAgICBQbG90LmRvdChwb2ludHMuZmlsdGVyKGQgPT4gZC54IDwgMCksIHt4OiBcInhcIiwgeTogXCJ5XCIsIHI6IDMsIGZpbGw6IFwid2hpdGVcIiwgc3Ryb2tlOiBcImJsYWNrXCIsIG9wYWNpdHk6IDAuN30pLFxuICAgICAgUGxvdC5kb3QocG9pbnRzLmZpbHRlcihkID0+IGQueCA+PSAwKSwge3g6IFwieFwiLCB5OiBcInlcIiwgcjogMywgZmlsbDogXCJibGFja1wiLCBvcGFjaXR5OiAwLjd9KSxcbiAgICAgIFBsb3QubGluZShsZWZ0LCB7eDogXCJ4XCIsIHk6IFwieVwiLCBzdHJva2U6IFwiYmxhY2tcIiwgc3Ryb2tlV2lkdGg6IDIuNX0pLFxuICAgICAgUGxvdC5saW5lKHJpZ2h0LCB7eDogXCJ4XCIsIHk6IFwieVwiLCBzdHJva2U6IFwiYmxhY2tcIiwgc3Ryb2tlV2lkdGg6IDIuNX0pLFxuICAgICAgUGxvdC5ydWxlWChbe3g6IDAsIHkxOiBtZWFuMCgwKSwgeTI6IG1lYW4wKDApICsgdGF1fV0sIHt4OiBcInhcIiwgeTE6IFwieTFcIiwgeTI6IFwieTJcIiwgc3Ryb2tlOiBcImJsYWNrXCIsIHN0cm9rZVdpZHRoOiAzfSksXG4gICAgICBQbG90LnRleHQoW3t4OiAwLjM1LCB5OiBtZWFuMCgwKSArIHRhdSAvIDIsIGxhYmVsOiBcImp1bXAgPSDPhFJEXCJ9XSwge3g6IFwieFwiLCB5OiBcInlcIiwgdGV4dDogXCJsYWJlbFwiLCBkeDogNDIsIGZvbnRTaXplOiAxM30pXG4gICAgXVxuICB9KTtcbn1cbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMyIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Ilxue1xuICBjb25zdCBkYXRhID0gQXJyYXkuZnJvbSh7bGVuZ3RoOiA4MX0sIChfLCBpKSA9PiB7XG4gICAgY29uc3QgeCA9IC0xMCArIGkgKiAwLjI1O1xuICAgIHJldHVybiB7eCwgeTogNzAgKyAwLjQ1ICogeCArIDAuMDE4ICogeCAqIHggKyAoeCA+PSAwID8gNiA6IDApICsgMS4xICogTWF0aC5zaW4oaSAqIDEuMTMpfTtcbiAgfSk7XG4gIGNvbnN0IGhzID0gWzIuNSwgNSwgMTBdO1xuICBjb25zdCBsYWJlbHMgPSBbXCJOYXJyb3cgaFwiLCBcIk1vZGVyYXRlIGhcIiwgXCJXaWRlIGhcIl07XG4gIGNvbnN0IGNoYXJ0cyA9IGhzLm1hcCgoaCwgaikgPT4gUGxvdC5wbG90KHtcbiAgICB3aWR0aDogMjQ1LFxuICAgIGhlaWdodDogMjYwLFxuICAgIG1hcmdpbkxlZnQ6IDQ4LFxuICAgIG1hcmdpbkJvdHRvbTogNDUsXG4gICAgdGl0bGU6IGxhYmVsc1tqXSxcbiAgICB4OiB7bGFiZWw6IFwiWFwiLCBkb21haW46IFstMTAsIDEwXSwgdGlja3M6IDV9LFxuICAgIHk6IHtsYWJlbDogaiA9PT0gMCA/IFwiWVwiIDogbnVsbCwgZG9tYWluOiBbNjMsIDg0XSwgdGlja3M6IDR9LFxuICAgIG1hcmtzOiBbXG4gICAgICBQbG90LnJlY3RZKFt7eDE6IC1oLCB4MjogaCwgeTE6IDYzLCB5MjogODR9XSwge3gxOiBcIngxXCIsIHgyOiBcIngyXCIsIHkxOiBcInkxXCIsIHkyOiBcInkyXCIsIGZpbGw6IFwibGlnaHRncmF5XCIsIGZpbGxPcGFjaXR5OiAwLjV9KSxcbiAgICAgIFBsb3QucnVsZVgoWzBdLCB7c3Ryb2tlOiBcImJsYWNrXCIsIHN0cm9rZURhc2hhcnJheTogXCI1LDRcIn0pLFxuICAgICAgUGxvdC5kb3QoZGF0YS5maWx0ZXIoZCA9PiBNYXRoLmFicyhkLngpIDw9IGgpLCB7eDogXCJ4XCIsIHk6IFwieVwiLCByOiAyLjUsIGZpbGw6IFwiYmxhY2tcIn0pLFxuICAgICAgUGxvdC5kb3QoZGF0YS5maWx0ZXIoZCA9PiBNYXRoLmFicyhkLngpID4gaCksIHt4OiBcInhcIiwgeTogXCJ5XCIsIHI6IDIsIGZpbGw6IFwid2hpdGVcIiwgc3Ryb2tlOiBcImdyYXlcIiwgb3BhY2l0eTogMC40NX0pXG4gICAgXVxuICB9KSk7XG4gIGNvbnN0IHdyYXAgPSBodG1sYDxkaXYgc3R5bGU9XCJkaXNwbGF5OmZsZXg7ZmxleC13cmFwOndyYXA7Z2FwOjAuNXJlbTtqdXN0aWZ5LWNvbnRlbnQ6Y2VudGVyXCI+PC9kaXY+YDtcbiAgY2hhcnRzLmZvckVhY2goY2hhcnQgPT4gd3JhcC5hcHBlbmQoY2hhcnQpKTtcbiAgcmV0dXJuIHdyYXA7XG59XG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTQiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJcbntcbiAgY29uc3QgeHMgPSBBcnJheS5mcm9tKHtsZW5ndGg6IDYxfSwgKF8sIGkpID0+IC02ICsgaSAqIDAuMik7XG4gIGNvbnN0IG1ha2VEYXRhID0gKGtpbmQpID0+IHhzLm1hcCgoeCwgaSkgPT4ge1xuICAgIGNvbnN0IG5vaXNlID0gMC41NSAqIE1hdGguc2luKGkgKiAyLjE3KTtcbiAgICBpZiAoa2luZCA9PT0gXCJjb3ZhcmlhdGUtaG9sZHNcIikgcmV0dXJuIHt4LCB5OiA1MCArIDAuMzUgKiB4ICsgbm9pc2V9O1xuICAgIGlmIChraW5kID09PSBcImNvdmFyaWF0ZS1mYWlsc1wiKSByZXR1cm4ge3gsIHk6IDUwICsgMC4zNSAqIHggKyAoeCA+PSAwID8gNC41IDogMCkgKyBub2lzZX07XG4gICAgaWYgKGtpbmQgPT09IFwiZmlyc3Qtc3RhZ2UtaG9sZHNcIikgcmV0dXJuIHt4LCB5OiAwLjIyICsgMC4wMTUgKiB4ICsgKHggPj0gMCA/IDAuNDggOiAwKSArIG5vaXNlIC8gMTh9O1xuICAgIHJldHVybiB7eCwgeTogMC40NyArIDAuMDE1ICogeCArIG5vaXNlIC8gMTh9O1xuICB9KTtcbiAgY29uc3QgcGFuZWxzID0gW1xuICAgIHt0aXRsZTogXCJDb3ZhcmlhdGU6IHJlcXVpcmVtZW50IGhvbGRzXCIsIGtpbmQ6IFwiY292YXJpYXRlLWhvbGRzXCIsIHlMYWJlbDogXCJCYXNlbGluZSBjb3ZhcmlhdGVcIiwgZG9tYWluOiBbNDUsIDU3XX0sXG4gICAge3RpdGxlOiBcIkNvdmFyaWF0ZTogd2FybmluZ1wiLCBraW5kOiBcImNvdmFyaWF0ZS1mYWlsc1wiLCB5TGFiZWw6IFwiQmFzZWxpbmUgY292YXJpYXRlXCIsIGRvbWFpbjogWzQ1LCA2MF19LFxuICAgIHt0aXRsZTogXCJGaXJzdCBzdGFnZTogcmVxdWlyZW1lbnQgaG9sZHNcIiwga2luZDogXCJmaXJzdC1zdGFnZS1ob2xkc1wiLCB5TGFiZWw6IFwiUHIodHJlYXRlZClcIiwgZG9tYWluOiBbMCwgMV19LFxuICAgIHt0aXRsZTogXCJGaXJzdCBzdGFnZTogd2FybmluZ1wiLCBraW5kOiBcImZpcnN0LXN0YWdlLWZhaWxzXCIsIHlMYWJlbDogXCJQcih0cmVhdGVkKVwiLCBkb21haW46IFswLCAxXX1cbiAgXTtcbiAgY29uc3QgY2hhcnRzID0gcGFuZWxzLm1hcChwYW5lbCA9PiB7XG4gICAgY29uc3QgZGF0YSA9IG1ha2VEYXRhKHBhbmVsLmtpbmQpO1xuICAgIGNvbnN0IGxlZnQgPSBkYXRhLmZpbHRlcihkID0+IGQueCA8IDApO1xuICAgIGNvbnN0IHJpZ2h0ID0gZGF0YS5maWx0ZXIoZCA9PiBkLnggPj0gMCk7XG4gICAgcmV0dXJuIFBsb3QucGxvdCh7XG4gICAgICB3aWR0aDogMzY1LFxuICAgICAgaGVpZ2h0OiAyNTUsXG4gICAgICBtYXJnaW5MZWZ0OiA1OCxcbiAgICAgIG1hcmdpbkJvdHRvbTogNDUsXG4gICAgICB0aXRsZTogcGFuZWwudGl0bGUsXG4gICAgICB4OiB7bGFiZWw6IFwiQ2VudGVyZWQgcnVubmluZyB2YXJpYWJsZSwgWFwiLCBkb21haW46IFstNiwgNl0sIHRpY2tzOiA1fSxcbiAgICAgIHk6IHtsYWJlbDogcGFuZWwueUxhYmVsLCBkb21haW46IHBhbmVsLmRvbWFpbiwgZ3JpZDogdHJ1ZSwgdGlja3M6IDR9LFxuICAgICAgbWFya3M6IFtcbiAgICAgICAgUGxvdC5ydWxlWChbMF0sIHtzdHJva2U6IFwiYmxhY2tcIiwgc3Ryb2tlRGFzaGFycmF5OiBcIjUsNFwifSksXG4gICAgICAgIFBsb3QuZG90KGxlZnQsIHt4OiBcInhcIiwgeTogXCJ5XCIsIHI6IDIuNCwgZmlsbDogXCJ3aGl0ZVwiLCBzdHJva2U6IFwiYmxhY2tcIn0pLFxuICAgICAgICBQbG90LmRvdChyaWdodCwge3g6IFwieFwiLCB5OiBcInlcIiwgcjogMi40LCBmaWxsOiBcImJsYWNrXCJ9KSxcbiAgICAgICAgUGxvdC5saW5lYXJSZWdyZXNzaW9uWShsZWZ0LCB7eDogXCJ4XCIsIHk6IFwieVwiLCBzdHJva2U6IFwiYmxhY2tcIiwgc3Ryb2tlV2lkdGg6IDJ9KSxcbiAgICAgICAgUGxvdC5saW5lYXJSZWdyZXNzaW9uWShyaWdodCwge3g6IFwieFwiLCB5OiBcInlcIiwgc3Ryb2tlOiBcImJsYWNrXCIsIHN0cm9rZVdpZHRoOiAyfSlcbiAgICAgIF1cbiAgICB9KTtcbiAgfSk7XG4gIGNvbnN0IHdyYXAgPSBodG1sYDxkaXYgc3R5bGU9XCJkaXNwbGF5OmZsZXg7ZmxleC13cmFwOndyYXA7Z2FwOjAuNzVyZW07anVzdGlmeS1jb250ZW50OmNlbnRlclwiPjwvZGl2PmA7XG4gIGNoYXJ0cy5mb3JFYWNoKGNoYXJ0ID0+IHdyYXAuYXBwZW5kKGNoYXJ0KSk7XG4gIHJldHVybiB3cmFwO1xufVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC01IiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoiXG57XG4gIGNvbnN0IGJpbnMgPSBBcnJheS5mcm9tKHtsZW5ndGg6IDIwfSwgKF8sIGkpID0+IHtcbiAgICBjb25zdCB4MSA9IC0xMCArIGk7XG4gICAgY29uc3QgeDIgPSB4MSArIDE7XG4gICAgY29uc3QgeCA9ICh4MSArIHgyKSAvIDI7XG4gICAgcmV0dXJuIHtcbiAgICAgIHgsXG4gICAgICB4MSxcbiAgICAgIHgyLFxuICAgICAgc21vb3RoOiAzNSArIDggKiBNYXRoLmNvcyh4IC8gNSksXG4gICAgICBzb3J0ZWQ6IDM1ICsgOCAqIE1hdGguY29zKHggLyA1KSArICh4ID4gMCAmJiB4IDwgMyA/IDI1IDogMCkgLSAoeCA8IDAgJiYgeCA+IC0zID8gMTIgOiAwKVxuICAgIH07XG4gIH0pO1xuICBjb25zdCBwYW5lbHMgPSBbXG4gICAge3RpdGxlOiBcIk5vIHZpc2libGUgc29ydGluZ1wiLCBmaWVsZDogXCJzbW9vdGhcIn0sXG4gICAge3RpdGxlOiBcIkJ1bmNoaW5nIGFib3ZlIGN1dG9mZlwiLCBmaWVsZDogXCJzb3J0ZWRcIn1cbiAgXTtcbiAgY29uc3QgY2hhcnRzID0gcGFuZWxzLm1hcChwYW5lbCA9PiBQbG90LnBsb3Qoe1xuICAgIHdpZHRoOiAzNzAsXG4gICAgaGVpZ2h0OiAyNzAsXG4gICAgbWFyZ2luTGVmdDogNTAsXG4gICAgbWFyZ2luQm90dG9tOiA0OCxcbiAgICB0aXRsZTogcGFuZWwudGl0bGUsXG4gICAgeDoge2xhYmVsOiBcIkNlbnRlcmVkIHJ1bm5pbmcgdmFyaWFibGUsIFhcIiwgZG9tYWluOiBbLTEwLCAxMF19LFxuICAgIHk6IHtsYWJlbDogXCJOdW1iZXIgb2Ygb2JzZXJ2YXRpb25zXCIsIGRvbWFpbjogWzAsIDcwXSwgZ3JpZDogdHJ1ZX0sXG4gICAgbWFya3M6IFtcbiAgICAgIFBsb3QucnVsZVgoWzBdLCB7c3Ryb2tlOiBcImJsYWNrXCIsIHN0cm9rZURhc2hhcnJheTogXCI1LDRcIn0pLFxuICAgICAgUGxvdC5yZWN0WShiaW5zLCB7eDE6IFwieDFcIiwgeDI6IFwieDJcIiwgeTogcGFuZWwuZmllbGQsIGZpbGw6IFwid2hpdGVcIiwgc3Ryb2tlOiBcImJsYWNrXCIsIGluc2V0OiAwLjh9KVxuICAgIF1cbiAgfSkpO1xuICBjb25zdCB3cmFwID0gaHRtbGA8ZGl2IHN0eWxlPVwiZGlzcGxheTpmbGV4O2ZsZXgtd3JhcDp3cmFwO2dhcDoxcmVtO2p1c3RpZnktY29udGVudDpjZW50ZXJcIj48L2Rpdj5gO1xuICBjaGFydHMuZm9yRWFjaChjaGFydCA9PiB3cmFwLmFwcGVuZChjaGFydCkpO1xuICByZXR1cm4gd3JhcDtcbn1cbiJ9XX0=
+</script>
+<script type="module">
+if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }
+window._ojs.paths.runtimeToDoc = "../../notes/sections/empirical";
+window._ojs.paths.runtimeToRoot = "../..";
+window._ojs.paths.docToRoot = "../../..";
+window._ojs.selfContained = false;
+window._ojs.runtime.interpretFromScriptTags();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../../notes/sections/empirical/4_iv_rd.html" class="pagination-link" aria-label="Instrumental Variables and Regression Discontinuity">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Instrumental Variables and Regression Discontinuity</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
